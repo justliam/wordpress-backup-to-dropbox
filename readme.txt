@@ -59,7 +59,7 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/wordpress-b
 
 = Issues =
 
-If you notice any bugs or want to request a feature please do so on BitBucket - https://bitbucket.org/michaeldewildt/wordpress-backup-to-dropbox/issues/
+If you notice any bugs or want to request a feature please do so on GitHub - http://github.com/michaeldewildt/WordPress-Backup-to-Dropbox/issues
 
 = Translators =
 
