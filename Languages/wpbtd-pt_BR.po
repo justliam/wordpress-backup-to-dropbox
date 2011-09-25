@@ -1,0 +1,294 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Backup to Dropbox 0.8\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
+"POT-Creation-Date: 2011-06-02 23:56:09+00:00\n"
+"PO-Revision-Date: 2011-07-12 10:49-0300\n"
+"Last-Translator: Marcelo <contato@techload.com.br>\n"
+"Language-Team: Techload Informática <http://www.techload.com.br/>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Language: Portuguese\n"
+"X-Poedit-Country: BRAZIL\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: class-dropbox-facade.php:120
+msgid "backup file does not exist."
+msgstr "arquivo de backup não existe"
+
+#: class-dropbox-facade.php:139
+msgid "Error while uploading %s to Dropbox. HTTP Status: %s, Body: %s"
+msgstr "Erro ao fazer o upload de %s para o Dropbox. HTTP Status: %s, Body: %s"
+
+#: class-wp-backup.php:131
+msgid "Backup did not complete because the maximum script execution time was reached."
+msgstr "O backup não foi feito por completo por que o tempo máximo de execução do script atingiu o limite."
+
+#: class-wp-backup.php:153
+msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
+msgstr "arquivo '%s' excede 40 por cento da memória limite do PHP. O limite deve ser aumentado para fazer o backup deste arquivo."
+
+#: class-wp-backup.php:171
+msgid "The plugin is no longer authorized with Dropbox."
+msgstr "O plugin não está mais autorizado no Dropbox."
+
+#: class-wp-backup.php:174
+msgid "Could not upload '%s' due to the following error: %s"
+msgstr "Não foi possível fazer o upload de '%s' devido ao seguinte erro: %s"
+
+#: class-wp-backup.php:190
+msgid "Error while accessing database."
+msgstr "Erro ao acessar o banco de dados."
+
+#: class-wp-backup.php:201
+msgid "Error creating sql dump file."
+msgstr "Erro ao criar o arquivo de despejo sql."
+
+#: class-wp-backup.php:269
+msgid "Error closing sql dump file."
+msgstr "Erro ao fechar o arquivo de despejo sql."
+
+#: class-wp-backup.php:284
+msgid "Error writing to sql dump file."
+msgstr "Erro ao escrever no arquivo de despejo sql."
+
+#: class-wp-backup.php:355
+msgid "Invalid directory path. Path must only contain alphanumeric characters and the forward slash ('/') to separate directories."
+msgstr "Caminho de diretório inválido. O caminho deve conter apenas caracteres alfanuméricos e a barra ('/') para separar os diretórios."
+
+#: class-wp-backup.php:434
+msgid "Your Dropbox account is not authorized yet."
+msgstr "Sua conta no Dropbox ainda não está autorizada."
+
+#: class-wp-backup.php:443
+msgid "Error while creating the local dump directory."
+msgstr "Erro ao criar o diretório de despejo local."
+
+#: class-wp-backup.php:474
+msgid "error while creating htaccess file."
+msgstr "erro ao criar o arquivo htaccess."
+
+#: class-wp-backup.php:488
+msgid "This php installation is running in safe mode so the time limit cannot be set."
+msgstr "Esta instalação do PHP está rodando em modo de segurança e o tempo limite não pode ser ajustado."
+
+#: class-wp-backup.php:489
+msgid "Click %s for more information."
+msgstr "Clique em %s para mais informações."
+
+#: class-wp-backup.php:490
+msgid "here"
+msgstr "aqui"
+
+#: wp-backup-to-dropbox-options.php:24
+msgid "Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher."
+msgstr "A versão  do seu PHP (%s) é muito antiga para que este plugin funcione corretamente. Por favor, atualize para o PHP 5.2 ou versão mais nova."
+
+#: wp-backup-to-dropbox-options.php:44
+msgid "Settings Saved."
+msgstr "Configurações Salvas."
+
+#: wp-backup-to-dropbox-options.php:49
+msgid "Backup scheduled to begin now."
+msgstr "O agendamento do Backup terá início agora."
+
+#: wp-backup-to-dropbox-options.php:77
+#: wp-backup-to-dropbox-options.php:252
+#: wp-backup-to-dropbox-options.php:313
+msgid "Daily"
+msgstr "Diariamente"
+
+#: wp-backup-to-dropbox-options.php:143
+msgid "WordPress Backup to Dropbox"
+msgstr "Backup do WordPress para o Dropbox"
+
+#: wp-backup-to-dropbox-options.php:144
+msgid "Version %s"
+msgstr "Versão %s"
+
+#: wp-backup-to-dropbox-options.php:151
+msgid "Dropbox Account Details"
+msgstr "Detalhes da Conta do Dropbox "
+
+#: wp-backup-to-dropbox-options.php:157
+msgid "Name"
+msgstr "Nome"
+
+#: wp-backup-to-dropbox-options.php:161
+msgid "Quota"
+msgstr "Cota"
+
+#: wp-backup-to-dropbox-options.php:166
+msgid "Next Scheduled"
+msgstr "Próximo Programado"
+
+#: wp-backup-to-dropbox-options.php:171
+msgid "Next backup scheduled for %s at %s"
+msgstr "Próximo backup programado para %s às %s"
+
+#: wp-backup-to-dropbox-options.php:173
+msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr "Nenhum backup foi programado ainda. Por favor, selecione abaixo o dia, a hora e a frequência."
+
+#: wp-backup-to-dropbox-options.php:175
+msgid "History"
+msgstr "Histórico"
+
+#: wp-backup-to-dropbox-options.php:186
+msgid "Backup started on %s at %s"
+msgstr "Backup iniciado em %s às %s"
+
+#: wp-backup-to-dropbox-options.php:189
+msgid "Backup completed on %s at %s"
+msgstr "Backup completo em %s às %s"
+
+#: wp-backup-to-dropbox-options.php:192
+msgid "Backup warning on %s at %s: %s"
+msgstr "Aviso de Backup na %s às %s: %s"
+
+#: wp-backup-to-dropbox-options.php:195
+msgid "Backup error on %s at %s: %s"
+msgstr "Erro de Backup na %s as %s: %s"
+
+#: wp-backup-to-dropbox-options.php:200
+msgid "No backups performed yet"
+msgstr "Nenhum backup realizado ainda."
+
+#: wp-backup-to-dropbox-options.php:203
+msgid "Settings"
+msgstr "Configurações"
+
+#: wp-backup-to-dropbox-options.php:208
+msgid "Locally store the SQL dump in this folder"
+msgstr "Gravar o arquivo de despejo SQL localmente nesta pasta"
+
+#: wp-backup-to-dropbox-options.php:212
+#: wp-backup-to-dropbox-options.php:226
+msgid "Default is"
+msgstr "O default é"
+
+#: wp-backup-to-dropbox-options.php:221
+msgid "Store backup in this folder within Dropbox"
+msgstr "Gravar o backup nesta pasta do Dropbox"
+
+#: wp-backup-to-dropbox-options.php:234
+msgid "Day and Time"
+msgstr "Dia e Hora"
+
+#: wp-backup-to-dropbox-options.php:238
+msgid "Monday"
+msgstr "Segunda"
+
+#: wp-backup-to-dropbox-options.php:240
+msgid "Tuesday"
+msgstr "Terça-feira"
+
+#: wp-backup-to-dropbox-options.php:242
+msgid "Wednesday"
+msgstr "Quarta-feira"
+
+#: wp-backup-to-dropbox-options.php:244
+msgid "Thursday"
+msgstr "Quinta-feira"
+
+#: wp-backup-to-dropbox-options.php:246
+msgid "Friday"
+msgstr "Sexta-feira"
+
+#: wp-backup-to-dropbox-options.php:248
+msgid "Saturday"
+msgstr "Sábado"
+
+#: wp-backup-to-dropbox-options.php:250
+msgid "Sunday"
+msgstr "Domingo"
+
+#: wp-backup-to-dropbox-options.php:305
+msgid "The day and time the backup to Dropbox is to be performed."
+msgstr "Dia e hora que o backup para o Dropbox deverá ser realizado."
+
+#: wp-backup-to-dropbox-options.php:309
+msgid "Frequency"
+msgstr "Frequência"
+
+#: wp-backup-to-dropbox-options.php:316
+msgid "Weekly"
+msgstr "Semanalmente"
+
+#: wp-backup-to-dropbox-options.php:320
+msgid "Fortnightly"
+msgstr "Quinzenalmente"
+
+#: wp-backup-to-dropbox-options.php:323
+msgid "Every 4 weeks"
+msgstr "A cada 4 semanas"
+
+#: wp-backup-to-dropbox-options.php:327
+msgid "Every 8 weeks"
+msgstr "A cada 8 semanas"
+
+#: wp-backup-to-dropbox-options.php:331
+msgid "Every 12 weeks"
+msgstr "A cada 12 semanas"
+
+#: wp-backup-to-dropbox-options.php:334
+msgid "How often the backup to Dropbox is to be performed."
+msgstr "A frequência com que o backup para o Dropbox deve ser realizado."
+
+#: wp-backup-to-dropbox-options.php:340
+msgid "Excluded Files and Directories"
+msgstr "Arquivos e Diretórios Excluídos"
+
+#: wp-backup-to-dropbox-options.php:343
+msgid "Select the files and directories that you wish to exclude from your backup. You can expand directories with contents by clicking its name."
+msgstr "Selecione os arquivos e diretórios que deseja excluir do seu backup. Você pode expandir o conteúdo dos diretórios clicando no nome do diretório."
+
+#: wp-backup-to-dropbox-options.php:344
+msgid "Please Note:"
+msgstr "Por favor note:"
+
+#: wp-backup-to-dropbox-options.php:344
+msgid "Your SQL dump file will always be backed up regardless of what is selected below."
+msgstr "Seu arquivo de despejo SQL será sempre copiado independentemente do que for selecionado abaixo."
+
+#: wp-backup-to-dropbox-options.php:352
+msgid "Save Changes"
+msgstr "Salvar Mudanças"
+
+#: wp-backup-to-dropbox-options.php:354
+msgid "Backup Now"
+msgstr "Fazer o Backup agora"
+
+#: wp-backup-to-dropbox-options.php:372
+msgid "Thank you for installing WordPress Backup to Dropbox!"
+msgstr "Obrigado por instalar o Backup do WordPress para o Dropbox"
+
+#: wp-backup-to-dropbox-options.php:373
+msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
+msgstr "Para poder usar este plugin você precisa autorizá-lo na sua conta no Dropbox."
+
+#: wp-backup-to-dropbox-options.php:374
+msgid "Please click the authorize button below and follow the instructions inside the pop up window."
+msgstr "Por favor, clique no botão de autorização abaixo e siga as instruções dentro da janela de pop up."
+
+#: wp-backup-to-dropbox-options.php:376
+msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
+msgstr "Ocorreu um erro ao autorizar o plugin na sua conta do Dropbox. Por favor, tente novamente."
+
+#: wp-backup-to-dropbox-options.php:384
+msgid "Continue"
+msgstr "Continuar"
+
+#: wp-backup-to-dropbox-options.php:391
+msgid "There was a fatal error loading WordPress Backup to Dropbox"
+msgstr "Ocorreu um erro fatal ao carregar o 'Backup do WordPress para o Dropbox'"
+
+#: wp-backup-to-dropbox.php:70
+msgid "The backup process appears to have gone away. Resuming backup."
+msgstr "O processo de backup  parece ter encontrado um problema. Reiniciando o backup. "
+

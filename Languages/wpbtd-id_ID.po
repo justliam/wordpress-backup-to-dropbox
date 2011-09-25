@@ -1,0 +1,265 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
+"POT-Creation-Date: 2011-06-02 23:56:09+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-08-24 23:23+0700\n"
+"Last-Translator: Bejana <b@bejana.com>\n"
+"Language-Team: Bejana <b@bejana.com>\n"
+
+#: class-dropbox-facade.php:111
+msgid "backup file does not exist."
+msgstr "berkas cadangan tidak ada."
+
+#: class-dropbox-facade.php:128
+msgid "Error while uploading %s to Dropbox. HTTP Status: %s, Body: %s"
+msgstr "Galat ketika mengunggah %s ke Dropbox. Status HTTP: %s, Body: %s"
+
+#: class-wp-backup.php:137
+msgid "Backup did not complete because the maximum script execution time was reached."
+msgstr "Pencadangan tidak lengkap karena waktu eksekusi skrip maksimum telah tercapai."
+
+#: class-wp-backup.php:146
+msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
+msgstr "berkas '%s' melebihi 40 persen dari batasan memori PHP Anda. Limit harus ditingkatkan untuk mencadangkan berkas ini."
+
+#: class-wp-backup.php:165
+msgid "Could not upload '%s' due to the following error: %s"
+msgstr "Tidak dapat mengunggah '%s' karena galat ini: %s"
+
+#: class-wp-backup.php:183
+msgid "Error while accessing database."
+msgstr "Galat ketika mengakses database."
+
+#: class-wp-backup.php:195
+msgid "Error creating sql dump file."
+msgstr "Galat menciptakan berkas sql dump."
+
+#: class-wp-backup.php:263
+msgid "Error closing sql dump file."
+msgstr "Galat menutup berkas sql dump."
+
+#: class-wp-backup.php:278
+msgid "Error writing to sql dump file."
+msgstr "Galat menulis berkas sql dump."
+
+#: class-wp-backup.php:349
+msgid "Invalid directory path. Path must only contain alphanumeric characters and the forward slash ('/') to separate directories."
+msgstr "Lokasi direktori tidak sah. Lokasi harus berisi karakter alfanumerik dan garis miring ('/') untuk memisahkan direktori."
+
+#: class-wp-backup.php:428
+msgid "Your Dropbox account is not authorized yet."
+msgstr "Akun Dropbox Anda belum terotorisasi."
+
+#: class-wp-backup.php:437
+msgid "Error while creating the local dump directory."
+msgstr "Galat ketika menciptakan direktori dump lokal."
+
+#: class-wp-backup.php:468
+msgid "error while creating htaccess file."
+msgstr "galat ketika menciptakan berkas htaccess."
+
+#: class-wp-backup.php:482
+msgid "This php installation is running in safe mode so the time limit cannot be set."
+msgstr "Instalasi php ini berjalan dalam modus aman (safe) sehingga batasan waktu tidak dapat diatur."
+
+#: class-wp-backup.php:483
+msgid "Click %s for more information."
+msgstr "Klik %s untuk lebih informasi lebih lanjut."
+
+#: class-wp-backup.php:484
+msgid "here"
+msgstr "di sini"
+
+#: wp-backup-to-dropbox-options.php:36
+msgid "Settings Saved."
+msgstr "Pengaturan Tersimpan."
+
+#: wp-backup-to-dropbox-options.php:41
+msgid "Backup scheduled to begin now."
+msgstr "Cadangan terjadwal untuk dimulai sekarang."
+
+#: wp-backup-to-dropbox-options.php:66
+#: wp-backup-to-dropbox-options.php:221
+#: wp-backup-to-dropbox-options.php:282
+msgid "Daily"
+msgstr "Harian"
+
+#: wp-backup-to-dropbox-options.php:112
+msgid "WordPress Backup to Dropbox"
+msgstr "WordPress Backup to Dropbox"
+
+#: wp-backup-to-dropbox-options.php:113
+msgid "Version %s"
+msgstr "Versi %s"
+
+#: wp-backup-to-dropbox-options.php:120
+msgid "Dropbox Account Details"
+msgstr "Detil Akun Dropbox"
+
+#: wp-backup-to-dropbox-options.php:126
+msgid "Name"
+msgstr "Nama"
+
+#: wp-backup-to-dropbox-options.php:130
+msgid "Quota"
+msgstr "Kuota"
+
+#: wp-backup-to-dropbox-options.php:135
+msgid "Next Scheduled"
+msgstr "Terjadwal Selanjutnya"
+
+#: wp-backup-to-dropbox-options.php:140
+msgid "Next backup scheduled for %s at %s"
+msgstr "Cadangan selanjutnya dijadwalkan pada %s jam %s"
+
+#: wp-backup-to-dropbox-options.php:142
+msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr "Belum ada cadangan yang terjadwal. Mohon pilih hari, waktu dan frekuensi di bawah."
+
+#: wp-backup-to-dropbox-options.php:144
+msgid "History"
+msgstr "Sejarah"
+
+#: wp-backup-to-dropbox-options.php:155
+msgid "Backup started on %s at %s"
+msgstr "Pencadangan dimulai pada %s jam %s"
+
+#: wp-backup-to-dropbox-options.php:158
+msgid "Backup completed on %s at %s"
+msgstr "Pencadangan dirampungkan pada %s jam %s"
+
+#: wp-backup-to-dropbox-options.php:161
+msgid "Backup warning on %s at %s: %s"
+msgstr "Peringatan pencadangan pada %s jam %s: %s"
+
+#: wp-backup-to-dropbox-options.php:164
+msgid "Backup error on %s at %s: %s"
+msgstr "Galat pencadangan pada %s jam %s: %s"
+
+#: wp-backup-to-dropbox-options.php:169
+msgid "No backups performed yet"
+msgstr "Belum dilakukan pencadangan"
+
+#: wp-backup-to-dropbox-options.php:172
+msgid "Settings"
+msgstr "Pengaturan"
+
+#: wp-backup-to-dropbox-options.php:177
+msgid "Locally store backup in this folder"
+msgstr "Simpan cadangan secara lokal di folder ini"
+
+#: wp-backup-to-dropbox-options.php:181
+#: wp-backup-to-dropbox-options.php:195
+msgid "Default is"
+msgstr "Bawaannya adalah"
+
+#: wp-backup-to-dropbox-options.php:190
+msgid "Store backup in this folder within Dropbox"
+msgstr "Simpan cadangan dalam folder ini di Dropbox"
+
+#: wp-backup-to-dropbox-options.php:203
+msgid "Day and Time"
+msgstr "Waktu dan Tanggal"
+
+#: wp-backup-to-dropbox-options.php:207
+msgid "Monday"
+msgstr "Senin"
+
+#: wp-backup-to-dropbox-options.php:209
+msgid "Tuesday"
+msgstr "Selasa"
+
+#: wp-backup-to-dropbox-options.php:211
+msgid "Wednesday"
+msgstr "Rabu"
+
+#: wp-backup-to-dropbox-options.php:213
+msgid "Thursday"
+msgstr "Kamis"
+
+#: wp-backup-to-dropbox-options.php:215
+msgid "Friday"
+msgstr "Jumat"
+
+#: wp-backup-to-dropbox-options.php:217
+msgid "Saturday"
+msgstr "Sabtu"
+
+#: wp-backup-to-dropbox-options.php:219
+msgid "Sunday"
+msgstr "Minggu"
+
+#: wp-backup-to-dropbox-options.php:274
+msgid "The day and time the backup to Dropbox is to be performed."
+msgstr "Hari dan tanggal pencadangan ke Dropbox akan dilakukan."
+
+#: wp-backup-to-dropbox-options.php:278
+msgid "Frequency"
+msgstr "Frekuensi"
+
+#: wp-backup-to-dropbox-options.php:285
+msgid "Weekly"
+msgstr "Mingguan"
+
+#: wp-backup-to-dropbox-options.php:289
+msgid "Fortnightly"
+msgstr "Setiap 2 minggu"
+
+#: wp-backup-to-dropbox-options.php:292
+msgid "Every 4 weeks"
+msgstr "Setiap 4 minggu"
+
+#: wp-backup-to-dropbox-options.php:296
+msgid "Every 8 weeks"
+msgstr "Setiap 8 minggu"
+
+#: wp-backup-to-dropbox-options.php:300
+msgid "Every 12 weeks"
+msgstr "Setiap 12 minggu"
+
+#: wp-backup-to-dropbox-options.php:303
+msgid "How often the backup to Dropbox is to be performed."
+msgstr "Seberapa sering pencadangan ke Dropbox akan dilakukan."
+
+#: wp-backup-to-dropbox-options.php:310
+msgid "Save Changes"
+msgstr "Simpan Perubahan"
+
+#: wp-backup-to-dropbox-options.php:312
+msgid "Backup Now"
+msgstr "Cadangkan Sekarang"
+
+#: wp-backup-to-dropbox-options.php:330
+msgid "Thank you for installing WordPress Backup to Dropbox!"
+msgstr "Terima kasih telah menginstal WordPress Backup to Dropbox!"
+
+#: wp-backup-to-dropbox-options.php:331
+msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
+msgstr "Untuk menggunakan plugin ini Anda perlu mengotorisasinya dengan akun Dropbox Anda."
+
+#: wp-backup-to-dropbox-options.php:332
+msgid "Please click the authorize button below and follow the instructions inside the pop up window."
+msgstr "Mohon klik tombol otorisasi di bawah dan ikuti petunjuknya di dalam jendela pop up."
+
+#: wp-backup-to-dropbox-options.php:334
+msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
+msgstr "Ada galat mengotorisasi plugin dengan akun Dropbox. Mohon dicoba lagi."
+
+#: wp-backup-to-dropbox-options.php:342
+msgid "Continue"
+msgstr "Lanjutkan"
+
+#: wp-backup-to-dropbox-options.php:349
+msgid "There was a fatal error loading WordPress Backup to Dropbox"
+msgstr "Ada galat fatal memuat WordPress Backup to Dropbox"
+
+#: wp-backup-to-dropbox.php:70
+msgid "The backup process appears to have gone away. Resuming backup."
+msgstr "Proses pencadangan sepertinya telah hilang. Melanjutkan pencadangan."
+

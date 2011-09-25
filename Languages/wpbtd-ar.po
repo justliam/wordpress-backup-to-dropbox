@@ -1,0 +1,268 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
+"POT-Creation-Date: 2011-06-02 23:56:09+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-06-29 11:57+0100\n"
+"Last-Translator: Saif Maki <saifmaki@gmail.com>\n"
+"Language-Team: Saif Maki <saifmaki@gmail.com>\n"
+"X-Poedit-Language: Arabic\n"
+"X-Poedit-Country: ALGERIA\n"
+"X-Poedit-SourceCharset: utf-8\n"
+
+#: class-dropbox-facade.php:111
+msgid "backup file does not exist."
+msgstr "ملف الإحتياط غير موجود."
+
+#: class-dropbox-facade.php:128
+msgid "Error while uploading %s to Dropbox. HTTP Status: %s, Body: %s"
+msgstr "حصل خطأ أثناء رفع %s إلى Dropbox. حالة HTTP: %s, المحتوى: %s"
+
+#: class-wp-backup.php:137
+msgid "Backup did not complete because the maximum script execution time was reached."
+msgstr "عملية الإحتياط لم تكتمل لأن الحد الأقصى لوقت تنفيذ السكربت نفذ."
+
+#: class-wp-backup.php:146
+msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
+msgstr "الملف %s يتجاوز 40 بالمئة من ذاكرة PHP المحدودة. يجب زيادة حد الذاكرة لأخذ نسخة إحتياطية."
+
+#: class-wp-backup.php:165
+msgid "Could not upload '%s' due to the following error: %s"
+msgstr "لا يمكن رفع %s للأسباب التالية: %s"
+
+#: class-wp-backup.php:183
+msgid "Error while accessing database."
+msgstr "حصل خطأ أثناء محاولة دخول قاعدة البيانات."
+
+#: class-wp-backup.php:195
+msgid "Error creating sql dump file."
+msgstr "حصل خطأ أثناء إنشاء ملف مؤقت لـSQL."
+
+#: class-wp-backup.php:263
+msgid "Error closing sql dump file."
+msgstr "حصل خطأ أثناء إغلاق الملف المؤقت الخاص بـSQL."
+
+#: class-wp-backup.php:278
+msgid "Error writing to sql dump file."
+msgstr "حصل خطأ أثناء محاولة الكتابة في الملف المؤقت الخاص بـSQL."
+
+#: class-wp-backup.php:349
+msgid "Invalid directory path. Path must only contain alphanumeric characters and the forward slash ('/') to separate directories."
+msgstr "مسار مجلد غير صحيح. المسار يجب أن يكون يحتوي فقط على حروف و أرقام و علامة السلاش (/) لتفرقة المجلدات."
+
+#: class-wp-backup.php:428
+msgid "Your Dropbox account is not authorized yet."
+msgstr "حسابك في Dropbox لم يتم ربطه بعد."
+
+#: class-wp-backup.php:437
+msgid "Error while creating the local dump directory."
+msgstr "حصل خطأ أثناء إنشاء مجلد ملفات المؤقتة."
+
+#: class-wp-backup.php:468
+msgid "error while creating htaccess file."
+msgstr "حصل خطأ أثناء إنشاء ملف htaccess."
+
+#: class-wp-backup.php:482
+msgid "This php installation is running in safe mode so the time limit cannot be set."
+msgstr "PHP المنصب مشغل الوضع الآمن (safe mode) لذلك الحد الأقصى للوقت لا يمكن تفعيله."
+
+#: class-wp-backup.php:483
+msgid "Click %s for more information."
+msgstr "إضغط %s للمزيد من المعلومات."
+
+#: class-wp-backup.php:484
+msgid "here"
+msgstr "هنا"
+
+#: wp-backup-to-dropbox-options.php:36
+msgid "Settings Saved."
+msgstr "تم حفظ الخيارات."
+
+#: wp-backup-to-dropbox-options.php:41
+msgid "Backup scheduled to begin now."
+msgstr "بدأ جدول النسخة الإحتياطية الآن."
+
+#: wp-backup-to-dropbox-options.php:66
+#: wp-backup-to-dropbox-options.php:221
+#: wp-backup-to-dropbox-options.php:282
+msgid "Daily"
+msgstr "يوميا"
+
+#: wp-backup-to-dropbox-options.php:112
+msgid "WordPress Backup to Dropbox"
+msgstr "WordPress Backup to Dropbox"
+
+#: wp-backup-to-dropbox-options.php:113
+msgid "Version %s"
+msgstr "الإصدار %s"
+
+#: wp-backup-to-dropbox-options.php:120
+msgid "Dropbox Account Details"
+msgstr "معلومات حساب Dropbox"
+
+#: wp-backup-to-dropbox-options.php:126
+msgid "Name"
+msgstr "الإسم"
+
+#: wp-backup-to-dropbox-options.php:130
+msgid "Quota"
+msgstr "كوتا"
+
+#: wp-backup-to-dropbox-options.php:135
+msgid "Next Scheduled"
+msgstr "الجدول التالي"
+
+#: wp-backup-to-dropbox-options.php:140
+msgid "Next backup scheduled for %s at %s"
+msgstr "جدول النسخة الإحتياطية التالي في %s على %s"
+
+#: wp-backup-to-dropbox-options.php:142
+msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr "لا يوجد هناك أي جداول حاليا. الرجاء حدد تاريخ أو وقت أو...إلخ من الأسفل"
+
+#: wp-backup-to-dropbox-options.php:144
+msgid "History"
+msgstr "السجل"
+
+#: wp-backup-to-dropbox-options.php:155
+msgid "Backup started on %s at %s"
+msgstr "تم أخذ نسخة إحتياطية في %s على %s"
+
+#: wp-backup-to-dropbox-options.php:158
+msgid "Backup completed on %s at %s"
+msgstr "تم الإنتهاء من أخذ النسخة الإحتياطية في %s على %s"
+
+#: wp-backup-to-dropbox-options.php:161
+msgid "Backup warning on %s at %s: %s"
+msgstr "تحذير النسخة الإحتياطية في %s على %s"
+
+#: wp-backup-to-dropbox-options.php:164
+msgid "Backup error on %s at %s: %s"
+msgstr "خطأ النسخة الإحتياطية في %s على %s"
+
+#: wp-backup-to-dropbox-options.php:169
+msgid "No backups performed yet"
+msgstr "لم يتم أخذ نسخ إحتياطية بعد"
+
+#: wp-backup-to-dropbox-options.php:172
+msgid "Settings"
+msgstr "الخيارات"
+
+#: wp-backup-to-dropbox-options.php:177
+msgid "Locally store backup in this folder"
+msgstr "قم بتخزين النسخة الإحتياطية في هذا المجلد المحلي"
+
+#: wp-backup-to-dropbox-options.php:181
+#: wp-backup-to-dropbox-options.php:195
+msgid "Default is"
+msgstr "الإفتراضي هو"
+
+#: wp-backup-to-dropbox-options.php:190
+msgid "Store backup in this folder within Dropbox"
+msgstr "قم بتخزين النسخة الإحتياطية في هذا المجلد الخاص بخدمة Dropbox"
+
+#: wp-backup-to-dropbox-options.php:203
+msgid "Day and Time"
+msgstr "التاريخ و الوقت"
+
+#: wp-backup-to-dropbox-options.php:207
+msgid "Monday"
+msgstr "الإثنين"
+
+#: wp-backup-to-dropbox-options.php:209
+msgid "Tuesday"
+msgstr "الثلاثاء"
+
+#: wp-backup-to-dropbox-options.php:211
+msgid "Wednesday"
+msgstr "الأربعاء"
+
+#: wp-backup-to-dropbox-options.php:213
+msgid "Thursday"
+msgstr "الخميس"
+
+#: wp-backup-to-dropbox-options.php:215
+msgid "Friday"
+msgstr "الجمعة"
+
+#: wp-backup-to-dropbox-options.php:217
+msgid "Saturday"
+msgstr "السبت"
+
+#: wp-backup-to-dropbox-options.php:219
+msgid "Sunday"
+msgstr "الأحد"
+
+#: wp-backup-to-dropbox-options.php:274
+msgid "The day and time the backup to Dropbox is to be performed."
+msgstr "اليوم و الوقت "
+
+#: wp-backup-to-dropbox-options.php:278
+msgid "Frequency"
+msgstr "دائما"
+
+#: wp-backup-to-dropbox-options.php:285
+msgid "Weekly"
+msgstr "أسبوعيا"
+
+#: wp-backup-to-dropbox-options.php:289
+msgid "Fortnightly"
+msgstr "نصف شهر"
+
+#: wp-backup-to-dropbox-options.php:292
+msgid "Every 4 weeks"
+msgstr "كل 4 أسابيع"
+
+#: wp-backup-to-dropbox-options.php:296
+msgid "Every 8 weeks"
+msgstr "كل 8 أسابيع"
+
+#: wp-backup-to-dropbox-options.php:300
+msgid "Every 12 weeks"
+msgstr "كل 12 أسبوع"
+
+#: wp-backup-to-dropbox-options.php:303
+msgid "How often the backup to Dropbox is to be performed."
+msgstr "ما هي المدة المحددة التي سوف يقوم فيها Dropbox بأخذ نسخة إحتياطية."
+
+#: wp-backup-to-dropbox-options.php:310
+msgid "Save Changes"
+msgstr "حفظ التغييرات"
+
+#: wp-backup-to-dropbox-options.php:312
+msgid "Backup Now"
+msgstr "إنشاء نسخة إحتياطية الآن"
+
+#: wp-backup-to-dropbox-options.php:330
+msgid "Thank you for installing WordPress Backup to Dropbox!"
+msgstr "شكرا لك على تثبيت إضافة WordPress Backup to Dropbox!"
+
+#: wp-backup-to-dropbox-options.php:331
+msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
+msgstr "لإستعمال هذه الإضافة يجب عليك أولا ربطها بحسابك في خدمة Dropbox."
+
+#: wp-backup-to-dropbox-options.php:332
+msgid "Please click the authorize button below and follow the instructions inside the pop up window."
+msgstr "الرجاء قم بالضغط على زر \"Authorize\" الذي في الأسفل و إتبع التعليمات التي سوف تظهر لك في النافذة."
+
+#: wp-backup-to-dropbox-options.php:334
+msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
+msgstr "هناك مشكلة في ربط الإضافة بحسابك في خدمة Dropbox. الرجاء حاول مجددا."
+
+#: wp-backup-to-dropbox-options.php:342
+msgid "Continue"
+msgstr "إستمرار"
+
+#: wp-backup-to-dropbox-options.php:349
+msgid "There was a fatal error loading WordPress Backup to Dropbox"
+msgstr "لقد حصل خطأ ما عند تحميل النسخة الإحتياطية إلى Dropbox"
+
+#: wp-backup-to-dropbox.php:70
+msgid "The backup process appears to have gone away. Resuming backup."
+msgstr "عملية الإحتياط فشلت. إعادة العملية من جديد."
+
