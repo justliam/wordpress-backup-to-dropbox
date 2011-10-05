@@ -67,6 +67,7 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Brazilian Portuguese (pt_BR) - [Techload Informatica](http://www.techload.com.br)
 * Galician (gl_ES), Spanish (es_ES), Portuguese (pt_PT) - [WordPress Galego](http://gl.wordpress.org/)
 * Indonesian (id_ID) - [Bejana](http://www.bejana.com/)
+* German (de_DE) - [Bernhard Kau](http://kau-boys.de)
 
 == Installation ==
 

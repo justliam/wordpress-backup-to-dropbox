@@ -262,7 +262,7 @@ try {
                     <?php if ( $frequency == 'daily' ) { ?>
                     <option value="" selected="selected"><?php _e( 'Daily', 'wpbtd' ); ?></option>
                     <?php } ?>
-                </select> at
+                </select> <?php _e( 'at', 'wpbtd' ); ?>
                 <select id="time" name="time">
                     <option value="00:00" <?php echo $time == '00:00' ? ' selected="selected"' : "" ?>>00:00
                     </option>
@@ -389,7 +389,7 @@ try {
     <p>
     <form id="backup_to_dropbox_continue" name="backup_to_dropbox_continue"
           action="options-general.php?page=backup-to-dropbox" method="post">
-        <input type="button" name="authorize" id="authorize" value="Authorize"
+        <input type="button" name="authorize" id="authorize" value="<?php _e( 'Authorize', 'wpbtd' ); ?>"
                onclick="dropbox_authorize( '<?php echo $url ?>' )"/><br/>
         <input style="visibility: hidden;" type="submit" name="continue" id="continue"
                value="<?php _e( 'Continue', 'wpbtd' ); ?>"/>
