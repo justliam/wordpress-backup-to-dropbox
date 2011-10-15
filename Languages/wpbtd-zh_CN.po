@@ -1,0 +1,297 @@
+# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Backup to Dropbox\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
+"POT-Creation-Date: 2011-10-05 08:39:21+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2011-10-14 11:52+0800\n"
+"Last-Translator: pnuts <i@pnuts.cc>\n"
+"Language-Team: HostUCan <pnuts.zhao@racent.com>\n"
+
+#: wp-backup-to-dropbox-options.php:24
+msgid "Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher."
+msgstr "你的PHP版本（%s）过低，本插件需要PHP 5.2或以上版本。"
+
+#: wp-backup-to-dropbox-options.php:27
+msgid "WP Cron is disabled and is required by WordPress Backup to Dropbox. Please define DISABLE_WP_CRON as true in wp-config.php"
+msgstr "WP Cron被禁用了。Wordpress Backup To Dropbox需要WP Cron才能正常工作。请在wp-config.php中将DISABLE_WP_CRON设为启用。"
+
+#: wp-backup-to-dropbox-options.php:49
+msgid "Settings Saved."
+msgstr "设置已保存。"
+
+#: wp-backup-to-dropbox-options.php:54
+msgid "Backup scheduled to begin now."
+msgstr "按计划现在开始备份。"
+
+#: wp-backup-to-dropbox-options.php:85
+#: wp-backup-to-dropbox-options.php:263
+#: wp-backup-to-dropbox-options.php:324
+msgid "Daily"
+msgstr "每天"
+
+#: wp-backup-to-dropbox-options.php:151
+msgid "WordPress Backup to Dropbox"
+msgstr "备份Wordpress到Dropbox"
+
+#: wp-backup-to-dropbox-options.php:152
+msgid "Version %s"
+msgstr "版本 %s"
+
+#: wp-backup-to-dropbox-options.php:159
+msgid "Dropbox Account Details"
+msgstr "Dropbox账户信息"
+
+#: wp-backup-to-dropbox-options.php:165
+msgid "Name"
+msgstr "名称"
+
+#: wp-backup-to-dropbox-options.php:169
+msgid "Quota"
+msgstr "定额"
+
+#: wp-backup-to-dropbox-options.php:173
+msgid "Unlink Account"
+msgstr "取消绑定"
+
+#: wp-backup-to-dropbox-options.php:177
+msgid "Next Scheduled"
+msgstr "下一个计划任务"
+
+#: wp-backup-to-dropbox-options.php:182
+msgid "Next backup scheduled for %s at %s"
+msgstr "%s 的下一个备份任务在 %s"
+
+#: wp-backup-to-dropbox-options.php:184
+msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr "还没有备份任务。请在下面选择日期、时间和频率。"
+
+#: wp-backup-to-dropbox-options.php:186
+msgid "History"
+msgstr "历史记录"
+
+#: wp-backup-to-dropbox-options.php:197
+msgid "Backup started on %s at %s"
+msgstr "备份开始时间：%s %s"
+
+#: wp-backup-to-dropbox-options.php:200
+msgid "Backup completed on %s at %s"
+msgstr "备份完成时间：%s %s"
+
+#: wp-backup-to-dropbox-options.php:203
+msgid "Backup warning on %s at %s: %s"
+msgstr "备份过程中的警告（%s %s）：%s"
+
+#: wp-backup-to-dropbox-options.php:206
+msgid "Backup error on %s at %s: %s"
+msgstr "备份过程中的错误（%s %s）：%s"
+
+#: wp-backup-to-dropbox-options.php:211
+msgid "No backups performed yet"
+msgstr "还没有过任何备份"
+
+#: wp-backup-to-dropbox-options.php:214
+msgid "Settings"
+msgstr "设置"
+
+#: wp-backup-to-dropbox-options.php:219
+msgid "Locally store the SQL dump in this folder"
+msgstr "将SQL dump文件存储在本地的这个问价夹"
+
+#: wp-backup-to-dropbox-options.php:223
+#: wp-backup-to-dropbox-options.php:237
+msgid "Default is"
+msgstr "默认是"
+
+#: wp-backup-to-dropbox-options.php:232
+msgid "Store backup in this folder within Dropbox"
+msgstr "将备份存储到Dropbox的这个文件夹"
+
+#: wp-backup-to-dropbox-options.php:245
+msgid "Day and Time"
+msgstr "日期和时间"
+
+#: wp-backup-to-dropbox-options.php:249
+msgid "Monday"
+msgstr "星期一"
+
+#: wp-backup-to-dropbox-options.php:251
+msgid "Tuesday"
+msgstr "星期二"
+
+#: wp-backup-to-dropbox-options.php:253
+msgid "Wednesday"
+msgstr "星期三"
+
+#: wp-backup-to-dropbox-options.php:255
+msgid "Thursday"
+msgstr "星期四"
+
+#: wp-backup-to-dropbox-options.php:257
+msgid "Friday"
+msgstr "星期五"
+
+#: wp-backup-to-dropbox-options.php:259
+msgid "Saturday"
+msgstr "星期六"
+
+#: wp-backup-to-dropbox-options.php:261
+msgid "Sunday"
+msgstr "星期日"
+
+#: wp-backup-to-dropbox-options.php:316
+msgid "The day and time the backup to Dropbox is to be performed."
+msgstr "将在这个时间备份到Dropbox。"
+
+#: wp-backup-to-dropbox-options.php:320
+msgid "Frequency"
+msgstr "频率"
+
+#: wp-backup-to-dropbox-options.php:327
+msgid "Weekly"
+msgstr "每周"
+
+#: wp-backup-to-dropbox-options.php:331
+msgid "Fortnightly"
+msgstr "每两周"
+
+#: wp-backup-to-dropbox-options.php:334
+msgid "Every 4 weeks"
+msgstr "每4周"
+
+#: wp-backup-to-dropbox-options.php:338
+msgid "Every 8 weeks"
+msgstr "每8周"
+
+#: wp-backup-to-dropbox-options.php:342
+msgid "Every 12 weeks"
+msgstr "每12周"
+
+#: wp-backup-to-dropbox-options.php:345
+msgid "How often the backup to Dropbox is to be performed."
+msgstr "多久备份到Dropbox一次。"
+
+#: wp-backup-to-dropbox-options.php:351
+msgid "Excluded Files and Directories"
+msgstr "不包含的文件和文件夹"
+
+#: wp-backup-to-dropbox-options.php:354
+msgid "Select the files and directories that you wish to exclude from your backup. You can expand directories with contents by clicking its name."
+msgstr "选择你不想放到备份中的文件和文件夹。点击文件夹名字可以浏览子目录。"
+
+#: wp-backup-to-dropbox-options.php:355
+msgid "Please Note:"
+msgstr "请注意："
+
+#: wp-backup-to-dropbox-options.php:355
+msgid "Your SQL dump file will always be backed up regardless of what is selected below."
+msgstr "你的SQL dump文件将"
+
+#: wp-backup-to-dropbox-options.php:363
+msgid "Save Changes"
+msgstr "保存更改"
+
+#: wp-backup-to-dropbox-options.php:365
+msgid "Backup Now"
+msgstr "现在备份"
+
+#: wp-backup-to-dropbox-options.php:383
+msgid "Thank you for installing WordPress Backup to Dropbox!"
+msgstr "感谢你安装Wordpress Backup To Dropbox！"
+
+#: wp-backup-to-dropbox-options.php:384
+msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
+msgstr "在使用这个插件之前，你需要用你的Dropbox授权它。"
+
+#: wp-backup-to-dropbox-options.php:385
+msgid "Please click the authorize button below and follow the instructions inside the pop up window."
+msgstr "请点击下面的授权按钮，然后根据弹出窗口的提示操作。"
+
+#: wp-backup-to-dropbox-options.php:387
+msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
+msgstr "与你的DropBox验证的过程中发生了错误。请重试。"
+
+#: wp-backup-to-dropbox-options.php:395
+msgid "Continue"
+msgstr "继续"
+
+#: wp-backup-to-dropbox-options.php:402
+msgid "There was a fatal error loading WordPress Backup to Dropbox"
+msgstr "Wordpress Backup To Dropbox 发生了致命的错误"
+
+#: wp-backup-to-dropbox.php:79
+msgid "The backup process appears to have gone away. Resuming backup."
+msgstr "备份过程似乎被终止了。请重启备份。"
+
+#: class-wp-backup.php:136
+msgid "Backup did not complete because the maximum script execution time was reached."
+msgstr "脚本执行超时，备份没有完成。"
+
+#: class-wp-backup.php:155
+msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
+msgstr "文件 '%s' 超过了php内存限制的40%。要备份这个文件，你需要提高PHP的内存限制。"
+
+#: class-wp-backup.php:171
+msgid "The plugin is no longer authorized with Dropbox."
+msgstr "这个插件已不再被Dropbox授权。"
+
+#: class-wp-backup.php:174
+msgid "Could not upload '%s' due to the following error: %s"
+msgstr "无法上传 '%s'，发生以下错误：%s"
+
+#: class-wp-backup.php:190
+msgid "Error while accessing database."
+msgstr "访问数据库出错。"
+
+#: class-wp-backup.php:201
+msgid "Error creating sql dump file."
+msgstr "创建sql dump文件出错。"
+
+#: class-wp-backup.php:263
+msgid "Error closing sql dump file."
+msgstr "关闭sql dump文件出错。"
+
+#: class-wp-backup.php:278
+msgid "Error writing to sql dump file."
+msgstr "写sql dump文件出错。"
+
+#: class-wp-backup.php:349
+msgid "Invalid directory path. Path must only contain alphanumeric characters and the forward slash ('/') to separate directories."
+msgstr "无效的目录。目录只能包含字母、数字，并用斜杠('/')来分割目录。"
+
+#: class-wp-backup.php:425
+msgid "Your Dropbox account is not authorized yet."
+msgstr "你的Dropbox账户还没有授权。"
+
+#: class-wp-backup.php:453
+msgid "Error while creating the local dump directory. Please ensure that the directories parent ('%s') is writable."
+msgstr "创建本地dump目录失败。请确保目录('%s')是可写的。"
+
+#: class-wp-backup.php:477
+msgid "Error while creating htaccess file. Please ensure that local dump directory ('%s') is writable."
+msgstr "创建htaccess文件失败，请确保本地的目录('%s')是可写的。"
+
+#: class-wp-backup.php:496
+msgid "This php installation is running in safe mode so the time limit cannot be set."
+msgstr "本机的PHP运行在安全模式下，所以无法设置时间限制。"
+
+#: class-wp-backup.php:497
+msgid "Click %s for more information."
+msgstr "点击 %s 获取更多信息。"
+
+#: class-wp-backup.php:498
+msgid "here"
+msgstr "这里"
+
+#: class-dropbox-facade.php:120
+msgid "backup file does not exist."
+msgstr "备份文件不存在。"
+
+#: class-dropbox-facade.php:139
+msgid "Error while uploading %s to Dropbox. HTTP Status: %s, Body: %s"
+msgstr "上传%s到Dropbox出错.HTTP返回状态：%s ，内容：%s"
+

@@ -68,6 +68,8 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Galician (gl_ES), Spanish (es_ES), Portuguese (pt_PT) - [WordPress Galego](http://gl.wordpress.org/)
 * Indonesian (id_ID) - [Bejana](http://www.bejana.com/)
 * German (de_DE) - [Bernhard Kau](http://kau-boys.de)
+* Chinese (zh_CN) - [HostUCan CN](http://www.hostucan.cn/)
+* Taiwanese (zh_TN) - [HostUCan](http://www.hostucan.com/)
 
 == Installation ==
 
