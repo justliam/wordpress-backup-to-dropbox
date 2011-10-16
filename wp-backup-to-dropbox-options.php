@@ -24,14 +24,11 @@ try {
         throw new Exception( sprintf( __( 'Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher.' ), $v ) );
     }
 	if ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) {
-        throw new Exception( __( 'WP Cron is disabled and is required by WordPress Backup to Dropbox. Please define DISABLE_WP_CRON as true in wp-config.php' ) );
+		throw new Exception( __( 'WP Cron is disabled and is required by WordPress Backup to Dropbox. Please define DISABLE_WP_CRON to false in wp-config.php' ) );
     }
     global $wpdb;
 
-    $uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
-
     $validation_errors = null;
-    $message = null;
 
     $dropbox = new Dropbox_Facade( false );
 
@@ -46,12 +43,6 @@ try {
         $validation_errors = $backup->set_options( $_POST['dump_location'], $_POST['dropbox_location'], $_POST['keep_local'], $_POST['backup_count'] );
         $file_list->set_file_list( $_POST['file_tree_list'] );
 	    $file_list->save();
-        $message = __( 'Settings Saved.', 'wpbtd' );
-    } else if ( array_key_exists( 'backup_now', $_POST ) ) {
-        check_admin_referer( 'backup_to_dropbox_options_save' );
-        $backup->backup_now();
-        $disable_backup_now = true;
-        $message = __( 'Backup scheduled to begin now.', 'wpbtd' );
     } else if ( array_key_exists( 'unlink', $_POST ) ) {
 	    check_admin_referer( 'backup_to_dropbox_options_save' );
 		$dropbox->unlink_account();
@@ -63,6 +54,17 @@ try {
         $frequency = 'weekly';
     }
     list( $dump_location, $dropbox_location ) = $backup->get_options();
+
+	try
+	{
+		$backup->create_dump_dir();
+		$backup->create_htaccess_file();
+	}
+	catch (Exception $e)
+	{
+		$validation_errors['dump_location']['original'] = $dump_location;
+		$validation_errors['dump_location']['message'] = $e->getMessage();
+	}
 
     if ( !empty( $validation_errors ) ) {
         $dump_location = array_key_exists( 'dump_location', $validation_errors )
@@ -361,16 +363,7 @@ try {
     <p class="submit">
         <input type="submit" id="save_changes" name="save_changes" class="button-primary"
                value="<?php _e( 'Save Changes', 'wpbtd' ); ?>">
-        <input type="submit" id="backup_now" name="backup_now" class="button-primary" <?php echo $disable_backup_now
-                ? 'disabled="disabled"' : '' ?> value="<?php _e( 'Backup Now', 'wpbtd' ); ?>">
-        <?php if ( $message ) { ?>
-        <span class='message_box'><?php echo $message ?></span>
-        <script type="text/javascript">
-            jQuery(document).ready(function ($) {
-                $('.message_box').fadeOut(2000);
-            });
-        </script>
-        <?php } ?>
+	    <?php _e( 'or', 'wpbtd' ); ?> <a href="options-general.php?page=backup-to-dropbox&monitor=1"><?php _e( 'Backup Now', 'wpbtd' ); ?></a>
     </p>
         <?php wp_nonce_field( 'backup_to_dropbox_options_save' ); ?>
     </form>
