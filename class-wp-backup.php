@@ -193,6 +193,12 @@ class WP_Backup {
         }
 
         list( $dump_location, , , ) = $this->get_options();
+	    if ( !is_writable( $dump_location ) ) {
+			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
+							dirname( $dump_location ), basename( $dump_location ));
+			$this->log( self::BACKUP_STATUS_WARNING, $msg );
+		    return false;
+	    }
 		$filename =  ABSPATH . $dump_location . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
         $handle = fopen( $filename, 'w+' );
         if ( !$handle ) {
