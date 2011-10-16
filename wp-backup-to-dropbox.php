@@ -42,7 +42,11 @@ function backup_to_dropbox_admin_menu() {
  * @return void
  */
 function backup_to_dropbox_admin_menu_contents() {
-    include( 'wp-backup-to-dropbox-options.php' );
+	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
+	if (isset($_GET['monitor']))
+		include( 'wp-backup-to-dropbox-monitor.php' );
+	else
+        include( 'wp-backup-to-dropbox-options.php' );
 }
 
 /**
@@ -55,26 +59,37 @@ function backup_to_dropbox_file_tree() {
 }
 
 /**
+ * A wrapper function for the progress AJAX request
+ * @return void
+ */
+function backup_to_dropbox_progress() {
+    include('wp-backup-to-dropbox-progress.php');
+    die();
+}
+
+/**
  * A wrapper function that executes the backup
  * @return void
  */
 function execute_drobox_backup() {
-    wp_clear_scheduled_hook( 'monitor_drobox_backup_hook' );
     wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
     global $wpdb;
     $backup = new WP_Backup( new Dropbox_Facade(), $wpdb );
     $backup->execute();
-    wp_clear_scheduled_hook( 'monitor_drobox_backup_hook' );
 }
 
 /**
  * @return void
  */
 function monitor_dropbox_backup() {
-    $last_action = get_option( 'backup-to-dropbox-last-action' );
+    list($last_action,) = get_option( 'backup-to-dropbox-last-action' );
+	$backup = new WP_Backup( new Dropbox_Facade(), null );
+	if ( !$backup->in_progress() ) {
+		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
+		return;
+	}
     //5 mins to allow for socket timeouts and long uploads
     if ( $last_action < strtotime( '-5 minutes' ) ) {
-        $backup = new WP_Backup( new Dropbox_Facade(), null );
         if ( $backup->in_progress() ) {
             $backup->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'The backup process appears to have gone away. Resuming backup.', 'wpbtd' ) );
             $backup->backup_now();
@@ -128,6 +143,7 @@ add_action( 'execute_periodic_drobox_backup', 'execute_drobox_backup' );
 add_action( 'execute_instant_drobox_backup', 'execute_drobox_backup' );
 add_action( 'admin_menu', 'backup_to_dropbox_admin_menu' );
 add_action( 'wp_ajax_file_tree', 'backup_to_dropbox_file_tree' );
+add_action( 'wp_ajax_progress', 'backup_to_dropbox_progress' );
 
 //i18n language text domain
 load_plugin_textdomain( 'wpbtd', true, 'wordpress-backup-to-dropbox/Languages/' );

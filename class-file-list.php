@@ -83,7 +83,6 @@ class File_List {
 	        return self::PARTIAL;
         }
 	    
-
 		$state = $this->get_file_state( $parent_path );
 	    if ( $state == self::PARTIAL ) {
 		    $this->remove_from_partial( $path );

@@ -94,7 +94,7 @@ class WP_Backup {
         }
 
         if ( !get_option( 'backup-to-dropbox-last-action' ) ) {
-            add_option( 'backup-to-dropbox-last-action', time(), null, 'no' );
+            add_option( 'backup-to-dropbox-last-action', array( time(), null ), null, 'no' );
         }
     }
 
@@ -137,7 +137,7 @@ class WP_Backup {
 
                 $file = realpath( $file );
 				if ( is_file( $file ) ) {
-                    update_option( 'backup-to-dropbox-last-action', time() );
+                    update_option( 'backup-to-dropbox-last-action', array( time(), $file ) );
 
 					$trimmed_file = basename( $file );
 					if ( File_List::in_ignore_list( $trimmed_file ) ) {
