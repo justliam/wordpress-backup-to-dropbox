@@ -36,7 +36,7 @@ if ( file_exists( $_POST['dir'] ) ) {
         foreach ( $files as $file ) {
             if ( file_exists( $_POST['dir'] . $file ) && $file != '.' && $file != '..' && is_dir( $_POST['dir'] . $file ) ) {
 
-	            if ( $_POST['dir'] == dirname( ABSPATH ) . '/' && !strstr( $file, basename( ABSPATH ) ) ) {
+	            if ( !is_readable( $_POST['dir'] ) || $_POST['dir'] == dirname( ABSPATH ) . '/' && !strstr( $file, basename( ABSPATH ) ) ) {
 		            continue;
 	            }
 
