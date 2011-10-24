@@ -536,4 +536,12 @@ class WP_Backup {
         }
         return !( $status == self::BACKUP_STATUS_FINISHED || $status == self::BACKUP_STATUS_FAILED );
     }
+
+	/**
+	 * Returns a tuple of the last action time and the file processed
+	 * @return array
+	 */
+	public function get_last_action() {
+		return get_option( 'backup-to-dropbox-last-action' );
+	}
 }

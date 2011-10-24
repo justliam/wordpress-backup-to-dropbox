@@ -33,10 +33,21 @@ if ( !$backup->in_progress() ) {
 		reload();
     });
 </script>
+<style type="text/css">
+	.backup_error {
+		color: red;
+	}
+	.backup_ok {
+		color: green;
+	}
+	.backup_warning {
+		color: orange;
+    }
+</style>
 <div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
-								 alt="Wordpress Backup to Dropbox Logo"></div>
+								 alt="WordPress Backup to Dropbox Logo"></div>
 	<h2><?php _e( 'WordPress Backup to Dropbox', 'wpbtd' ); ?></h2>
 	<p class="description"><?php printf( __( 'Version %s', 'wpbtd' ), BACKUP_TO_DROPBOX_VERSION ) ?></p>
 	<h3><?php _e( 'Backup Progress', 'wpbtd' ); ?></h3>

@@ -82,8 +82,8 @@ function execute_drobox_backup() {
  * @return void
  */
 function monitor_dropbox_backup() {
-    list($last_action,) = get_option( 'backup-to-dropbox-last-action' );
 	$backup = new WP_Backup( new Dropbox_Facade(), null );
+	list($last_action,) = $backup->get_last_action();
 	if ( !$backup->in_progress() ) {
 		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
 		return;
