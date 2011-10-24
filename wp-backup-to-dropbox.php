@@ -3,7 +3,7 @@
 Plugin Name: WordPress Backup to Dropbox
 Plugin URI: http://www.mikeyd.com.au/wordpress-backup-to-dropbox/
 Description: A plugin for WordPress that automatically uploads your blogs files and a SQL dump of its database to Dropbox. Giving you piece of mind that your your entire blog including its precious posts, images and metadata regularly backed up.
-Version: 0.9
+Version: 0.9.1
 Author: Michael De Wildt
 Author URI: http://www.mikeyd.com.au
 License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
@@ -24,7 +24,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 include_once( 'class-dropbox-facade.php' );
 include_once( 'class-wp-backup.php' );
 
-define( 'BACKUP_TO_DROPBOX_VERSION', '0.9' );
+define( 'BACKUP_TO_DROPBOX_VERSION', '0.9.1' );
 
 //We need to set the PEAR_Includes folder in the path
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/PEAR_Includes' );

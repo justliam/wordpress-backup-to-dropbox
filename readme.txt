@@ -116,6 +116,11 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 0.9.1 =
+* Added a backup monitor and fixed backup now
+* Fixed various issues to do with permissions
+* Added chinese, taiwanese and german translations
+
 = 0.9 =
 * Added feature #5 the ability to exclude certain files or directories from the backup
 * Fixed a bug where the plugin would not recognise that an account had been unlikned within Dropbox
@@ -157,4 +162,4 @@ if they have been modified since the last backup.
 
 == Upgrade Notice ==
 
-* This release fixes numerous minor bugs and adds the ability for uses to exclude certain files and directories from a backup
+* This release fixes a few permission issues and adds a backup monitor
