@@ -399,6 +399,9 @@ class WP_Backup {
      */
     public function get_history() {
         $hist = $this->history;
+	    if ( !is_array( $hist ) ) {
+		    $hist = array();
+	    }
         krsort( $hist );
         return $hist;
     }
