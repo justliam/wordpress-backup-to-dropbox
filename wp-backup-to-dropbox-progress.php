@@ -22,7 +22,7 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 spawn_cron();
-	
+
 global $wpdb;
 $backup = new WP_Backup( null, $wpdb );
 
@@ -30,10 +30,14 @@ list(, $file) = $backup->get_last_action();
 list( $time, $status, $msg ) = array_shift( $backup->get_history() );
 
 if ($status == WP_Backup::BACKUP_STATUS_FINISHED): ?>
-	<p class="backup_ok"><?php sprintf( __( 'Backup Completed at %s' ), date( 'Y-m-d H:i:s', $time ) ) ?></p>
+	<p class="backup_ok"><?php echo sprintf( __( 'Backup Completed at %s' ), date( 'Y-m-d H:i:s', $time ) ) ?></p>
 <?php elseif ( $msg ): $class = $status == WP_Backup::BACKUP_STATUS_WARNING ? 'backup_warning' : 'backup_error' ?>
 	<strong><?php _e( 'Last message' ) ?>: </strong><span class="<?php echo $class ?>"><?php echo date( 'Y-m-d H:i:s', $time ) . ' - ' . $msg ?></span>
 <?php endif; ?>
-<p><strong><?php _e( 'Uploading File' )  ?>: </strong><?php echo $file ?></p>
+
+<?php if ($backup->in_progress()): ?>
+	<p><strong><?php _e( 'Uploading File' )  ?>: </strong><?php echo $file ?></p>
+<?php endif; ?>
+
 
 

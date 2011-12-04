@@ -111,11 +111,10 @@ class Dropbox_Facade {
 
     /**
      * Uploads a file to Dropbox
-     * @param  $path - The upload path
-     * @param  $file - The location of the file on this server
+     * @param  $file
      * @return bool
      */
-    function upload_file( $path, $file ) {
+    function upload_file( $file, $sendFilename ) {
         if ( !file_exists( $file ) ) {
             throw new Exception( __( 'backup file does not exist.', 'wpbtd' ) );
         }
@@ -124,7 +123,7 @@ class Dropbox_Facade {
         $e = null;
         while ( $retries < self::RETRY_COUNT ) {
             try {
-                $ret = $this->dropbox->putFile( $path, $file );
+                $ret = $this->dropbox->putFile( $file, $sendFilename );
                 break;
             } catch ( Exception $e ) {
                 $retries++;
