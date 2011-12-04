@@ -157,7 +157,7 @@ try {
 	}
 
 	#clear_history {
-		margin: 5px 0 0 10px;
+		margin: 10px 0 0 10px;
 	}
 </style>
 	<div class="wrap">
