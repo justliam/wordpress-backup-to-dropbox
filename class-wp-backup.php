@@ -171,7 +171,7 @@ class WP_Backup {
 					$directory_contents = $this->dropbox->get_directory_contents( dirname( $dropbox_path ) );
 					if ( !in_array( $trimmed_file, $directory_contents ) || filectime( $file ) > $last_backup_time ) {
 						try {
-							$this->dropbox->upload_file( $file, $dropbox_path );
+							$this->dropbox->upload_file( $dropbox_path, $file );
 						} catch ( Exception $e ) {
 							if ( $e->getMessage() == 'Unauthorized' ) {
 								$this->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
