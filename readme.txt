@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.2.1
+Tested up to: 3.3
 Stable tag: trunk
 
 A plugin for WordPress that automatically uploads your blogs files and a SQL dump of its database to Dropbox. Giving you
@@ -116,6 +116,12 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 0.9.2 =
+* Fixed issues when open basedir restriction is on
+* Removed DISABLE_WP_CRON check for users who use a real cron
+* Added a clear history button
+* Added a stop backup button and updated the backup monitor a bit
+
 = 0.9.1 =
 * Added a backup monitor and fixed backup now
 * Fixed various issues to do with permissions
@@ -162,4 +168,4 @@ if they have been modified since the last backup.
 
 == Upgrade Notice ==
 
-* This release fixes a few permission issues and adds a backup monitor
+* Updates to the backup monitor, new clear history and stop backup button and some bug fixes
