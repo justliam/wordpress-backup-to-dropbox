@@ -57,12 +57,6 @@ class WP_Backup {
 	private $dropbox = null;
 
 	/**
-	 * Run a backup
-	 * @var bool
-	 */
-	private $in_progress = false;
-
-	/**
 	 * Construct the Backup class and pre load the schedule, history and options
 	 * @param Dropbox_Facade $dropbox
 	 * @param $wpdb
@@ -97,8 +91,7 @@ class WP_Backup {
 			add_option( 'backup-to-dropbox-last-action', array( time(), null ), null, 'no' );
 		}
 
-		$this->in_progress = get_option( 'backup-to-dropbox-in-progress' );
-		if ( !$this->in_progress ) {
+		if ( !get_option( 'backup-to-dropbox-in-progress' ) ) {
 			add_option( 'backup-to-dropbox-in-progress', 'no', null, 'no' );
 		}
 	}
@@ -134,7 +127,7 @@ class WP_Backup {
 			$source = realpath( ABSPATH );
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
-				if (!$this->in_progress) {
+				if (!$this->in_progress()) {
 					return false;
 				}
 
@@ -548,7 +541,7 @@ class WP_Backup {
 	 * @return bool
 	 */
 	public function in_progress() {
-		return $this->in_progress == 'yes';
+		return get_option( 'backup-to-dropbox-in-progress' ) == 'yes';
 	}
 
 	/**
@@ -557,7 +550,6 @@ class WP_Backup {
 	 */
 	public function set_in_progress($bool) {
 		update_option( 'backup-to-dropbox-in-progress', $bool ? 'yes' : 'no' );
-		$this->in_progress = $bool;
 	}
 
 	/**
