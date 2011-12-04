@@ -551,4 +551,13 @@ class WP_Backup {
 	public function get_last_action() {
 		return get_option( 'backup-to-dropbox-last-action' );
 	}
+
+	/**
+	 * Clears the history
+	 * @return array
+	 */
+	public function clear_history() {
+		$this->history = array();
+		update_option( 'backup-to-dropbox-history', $this->history );
+	}
 }

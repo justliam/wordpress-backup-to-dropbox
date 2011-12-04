@@ -44,6 +44,9 @@ try {
 	} else if ( array_key_exists( 'unlink', $_POST ) ) {
 		check_admin_referer( 'backup_to_dropbox_options_save' );
 		$dropbox->unlink_account();
+	} else if ( array_key_exists( 'clear_history', $_POST ) ) {
+		check_admin_referer( 'backup_to_dropbox_options_save' );
+		$backup->clear_history();
 	}
 
 	//Lets grab the schedule and the options to display to the user
@@ -152,6 +155,10 @@ try {
 	#toggle-all {
 		margin-left: 348px;
 	}
+
+	#clear_history {
+		margin: 5px 0 0 10px;
+	}
 </style>
 	<div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"
@@ -215,9 +222,12 @@ try {
 						echo "<span class='backup_error'>" . sprintf( __( 'Backup error on %s at %s: %s', 'wpbtd' ), $backup_date, $backup_time_str, $msg ) . "</span><br />";
 				}
 			}
-			echo '</div>';
+			?>
+			</div>
+			<input type="submit" id="clear_history" name="clear_history"" class="button-secondary" value="<?php _e( 'Clear history', 'wpbtd' ); ?>"></td>
+			<?php
 		} else {
-			echo '<p style="margin-left: 10px;">' . __( 'No backups performed yet', 'wpbtd' ) . '</p>';
+			echo '<p style="margin-left: 10px;">' . __( 'No history', 'wpbtd' ) . '</p>';
 		}
 		?>
 	<h3><?php _e( 'Settings', 'wpbtd' ); ?></h3>
