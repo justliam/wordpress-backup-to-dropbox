@@ -222,10 +222,8 @@ try {
 						echo "<span class='backup_error'>" . sprintf( __( 'Backup error on %s at %s: %s', 'wpbtd' ), $backup_date, $backup_time_str, $msg ) . "</span><br />";
 				}
 			}
-			?>
-			</div>
-			<input type="submit" id="clear_history" name="clear_history"" class="button-secondary" value="<?php _e( 'Clear history', 'wpbtd' ); ?>"></td>
-			<?php
+			echo '</div>';
+			echo '<input type="submit" id="clear_history" name="clear_history"" class="button-secondary" value="' . __( 'Clear history', 'wpbtd' ) . '">';
 		} else {
 			echo '<p style="margin-left: 10px;">' . __( 'No history', 'wpbtd' ) . '</p>';
 		}
