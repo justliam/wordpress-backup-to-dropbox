@@ -57,10 +57,10 @@ class WP_Backup {
 	private $dropbox = null;
 
 	/**
-	 * The database object
-	 * @var WpDb
+	 * Run a backup
+	 * @var bool
 	 */
-	private $database = null;
+	private $in_progress = false;
 
 	/**
 	 * Construct the Backup class and pre load the schedule, history and options
@@ -96,6 +96,11 @@ class WP_Backup {
 		if ( !get_option( 'backup-to-dropbox-last-action' ) ) {
 			add_option( 'backup-to-dropbox-last-action', array( time(), null ), null, 'no' );
 		}
+
+		$this->in_progress = get_option( 'backup-to-dropbox-in-progress' );
+		if ( !$this->in_progress ) {
+			add_option( 'backup-to-dropbox-in-progress', 'no', null, 'no' );
+		}
 	}
 
 	/**
@@ -129,6 +134,9 @@ class WP_Backup {
 			$source = realpath( ABSPATH );
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
+				if (!$this->in_progress) {
+					return false;
+				}
 
 				if ( $max_execution_time && time() > $backup_stop_time ) {
 					$this->log( self::BACKUP_STATUS_FAILED, __( 'Backup did not complete because the maximum script execution time was reached.', 'wpbtd' ) );
@@ -145,6 +153,12 @@ class WP_Backup {
 					}
 
 					if ( $file_list->get_file_state( $file ) == self::EXCLUDED ) {
+						continue;
+					}
+
+					if ( filesize( $file ) > $max_file_size ) {
+						$this->log( self::BACKUP_STATUS_WARNING,
+									sprintf( __( "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd' ), basename( $file ) ) );
 						continue;
 					}
 
@@ -419,6 +433,7 @@ class WP_Backup {
 	 * @return bool
 	 */
 	public function execute() {
+		$this->set_in_progress(true);
 		try {
 			$this->log( WP_Backup::BACKUP_STATUS_STARTED );
 
@@ -430,22 +445,19 @@ class WP_Backup {
 			$this->backup_database();
 			if ( $this->backup_website( $this->set_time_limit() ) ) {
 				$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
-				return true;
 			}
 		} catch ( Exception $e ) {
 			$this->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
 		}
-		return false;
+		$this->set_in_progress(false);
 	}
 
 	/**
 	 * Stops the backup
 	 */
 	public function stop() {
-		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
-		wp_clear_scheduled_hook( 'execute_instant_drobox_backup' );
 		$this->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
-		$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
+		$this->set_in_progress( false );
 	}
 
 	/**
@@ -536,12 +548,16 @@ class WP_Backup {
 	 * @return bool
 	 */
 	public function in_progress() {
-		$hist = $this->get_history();
-		list( , $status, ) = array_shift( $hist );
-		if ( $status === null ) {
-			return false;
-		}
-		return !( $status == self::BACKUP_STATUS_FINISHED || $status == self::BACKUP_STATUS_FAILED );
+		return $this->in_progress == 'yes';
+	}
+
+	/**
+	 * Sets if this backup is in progress
+	 * @return bool
+	 */
+	public function set_in_progress($bool) {
+		update_option( 'backup-to-dropbox-in-progress', $bool ? 'yes' : 'no' );
+		$this->in_progress = $bool;
 	}
 
 	/**
