@@ -95,11 +95,16 @@ try {
 
         //Display the file tree with a call back to update the clicked on check box and white list
         $('#file_tree').fileTree({
-            root: '<?php echo dirname( ABSPATH ) . '/'; ?>',
+            root: '<?php echo ABSPATH . '/'; ?>',
             script: ajaxurl,
             expandSpeed: 500,
             collapseSpeed: 500,
             multiFolder: false
+        });
+
+        $('#toggle-all').click(function (e) {
+            $('.checkbox').click();
+            e.preventDefault();
         });
     });
 
@@ -144,6 +149,10 @@ try {
         width: 400px;
         max-height: 200px;
         overflow-y: scroll;
+    }
+
+    #toggle-all {
+        margin-left: 348px;
     }
 </style>
     <div class="wrap">
@@ -359,6 +368,7 @@ try {
     </p>
     <div id="file_tree"></div>
     <input name="file_tree_list" id="file_tree_list" type="hidden" value="[]">
+    <a href="#" id="toggle-all">toggle all</a>
     <!--<![endif]-->
     <p class="submit">
         <input type="submit" id="save_changes" name="save_changes" class="button-primary"
