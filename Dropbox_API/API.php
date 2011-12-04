@@ -328,7 +328,7 @@ class Dropbox_API {
 		$body.="Content-Disposition: form-data; name=file; filename=".$filename."\r\n";
 		$body.="Content-type: application/octet-stream\r\n";
 		$body.="\r\n";
-		$body.=$file;
+		$body.=stream_get_contents($file);
 		$body.="\r\n";
 		$body.="--" . $boundary . "--";
 
