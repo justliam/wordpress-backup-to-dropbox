@@ -23,9 +23,7 @@ try {
 	if ( $v < 5 ) {
 		throw new Exception( sprintf( __( 'Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher.' ), $v ) );
 	}
-	if ( defined('DISABLE_WP_CRON') && DISABLE_WP_CRON ) {
-		throw new Exception( __( 'WP Cron is disabled and is required by WordPress Backup to Dropbox. Please define DISABLE_WP_CRON to false in wp-config.php' ) );
-	}
+
 	global $wpdb;
 
 	$validation_errors = null;
