@@ -72,26 +72,25 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-    wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
-    global $wpdb;
-    $backup = new WP_Backup( new Dropbox_Facade(), $wpdb );
-    $backup->execute();
+	wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
 }
 
 /**
  * @return void
  */
 function monitor_dropbox_backup() {
-	$backup = new WP_Backup( new Dropbox_Facade(), null );
+	global $wpdb;
+    $backup = new WP_Backup( new Dropbox_Facade(), $wpdb );
+
 	list($last_action,) = $backup->get_last_action();
 	if ( !$backup->in_progress() ) {
-		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
-		return;
+    	$backup->execute();
 	}
     //5 mins to allow for socket timeouts and long uploads
     if ( $last_action < strtotime( '-5 minutes' ) ) {
         if ( $backup->in_progress() ) {
-            $backup->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'The backup process appears to have gone away. Resuming backup.', 'wpbtd' ) );
+            $backup->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'The backup process appears to have gone away. Resuming backup.', 'wpbtd' ) );
+            wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
             $backup->backup_now();
         }
     }
