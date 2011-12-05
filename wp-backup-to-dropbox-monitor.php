@@ -32,7 +32,11 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 ?>
 <script type="text/javascript" language="javascript">
 	function reload() {
-		jQuery('#progress').load(ajaxurl, { action:'progress' });
+		jQuery.post(ajaxurl, { action:'progress' },  function(data) {
+			if (data.length > 3) {
+				jQuery('#progress').html(data);
+			}
+		});
 		setTimeout("reload()",1000);
 	}
     jQuery(document).ready(function ($) {
@@ -57,7 +61,14 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	<h2><?php _e( 'WordPress Backup to Dropbox', 'wpbtd' ); ?></h2>
 	<p class="description"><?php printf( __( 'Version %s', 'wpbtd' ), BACKUP_TO_DROPBOX_VERSION ) ?></p>
 	<h3><?php _e( 'Backup Progress', 'wpbtd' ); ?></h3>
-	<div id="progress"></div>
+	<div id="progress">
+		<?php
+		if ($started)
+			echo '<p>' . __( 'Your backup has been sheduled. Please wait for WordPress to start it. This could take a few minutes.' ) . '</p>';
+		else
+			echo '<p>' . __( 'No backup in progess.' ) . '</p>';
+		?>
+	</div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="options-general.php?page=backup-to-dropbox&monitor=true" method="post">
 		<?php if ($backup->in_progress() || isset($started)): ?>
 			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e( 'Stop Backup', 'wpbtd' ); ?>">
