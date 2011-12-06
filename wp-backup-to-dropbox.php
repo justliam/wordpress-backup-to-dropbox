@@ -81,19 +81,21 @@ function execute_drobox_backup() {
 function monitor_dropbox_backup() {
 	global $wpdb;
 	$backup = new WP_Backup( new Dropbox_Facade(), $wpdb );
-
 	list($last_action,) = $backup->get_last_action();
-	if ( !$backup->in_progress() ) {
-		$backup->execute();
-	}
+
 	//5 mins to allow for socket timeouts and long uploads
-	if ( $last_action < strtotime( '-5 minutes' ) ) {
-		if ( $backup->in_progress() ) {
-			$backup->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'The backup process appears to have gone away. Resuming backup.', 'wpbtd' ) );
-			wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
-			$backup->backup_now();
-		}
+	if ( $backup->in_progress() && ( $last_action < time() - 300  ) ) {
+		wp_schedule_event( time(), 'every_min', 'run_dropbox_backup_hook' );
 	}
+}
+
+/**
+ * @return void
+ */
+function run_dropbox_backup() {
+	global $wpdb;
+	$backup = new WP_Backup( new Dropbox_Facade(), $wpdb );
+	$backup->execute();
 }
 
 /**
@@ -138,6 +140,7 @@ function backup_to_dropbox_cron_schedules( $schedules ) {
 //WordPress filters and actions
 add_filter( 'cron_schedules', 'backup_to_dropbox_cron_schedules' );
 add_action( 'monitor_dropbox_backup_hook', 'monitor_dropbox_backup' );
+add_action( 'run_dropbox_backup_hook', 'run_dropbox_backup' );
 add_action( 'execute_periodic_drobox_backup', 'execute_drobox_backup' );
 add_action( 'execute_instant_drobox_backup', 'execute_drobox_backup' );
 add_action( 'admin_menu', 'backup_to_dropbox_admin_menu' );
