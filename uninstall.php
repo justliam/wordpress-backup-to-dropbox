@@ -19,7 +19,7 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 if ( !defined( 'ABSPATH' ) && !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
-    exit();
+	exit();
 }
 
 delete_option( 'backup-to-dropbox-tokens' );
@@ -27,10 +27,12 @@ delete_option( 'backup-to-dropbox-options' );
 delete_option( 'backup-to-dropbox-history' );
 delete_option( 'backup-to-dropbox-last-action' );
 delete_option( 'backup-to-dropbox-file-list' );
+delete_option( 'backup-to-dropbox-in-progress' );
 
 wp_clear_scheduled_hook( 'execute_periodic_drobox_backup' );
 
-remove_action( 'monitor_dropbox_backup', 'monitor_dropbox_backup' );
+remove_action( 'run_dropbox_backup_hook', 'run_dropbox_backup' );
+remove_action( 'monitor_dropbox_backup_hook', 'monitor_dropbox_backup' );
 remove_action( 'execute_instant_drobox_backup', 'execute_drobox_backup' );
 remove_action( 'execute_periodic_drobox_backup', 'execute_drobox_backup' );
 remove_action( 'admin_menu', 'backup_to_dropbox_admin_menu' );
