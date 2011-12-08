@@ -72,6 +72,7 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
+	wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
 	wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
 }
 
@@ -81,11 +82,12 @@ function execute_drobox_backup() {
 function monitor_dropbox_backup() {
 	global $wpdb;
 	$backup = new WP_Backup( new Dropbox_Facade(), $wpdb );
-	list($last_action,) = $backup->get_last_action();
+	list($current_action,) = $backup->get_current_action();
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ( $backup->in_progress() && ( $last_action < time() - 300  ) ) {
-		wp_schedule_event( time(), 'every_min', 'run_dropbox_backup_hook' );
+	if ( $backup->in_progress() && ( $current_action < time() - 300  ) ) {
+		$backup->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'The backup process appears to have gone away. Resuming backup.' ) );
+		wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
 	}
 }
 

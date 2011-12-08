@@ -29,6 +29,7 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	$backup->backup_now();
 	$started = true;
 }
+
 ?>
 <script type="text/javascript" language="javascript">
 	function reload() {
@@ -63,14 +64,14 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	<h3><?php _e( 'Backup Progress', 'wpbtd' ); ?></h3>
 	<div id="progress">
 		<?php
-		if ($started)
-			echo '<p>' . __( 'Your backup has been sheduled. Please wait for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.' ) . '</p>';
+		if ( $started || $backup->is_sheduled() )
+			echo '<p>' . __( 'Your backup has been sheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.' ) . '</p>';
 		else
 			echo '<p>' . __( 'No backup in progess.' ) . '</p>';
 		?>
 	</div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="options-general.php?page=backup-to-dropbox&monitor=true" method="post">
-		<?php if ($backup->in_progress() || isset($started)): ?>
+		<?php if ( $backup->in_progress() || isset($started) || $backup->is_sheduled() ): ?>
 			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e( 'Stop Backup', 'wpbtd' ); ?>">
 		<?php else: ?>
 			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e( 'Start Backup', 'wpbtd' ); ?>">

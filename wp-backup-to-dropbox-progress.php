@@ -26,11 +26,10 @@ spawn_cron();
 global $wpdb;
 $backup = new WP_Backup( null, $wpdb );
 
-list(, $file) = $backup->get_last_action();
-list( $time, $status, $msg ) = array_shift( $backup->get_history() );
+list( $time, $action ) = $backup->get_current_action();
 
-if ($backup->in_progress()): ?>
-	<p><strong><?php _e( 'Uploading File' ) ?>: </strong><?php echo $file ?></p>
+if ( $backup->in_progress() ): ?>
+	<p><strong><?php echo date( 'H:i:s', $time ) ?>: </strong><?php echo $action ?></p>
 <?php endif; ?>
 
 

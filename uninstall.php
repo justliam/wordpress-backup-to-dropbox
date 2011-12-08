@@ -25,7 +25,7 @@ if ( !defined( 'ABSPATH' ) && !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'backup-to-dropbox-tokens' );
 delete_option( 'backup-to-dropbox-options' );
 delete_option( 'backup-to-dropbox-history' );
-delete_option( 'backup-to-dropbox-last-action' );
+delete_option( 'backup-to-dropbox-current-action' );
 delete_option( 'backup-to-dropbox-file-list' );
 delete_option( 'backup-to-dropbox-in-progress' );
 

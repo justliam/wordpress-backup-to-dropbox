@@ -87,8 +87,8 @@ class WP_Backup {
 			$this->schedule = array( $blog_time, $frequency );
 		}
 
-		if ( !get_option( 'backup-to-dropbox-last-action' ) ) {
-			add_option( 'backup-to-dropbox-last-action', array( time(), null ), null, 'no' );
+		if ( !get_option( 'backup-to-dropbox-current-action' ) ) {
+			add_option( 'backup-to-dropbox-current-action', array( time(), null ), null, 'no' );
 		}
 
 		if ( !get_option( 'backup-to-dropbox-in-progress' ) ) {
@@ -119,7 +119,7 @@ class WP_Backup {
 		}
 		$max_file_size = $memory_limit / 2.5;
 
-		$last_backup_time = $this->get_last_backup_time();
+		list( $last_action_time, ) = $this->get_current_action();
 		$backup_stop_time = time() + $max_execution_time;
 
 		$file_list = new File_List( $this->database );
@@ -138,8 +138,6 @@ class WP_Backup {
 
 				$file = realpath( $file );
 				if ( is_file( $file ) ) {
-					update_option( 'backup-to-dropbox-last-action', array( time(), $file ) );
-
 					$trimmed_file = basename( $file );
 					if ( File_List::in_ignore_list( $trimmed_file ) ) {
 						continue;
@@ -162,8 +160,9 @@ class WP_Backup {
 					}
 
 					$directory_contents = $this->dropbox->get_directory_contents( dirname( $dropbox_path ) );
-					if ( !in_array( $trimmed_file, $directory_contents ) || filectime( $file ) > $last_backup_time ) {
+					if ( !in_array( $trimmed_file, $directory_contents ) || filectime( $file ) > $last_action_time ) {
 						try {
+							$this->set_current_action( __( 'Uploading' ) . ' ' . $file );
 							$this->dropbox->upload_file( $dropbox_path, $file );
 						} catch ( Exception $e ) {
 							if ( $e->getMessage() == 'Unauthorized' ) {
@@ -435,6 +434,7 @@ class WP_Backup {
 				return false;
 			}
 
+			$this->set_current_action( 'Creating SQL backup' );
 			$this->backup_database();
 			if ( $this->backup_website( $this->set_time_limit() ) ) {
 				$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
@@ -451,7 +451,10 @@ class WP_Backup {
 	 */
 	public function stop() {
 		$this->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
+		$this->set_current_action( 'Stopping backup' );
 		$this->set_in_progress( false );
+		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
+		wp_clear_scheduled_hook( 'run_dropbox_backup_hook' );
 	}
 
 	/**
@@ -523,18 +526,11 @@ class WP_Backup {
 	}
 
 	/**
-	 * Returns the time of the last backup
-	 * @return int
+	 * Sets the last action that was performed during backup
+	 * @return bool
 	 */
-	public function get_last_backup_time() {
-		$func = create_function( '$arr', 'return ( $arr[1] == WP_Backup::BACKUP_STATUS_FINISHED || $arr[1] == WP_Backup::BACKUP_STATUS_FAILED );' );
-		$hist = array_filter( $this->history, $func );
-		if ( !empty ( $hist ) ) {
-			krsort( $hist );
-			$hist = array_values( $hist );
-			return $hist[0][0];
-		}
-		return false;
+	public function set_current_action( $action ) {
+		update_option( 'backup-to-dropbox-current-action',  array( time(), $action ) );
 	}
 
 	/**
@@ -543,6 +539,16 @@ class WP_Backup {
 	 */
 	public function in_progress() {
 		return get_option( 'backup-to-dropbox-in-progress' ) == 'yes';
+	}
+
+	/**
+	 * Returns true if a backup is in the shedlue
+	 * @return bool
+	 */
+	public function is_sheduled() {
+		return
+			wp_get_schedule( 'monitor_dropbox_backup_hook' ) !== false ||
+			wp_get_schedule( 'execute_instant_drobox_backup' ) !== false;
 	}
 
 	/**
@@ -557,8 +563,8 @@ class WP_Backup {
 	 * Returns a tuple of the last action time and the file processed
 	 * @return array
 	 */
-	public function get_last_action() {
-		return get_option( 'backup-to-dropbox-last-action' );
+	public function get_current_action() {
+		return get_option( 'backup-to-dropbox-current-action' );
 	}
 
 	/**
