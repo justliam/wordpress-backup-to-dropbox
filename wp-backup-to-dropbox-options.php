@@ -156,7 +156,7 @@ try {
 		margin-left: 348px;
 	}
 
-	#clear_history {
+	.bump {
 		margin: 10px 0 0 10px;
 	}
 </style>
@@ -175,21 +175,17 @@ try {
 	<h3><?php _e( 'Dropbox Account Details', 'wpbtd' ); ?></h3>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options"
 		  action="options-general.php?page=backup-to-dropbox" method="post">
-	<table class="form-table">
-		<tbody>
-		<tr>
-			<th><?php _e( 'Name', 'wpbtd' ); ?></th>
-			<td><?php echo $account_info['display_name'] ?></td>
-		</tr>
-		<tr>
-			<th><?php _e( 'Quota', 'wpbtd' ); ?></th>
-			<td><?php echo $used . 'GB of ' . $quota . 'GB (' . round( ( $used / $quota ) * 100, 0 ) . '%)' ?></td>
-		</tr>
-		<tr>
-			<td><input type="submit" id="unlink" name="unlink" class="button-secondary" value="<?php _e( 'Unlink Account', 'wpbtd' ); ?>"></td>
-		</tr>
-		</tbody>
-	</table>
+	<p class="bump">
+		<?php echo
+				$account_info['display_name'] . ', ' .
+				__( 'you have', 'wpbtd' ) . ' ' .
+				$used .
+				'<acronym title="' . __( 'Gigabyte', 'wpbtd' ) . '">GB</acronym> ' .
+				__( 'of', 'wpbtd' ) . ' ' . $quota . 'GB (' . round( ( $used / $quota ) * 100, 0 ) .
+				'%) ' . __( 'free', 'wpbtd' ) ?>
+	</p>
+	<input type="submit" id="unlink" name="unlink" class="bump button-secondary" value="<?php _e( 'Unlink Account', 'wpbtd' ); ?>">
+
 	<h3><?php _e( 'Next Scheduled', 'wpbtd' ); ?></h3>
 		<?php
 		$schedule = $backup->get_schedule();
@@ -223,7 +219,7 @@ try {
 				}
 			}
 			echo '</div>';
-			echo '<input type="submit" id="clear_history" name="clear_history"" class="button-secondary" value="' . __( 'Clear history', 'wpbtd' ) . '">';
+			echo '<input type="submit" id="clear_history" name="clear_history"" class="bump button-secondary" value="' . __( 'Clear history', 'wpbtd' ) . '">';
 		} else {
 			echo '<p style="margin-left: 10px;">' . __( 'No history', 'wpbtd' ) . '</p>';
 		}
