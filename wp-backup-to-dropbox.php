@@ -34,7 +34,7 @@ set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/
  * @return void
  */
 function backup_to_dropbox_admin_menu() {
-	add_options_page( 'Backup to Dropbox', 'Backup to Dropbox ', 8, 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
+	add_options_page( 'Backup to Dropbox', 'Backup to Dropbox ', 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
 }
 
 /**
