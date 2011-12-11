@@ -438,7 +438,7 @@ class WP_Backup {
 			$this->backup_database();
 			if ( $this->backup_website( $this->set_time_limit() ) ) {
 				$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
-				wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
+				wp_clear_scheduled_hook( 'run_dropbox_backup_hook' );
 			}
 		} catch ( Exception $e ) {
 			$this->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
