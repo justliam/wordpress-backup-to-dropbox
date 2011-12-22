@@ -96,7 +96,7 @@ try {
 
 		//Display the file tree with a call back to update the clicked on check box and white list
 		$('#file_tree').fileTree({
-			root: '<?php echo ABSPATH . '/'; ?>',
+			root: '<?php echo ABSPATH; ?>',
 			script: ajaxurl,
 			expandSpeed: 500,
 			collapseSpeed: 500,
