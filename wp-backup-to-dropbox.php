@@ -2,7 +2,7 @@
 /*
 Plugin Name: WordPress Backup to Dropbox
 Plugin URI: http://www.mikeyd.com.au/wordpress-backup-to-dropbox/
-Description: A plugin for WordPress that automatically uploads your blogs files and a SQL dump of its database to Dropbox. Giving you piece of mind that your your entire blog including its precious posts, images and metadata regularly backed up.
+Description: WordPress Backup to Dropbox automatically creates a backup of your entire website, including all files and its database, within Dropbox.
 Version: 0.9.2
 Author: Michael De Wildt
 Author URI: http://www.mikeyd.com.au
