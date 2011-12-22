@@ -438,6 +438,7 @@ class WP_Backup {
 			$this->backup_database();
 			if ( $this->backup_website( $this->set_time_limit() ) ) {
 				$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
+				$this->set_current_action( __( 'Backup complete.' ) );
 				$this->clear_hooks();
 			}
 		} catch ( Exception $e ) {
