@@ -112,7 +112,8 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Screenshots ==
 
-1. The WordPress Backup to Dropbox options page
+1. WordPress Backup to Dropbox options
+2. WordPress Backup to Dropbox monitor
 
 == Changelog ==
 
