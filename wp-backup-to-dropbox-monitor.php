@@ -65,7 +65,7 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	<div id="progress">
 		<?php
 		if ( $started || $backup->is_sheduled() )
-			echo '<p>' . __( 'Your backup has been sheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.' ) . '</p>';
+			echo '<p>' . __( 'Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.' ) . '</p>';
 		else
 			echo '<p>' . __( 'No backup in progess.' ) . '</p>';
 		?>
