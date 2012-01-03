@@ -6,8 +6,7 @@ Requires at least: 3.0
 Tested up to: 3.3
 Stable tag: trunk
 
-A plugin for WordPress that automatically uploads your blogs files and a SQL dump of its database to Dropbox. Giving you
-piece of mind that your entire blog including its precious posts, images and metadata regularly backed up.
+WordPress Backup to Dropbox automatically creates a backup of your entire website, including all files and its database, within Dropbox.
 
 == Description ==
 
