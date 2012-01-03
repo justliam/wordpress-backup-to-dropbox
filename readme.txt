@@ -6,11 +6,11 @@ Requires at least: 3.0
 Tested up to: 3.3
 Stable tag: trunk
 
-Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin. http://wpb2d.com
+Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
 
 == Description ==
 
-WordPress Backup to Dropbox has been created to give you piece of mind that your blog is backed up on a regular basis.
+[WordPress Backup to Dropbox](http://wpb2d.com) has been created to give you piece of mind that your blog is backed up on a regular basis.
 
 Just choose a day, time and how often you wish yor backup to be performed and kick back and wait for your websites files
 and a SQL dump of its database to be dropped in your Dropbox!
@@ -20,6 +20,8 @@ if any, you wish to exclude from the backup.
 
 The plugin uses [OAuth](http://en.wikipedia.org/wiki/OAuth) so your Dropbox account details are not stored for the
 plugin to gain access.
+
+Checkout the website - [http://wpb2d.com](http://wpb2d.com)
 
 = Setup =
 
