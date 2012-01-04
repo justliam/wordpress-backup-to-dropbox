@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.3
+Tested up to: 3.3.1
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -56,7 +56,7 @@ from other errors, however a message should be displayed informing you of the re
 
 = More Information =
 
-For news and updates please visit the plugins website - http://wpb2d.com
+For news and updates please visit my blog - http://www.mikeyd.com.au/category/wordpress-backup-to-dropbox/
 
 = Issues =
 
