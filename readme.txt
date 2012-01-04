@@ -102,10 +102,8 @@ Yes you can, however you need to modify the max execution time in your php.ini m
 Dropbox has this functionality built in and it is extremely easy to do.
 [Please read this blog post for more information.](http://www.mikeyd.com.au/2011/06/05/restoring-previous-versions-of-files-in-dropbox/)
 
-= How do I unlink the plugin from my Dropbox account? =
-You can unlink the plugin using the Dropbox website by navigating to the 'My Apps' tab within your account page. The my
-apps tab will list all the apps that you have connected to Dropbox and clicking the ‘X’ to the right of this plugin will
-unlink it from your account.
+= Why does my backup keep stalling and restarting? =
+Sometimes hosts implement measures to prevent long running tasks like a backup. To circumvent this I have implemented a backup monitor that restarts the backup if it is terminated before it is fully completed. So it is quite normal to see up to ten or more backup restarts.
 
 = Why cant I see the exclude files and directories widget in Internet Explorer 7? =
 That is because it only supports IE8 or higher or any of the awesome modern better alternatives like Google Chrome, Firefox,
