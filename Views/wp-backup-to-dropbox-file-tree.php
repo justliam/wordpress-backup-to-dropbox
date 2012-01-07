@@ -22,7 +22,6 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 global $wpdb;
-include_once( 'class-file-list.php' );
 
 $file_list = new File_List( $wpdb );
 
