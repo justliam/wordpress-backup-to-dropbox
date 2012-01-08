@@ -18,79 +18,79 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-include_once( 'class-wp-backup.php' );
+include_once( 'class-backup-controller.php' );
 class File_List {
 
 	const EXCLUDED = 0;
 	const INCLUDED = 1;
 	const PARTIAL = 2;
 
-    /**
-     * A list of directories to mark as partial
-     * @var null
-     */
-    private $partial_directories = array();
+	/**
+	 * A list of directories to mark as partial
+	 * @var null
+	 */
+	private $partial_directories = array();
 
 	/**
-     * A list of files that are not allowed to be backed up
-     * @var null
-     */
-    private $excluded_files = array();
+	 * A list of files that are not allowed to be backed up
+	 * @var null
+	 */
+	private $excluded_files = array();
 
-    /**
-     * These files cannot be uploaded to Dropbox
-     * @var array
-     */
-    private static $ignored_files = array( '.DS_Store', 'Thumbs.db', 'desktop.ini' );
+	/**
+	 * These files cannot be uploaded to Dropbox
+	 * @var array
+	 */
+	private static $ignored_files = array( '.DS_Store', 'Thumbs.db', 'desktop.ini' );
 
-    /**
-     * Construct the file list
-     * @param $wpdb
-     */
-    public function __construct( $wpdb ) {
-        $this->database = $wpdb;
+	/**
+	 * Construct the file list
+	 * @param $wpdb
+	 */
+	public function __construct( $wpdb ) {
+		$this->database = $wpdb;
 
-        $file_list = get_option( 'backup-to-dropbox-file-list' );
-        if ( $file_list === false ) {
-	        $this->partial_directories = array();
-	        $this->excluded_files = array();
-            add_option( 'backup-to-dropbox-file-list', array( $this->partial_directories, $this->excluded_files ), null, 'no' );
-        } else {
-	        list( $this->partial_directories, $this->excluded_files ) = $file_list;
-        }
-    }
+		$file_list = get_option( 'backup-to-dropbox-file-list' );
+		if ( $file_list === false ) {
+			$this->partial_directories = array();
+			$this->excluded_files = array();
+			add_option( 'backup-to-dropbox-file-list', array( $this->partial_directories, $this->excluded_files ), null, 'no' );
+		} else {
+			list( $this->partial_directories, $this->excluded_files ) = $file_list;
+		}
+	}
 
-    /**
+	/**
 	 * Return the state of a file in the list the SQL dump is always included
-     * @param  $path
-     * @return bool
-     */
-    public function get_file_state( $path ) {
-        $parent_path = dirname( $path ) . '/';
-	    if ( $path == dirname( ABSPATH ) . '/' ) {
-            return self::PARTIAL;
-        } else if ( strstr( $path, DB_NAME . '-backup.sql' ) ) {
-            return self::INCLUDED;
-	    } else if ( in_array( $path, $this->excluded_files ) ) {
+	 * @param  $path
+	 * @return bool
+	 */
+	public function get_file_state( $path ) {
+		$parent_path = dirname( $path ) . '/';
+		if ( $path == dirname( ABSPATH ) . '/' ) {
+			return self::PARTIAL;
+		} else if ( strstr( $path, DB_NAME . '-backup.sql' ) ) {
+			return self::INCLUDED;
+		} else if ( in_array( $path, $this->excluded_files ) ) {
 			return self::EXCLUDED;
-	    } else if ( in_array( $path, $this->partial_directories ) ) {
-	        $parent_state = $this->get_file_state( $parent_path );
-	        if ( $parent_state == self::INCLUDED ) {
-		        $this->remove_from_partial( $path );
-		        $this->remove_from_excluded( $path );
-		        return self::INCLUDED;
-	        }
-	        return self::PARTIAL;
-        }
-	    
+		} else if ( in_array( $path, $this->partial_directories ) ) {
+			$parent_state = $this->get_file_state( $parent_path );
+			if ( $parent_state == self::INCLUDED && $parent_path != ABSPATH ) {
+				$this->remove_from_partial( $path );
+				$this->remove_from_excluded( $path );
+				return self::INCLUDED;
+			}
+			return self::PARTIAL;
+		}
+
 		$state = $this->get_file_state( $parent_path );
-	    if ( $state == self::PARTIAL ) {
-		    $this->remove_from_partial( $path );
-		    $this->remove_from_excluded( $path );
-		    return self::INCLUDED;
-	    }
-	    return $state;
-    }
+		if ( $state == self::PARTIAL ) {
+			$this->remove_from_partial( $path );
+			$this->remove_from_excluded( $path );
+			return self::INCLUDED;
+		}
+		return $state;
+	}
 
 	/**
 	 * @param $full_path string
@@ -99,10 +99,10 @@ class File_List {
 	function get_check_box_class( $full_path ) {
 		$state = $this->get_file_state( $full_path );
 		switch ( $state ) {
-			case WP_Backup::EXCLUDED:
+			case self::EXCLUDED:
 				$class = 'checked';
 				break;
-			case WP_Backup::PARTIAL:
+			case self::PARTIAL:
 				$class = 'partial';
 				break;
 			default: //INCLUDED so do not check
@@ -134,27 +134,27 @@ class File_List {
 		}
 	}
 
-    /**
-     * Accepts a JSON encoded list of files and directories and adds their states to the appropriate lists
-     * @param  $json_list
-     * @return void
-     */
-    public function set_file_list( $json_list ) {
-        $new_list = json_decode( stripslashes( $json_list ), true );
-	    foreach ( $new_list as $fl ) {
-		    list ( $file, $state ) = $fl;
-		    if ( $state == self::PARTIAL ) {
+	/**
+	 * Accepts a JSON encoded list of files and directories and adds their states to the appropriate lists
+	 * @param  $json_list
+	 * @return void
+	 */
+	public function set_file_list( $json_list ) {
+		$new_list = json_decode( stripslashes( $json_list ), true );
+		foreach ( $new_list as $fl ) {
+			list ( $file, $state ) = $fl;
+			if ( $state == self::PARTIAL ) {
 				$this->add_to_partial( $file );
-			    $this->remove_from_excluded( $file );
+				$this->remove_from_excluded( $file );
 			} else if ( $state == self::EXCLUDED) {
 				$this->add_to_excluded( $file );
-			    $this->remove_from_partial( $file );
+				$this->remove_from_partial( $file );
 			} else {
 				$this->remove_from_excluded( $file );
-			    $this->remove_from_partial( $file );
+				$this->remove_from_partial( $file );
 			}
-	    }
-    }
+		}
+	}
 
 	/**
 	 * Removes a file from the excluded list if it exists
@@ -162,7 +162,7 @@ class File_List {
 	 * @return void
 	 */
 	private function remove_from_excluded( $file ) {
-	    if ( in_array( $file, $this->excluded_files ) ) {
+		if ( in_array( $file, $this->excluded_files ) ) {
 			$i = array_search( $file, $this->excluded_files );
 			unset( $this->excluded_files[$i] );
 		}
@@ -185,8 +185,8 @@ class File_List {
 	 * @return void
 	 */
 	public function save() {
-        update_option( 'backup-to-dropbox-file-list', array( $this->partial_directories, $this->excluded_files ) );
-    }
+		update_option( 'backup-to-dropbox-file-list', array( $this->partial_directories, $this->excluded_files ) );
+	}
 
 	/**
 	 * @param $dir
@@ -204,13 +204,13 @@ class File_List {
 		return self::INCLUDED;
 	}
 
-    /**
-     * Some files cannot be uploaded to Dropbox so check them here
-     * @static
-     * @param $file
-     * @return bool
-     */
-    public static function in_ignore_list( $file ) {
-        return in_array( $file, self::$ignored_files );
-    }
+	/**
+	 * Some files cannot be uploaded to Dropbox so check them here
+	 * @static
+	 * @param $file
+	 * @return bool
+	 */
+	public static function in_ignore_list( $file ) {
+		return in_array( $file, self::$ignored_files );
+	}
 }
