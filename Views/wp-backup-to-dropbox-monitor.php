@@ -77,8 +77,6 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e( 'Start Backup', 'wpbtd' ); ?>">
 		<?php endif; ?>
 
-		<?php _e( 'or', 'wpbtd' ); ?>
-		<a href="options-general.php?page=backup-to-dropbox"><?php _e( 'Back to options', 'wpbtd' ); ?></a>
-		 <?php wp_nonce_field( 'backup_to_dropbox_monitor_stop' ); ?>
+		<?php wp_nonce_field( 'backup_to_dropbox_monitor_stop' ); ?>
 	</form>
 </div>
