@@ -18,8 +18,8 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-define( 'BACKUP_TO_DROPBOX_VERSION', 'UnitTest' );
-define('ABSPATH', dirname(__FILE__) . '/');
+if ( !defined( 'BACKUP_TO_DROPBOX_VERSION') ) define( 'BACKUP_TO_DROPBOX_VERSION', 'UnitTest' );
+if ( !defined( 'ABSPATH') ) define( 'ABSPATH', dirname(__FILE__) . '/' );
 
 require_once '../Classes/class-file-list.php';
 require_once 'Mocks/mock-wp-functions.php';
