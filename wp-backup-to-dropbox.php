@@ -35,13 +35,16 @@ set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/
  */
 function backup_to_dropbox_admin_menu() {
 	$imgUrl = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
-	add_utility_page( 'Backup', 'Backup', 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
+
+	$backup = __( 'Backup', 'wpbtd' );
+	add_utility_page( $backup, $backup, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
+
+	$settings = __( 'Settings', 'wpbtd' );
+	add_submenu_page( 'backup-to-dropbox', $settings, $settings, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
 
 	global $wpdb;
 	$backup = new WP_Backup( null, $wpdb );
-	$title = $backup->is_sheduled() ? 'Monitor Backup' : 'Backup Now';
-
-	add_submenu_page( 'backup-to-dropbox', 'Settings', 'Settings', 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
+	$title = $backup->is_sheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
 	add_submenu_page( 'backup-to-dropbox', $title, $title, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
 }
 
