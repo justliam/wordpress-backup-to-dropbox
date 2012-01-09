@@ -21,7 +21,7 @@
 define( 'BACKUP_TO_DROPBOX_VERSION', 'UnitTest' );
 define('ABSPATH', dirname(__FILE__) . '/');
 
-require_once '../class-wp-backup.php';
+require_once '../Classes/class-wp-backup.php';
 require_once 'Mocks/mock-wp-functions.php';
 require_once 'Mocks/class-mock-dropbox-facade.php';
 require_once 'Mocks/class-mock-wpdb.php';
@@ -177,7 +177,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		//Reload the object so the newly created file is added to the white list by default
 		update_option( 'backup-to-dropbox-taboo-list', array() );
 		$this->object = new WP_Backup( $this->mock_dropbox_facade, new Mock_WpDb() );
-		
+
         $this->object->log( WP_Backup::BACKUP_STATUS_STARTED );
 
         $this->assertFalse( $this->object->get_last_backup_time() );

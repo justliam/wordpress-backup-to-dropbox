@@ -373,9 +373,7 @@ try {
 	<a href="#" id="toggle-all">toggle all</a>
 	<!--<![endif]-->
 	<p class="submit">
-		<input type="submit" id="save_changes" name="save_changes" class="button-primary"
-			   value="<?php _e( 'Save Changes', 'wpbtd' ); ?>">
-		<?php _e( 'or', 'wpbtd' ); ?> <a href="options-general.php?page=backup-to-dropbox&monitor=1"><?php echo $backup->is_sheduled() ? __( 'Monitor current backup', 'wpbtd' ) : __( 'Backup now', 'wpbtd' ); ?></a>
+		<input type="submit" id="save_changes" name="save_changes" class="button-primary" value="<?php _e( 'Save Changes', 'wpbtd' ); ?>">
 	</p>
 		<?php wp_nonce_field( 'backup_to_dropbox_options_save' ); ?>
 	</form>

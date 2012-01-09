@@ -34,7 +34,13 @@ set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/
  * @return void
  */
 function backup_to_dropbox_admin_menu() {
-	add_options_page( 'Backup to Dropbox', 'Backup to Dropbox ', 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
+	$imgUrl = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
+	add_utility_page( 'Backup to Dropbox', 'Backup Settings', 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
+
+	global $wpdb;
+	$backup = new WP_Backup( null, $wpdb );
+	$title = $backup->is_sheduled() ? 'Monitor Backup' : 'Backup Now';
+	add_submenu_page( 'backup-to-dropbox', $title, $title, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
 }
 
 /**
@@ -44,10 +50,25 @@ function backup_to_dropbox_admin_menu() {
 function backup_to_dropbox_admin_menu_contents() {
 	include( 'Dropbox_API/autoload.php' );
 	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
-	if (isset($_GET['monitor']))
-		include( 'Views/wp-backup-to-dropbox-monitor.php' );
-	else
-		include( 'Views/wp-backup-to-dropbox-options.php' );
+	include( 'Views/wp-backup-to-dropbox-options.php' );
+}
+
+/**
+ * A wrapper function that includes the backup to Dropbox monitor page
+ * @return void
+ */
+function backup_to_dropbox_monitor() {
+	include( 'Dropbox_API/autoload.php' );
+	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
+	include( 'Views/wp-backup-to-dropbox-monitor.php' );
+}
+
+/**
+ * A wrapper function that includes the backup to Dropbox premium addons
+ * @return void
+ */
+function backup_to_dropbox_premium() {
+	include( 'Views/wp-backup-to-dropbox-premium.php' );
 }
 
 /**
