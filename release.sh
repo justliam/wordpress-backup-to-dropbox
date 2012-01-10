@@ -5,12 +5,14 @@ ARCHIVE='../../../releases/wordpress-backup-to-dropbox.zip'
 cp *.txt $TRUNK
 cp *.png $TRUNK
 cp *.php $TRUNK
+cp *.js $TRUNK
 cp -r PEAR_Includes $TRUNK
 cp -r Languages $TRUNK
 cp -r JQueryFileTree $TRUNK
 cp -r Dropbox_API $TRUNK
 cp -r Classes $TRUNK
 cp -r Views $TRUNK
+cp -r Images/*.png $TRUNK/Images/
 
 cd $TRUNK
 zip -r $ARCHIVE * -x '*/.svn/*'
