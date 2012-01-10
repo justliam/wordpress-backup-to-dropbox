@@ -118,6 +118,11 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 == Changelog ==
 
 = 0.9.2 =
+* Fixed a bug in the file exclusion list that was preventing folders from being marked as partial
+* Added the ability to backup wp-content if it has a custom WP_CONTENT_DIR setting
+* Created a new menu item for backup to dropbox
+
+= 0.9.2 =
 * Fixed issues when open basedir restriction is on
 * Removed DISABLE_WP_CRON check for users who use a real cron
 * Added a clear history button
