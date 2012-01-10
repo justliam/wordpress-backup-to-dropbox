@@ -416,6 +416,9 @@ class WP_Backup {
 		if ( count( $this->history ) >= self::MAX_HISTORY_ITEMS ) {
 			array_shift( $this->history );
 		}
+		if ( !is_array( $this->history ) ) {
+			$this->history = array();
+		}
 		$this->history[] = array( strtotime( current_time( 'mysql' ) ), $status, $msg );
 		update_option( 'backup-to-dropbox-history', $this->history );
 	}
