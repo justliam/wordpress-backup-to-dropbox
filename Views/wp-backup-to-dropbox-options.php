@@ -174,7 +174,7 @@ try {
 		?>
 	<h3><?php _e( 'Dropbox Account Details', 'wpbtd' ); ?></h3>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options"
-		  action="options-general.php?page=backup-to-dropbox" method="post">
+		  action="admin.php?page=backup-to-dropbox" method="post">
 	<p class="bump">
 		<?php echo
 				$account_info['display_name'] . ', ' .

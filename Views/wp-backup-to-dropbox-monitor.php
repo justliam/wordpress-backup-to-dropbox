@@ -70,7 +70,7 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 			echo '<p>' . __( 'No backup in progess.' ) . '</p>';
 		?>
 	</div>
-	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="options-general.php?page=backup-to-dropbox&monitor=true" method="post">
+	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
 		<?php if ( $backup->in_progress() || isset($started) || $backup->is_sheduled() ): ?>
 			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e( 'Stop Backup', 'wpbtd' ); ?>">
 		<?php else: ?>
