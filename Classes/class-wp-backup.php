@@ -102,11 +102,11 @@ class WP_Backup {
 	 * and a warning is logged.
 	 *
 	 * @param $max_execution_time
+	 * @param $dropbox_location
+	 * @param $max_execution_time
 	 * @return string - Path to the database dump
 	 */
-	public function backup_website( $max_execution_time ) {
-		list( , $dropbox_location, , ) = $this->get_options();
-
+	public function backup_path( $path, $dropbox_location, $max_execution_time ) {
 		//Grab the memory limit setting in the php ini to ensure we do not exceed it
 		$memory_limit_string = ini_get( 'memory_limit' );
 		$memory_limit = ( preg_replace( '/\D/', '', $memory_limit_string ) * 1048576 );
@@ -123,8 +123,8 @@ class WP_Backup {
 		$backup_stop_time = time() + $max_execution_time;
 
 		$file_list = new File_List( $this->database );
-		if ( file_exists( ABSPATH ) ) {
-			$source = realpath( ABSPATH );
+		if ( file_exists( $path ) ) {
+			$source = realpath( $path );
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
 				if (!$this->in_progress()) {
@@ -436,11 +436,18 @@ class WP_Backup {
 
 			$this->set_current_action( 'Creating SQL backup' );
 			$this->backup_database();
-			if ( $this->backup_website( $this->set_time_limit() ) ) {
-				$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
-				$this->set_current_action( __( 'Backup complete.' ) );
-				$this->clear_hooks();
+
+			list( , $dropbox_location, , ) = $this->get_options();
+			$this->backup_path( ABSPATH, $dropbox_location, $this->set_time_limit() );
+
+			if (WP_CONTENT_DIR != ABSPATH . 'wp-content') {
+				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content', $this->set_time_limit() );
 			}
+
+			$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
+			$this->set_current_action( __( 'Backup complete.' ) );
+			$this->clear_hooks();
+
 		} catch ( Exception $e ) {
 			$this->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
 		}
