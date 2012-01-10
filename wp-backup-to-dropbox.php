@@ -69,14 +69,6 @@ function backup_to_dropbox_monitor() {
 }
 
 /**
- * A wrapper function that includes the backup to Dropbox premium addons
- * @return void
- */
-function backup_to_dropbox_premium() {
-	include( 'Views/wp-backup-to-dropbox-premium.php' );
-}
-
-/**
  * A wrapper function for the file tree AJAX request
  * @return void
  */
