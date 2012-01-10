@@ -64,8 +64,13 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
-	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
-	include( 'Views/wp-backup-to-dropbox-monitor.php' );
+	$dropbox = new Dropbox_Facade();
+	if ( !$dropbox->is_authorized() ) {
+		backup_to_dropbox_admin_menu_contents();
+	} else {
+		$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
+		include( 'Views/wp-backup-to-dropbox-monitor.php' );
+	}
 }
 
 /**
