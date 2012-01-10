@@ -21,8 +21,10 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 		along with this program; if not, write to the Free Software
 		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-include_once( 'Classes/class-dropbox-facade.php' );
-include_once( 'Classes/class-wp-backup.php' );
+require_once( 'Dropbox_API/autoload.php' );
+require_once( 'Classes/class-file-list.php' );
+require_once( 'Classes/class-dropbox-facade.php' );
+require_once( 'Classes/class-wp-backup.php' );
 
 define( 'BACKUP_TO_DROPBOX_VERSION', '0.9.3' );
 
@@ -53,7 +55,6 @@ function backup_to_dropbox_admin_menu() {
  * @return void
  */
 function backup_to_dropbox_admin_menu_contents() {
-	include( 'Dropbox_API/autoload.php' );
 	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
 	include( 'Views/wp-backup-to-dropbox-options.php' );
 }
@@ -63,7 +64,6 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
-	include( 'Dropbox_API/autoload.php' );
 	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
 	include( 'Views/wp-backup-to-dropbox-monitor.php' );
 }
@@ -73,7 +73,6 @@ function backup_to_dropbox_monitor() {
  * @return void
  */
 function backup_to_dropbox_file_tree() {
-	include_once( 'Classes/class-file-list.php' );
 	include( 'Views/wp-backup-to-dropbox-file-tree.php' );
 	die();
 }
