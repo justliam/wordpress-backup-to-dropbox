@@ -440,7 +440,7 @@ class WP_Backup {
 			list( , $dropbox_location, , ) = $this->get_options();
 			$this->backup_path( ABSPATH, $dropbox_location, $this->set_time_limit() );
 
-			if (WP_CONTENT_DIR != ABSPATH . 'wp-content') {
+			if ( !strstr( WP_CONTENT_DIR, ABSPATH ) ) {
 				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content', $this->set_time_limit() );
 			}
 
