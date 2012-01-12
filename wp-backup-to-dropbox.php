@@ -29,7 +29,7 @@ require_once( 'Classes/class-wp-backup.php' );
 define( 'BACKUP_TO_DROPBOX_VERSION', '0.9.3' );
 
 //We need to set the PEAR_Includes folder in the path
-set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/PEAR_Includes' );
+set_include_path( dirname( __FILE__ ) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path() );
 
 /**
  * A wrapper function that adds an options page to setup Dropbox Backup
