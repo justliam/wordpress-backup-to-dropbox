@@ -203,7 +203,7 @@ try {
 			foreach ( $backup_history as $hist ) {
 				list( $backup_time, $status, $msg ) = $hist;
 				$backup_date = date( 'Y-m-d', $backup_time );
-				$backup_time_str = date( 'h:i:s', $backup_time );
+				$backup_time_str = date( 'H:i:s', $backup_time );
 				switch ( $status ) {
 					case WP_Backup::BACKUP_STATUS_STARTED:
 						echo "<span class='backup_ok'>" . sprintf( __( 'Backup started on %s at %s', 'wpbtd' ), $backup_date, $backup_time_str ) . "</span><br />";
