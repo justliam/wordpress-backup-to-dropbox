@@ -44,10 +44,12 @@ function backup_to_dropbox_admin_menu() {
 	$text = __( 'Settings', 'wpbtd' );
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
 
-	global $wpdb;
-	$backup = new WP_Backup( null, $wpdb );
-	$text = $backup->is_sheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
+	$config = new WP_Backup_Config();
+	$text = $config->is_sheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
+
+	$text = __( 'Premium Extensions', 'wpbtd' );
+	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium' );
 }
 
 /**
@@ -71,6 +73,15 @@ function backup_to_dropbox_monitor() {
 		$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
 		include( 'Views/wp-backup-to-dropbox-monitor.php' );
 	}
+}
+
+/**
+ * A wrapper function that includes the backup to Dropbox premium page
+ * @return void
+ */
+function backup_to_dropbox_premium() {
+	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
+	include( 'Views/wp-backup-to-dropbox-premium.php' );
 }
 
 /**
