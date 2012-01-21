@@ -26,12 +26,13 @@ class WP_Backup {
 	const BACKUP_STATUS_WARNING = 2;
 	const BACKUP_STATUS_FAILED = 3;
 
-	const MAX_HISTORY_ITEMS = 100;
-
 	private $dropbox;
 	private $config;
+	private $database;
 
-	public function __construct( $dropbox, $config ) {
+	public function __construct( $dropbox, $config, $wpdb = null ) {
+		if ( !$wpdb ) global $wpdb;
+		$this->database = $wpdb;
 		$this->dropbox = $dropbox;
 		$this->config = $config;
 	}
@@ -46,7 +47,7 @@ class WP_Backup {
 	 * @param $max_execution_time
 	 * @return string - Path to the database dump
 	 */
-	public function backup_path( $path, $dropbox_location, $max_execution_time ) {
+	public function backup_path( $path, $dropbox_location ) {
 		//Grab the memory limit setting in the php ini to ensure we do not exceed it
 		$memory_limit_string = ini_get( 'memory_limit' );
 		$memory_limit = ( preg_replace( '/\D/', '', $memory_limit_string ) * 1048576 );
@@ -59,7 +60,7 @@ class WP_Backup {
 		}
 		$max_file_size = $memory_limit / 2.5;
 
-		list( $last_action_time, ) = $this->get_current_action();
+		$last_action_time = $this->config->get_last_action_time();
 		$backup_stop_time = time() + $max_execution_time;
 
 		$file_list = new File_List( $this->database );
@@ -67,25 +68,20 @@ class WP_Backup {
 			$source = realpath( $path );
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
-				if (!$this->in_progress()) {
+				if (!$this->config->in_progress())
 					return false;
-				}
-
-				if ( $max_execution_time && time() > $backup_stop_time ) {
-					$this->log( self::BACKUP_STATUS_FAILED, __( 'Backup did not complete because the maximum script execution time was reached.', 'wpbtd' ) );
-					return false;
-				}
 
 				$file = realpath( $file );
 				if ( is_file( $file ) ) {
 					$trimmed_file = basename( $file );
-					if ( File_List::in_ignore_list( $trimmed_file ) ) {
+					if ( File_List::in_ignore_list( $trimmed_file ) )
 						continue;
-					}
 
-					if ( $file_list->get_file_state( $file ) == self::EXCLUDED ) {
+					if ( $this->config->uploaded_file( $file ) )
 						continue;
-					}
+
+					if ( $file_list->get_file_state( $file ) == File_List::EXCLUDED )
+						continue;
 
 					if ( filesize( $file ) > $max_file_size ) {
 						$this->log( self::BACKUP_STATUS_WARNING,
@@ -102,7 +98,7 @@ class WP_Backup {
 					$directory_contents = $this->dropbox->get_directory_contents( dirname( $dropbox_path ) );
 					if ( !in_array( $trimmed_file, $directory_contents ) || filectime( $file ) > $last_action_time ) {
 						try {
-							$this->set_current_action( __( 'Uploading' ), $file );
+							$this->config->set_current_action( __( 'Uploading' ), $file );
 							$this->dropbox->upload_file( $dropbox_path, $file );
 						} catch ( Exception $e ) {
 							if ( $e->getMessage() == 'Unauthorized' ) {
@@ -132,14 +128,14 @@ class WP_Backup {
 			throw new Exception( $db_error . ' (ERROR_1)' );
 		}
 
-		list( $dump_location, , , ) = $this->get_options();
+		list( $dump_location, , , ) = $this->config->get_options();
 		if ( !is_writable( $dump_location ) ) {
 			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
 							dirname( $dump_location ), basename( $dump_location ));
-			$this->log( self::BACKUP_STATUS_WARNING, $msg );
+			$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
 			return false;
 		}
-		$filename =  ABSPATH . $dump_location . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
+		$filename =  $this->get_sql_file_name();
 		$handle = fopen( $filename, 'w+' );
 		if ( !$handle ) {
 			throw new Exception( __( 'Error creating sql dump file.', 'wpbtd' ) . ' (ERROR_2)' );
@@ -247,8 +243,11 @@ class WP_Backup {
 
 			list( $dump_location, $dropbox_location, , ) = $this->config->get_options();
 
-			$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ), $dump_location );
-			$this->backup_database();
+			$sql_file_name = $this->get_sql_file_name();
+			if ( !$this->config->uploaded_file( $sql_file_name ) ) {
+				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ), $sql_file_name );
+				$this->backup_database();
+			}
 
 			$this->backup_path( ABSPATH, $dropbox_location, $this->config->set_time_limit() );
 
@@ -273,7 +272,7 @@ class WP_Backup {
 		$this->config->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
 		$this->config->set_current_action( __( 'Stopping backup', 'wpbtd' ) );
 		$this->config->set_in_progress( false );
-		$this->config->clear_hooks();
+		$this->config->clean_up();
 	}
 
 	/**
@@ -322,5 +321,9 @@ class WP_Backup {
 			fwrite( $fh, 'deny from all' );
 			fclose( $fh );
 		}
+	}
+
+	private function get_sql_file_name() {
+		return ABSPATH . $dump_location . DB_NAME . '-backup.sql';
 	}
 }

@@ -21,15 +21,15 @@
 include_once( 'class-file-list.php' );
 class WP_Backup_Config {
 
+	const MAX_HISTORY_ITEMS = 100;
+
 	private $options = array();
 	private $schedule = array();
 	private $log = array();
 	private $actions = array();
 
 	public function __construct( $wpdb = null ) {
-		if ( !$wpdb ) {
-			global $wpdb;
-		}
+		if ( !$wpdb ) global $wpdb;
 
 		$this->database = $wpdb;
 
@@ -109,13 +109,15 @@ class WP_Backup_Config {
 	 * Sets the last action that was performed during backup
 	 * @return bool
 	 */
-	public function set_current_action( $msg, $file ) {
-		$actions = get_option( 'backup-to-dropbox-actions' );
-		if ( !is_array( $actions ) ) {
+	public function set_current_action( $msg, $file = null ) {
+		if ( !is_array( $this->actions ) ) {
 			$actions = array();
 		}
-		$actions[time()] = array( $msg, $file );
-		update_option( 'backup-to-dropbox-current-action', $actions );
+		$this->actions[time()] = array(
+			'msg' => $msg,
+			'file' => $file
+		);
+		update_option( 'backup-to-dropbox-actions', $this->actions );
 	}
 
 	/**
@@ -149,7 +151,11 @@ class WP_Backup_Config {
 	 * @return array
 	 */
 	public function get_current_action() {
-		return get_option( 'backup-to-dropbox-current-action' );
+		return array_shift( get_option( 'backup-to-dropbox-actions' ) );
+	}
+
+	public function get_last_action_time() {
+		return array_shift( array_keys( get_option( 'backup-to-dropbox-actions' ) ) );
 	}
 
 	/**
@@ -256,11 +262,39 @@ class WP_Backup_Config {
 	}
 
 	/**
-	 * Clears the backup hooks
+	 * Has the file been uploaded
 	 */
-	private function clear_hooks()
-	{
+	public function uploaded_file( $file ) {
+		foreach ( $this->actions as $time => $details ) {
+			if ( $details['file'] == $file )
+				return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Clears the backup hooks and current action
+	 */
+	private function clean_up() {
 		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
 		wp_clear_scheduled_hook( 'run_dropbox_backup_hook' );
+		update_option( 'backup-to-dropbox-actions', array() );
+	}
+
+	/**
+	 * Updates the backup history option
+	 * @param $status
+	 * @param  $msg
+	 * @return void
+	 */
+	public function log( $status, $msg = null ) {
+		if ( count( $this->history ) >= self::MAX_HISTORY_ITEMS ) {
+			array_shift( $this->history );
+		}
+		if ( !is_array( $this->history ) ) {
+			$this->history = array();
+		}
+		$this->history[] = array( strtotime( current_time( 'mysql' ) ), $status, $msg );
+		update_option( 'backup-to-dropbox-history', $this->history );
 	}
 }

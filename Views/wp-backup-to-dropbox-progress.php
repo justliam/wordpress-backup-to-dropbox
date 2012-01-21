@@ -23,12 +23,11 @@
  */
 spawn_cron();
 
-global $wpdb;
-$backup = new WP_Backup( null, $wpdb );
+$config = new WP_Backup_Config();
 
-list( $time, $action ) = $backup->get_current_action();
+list( $time, $action ) = $config->get_current_action();
 
-if ( $backup->in_progress() ): ?>
+if ( $config->in_progress() ): ?>
 	<p><strong><?php echo date( 'H:i:s', $time ) ?>: </strong><?php echo $action ?></p>
 <?php endif; ?>
 
