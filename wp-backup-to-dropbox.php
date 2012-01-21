@@ -24,6 +24,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 require_once( 'Dropbox_API/autoload.php' );
 require_once( 'Classes/class-file-list.php' );
 require_once( 'Classes/class-dropbox-facade.php' );
+require_once( 'Classes/class-wp-backup-config.php' );
 require_once( 'Classes/class-wp-backup.php' );
 
 define( 'BACKUP_TO_DROPBOX_VERSION', '0.9.3' );
@@ -45,7 +46,7 @@ function backup_to_dropbox_admin_menu() {
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
 
 	global $wpdb;
-	$backup = new WP_Backup( null, $wpdb );
+	$backup = new WP_Backup_Config( $wpdb );
 	$text = $backup->is_sheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
 }

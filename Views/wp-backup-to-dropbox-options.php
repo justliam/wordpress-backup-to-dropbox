@@ -28,11 +28,12 @@ try {
 
 	$validation_errors = null;
 
-	$dropbox = new Dropbox_Facade( false );
+	$dropbox = new Dropbox_Facade();
+	$config = new WP_Backup_Config();
+	$backup = new WP_Backup( $dropbox, $config );
 
-	$backup = new WP_Backup( $dropbox, $wpdb );
 	$file_list = new File_List( $wpdb );
-	$disable_backup_now = $backup->in_progress();
+	$disable_backup_now = $config->in_progress();
 
 	//We have a form submit so update the schedule and options
 	if ( array_key_exists( 'save_changes', $_POST ) ) {
@@ -50,11 +51,11 @@ try {
 	}
 
 	//Lets grab the schedule and the options to display to the user
-	list( $unixtime, $frequency ) = $backup->get_schedule();
+	list( $unixtime, $frequency ) = $config->get_schedule();
 	if ( !$frequency ) {
 		$frequency = 'weekly';
 	}
-	list( $dump_location, $dropbox_location ) = $backup->get_options();
+	list( $dump_location, $dropbox_location ) = $config->get_options();
 
 	try
 	{
@@ -188,7 +189,7 @@ try {
 
 	<h3><?php _e( 'Next Scheduled', 'wpbtd' ); ?></h3>
 		<?php
-		$schedule = $backup->get_schedule();
+		$schedule = $config->get_schedule();
 		if ( $schedule ) {
 			?>
 			<p style="margin-left: 10px;"><?php printf( __( 'Next backup scheduled for %s at %s', 'wpbtd' ), date( 'Y-m-d', $schedule[ 0 ] ), date( 'H:i:s', $schedule[ 0 ] ) ) ?></p>
@@ -197,7 +198,7 @@ try {
 			<?php } ?>
 		<h3><?php _e( 'History', 'wpbtd' ); ?></h3>
 		<?php
-		$backup_history = $backup->get_history();
+		$backup_history = $config->get_history();
 		if ( $backup_history ) {
 			echo '<div class="history_box">';
 			foreach ( $backup_history as $hist ) {
