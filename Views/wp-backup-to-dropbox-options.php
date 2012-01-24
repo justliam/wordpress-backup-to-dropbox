@@ -108,8 +108,6 @@ try {
 
 		$('#toggle-all').click(function (e) {
 			$('.checkbox').click();
-			if ($('#file_tree_list').val() != '[]')
-				$('#file_tree_list').val('[]');
 			e.preventDefault();
 		});
 	});
