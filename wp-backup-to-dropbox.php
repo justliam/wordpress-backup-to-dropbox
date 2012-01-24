@@ -50,7 +50,7 @@ function backup_to_dropbox_admin_menu() {
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
 
 	$backup = new WP_Backup_Config();
-	$text = $backup->is_sheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
+	$text = $backup->is_scheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
 }
 
@@ -112,7 +112,7 @@ function monitor_dropbox_backup() {
 	$action = $config->get_current_action();
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ( $config->in_progress() && ( $action['time'] < time() - 300  ) ) {
+	if ( $config->in_progress() && ( $action['time'] < strtotime( current_time( 'mysql' ) ) - 300  ) ) {
 		$config->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'The backup process appears to have gone away. Resuming backup.' ) );
 		wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
 	}

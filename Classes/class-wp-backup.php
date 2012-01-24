@@ -96,7 +96,7 @@ class WP_Backup {
 					}
 
 					$directory_contents = $this->dropbox->get_directory_contents( dirname( $dropbox_path ) );
-					if ( !in_array( $trimmed_file, $directory_contents ) || filectime( $file ) > $last_backup_time ) {
+					if ( !in_array( $trimmed_file, $directory_contents ) || filemtime( $file ) > $last_backup_time ) {
 						try {
 							$this->config->set_current_action( __( 'Uploading' ), $file );
 							$this->dropbox->upload_file( $dropbox_path, $file );
