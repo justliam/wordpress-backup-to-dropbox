@@ -39,7 +39,7 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 				jQuery('#progress').html(data);
 			}
 		});
-		setTimeout("reload()",1000);
+		setTimeout("reload()", 1000);
 	}
     jQuery(document).ready(function ($) {
 		reload();

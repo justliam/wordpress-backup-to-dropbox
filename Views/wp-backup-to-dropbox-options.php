@@ -38,8 +38,8 @@ try {
 	//We have a form submit so update the schedule and options
 	if ( array_key_exists( 'save_changes', $_POST ) ) {
 		check_admin_referer( 'backup_to_dropbox_options_save' );
-		$backup->set_schedule( $_POST['day'], $_POST['time'], $_POST['frequency'] );
-		$validation_errors = $backup->set_options( $_POST['dump_location'], $_POST['dropbox_location'], $_POST['keep_local'], $_POST['backup_count'] );
+		$config->set_schedule( $_POST['day'], $_POST['time'], $_POST['frequency'] );
+		$validation_errors = $config->set_options( $_POST['dump_location'], $_POST['dropbox_location'], $_POST['keep_local'], $_POST['backup_count'] );
 		$file_list->set_file_list( $_POST['file_tree_list'] );
 		$file_list->save();
 	} else if ( array_key_exists( 'unlink', $_POST ) ) {
@@ -47,7 +47,7 @@ try {
 		$dropbox->unlink_account();
 	} else if ( array_key_exists( 'clear_history', $_POST ) ) {
 		check_admin_referer( 'backup_to_dropbox_options_save' );
-		$backup->clear_history();
+		$config->clear_history();
 	}
 
 	//Lets grab the schedule and the options to display to the user
@@ -55,7 +55,9 @@ try {
 	if ( !$frequency ) {
 		$frequency = 'weekly';
 	}
-	list( $dump_location, $dropbox_location ) = $config->get_options();
+	$options = $config->get_options();
+	$dump_location = $options['dump_location'];
+	$dropbox_location = $options['dropbox_location'];
 
 	try
 	{
@@ -106,6 +108,8 @@ try {
 
 		$('#toggle-all').click(function (e) {
 			$('.checkbox').click();
+			if ($('#file_tree_list').val() != '[]')
+				$('#file_tree_list').val('[]');
 			e.preventDefault();
 		});
 	});

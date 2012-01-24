@@ -23,73 +23,44 @@ class WP_Backup_Config {
 
 	const MAX_HISTORY_ITEMS = 100;
 
-	private $options = array();
-	private $schedule = array();
-	private $log = array();
-	private $actions = array();
-
-	public function __construct( $wpdb = null ) {
-		if ( !$wpdb ) global $wpdb;
-
-		$this->database = $wpdb;
-
-		$this->history = get_option( 'backup-to-dropbox-history' );
-		if ( !$this->history ) {
+	public function __construct() {
+		$history = $this->get_history();
+		if ( !is_array( $history ) ) {
 			add_option( 'backup-to-dropbox-history', array(), null, 'no' );
-			$this->history = array();
+			$history = array();
 		}
 
-		$this->options = get_option( 'backup-to-dropbox-options' );
-		if ( !$this->options ) {
-			$this->options = array( 'wp-content/backups', 'WordPressBackup' );
-			add_option( 'backup-to-dropbox-options', $this->options, null, 'no' );
+		$options = $this->get_options();
+		if ( !is_array( $options ) ) {
+			$options = array(
+				'dump_location' => 	'wp-content/backups',
+				'dropbox_location' => 'WordPressBackup',
+				'last_backup_time' => 0,
+				'in_progress' => false,
+			);
+			add_option( 'backup-to-dropbox-options', $options, null, 'no' );
 		}
 
-		$time = wp_next_scheduled( 'execute_periodic_drobox_backup' );
-		$frequency = wp_get_schedule( 'execute_periodic_drobox_backup' );
-		if ( $time && $frequency ) {
-			//Convert the time to the blogs timezone
-			$blog_time = strtotime( date( 'Y-m-d H', strtotime( current_time( 'mysql' ) ) ) . ':00:00' );
-			$blog_time += $time - strtotime( date( 'Y-m-d H' ) . ':00:00' );
-			$this->schedule = array( $blog_time, $frequency );
-		}
-
-		if ( !get_option( 'backup-to-dropbox-in-progress' ) ) {
-			add_option( 'backup-to-dropbox-in-progress', 'no', null, 'no' );
-		}
-
-		$this->actions = get_option( 'backup-to-dropbox-actions' );
-		if ( !$this->actions ) {
+		$actions = $this->get_actions();
+		if ( !is_array( $actions ) ) {
 			add_option( 'backup-to-dropbox-actions', array(), null, 'no' );
 		}
 	}
 
-	/**
-	 * Get the dropbox backup options if we don't have any options set the defaults
-	 * @return array - Dump location, Dropbox location, Keep local, Backup count
-	 */
 	public function get_options() {
-		return $this->options;
+		return get_option( 'backup-to-dropbox-options' );
 	}
 
-	/**
-	 * Returns the backup history of this wordpress installation
-	 * @return array - time, status, message
-	 */
 	public function get_history() {
-		$hist = $this->history;
-		if ( !is_array( $hist ) ) {
-			$hist = array();
-		}
+		$hist = get_option( 'backup-to-dropbox-history' );
 		krsort( $hist );
 		return $hist;
 	}
 
-	/**
-	 * If safe_mode is enabled then we need warn the user that the script may not finish
-	 * @throws Exception
-	 * @return int
-	 */
+	public function get_actions() {
+		get_option( 'backup-to-dropbox-actions' );
+	}
+
 	public function set_time_limit() {
 		if ( ini_get( 'safe_mode' ) ) {
 			if ( ini_get( 'max_execution_time' ) != 0 ) {
@@ -105,75 +76,44 @@ class WP_Backup_Config {
 		return 0;
 	}
 
-	/**
-	 * Sets the last action that was performed during backup
-	 * @return bool
-	 */
 	public function set_current_action( $msg, $file = null ) {
-		if ( !is_array( $this->actions ) ) {
+		$actions = get_option( 'backup-to-dropbox-actions' );
+		if ( !is_array( $actions ) ) {
 			$actions = array();
 		}
-		$this->actions[time()] = array(
-			'msg' => $msg,
+		$actions[] = array(
+			'time' => strtotime( current_time( 'mysql' ) ),
+			'message' => $msg,
 			'file' => $file
 		);
-		update_option( 'backup-to-dropbox-actions', $this->actions );
+		update_option( 'backup-to-dropbox-actions', $actions );
 	}
 
-	/**
-	 * Returns true if a backup is in progress
-	 * @return bool
-	 */
 	public function in_progress() {
-		return get_option( 'backup-to-dropbox-in-progress' ) == 'yes';
+		$options = $this->get_options();
+		return $options['in_progress'];
 	}
 
-	/**
-	 * Returns true if a backup is in the shedlue
-	 * @return bool
-	 */
 	public function is_sheduled() {
 		return
 			wp_get_schedule( 'monitor_dropbox_backup_hook' ) !== false ||
 			wp_get_schedule( 'execute_instant_drobox_backup' ) !== false;
 	}
 
-	/**
-	 * Sets if this backup is in progress
-	 * @return bool
-	 */
-	public function set_in_progress($bool) {
-		update_option( 'backup-to-dropbox-in-progress', $bool ? 'yes' : 'no' );
+	public function set_in_progress( $bool ) {
+		$options = $this->get_options();
+		$options['in_progress'] = true;
+		update_option( 'backup-to-dropbox-options', $options );
 	}
 
-	/**
-	 * Returns a tuple of the last action time and the file processed
-	 * @return array
-	 */
 	public function get_current_action() {
-		return array_shift( get_option( 'backup-to-dropbox-actions' ) );
+		return end( get_option( 'backup-to-dropbox-actions' ) );
 	}
 
-	public function get_last_action_time() {
-		return array_shift( array_keys( get_option( 'backup-to-dropbox-actions' ) ) );
-	}
-
-	/**
-	 * Clears the history
-	 * @return array
-	 */
 	public function clear_history() {
-		$this->history = array();
-		update_option( 'backup-to-dropbox-history', $this->history );
+		update_option( 'backup-to-dropbox-history', array() );
 	}
 
-	/**
-	 * Sets the day, time and frequency a wordpress backup is to be performed
-	 * @param  $day
-	 * @param  $time
-	 * @param  $frequency
-	 * @return void
-	 */
 	public function set_schedule( $day, $time, $frequency ) {
 		$blog_time = strtotime( date( 'Y-m-d H', strtotime( current_time( 'mysql' ) ) ) . ':00:00' );
 
@@ -205,24 +145,20 @@ class WP_Backup_Config {
 		$server_time = strtotime( date( 'Y-m-d H' ) . ':00:00' ) + ( $scheduled_time - $blog_time );
 
 		wp_schedule_event( $server_time, $frequency, 'execute_periodic_drobox_backup' );
-
-		$this->schedule = array( $scheduled_time, $frequency );
 	}
 
-	/**
-	 * Return the backup schedule
-	 * @return array - day, time, frequency
-	 */
 	public function get_schedule() {
-		return $this->schedule;
+		$time = wp_next_scheduled( 'execute_periodic_drobox_backup' );
+		$frequency = wp_get_schedule( 'execute_periodic_drobox_backup' );
+		if ( $time && $frequency ) {
+			//Convert the time to the blogs timezone
+			$blog_time = strtotime( date( 'Y-m-d H', strtotime( current_time( 'mysql' ) ) ) . ':00:00' );
+			$blog_time += $time - strtotime( date( 'Y-m-d H' ) . ':00:00' );
+			$schedule = array( $blog_time, $frequency );
+		}
+		return $schedule;
 	}
 
-	/**
-	 * Set the dropbox backup options
-	 * @param  $dump_location - Local backup location
-	 * @param  $dropbox_location - Dropbox backup location
-	 * @return array()
-	 */
 	public function set_options( $dump_location, $dropbox_location ) {
 		static $regex = '/[^A-Za-z0-9-_.\/]/';
 		$errors = array();
@@ -254,17 +190,23 @@ class WP_Backup_Config {
 			$dump_location = preg_replace( '/[\/]+/', '/', $dump_location );
 			$dropbox_location = preg_replace( '/[\/]+/', '/', $dropbox_location );
 
-			$this->options = array( $dump_location, $dropbox_location );
-			update_option( 'backup-to-dropbox-options', $this->options );
+			$options['dump_location'] = $dump_location;
+			$options['dropbox_location'] = $dropbox_location;
+
+			update_option( 'backup-to-dropbox-options', $options );
 		}
 
 		return $errors;
 	}
 
-	/**
-	 * Has the file been uploaded
-	 */
+	public function set_last_backup_time( $time ) {
+		$options = $this->get_options();
+		$options['last_backup_time'] = $time;
+		update_option( 'backup-to-dropbox-options', $options );
+	}
+
 	public function uploaded_file( $file ) {
+		$actions = $this->get_actions();
 		foreach ( $this->actions as $time => $details ) {
 			if ( $details['file'] == $file )
 				return true;
@@ -272,29 +214,18 @@ class WP_Backup_Config {
 		return false;
 	}
 
-	/**
-	 * Clears the backup hooks and current action
-	 */
-	private function clean_up() {
+	public function clean_up() {
 		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
 		wp_clear_scheduled_hook( 'run_dropbox_backup_hook' );
 		update_option( 'backup-to-dropbox-actions', array() );
 	}
 
-	/**
-	 * Updates the backup history option
-	 * @param $status
-	 * @param  $msg
-	 * @return void
-	 */
 	public function log( $status, $msg = null ) {
-		if ( count( $this->history ) >= self::MAX_HISTORY_ITEMS ) {
-			array_shift( $this->history );
+		$history = $this->get_history();
+		if ( count( $history ) >= self::MAX_HISTORY_ITEMS ) {
+			array_shift( $thistory );
 		}
-		if ( !is_array( $this->history ) ) {
-			$this->history = array();
-		}
-		$this->history[] = array( strtotime( current_time( 'mysql' ) ), $status, $msg );
-		update_option( 'backup-to-dropbox-history', $this->history );
+		$history[] = array( strtotime( current_time( 'mysql' ) ), $status, $msg );
+		update_option( 'backup-to-dropbox-history', $history );
 	}
 }
