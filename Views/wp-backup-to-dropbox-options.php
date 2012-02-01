@@ -172,7 +172,7 @@ try {
 	<?php
 		if ( $dropbox->is_authorized() ) {
 		$account_info = $dropbox->get_account_info();
-		$used = round( $account_info['quota_info']['normal'] / 1073741824, 1 );
+		$used = round( ( $account_info['quota_info']['quota'] - ( $account_info['quota_info']['normal'] + $account_info['quota_info']['shared'] ) ) / 1073741824, 1 );
 		$quota = round( $account_info['quota_info']['quota'] / 1073741824, 1 );
 		?>
 	<h3><?php _e( 'Dropbox Account Details', 'wpbtd' ); ?></h3>
