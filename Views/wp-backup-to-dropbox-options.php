@@ -236,7 +236,7 @@ try {
 			<td>
 				<input name="dump_location" type="text" id="dump_location" value="<?php echo $dump_location; ?>"
 					   class="regular-text code">
-				<span class="description"><?php _e( 'Default is', 'wpbtd' ); ?><code>wp-content/backups</code></span>
+				<span class="description"><?php _e( 'Default is', 'wpbtd' ); ?><code><?php echo WP_CONTENT_DIR ?>/backups</code></span>
 				<?php if ( $validation_errors && array_key_exists( 'dump_location', $validation_errors ) ) { ?>
 				<br/><span class="description"
 						   style="color: red"><?php echo $validation_errors['dump_location']['message'] ?></span>

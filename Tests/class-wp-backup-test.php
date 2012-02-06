@@ -157,7 +157,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->config->set_in_progress( true );
 		$this->config->log( WP_Backup::BACKUP_STATUS_STARTED );
 
-		$this->backup = new WP_Backup( $this->mock_dropbox_facade, $this->config );
+		$this->backup = new WP_Backup( $this->mock_dropbox_facade, $this->config, new Mock_WpDb() );
 
 		$this->backup->backup_path( ABSPATH, 'Dropbox');
 		unlink( 'Out/file.txt' );
@@ -200,7 +200,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 		$this->backup = new WP_Backup( $this->mock_dropbox_facade, $this->config );
 
-		$this->assertTrue( $this->backup->backup_path( ABSPATH, 'Out/') );
+		$this->assertTrue( $this->backup->backup_path( ABSPATH, './') );
 		$this->config->log( WP_Backup::BACKUP_STATUS_FINISHED );
 
 		$files_processed = $this->mock_dropbox_facade->get_files_processes();
@@ -215,10 +215,6 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		);
 
 		$this->assertEquals( $expected, $files_processed );
-		$this->assertEquals( time(), $this->backup->get_last_backup_time() );
-
-		sleep( 1 );
-		$this->assertEquals( time() - 1, $this->backup->get_last_backup_time() );
 
 		$this->writeToFiles( 1 );
 		$this->mock_dropbox_facade->reset_files_processed();

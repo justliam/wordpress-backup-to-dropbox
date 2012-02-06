@@ -63,6 +63,8 @@ class WP_Backup {
 		$options = $this->config->get_options();
 		$last_backup_time = $options['last_backup_time'];
 
+		$uploaded_files = $this->config->get_uploaded_files();
+
 		$file_list = new File_List( $this->database );
 		if ( file_exists( $path ) ) {
 			$source = realpath( $path );
@@ -74,10 +76,11 @@ class WP_Backup {
 				$file = realpath( $file );
 				if ( is_file( $file ) ) {
 					$trimmed_file = basename( $file );
+
 					if ( File_List::in_ignore_list( $trimmed_file ) )
 						continue;
 
-					if ( $this->config->uploaded_file( $file ) )
+					if ( in_array( $file, $uploaded_files ) )
 						continue;
 
 					if ( $file_list->get_file_state( $file ) == File_List::EXCLUDED )
@@ -101,19 +104,17 @@ class WP_Backup {
 							$this->config->set_current_action( __( 'Uploading' ), $file );
 							$this->dropbox->upload_file( $dropbox_path, $file );
 						} catch ( Exception $e ) {
-							if ( $e->getMessage() == 'Unauthorized' ) {
-								$this->config->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
-								return false;
-							}
+
+							if ( $e->getMessage() == 'Unauthorized' )
+								throw $e;
+
 							$msg = sprintf( __( "Could not upload '%s' due to the following error: %s", 'wpbtd' ), $file, $e->getMessage() );
 							$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
 						}
 					}
 				}
 			}
-			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -251,13 +252,13 @@ class WP_Backup {
 			$dropbox_location = $options['dropbox_location'];
 
 			$sql_file_name = $this->get_sql_file_name();
-			if ( !$this->config->uploaded_file( $sql_file_name ) ) {
+			$uploaded_files = $this->config->get_uploaded_files();
+			if ( !in_array($sql_file_name, $uploaded_files) ) {
 				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ), $sql_file_name );
 				$this->backup_database();
 			}
 
 			$this->backup_path( ABSPATH, $dropbox_location );
-
 			if ( !strstr( WP_CONTENT_DIR, ABSPATH ) ) {
 				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content' );
 			}
@@ -267,7 +268,10 @@ class WP_Backup {
 			$this->config->clean_up();
 
 		} catch ( Exception $e ) {
-			$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
+			if ($e->getMessage() == 'Unauthorized')
+				$this->config->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
+			else
+				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
 		}
 		$this->config->set_last_backup_time( time() );
 		$this->config->set_in_progress( false );
