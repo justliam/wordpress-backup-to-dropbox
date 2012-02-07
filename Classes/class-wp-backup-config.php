@@ -33,7 +33,7 @@ class WP_Backup_Config {
 		$options = $this->get_options();
 		if ( !is_array( $options ) ) {
 			$options = array(
-				'dump_location' => WP_CONTENT_DIR . '/backups',
+				'dump_location' => basename( WP_CONTENT_DIR ) . '/backups',
 				'dropbox_location' => 'WordPressBackup',
 				'last_backup_time' => false,
 				'in_progress' => false,
