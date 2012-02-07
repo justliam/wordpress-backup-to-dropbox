@@ -89,7 +89,7 @@ class Mock_Dropbox_Facade {
 		if ( $this->throw_unauthorized ) {
 			throw new Exception( 'Unauthorized' );
 		}
-		
+
 
         //Exclude any hidden os files
         $arr = explode( '/', $file );

@@ -21,16 +21,13 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-spawn_cron();
+$config = new WP_Backup_Config();
 
-global $wpdb;
-$backup = new WP_Backup( null, $wpdb );
+if ( !$config->in_progress() )
+	spawn_cron();
 
-list( $time, $action ) = $backup->get_current_action();
+$action = $config->get_current_action();
 
-if ( $backup->in_progress() ): ?>
-	<p><strong><?php echo date( 'H:i:s', $time ) ?>: </strong><?php echo $action ?></p>
+if ( $config->in_progress() ): ?>
+	<p><strong><?php echo date( 'H:i:s', $action['time'] ) ?>: </strong><?php echo $action['message'] . ' - ' . $action['file'] ?></p>
 <?php endif; ?>
-
-
-

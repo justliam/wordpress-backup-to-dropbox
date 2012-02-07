@@ -28,17 +28,18 @@ try {
 
 	$validation_errors = null;
 
-	$dropbox = new Dropbox_Facade( false );
+	$dropbox = new Dropbox_Facade();
+	$config = new WP_Backup_Config();
+	$backup = new WP_Backup( $dropbox, $config );
 
-	$backup = new WP_Backup( $dropbox, $wpdb );
 	$file_list = new File_List( $wpdb );
-	$disable_backup_now = $backup->in_progress();
+	$disable_backup_now = $config->in_progress();
 
 	//We have a form submit so update the schedule and options
 	if ( array_key_exists( 'save_changes', $_POST ) ) {
 		check_admin_referer( 'backup_to_dropbox_options_save' );
-		$backup->set_schedule( $_POST['day'], $_POST['time'], $_POST['frequency'] );
-		$validation_errors = $backup->set_options( $_POST['dump_location'], $_POST['dropbox_location'], $_POST['keep_local'], $_POST['backup_count'] );
+		$config->set_schedule( $_POST['day'], $_POST['time'], $_POST['frequency'] );
+		$validation_errors = $config->set_options( $_POST['dump_location'], $_POST['dropbox_location'], $_POST['keep_local'], $_POST['backup_count'] );
 		$file_list->set_file_list( $_POST['file_tree_list'] );
 		$file_list->save();
 	} else if ( array_key_exists( 'unlink', $_POST ) ) {
@@ -46,15 +47,17 @@ try {
 		$dropbox->unlink_account();
 	} else if ( array_key_exists( 'clear_history', $_POST ) ) {
 		check_admin_referer( 'backup_to_dropbox_options_save' );
-		$backup->clear_history();
+		$config->clear_history();
 	}
 
 	//Lets grab the schedule and the options to display to the user
-	list( $unixtime, $frequency ) = $backup->get_schedule();
+	list( $unixtime, $frequency ) = $config->get_schedule();
 	if ( !$frequency ) {
 		$frequency = 'weekly';
 	}
-	list( $dump_location, $dropbox_location ) = $backup->get_options();
+	$options = $config->get_options();
+	$dump_location = $options['dump_location'];
+	$dropbox_location = $options['dropbox_location'];
 
 	try
 	{
@@ -169,7 +172,7 @@ try {
 	<?php
 		if ( $dropbox->is_authorized() ) {
 		$account_info = $dropbox->get_account_info();
-		$used = round( $account_info['quota_info']['normal'] / 1073741824, 1 );
+		$used = round( ( $account_info['quota_info']['quota'] - ( $account_info['quota_info']['normal'] + $account_info['quota_info']['shared'] ) ) / 1073741824, 1 );
 		$quota = round( $account_info['quota_info']['quota'] / 1073741824, 1 );
 		?>
 	<h3><?php _e( 'Dropbox Account Details', 'wpbtd' ); ?></h3>
@@ -188,7 +191,7 @@ try {
 
 	<h3><?php _e( 'Next Scheduled', 'wpbtd' ); ?></h3>
 		<?php
-		$schedule = $backup->get_schedule();
+		$schedule = $config->get_schedule();
 		if ( $schedule ) {
 			?>
 			<p style="margin-left: 10px;"><?php printf( __( 'Next backup scheduled for %s at %s', 'wpbtd' ), date( 'Y-m-d', $schedule[ 0 ] ), date( 'H:i:s', $schedule[ 0 ] ) ) ?></p>
@@ -197,13 +200,13 @@ try {
 			<?php } ?>
 		<h3><?php _e( 'History', 'wpbtd' ); ?></h3>
 		<?php
-		$backup_history = $backup->get_history();
+		$backup_history = $config->get_history();
 		if ( $backup_history ) {
 			echo '<div class="history_box">';
 			foreach ( $backup_history as $hist ) {
 				list( $backup_time, $status, $msg ) = $hist;
 				$backup_date = date( 'Y-m-d', $backup_time );
-				$backup_time_str = date( 'h:i:s', $backup_time );
+				$backup_time_str = date( 'H:i:s', $backup_time );
 				switch ( $status ) {
 					case WP_Backup::BACKUP_STATUS_STARTED:
 						echo "<span class='backup_ok'>" . sprintf( __( 'Backup started on %s at %s', 'wpbtd' ), $backup_date, $backup_time_str ) . "</span><br />";
@@ -233,7 +236,7 @@ try {
 			<td>
 				<input name="dump_location" type="text" id="dump_location" value="<?php echo $dump_location; ?>"
 					   class="regular-text code">
-				<span class="description"><?php _e( 'Default is', 'wpbtd' ); ?><code>wp-content/backups</code></span>
+				<span class="description"><?php _e( 'Default is', 'wpbtd' ); ?><code><?php echo basename( WP_CONTENT_DIR ) ?>/backups</code></span>
 				<?php if ( $validation_errors && array_key_exists( 'dump_location', $validation_errors ) ) { ?>
 				<br/><span class="description"
 						   style="color: red"><?php echo $validation_errors['dump_location']['message'] ?></span>

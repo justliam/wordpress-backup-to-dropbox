@@ -33,6 +33,11 @@ function update_option( $key, $value ) {
     $options[$key] = $value;
 }
 
+function wp_clear_scheduled_hook( $hook ) {
+    global $schedule;
+    unset( $schedule[$hook] );
+}
+
 function wp_next_scheduled( $key ) {
     global $schedule;
     return array_key_exists( $key, $schedule ) ? $schedule[$key][0] : false;

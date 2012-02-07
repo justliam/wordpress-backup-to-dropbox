@@ -26,74 +26,15 @@ class WP_Backup {
 	const BACKUP_STATUS_WARNING = 2;
 	const BACKUP_STATUS_FAILED = 3;
 
-	const EXCLUDED = 0;
-	const INCLUDED = 1;
-	const PARTIAL = 2;
+	private $dropbox;
+	private $config;
+	private $database;
 
-	const MAX_HISTORY_ITEMS = 100;
-
-	/**
-	 * The users Dropbox options
-	 * @var object
-	 */
-	private $options = null;
-
-	/**
-	 * The users backup schedule
-	 * @var object
-	 */
-	private $schedule = null;
-
-	/**
-	 * The users backup history
-	 * @var object
-	 */
-	private $history = null;
-
-	/**
-	 * The Dropbox facade object
-	 * @var Dropbox_Facade
-	 */
-	private $dropbox = null;
-
-	/**
-	 * Construct the Backup class and pre load the schedule, history and options
-	 * @param Dropbox_Facade $dropbox
-	 * @param $wpdb
-	 * @return \WP_Backup
-	 */
-	public function __construct( $dropbox, $wpdb ) {
-		$this->dropbox = $dropbox;
+	public function __construct( $dropbox, $config, $wpdb = null ) {
+		if ( !$wpdb ) global $wpdb;
 		$this->database = $wpdb;
-
-		$this->history = get_option( 'backup-to-dropbox-history' );
-		if ( !$this->history ) {
-			add_option( 'backup-to-dropbox-history', array(), null, 'no' );
-			$this->history = array();
-		}
-
-		$this->options = get_option( 'backup-to-dropbox-options' );
-		if ( !$this->options ) {
-			$this->options = array( 'wp-content/backups', 'WordPressBackup' );
-			add_option( 'backup-to-dropbox-options', $this->options, null, 'no' );
-		}
-
-		$time = wp_next_scheduled( 'execute_periodic_drobox_backup' );
-		$frequency = wp_get_schedule( 'execute_periodic_drobox_backup' );
-		if ( $time && $frequency ) {
-			//Convert the time to the blogs timezone
-			$blog_time = strtotime( date( 'Y-m-d H', strtotime( current_time( 'mysql' ) ) ) . ':00:00' );
-			$blog_time += $time - strtotime( date( 'Y-m-d H' ) . ':00:00' );
-			$this->schedule = array( $blog_time, $frequency );
-		}
-
-		if ( !get_option( 'backup-to-dropbox-current-action' ) ) {
-			add_option( 'backup-to-dropbox-current-action', array( time(), null ), null, 'no' );
-		}
-
-		if ( !get_option( 'backup-to-dropbox-in-progress' ) ) {
-			add_option( 'backup-to-dropbox-in-progress', 'no', null, 'no' );
-		}
+		$this->dropbox = $dropbox;
+		$this->config = $config;
 	}
 
 	/**
@@ -106,7 +47,7 @@ class WP_Backup {
 	 * @param $max_execution_time
 	 * @return string - Path to the database dump
 	 */
-	public function backup_path( $path, $dropbox_location, $max_execution_time ) {
+	public function backup_path( $path, $dropbox_location ) {
 		//Grab the memory limit setting in the php ini to ensure we do not exceed it
 		$memory_limit_string = ini_get( 'memory_limit' );
 		$memory_limit = ( preg_replace( '/\D/', '', $memory_limit_string ) * 1048576 );
@@ -119,36 +60,34 @@ class WP_Backup {
 		}
 		$max_file_size = $memory_limit / 2.5;
 
-		list( $last_action_time, ) = $this->get_current_action();
-		$backup_stop_time = time() + $max_execution_time;
+		$options = $this->config->get_options();
+		$last_backup_time = $options['last_backup_time'];
+
+		$uploaded_files = $this->config->get_uploaded_files();
 
 		$file_list = new File_List( $this->database );
 		if ( file_exists( $path ) ) {
 			$source = realpath( $path );
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
-				if (!$this->in_progress()) {
+				if (!$this->config->in_progress())
 					return false;
-				}
-
-				if ( $max_execution_time && time() > $backup_stop_time ) {
-					$this->log( self::BACKUP_STATUS_FAILED, __( 'Backup did not complete because the maximum script execution time was reached.', 'wpbtd' ) );
-					return false;
-				}
 
 				$file = realpath( $file );
 				if ( is_file( $file ) ) {
 					$trimmed_file = basename( $file );
-					if ( File_List::in_ignore_list( $trimmed_file ) ) {
-						continue;
-					}
 
-					if ( $file_list->get_file_state( $file ) == self::EXCLUDED ) {
+					if ( File_List::in_ignore_list( $trimmed_file ) )
 						continue;
-					}
+
+					if ( in_array( $file, $uploaded_files ) )
+						continue;
+
+					if ( $file_list->get_file_state( $file ) == File_List::EXCLUDED )
+						continue;
 
 					if ( filesize( $file ) > $max_file_size ) {
-						$this->log( self::BACKUP_STATUS_WARNING,
+						$this->config->log( self::BACKUP_STATUS_WARNING,
 									sprintf( __( "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd' ), basename( $file ) ) );
 						continue;
 					}
@@ -160,24 +99,22 @@ class WP_Backup {
 					}
 
 					$directory_contents = $this->dropbox->get_directory_contents( dirname( $dropbox_path ) );
-					if ( !in_array( $trimmed_file, $directory_contents ) || filectime( $file ) > $last_action_time ) {
+					if ( !in_array( $trimmed_file, $directory_contents ) || filemtime( $file ) > $last_backup_time ) {
 						try {
-							$this->set_current_action( __( 'Uploading' ) . ' ' . $file );
+							$this->config->set_current_action( __( 'Uploading' ), $file );
 							$this->dropbox->upload_file( $dropbox_path, $file );
 						} catch ( Exception $e ) {
-							if ( $e->getMessage() == 'Unauthorized' ) {
-								$this->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
-								return false;
-							}
+
+							if ( $e->getMessage() == 'Unauthorized' )
+								throw $e;
+
 							$msg = sprintf( __( "Could not upload '%s' due to the following error: %s", 'wpbtd' ), $file, $e->getMessage() );
-							$this->log( self::BACKUP_STATUS_WARNING, $msg );
+							$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
 						}
 					}
 				}
 			}
-			return true;
 		}
-		return false;
 	}
 
 	/**
@@ -192,14 +129,16 @@ class WP_Backup {
 			throw new Exception( $db_error . ' (ERROR_1)' );
 		}
 
-		list( $dump_location, , , ) = $this->get_options();
+		$options = $this->config->get_options();
+		$dump_location = $options['dump_location'];
+
 		if ( !is_writable( $dump_location ) ) {
 			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
 							dirname( $dump_location ), basename( $dump_location ));
-			$this->log( self::BACKUP_STATUS_WARNING, $msg );
+			$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
 			return false;
 		}
-		$filename =  ABSPATH . $dump_location . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
+		$filename =  $this->get_sql_file_name();
 		$handle = fopen( $filename, 'w+' );
 		if ( !$handle ) {
 			throw new Exception( __( 'Error creating sql dump file.', 'wpbtd' ) . ' (ERROR_2)' );
@@ -292,188 +231,63 @@ class WP_Backup {
 	}
 
 	/**
-	 * Sets the day, time and frequency a wordpress backup is to be performed
-	 * @param  $day
-	 * @param  $time
-	 * @param  $frequency
-	 * @return void
-	 */
-	public function set_schedule( $day, $time, $frequency ) {
-		$blog_time = strtotime( date( 'Y-m-d H', strtotime( current_time( 'mysql' ) ) ) . ':00:00' );
-
-		//Grab the date in the blogs timezone
-		$date = date( 'Y-m-d', $blog_time );
-
-		//Check if we need to schedule the backup in the future
-		$time_arr = explode( ':', $time );
-		$current_day = date( 'D', $blog_time );
-		if ( $day && ( $current_day != $day ) ) {
-			$date = date( 'Y-m-d', strtotime( "next $day" ) );
-		} else if ( (int)$time_arr[0] <= (int)date( 'H', $blog_time ) ) {
-			if ( $day ) {
-				$date = date( 'Y-m-d', strtotime( "+7 days", $blog_time ) );
-			} else {
-				$date = date( 'Y-m-d', strtotime( "+1 day", $blog_time ) );
-			}
-		}
-
-		$timestamp = wp_next_scheduled( 'execute_periodic_drobox_backup' );
-		if ( $timestamp ) {
-			wp_unschedule_event( $timestamp, 'execute_periodic_drobox_backup' );
-		}
-
-		//This will be in the blogs timezone
-		$scheduled_time = strtotime( $date . ' ' . $time );
-
-		//Convert the selected time to that of the server
-		$server_time = strtotime( date( 'Y-m-d H' ) . ':00:00' ) + ( $scheduled_time - $blog_time );
-
-		wp_schedule_event( $server_time, $frequency, 'execute_periodic_drobox_backup' );
-
-		$this->schedule = array( $scheduled_time, $frequency );
-	}
-
-	/**
-	 * Return the backup schedule
-	 * @return array - day, time, frequency
-	 */
-	public function get_schedule() {
-		return $this->schedule;
-	}
-
-	/**
-	 * Set the dropbox backup options
-	 * @param  $dump_location - Local backup location
-	 * @param  $dropbox_location - Dropbox backup location
-	 * @return array()
-	 */
-	public function set_options( $dump_location, $dropbox_location ) {
-		static $regex = '/[^A-Za-z0-9-_.\/]/';
-		$errors = array();
-		$error_msg = __( 'Invalid directory path. Path must only contain alphanumeric characters and the forward slash (\'/\') to separate directories.', 'wpbtd' );
-
-		preg_match( $regex, $dump_location, $matches );
-		if ( !empty( $matches ) ) {
-			$errors['dump_location'] = array(
-				'original' => $dump_location,
-				'message' => $error_msg
-			);
-		}
-
-		preg_match( $regex, $dropbox_location, $matches );
-		if ( !empty( $matches ) ) {
-			$errors['dropbox_location'] = array(
-				'original' => $dropbox_location,
-				'message' => $error_msg
-			);
-		}
-
-		if ( empty( $errors ) ) {
-			$dump_location = ltrim( $dump_location, '/' );
-			$dropbox_location = ltrim( $dropbox_location, '/' );
-
-			$dump_location = rtrim( $dump_location, '/' );
-			$dropbox_location = rtrim( $dropbox_location, '/' );
-
-			$dump_location = preg_replace( '/[\/]+/', '/', $dump_location );
-			$dropbox_location = preg_replace( '/[\/]+/', '/', $dropbox_location );
-
-			$this->options = array( $dump_location, $dropbox_location );
-			update_option( 'backup-to-dropbox-options', $this->options );
-		}
-
-		return $errors;
-	}
-
-	/**
-	 * Get the dropbox backup options if we don't have any options set the defaults
-	 * @return array - Dump location, Dropbox location, Keep local, Backup count
-	 */
-	public function get_options() {
-		return $this->options;
-	}
-
-	/**
-	 * Returns the backup history of this wordpress installation
-	 * @return array - time, status, message
-	 */
-	public function get_history() {
-		$hist = $this->history;
-		if ( !is_array( $hist ) ) {
-			$hist = array();
-		}
-		krsort( $hist );
-		return $hist;
-	}
-
-	/**
-	 * Updates the backup history option
-	 * @param $status
-	 * @param  $msg
-	 * @return void
-	 */
-	public function log( $status, $msg = null ) {
-		if ( count( $this->history ) >= self::MAX_HISTORY_ITEMS ) {
-			array_shift( $this->history );
-		}
-		if ( !is_array( $this->history ) ) {
-			$this->history = array();
-		}
-		$this->history[] = array( strtotime( current_time( 'mysql' ) ), $status, $msg );
-		update_option( 'backup-to-dropbox-history', $this->history );
-	}
-
-	/**
 	 * Execute the backup
 	 * @return bool
 	 */
 	public function execute() {
-		$this->set_in_progress(true);
+		$this->config->set_in_progress( true );
 		try {
-			$this->log( WP_Backup::BACKUP_STATUS_STARTED );
+
+			$this->config->set_time_limit();
+
+			$this->config->log( WP_Backup::BACKUP_STATUS_STARTED );
 
 			if ( !$this->dropbox->is_authorized() ) {
-				$this->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
-				return false;
+				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
+				return;
 			}
 
-			$this->set_current_action( 'Creating SQL backup' );
-			$this->backup_database();
+			$options = $this->config->get_options();
+			$dump_location = $options['dump_location'];
+			$dropbox_location = $options['dropbox_location'];
 
-			list( , $dropbox_location, , ) = $this->get_options();
-			$this->backup_path( ABSPATH, $dropbox_location, $this->set_time_limit() );
+			$sql_file_name = $this->get_sql_file_name();
+			$uploaded_files = $this->config->get_uploaded_files();
+			if ( !in_array($sql_file_name, $uploaded_files) ) {
+				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ), $sql_file_name );
+				$this->backup_database();
+			}
 
+			$this->backup_path( ABSPATH, $dropbox_location );
 			if ( !strstr( WP_CONTENT_DIR, ABSPATH ) ) {
-				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content', $this->set_time_limit() );
+				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content' );
 			}
 
-			$this->log( WP_Backup::BACKUP_STATUS_FINISHED );
-			$this->set_current_action( __( 'Backup complete.' ) );
-			$this->clear_hooks();
+			$this->config->log( WP_Backup::BACKUP_STATUS_FINISHED );
+			$this->config->set_current_action( __( 'Backup complete.', 'wpbtd' ) );
+			$this->config->clean_up();
+
+			unlink( $sql_file_name );
 
 		} catch ( Exception $e ) {
-			$this->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
+			if ($e->getMessage() == 'Unauthorized')
+				$this->config->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
+			else
+				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
 		}
-		$this->set_in_progress(false);
-	}
-
-	/**
-	 * Clears the backup hooks
-	 */
-	private function clear_hooks()
-	{
-		wp_clear_scheduled_hook( 'monitor_dropbox_backup_hook' );
-		wp_clear_scheduled_hook( 'run_dropbox_backup_hook' );
+		$this->config->set_last_backup_time( time() );
+		$this->config->set_in_progress( false );
 	}
 
 	/**
 	 * Stops the backup
 	 */
 	public function stop() {
-		$this->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
-		$this->set_current_action( 'Stopping backup' );
-		$this->set_in_progress( false );
-		$this->clear_hooks();
+		$this->config->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
+		$this->config->set_current_action( __( 'Stopping backup', 'wpbtd' ) );
+		$this->config->set_in_progress( false );
+		$this->config->set_last_backup_time( time() );
+		$this->config->clean_up();
 	}
 
 	/**
@@ -482,8 +296,8 @@ class WP_Backup {
 	 * @return string
 	 */
 	public function create_dump_dir() {
-		list( $dump_location, ) = $this->get_options();
-		$dump_dir = ABSPATH . $dump_location;
+		$options = $this->config->get_options();
+		$dump_dir = ABSPATH . $options['dump_location'];
 		if ( !file_exists( $dump_dir ) ) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
 			if ( !@mkdir( $dump_dir ) ) {
@@ -505,8 +319,8 @@ class WP_Backup {
 	 * @return void
 	 */
 	public function create_htaccess_file() {
-		list( $dump_location, ) = $this->get_options();
-		$dump_dir = ABSPATH . $dump_location;
+		$options = $this->config->get_options();
+		$dump_dir = ABSPATH . $options['dump_location'];
 		$htaccess = $dump_dir . '/.htaccess';
 		if ( !file_exists( $htaccess ) ) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
@@ -524,74 +338,8 @@ class WP_Backup {
 		}
 	}
 
-	/**
-	 * If safe_mode is enabled then we need warn the user that the script may not finish
-	 * @throws Exception
-	 * @return int
-	 */
-	public function set_time_limit() {
-		if ( ini_get( 'safe_mode' ) ) {
-			if ( ini_get( 'max_execution_time' ) != 0 ) {
-				$this->log( self::BACKUP_STATUS_WARNING,
-							__( 'This php installation is running in safe mode so the time limit cannot be set.', 'wpbtd' ) . ' ' .
-							sprintf( __( 'Click %s for more information.', 'wpbtd' ),
-									 '<a href="http://www.mikeyd.com.au/2011/05/24/setting-the-maximum-execution-time-when-php-is-running-in-safe-mode/">' . __( 'here', 'wpbtd' ) . '</a>' ) );
-				return ini_get( 'max_execution_time' ) - 5; //Lets leave 5 seconds of padding
-			}
-		} else {
-			set_time_limit( 0 );
-		}
-		return 0;
-	}
-
-	/**
-	 * Sets the last action that was performed during backup
-	 * @return bool
-	 */
-	public function set_current_action( $action ) {
-		update_option( 'backup-to-dropbox-current-action',  array( time(), $action ) );
-	}
-
-	/**
-	 * Returns true if a backup is in progress
-	 * @return bool
-	 */
-	public function in_progress() {
-		return get_option( 'backup-to-dropbox-in-progress' ) == 'yes';
-	}
-
-	/**
-	 * Returns true if a backup is in the shedlue
-	 * @return bool
-	 */
-	public function is_sheduled() {
-		return
-			wp_get_schedule( 'monitor_dropbox_backup_hook' ) !== false ||
-			wp_get_schedule( 'execute_instant_drobox_backup' ) !== false;
-	}
-
-	/**
-	 * Sets if this backup is in progress
-	 * @return bool
-	 */
-	public function set_in_progress($bool) {
-		update_option( 'backup-to-dropbox-in-progress', $bool ? 'yes' : 'no' );
-	}
-
-	/**
-	 * Returns a tuple of the last action time and the file processed
-	 * @return array
-	 */
-	public function get_current_action() {
-		return get_option( 'backup-to-dropbox-current-action' );
-	}
-
-	/**
-	 * Clears the history
-	 * @return array
-	 */
-	public function clear_history() {
-		$this->history = array();
-		update_option( 'backup-to-dropbox-history', $this->history );
+	private function get_sql_file_name() {
+		$options = $this->config->get_options();
+		return ABSPATH . rtrim( $options['dump_location'], DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
 	}
 }

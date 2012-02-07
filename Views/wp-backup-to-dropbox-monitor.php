@@ -18,8 +18,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-global $wpdb;
-$backup = new WP_Backup( null, $wpdb );
+$config = new WP_Backup_Config();
+$dropbox = new Dropbox_Facade();
+$backup = new WP_Backup( $dropbox, $config );
 
 if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	check_admin_referer( 'backup_to_dropbox_monitor_stop' );
@@ -38,7 +39,7 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 				jQuery('#progress').html(data);
 			}
 		});
-		setTimeout("reload()",1000);
+		setTimeout("reload()", 1000);
 	}
     jQuery(document).ready(function ($) {
 		reload();
@@ -64,14 +65,14 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	<h3><?php _e( 'Backup Progress', 'wpbtd' ); ?></h3>
 	<div id="progress">
 		<?php
-		if ( $started || $backup->is_sheduled() )
+		if ( $started || $config->is_scheduled() )
 			echo '<p>' . __( 'Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.' ) . '</p>';
 		else
 			echo '<p>' . __( 'No backup in progess.' ) . '</p>';
 		?>
 	</div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
-		<?php if ( $backup->in_progress() || isset($started) || $backup->is_sheduled() ): ?>
+		<?php if ( $config->in_progress() || isset($started) || $config->is_scheduled() ): ?>
 			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e( 'Stop Backup', 'wpbtd' ); ?>">
 		<?php else: ?>
 			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e( 'Start Backup', 'wpbtd' ); ?>">

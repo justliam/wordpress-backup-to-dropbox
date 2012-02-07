@@ -47,7 +47,9 @@ class File_List {
 	 * Construct the file list
 	 * @param $wpdb
 	 */
-	public function __construct( $wpdb ) {
+	public function __construct( $wpdb = null ) {
+		if ( !$wpdb ) global $wpdb;
+
 		$this->database = $wpdb;
 
 		$file_list = get_option( 'backup-to-dropbox-file-list' );
