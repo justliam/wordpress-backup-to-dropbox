@@ -267,6 +267,8 @@ class WP_Backup {
 			$this->config->set_current_action( __( 'Backup complete.', 'wpbtd' ) );
 			$this->config->clean_up();
 
+			unlink( $sql_file_name );
+
 		} catch ( Exception $e ) {
 			if ($e->getMessage() == 'Unauthorized')
 				$this->config->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
