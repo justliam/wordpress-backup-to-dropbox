@@ -6,7 +6,7 @@
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
- *          the Free Software Foundation; either version 2 of the License, or
+ *          the Fdree Software Foundation; either version 2 of the License, or
  *          (at your option) any later version.
  *
  *          This program is distributed in the hope that it will be useful,
@@ -25,6 +25,8 @@ class WP_Backup {
 	const BACKUP_STATUS_FINISHED = 1;
 	const BACKUP_STATUS_WARNING = 2;
 	const BACKUP_STATUS_FAILED = 3;
+	
+	const SELECT_QUERY_LIMIT = 10;
 
 	private $dropbox;
 	private $config;
@@ -173,33 +175,35 @@ class WP_Backup {
 			}
 			$this->write_to_file( $handle, $table_create[1] . ";\n\n" );
 
-			$table_data = $this->database->get_results( "SELECT * FROM $table", ARRAY_A );
-			if ( $table_data === false ) {
-				throw new Exception( $db_error . ' (ERROR_4)' );
-			}
-
-			if ( empty( $table_data ) ) {
+			$table_count = $this->database->get_var( "SELECT COUNT(*) from $table" );
+			if ( $table_count == 0 ) {
 				$this->write_to_file( $handle, "--\n-- Table `$table` is empty\n--\n\n" );
 				continue;
-			}
+			} else {
+				$this->write_to_file( $handle, "--\n-- Dumping data for table `$table`\n--\n\n" );
+				for ($i=0; $i<$table_count; $i=$i+self::SELECT_QUERY_LIMIT) {
+					$table_data = $this->database->get_results( "SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A );
+					if ( $table_data === false ) {
+						throw new Exception( $db_error . ' (ERROR_4)' );
+					}
 
-			$this->write_to_file( $handle, "--\n-- Dumping data for table `$table`\n--\n\n" );
+					$fields = '`' . implode( '`, `', array_keys( $table_data[0] ) ) . '`';
+					$this->write_to_file( $handle, "INSERT INTO `$table` ($fields) VALUES \n" );
 
-			$fields = '`' . implode( '`, `', array_keys( $table_data[0] ) ) . '`';
-			$this->write_to_file( $handle, "INSERT INTO `$table` ($fields) VALUES \n" );
-
-			$out = '';
-			foreach ( $table_data as $data ) {
-				$data_out = '(';
-				foreach ( $data as $value ) {
-					$value = addslashes( $value );
-					$value = str_replace( "\n", "\\n", $value );
-					$value = str_replace( "\r", "\\r", $value );
-					$data_out .= "'$value', ";
+					$out = '';
+					foreach ( $table_data as $data ) {
+						$data_out = '(';
+						foreach ( $data as $value ) {
+							$value = addslashes( $value );
+							$value = str_replace( "\n", "\\n", $value );
+							$value = str_replace( "\r", "\\r", $value );
+							$data_out .= "'$value', ";
+						}
+						$out .= rtrim( $data_out, ' ,' ) . "),\n";
+					}
+					$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n" );
 				}
-				$out .= rtrim( $data_out, ' ,' ) . "),\n";
 			}
-			$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n" );
 		}
 
 		if ( !fclose( $handle ) ) {
