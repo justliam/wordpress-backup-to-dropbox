@@ -182,4 +182,4 @@ if they have been modified since the last backup.
 
 == Upgrade Notice ==
 
-* Lots of perfomrance and bug fixes
+* Very important bugfix introduce in 0.9.3 - sorry guys!
