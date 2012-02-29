@@ -254,7 +254,7 @@ class WP_Backup {
 			$sql_file_name = $this->get_sql_file_name();
 			$uploaded_files = $this->config->get_uploaded_files();
 			if ( !in_array($sql_file_name, $uploaded_files) ) {
-				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ), $sql_file_name );
+				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ) );
 				$this->backup_database();
 			}
 
