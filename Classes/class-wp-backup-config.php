@@ -106,7 +106,7 @@ class WP_Backup_Config {
 
 	public function set_in_progress( $bool ) {
 		$options = $this->get_options();
-		$options['in_progress'] = true;
+		$options['in_progress'] = $bool;
 		update_option( 'backup-to-dropbox-options', $options );
 	}
 

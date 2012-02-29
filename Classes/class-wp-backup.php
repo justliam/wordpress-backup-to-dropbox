@@ -284,7 +284,6 @@ class WP_Backup {
 	 */
 	public function stop() {
 		$this->config->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
-		$this->config->set_current_action( __( 'Stopping backup', 'wpbtd' ) );
 		$this->config->set_in_progress( false );
 		$this->config->set_last_backup_time( time() );
 		$this->config->clean_up();
