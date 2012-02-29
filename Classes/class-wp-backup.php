@@ -259,7 +259,7 @@ class WP_Backup {
 			}
 
 			$this->backup_path( ABSPATH, $dropbox_location );
-			if ( !strstr( WP_CONTENT_DIR, ABSPATH ) ) {
+			if ( defined( 'WP_CONTENT_DIR' ) && !strstr( WP_CONTENT_DIR, ABSPATH ) ) {
 				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content' );
 			}
 
