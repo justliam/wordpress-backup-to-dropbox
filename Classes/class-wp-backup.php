@@ -311,32 +311,6 @@ class WP_Backup {
 		return $dump_dir;
 	}
 
-	/**
-	 * Creates a htaccess file within the dump directory, if it does not already exist, so the public cannot see the sql
-	 * backup within the backup directory
-	 * @throws Exception
-	 * @return void
-	 */
-	public function create_htaccess_file() {
-		$options = $this->config->get_options();
-		$dump_dir = ABSPATH . $options['dump_location'];
-		$htaccess = $dump_dir . '/.htaccess';
-		if ( !file_exists( $htaccess ) ) {
-			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
-			$fh = @fopen( $htaccess, 'w' );
-			if ( !$fh ) {
-				throw new Exception(
-					sprintf(
-						__( "A database backup cannot be created because the local dump directory ('%s') is not writable.", 'wpbtd'),
-						$dump_dir
-					)
-				);
-			}
-			fwrite( $fh, 'deny from all' );
-			fclose( $fh );
-		}
-	}
-
 	private function get_sql_file_name() {
 		$options = $this->config->get_options();
 		return ABSPATH . rtrim( $options['dump_location'], DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';

@@ -62,7 +62,6 @@ try {
 	try
 	{
 		$backup->create_dump_dir();
-		$backup->create_htaccess_file();
 	}
 	catch (Exception $e)
 	{
