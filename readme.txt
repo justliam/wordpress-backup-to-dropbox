@@ -117,6 +117,11 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 0.9.4 =
+* Fixed an issue where the SQL backup was not being uploaded to Dropbox
+* Fixed an issue where the default backup dir was not being displayed if WP_CONTE_DIR is not set
+* Fixed an issue where bakups where not stopping correctly
+
 = 0.9.3 =
 * Moved settings and monitor to their own paret menu
 * Database bacups are now removed after they are uploaded to Dropbox
