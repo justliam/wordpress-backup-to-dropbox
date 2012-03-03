@@ -28,14 +28,10 @@ class WP_Backup_Config {
 			add_option( 'backup-to-dropbox-history', array(), null, 'no' );
 		}
 
-		$dumpLocation = 'wp-content/backups';
-		if (defined( 'WP_CONTENT_DIR' ) && WP_CONTENT_DIR)
-			$dumpLocation = basename( WP_CONTENT_DIR ) . '/backups';
-
 		$options = $this->get_options();
 		if ( !is_array( $options ) || ( !isset( $options['dump_location'] ) || !isset( $options['dropbox_location'] ) ) ) {
 			$options = array(
-				'dump_location' => $dumpLocation,
+				'dump_location' => basename( WP_CONTENT_DIR ) . '/backups',
 				'dropbox_location' => 'WordPressBackup',
 				'last_backup_time' => false,
 				'in_progress' => false,
