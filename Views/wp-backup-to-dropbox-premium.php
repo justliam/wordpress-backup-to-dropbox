@@ -19,6 +19,14 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
+
+$error = $title = null;
+if (isset($_REQUEST['error']))
+	$error = true;
+
+if (isset($_REQUEST['title']))
+	$title = $_REQUEST['title'];
+
 ?>
 <style>
 th {
@@ -35,7 +43,31 @@ td, th {
 table {
 	border-left: 1px solid #DEDEDE;
 }
+
+.error {
+	color: red;
+}
+
+.success {
+	color: green;
+}
 </style>
+<script type="text/javascript" language="javascript">
+	jQuery(document).ready(function ($) {
+		var params = {
+			'key' : '<?php echo $key ?>',
+			'site' : '<?php echo get_site_url() ?>',
+		};
+		$.post('http://xtendy/purchased', params, function (data) {
+			var arr = JSON.parse(data);
+			for (var i = 0; i < arr.length; i++) {
+				var $form = $('#extensions').find('#extension-' + arr[i]);
+				$form.attr('action', 'admin.php?page=backup-to-dropbox-premium');
+				$form.find('.submitBtn').val('Download & Install');
+			}
+		});
+	});
+</script>
 <div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
@@ -52,7 +84,16 @@ table {
 			<li><?php _e( 'Finally, click Activate to turn it on and enjoy', 'wpbtd' ); ?></li>
 		</ol>
 	</p>
-	<table>
+	<?php if ($error): ?>
+		<p class="error">
+			<?php _e( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt@gmail.com+wpb2d">Mikey</a>' ) ) ?>
+		</p>
+	<?php elseif ($title): ?>
+		<p class="success">
+			<?php _e( sprintf( 'You have succesfully purchased the %s premium extension, please install it below.', "<strong>$title</strong>" ) ) ?>
+		</p>
+	<?php endif; ?>
+	<table id="extensions">
 
 		<tr>
 			<th><?php _e( 'Name' ) ?></th>
@@ -62,29 +103,15 @@ table {
 		</tr>
 
 		<tr>
-			<td><?php _e( 'Zip before upload' ) ?></td>
-			<td><?php _e( 'Zips up your website and database dump before uploading it to Dropbox.' ) ?></td>
-			<td>$20</td>
+			<td><?php _e( 'Zip Archive' ) ?></td>
+			<td><?php _e( 'Zips your backup before uploading it to Dropbox' ) ?></td>
+			<td>$10 USD</td>
 			<td>
-				<form action="http://wpb2d/buy" method="post">
+				<form action="http://wpb2d/buy" method="post" id="extension-1">
 					<input type="hidden" value="zip" name="extension" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
-					<input type="submit" value="Buy Now" />
-				</form>
-			</td>
-		</tr>
-
-		<tr>
-			<td><?php _e( 'Notification Emails' ) ?></td>
-			<td><?php _e( 'Sends a notification email when a backup completes or runs into problems.' ) ?></td>
-			<td>$5</td>
-			<td>
-				<form action="http://wpb2d/buy" method="post">
-					<input type="hidden" value="email" name="extension" />
-					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
-					<input type="hidden" value="<?php echo $key ?>" name="key" />
-					<input type="submit" value="Buy Now" />
+					<input type="submit" value="Buy Now" class="submitBtn" />
 				</form>
 			</td>
 		</tr>
