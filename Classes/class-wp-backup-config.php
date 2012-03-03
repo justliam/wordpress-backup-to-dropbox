@@ -24,10 +24,8 @@ class WP_Backup_Config {
 	const MAX_HISTORY_ITEMS = 100;
 
 	public function __construct() {
-		$history = get_option( 'backup-to-dropbox-history' );
-		if ( !is_array( $history ) ) {
+		if ( !is_array( get_option( 'backup-to-dropbox-history' ) ) ) {
 			add_option( 'backup-to-dropbox-history', array(), null, 'no' );
-			$history = array();
 		}
 
 		$dumpLocation = 'wp-content/backups';
@@ -57,6 +55,9 @@ class WP_Backup_Config {
 
 	public function get_history() {
 		$hist = get_option( 'backup-to-dropbox-history' );
+		if ( !is_array( $hist ) )
+			return array();
+
 		krsort( $hist );
 		return $hist;
 	}
@@ -213,8 +214,10 @@ class WP_Backup_Config {
 	public function get_uploaded_files() {
 		$actions = $this->get_actions();
 		$files = array();
-		foreach ( $actions as $action ) {
-			$files[] = $action['file'];
+		if ( is_array( $actions ) ) {
+			foreach ( $actions as $action ) {
+				$files[] = $action['file'];
+			}
 		}
 		return $files;
 	}
