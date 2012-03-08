@@ -24,7 +24,7 @@ class Extension_Manager {
 	private $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
 
 	public function __construct() {
-		if ( !get_option( 'backup-to-dropbox-premium-exensions' ) )
+		if ( !get_option( 'backup-to-dropbox-premium-extensions' ) )
 			add_option( 'backup-to-dropbox-premium-extensions', array(), null, 'no' );
 	}
 
@@ -44,16 +44,16 @@ class Extension_Manager {
 		return $this->url . '/buy';
 	}
 
-	public function get_purchased() {
-		$response = wp_remote_get( "{$this->url}/purchased?key={$this->key}&site=" . get_site_url() );
+	public function get_extensions() {
+		$response = wp_remote_get( "{$this->url}/extensions?key={$this->key}&site=" . get_site_url() );
 		if ( is_wp_error( $response )  )
-			throw new Exception( __( 'There was an error getting your puchased items' ) );
+			throw new Exception( __( 'There was an error getting the list of premium extensions' ) );
 
-		return json_decode( $response['body'] );
+		return json_decode( $response['body'], true );
 	}
 
 	public function get_installed() {
-		$extensions = get_option( 'backup-to-dropbox-premium-exensions' );
+		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
 		if ( !is_array( $extensions) )
 			return array();
 
@@ -73,8 +73,8 @@ class Extension_Manager {
 	}
 
 	private function add_extension( $extensionId ) {
-		$extensions = get_option( 'backup-to-dropbox-premium-exensions' );
+		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
 		$extensions[] = $extensionId;
-		update_option( 'backup-to-dropbox-premium-exensions', $extensions );
+		update_option( 'backup-to-dropbox-premium-extensions', $extensions );
 	}
 }
