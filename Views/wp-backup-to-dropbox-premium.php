@@ -18,15 +18,29 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
+$manager = new Extension_Manager();
+
+$wpb2d = $manager->get_url();
+$key = $manager->get_key();
+$installUrl = $manager->get_install_url();
+$buyUrl = $manager->get_buy_url();
 
 $error = $title = null;
-if (isset($_REQUEST['error']))
-	$error = true;
+if ( isset( $_REQUEST['error'] ) )
+	$error = __( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt@gmail.com+wpb2d">Mikey</a>' ) );
 
-if (isset($_REQUEST['title']))
+if ( isset( $_REQUEST['title'] ) )
 	$title = $_REQUEST['title'];
 
+try {
+	if ( isset( $_POST['extensionId'] ) )
+		$manager->install( $_POST['extensionId'], $_POST['name'] );
+
+	$purchased = $manager->get_purchased();
+	$installed = $manager->get_installed();
+} catch ( Exception $e ) {
+	$error = $e->getMessage();
+}
 ?>
 <style>
 th {
@@ -52,22 +66,6 @@ table {
 	color: green;
 }
 </style>
-<script type="text/javascript" language="javascript">
-	jQuery(document).ready(function ($) {
-		var params = {
-			'key' : '<?php echo $key ?>',
-			'site' : '<?php echo get_site_url() ?>',
-		};
-		$.post('http://xtendy/purchased', params, function (data) {
-			var arr = JSON.parse(data);
-			for (var i = 0; i < arr.length; i++) {
-				var $form = $('#extensions').find('#extension-' + arr[i]);
-				$form.attr('action', 'admin.php?page=backup-to-dropbox-premium');
-				$form.find('.submitBtn').val('Download & Install');
-			}
-		});
-	});
-</script>
 <div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
@@ -77,16 +75,16 @@ table {
 	<h3><?php _e( 'Premium Extensions', 'wpbtd' ); ?></h3>
 	<p>
 		<?php _e( 'Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd' ); ?>
-		<?php _e( 'Activating premium extensions is easy:', 'wpbtd' ); ?>
+		<?php _e( 'Installing a premium extensions is easy:', 'wpbtd' ); ?>
 		<ol>
-			<li><?php _e( 'Click buy now and pay for your extension using PayPal', 'wpbtd' ); ?></li>
-			<li><?php _e( 'Click Install Now to download and install the extension', 'wpbtd' ); ?></li>
-			<li><?php _e( 'Finally, click Activate to turn it on and enjoy', 'wpbtd' ); ?></li>
+			<li><?php _e( 'Click Buy Now and pay for your extension using PayPal', 'wpbtd' ); ?></li>
+			<li><?php _e( 'Click Install & Acitvate to download and install the extension', 'wpbtd' ); ?></li>
+			<li><?php _e( 'Thats it, options for your extension will be available in the menu on the left', 'wpbtd' ); ?></li>
 		</ol>
 	</p>
 	<?php if ($error): ?>
 		<p class="error">
-			<?php _e( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt@gmail.com+wpb2d">Mikey</a>' ) ) ?>
+			<?php echo $error ?>
 		</p>
 	<?php elseif ($title): ?>
 		<p class="success">
@@ -107,11 +105,15 @@ table {
 			<td><?php _e( 'Zips your backup before uploading it to Dropbox' ) ?></td>
 			<td>$10 USD</td>
 			<td>
-				<form action="http://wpb2d/buy" method="post" id="extension-1">
-					<input type="hidden" value="zip" name="extension" />
+				<form action="<?php echo in_array( 1, $purchased ) ? $installUrl : $buyUrl; ?>" method="post" id="extension-1">
+					<input type="hidden" value="1" name="extensionId" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
-					<input type="submit" value="Buy Now" class="submitBtn" />
+					<?php if ( in_array(1, $installed ) ): ?>
+						<span class="installed">Installed</span>
+					<?php else: ?>
+						<input type="submit" value="<?php echo in_array( 1, $purchased ) ? __( 'Download & Install' ) : __( 'Buy Now' ); ?>" class="submitBtn" />
+					<?php endif; ?>
 				</form>
 			</td>
 		</tr>

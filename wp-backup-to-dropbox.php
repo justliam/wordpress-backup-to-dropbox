@@ -29,6 +29,7 @@ require_once( 'Classes/class-file-list.php' );
 require_once( 'Classes/class-dropbox-facade.php' );
 require_once( 'Classes/class-wp-backup-config.php' );
 require_once( 'Classes/class-wp-backup.php' );
+require_once( 'Classes/class-extension-manager.php' );
 
 //We need to set the PEAR_Includes folder in the path
 if (USE_BUNDLED_PEAR)
