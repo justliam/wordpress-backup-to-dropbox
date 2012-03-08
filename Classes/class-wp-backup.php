@@ -6,7 +6,7 @@
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
- *          the Fdree Software Foundation; either version 2 of the License, or
+ *          the Free Software Foundation; either version 2 of the License, or
  *          (at your option) any later version.
  *
  *          This program is distributed in the hope that it will be useful,
@@ -25,7 +25,7 @@ class WP_Backup {
 	const BACKUP_STATUS_FINISHED = 1;
 	const BACKUP_STATUS_WARNING = 2;
 	const BACKUP_STATUS_FAILED = 3;
-	
+
 	const SELECT_QUERY_LIMIT = 10;
 
 	private $dropbox;
@@ -140,6 +140,7 @@ class WP_Backup {
 			$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
 			return false;
 		}
+
 		$filename =  $this->get_sql_file_name();
 		$handle = fopen( $filename, 'w+' );
 		if ( !$handle ) {
@@ -181,7 +182,7 @@ class WP_Backup {
 				continue;
 			} else {
 				$this->write_to_file( $handle, "--\n-- Dumping data for table `$table`\n--\n\n" );
-				for ($i=0; $i<$table_count; $i=$i+self::SELECT_QUERY_LIMIT) {
+				for ($i = 0; $i < $table_count; $i = $i + self::SELECT_QUERY_LIMIT) {
 					$table_data = $this->database->get_results( "SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A );
 					if ( $table_data === false ) {
 						throw new Exception( $db_error . ' (ERROR_4)' );
