@@ -36,8 +36,8 @@ try {
 	if ( isset( $_POST['extensionId'] ) )
 		$manager->install( $_POST['extensionId'], $_POST['name'] );
 
-	$purchased = $manager->get_purchased();
 	$installed = $manager->get_installed();
+	$extensions = $manager->get_extensions();
 } catch ( Exception $e ) {
 	$error = $e->getMessage();
 }
@@ -100,23 +100,25 @@ table {
 			<th></th>
 		</tr>
 
+		<?php foreach ($extensions as $extension): ?>
 		<tr>
-			<td><?php _e( 'Zip Archive' ) ?></td>
-			<td><?php _e( 'Zips your backup before uploading it to Dropbox' ) ?></td>
-			<td>$10 USD</td>
+			<td><?php echo $extension['name'] ?></td>
+			<td><?php echo $extension['description'] ?></td>
+			<td>$<?php echo $extension['price'] ?> USD</td>
 			<td>
-				<form action="<?php echo in_array( 1, $purchased ) ? $installUrl : $buyUrl; ?>" method="post" id="extension-1">
+				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-1">
 					<input type="hidden" value="1" name="extensionId" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
 					<?php if ( in_array(1, $installed ) ): ?>
 						<span class="installed">Installed</span>
 					<?php else: ?>
-						<input type="submit" value="<?php echo in_array( 1, $purchased ) ? __( 'Download & Install' ) : __( 'Buy Now' ); ?>" class="submitBtn" />
+						<input type="submit" value="<?php echo $extension['purchased'] ? __( 'Download & Install' ) : __( 'Buy Now' ); ?>" class="submitBtn" />
 					<?php endif; ?>
 				</form>
 			</td>
 		</tr>
+		<?php endforeach; ?>
 
 	</table>
 </div>
