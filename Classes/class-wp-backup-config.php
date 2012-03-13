@@ -69,12 +69,10 @@ class WP_Backup_Config {
 							__( 'This php installation is running in safe mode so the time limit cannot be set.', 'wpbtd' ) . ' ' .
 							sprintf( __( 'Click %s for more information.', 'wpbtd' ),
 									 '<a href="http://www.mikeyd.com.au/2011/05/24/setting-the-maximum-execution-time-when-php-is-running-in-safe-mode/">' . __( 'here', 'wpbtd' ) . '</a>' ) );
-				return ini_get( 'max_execution_time' ) - 5; //Lets leave 5 seconds of padding
 			}
 		} else {
-			set_time_limit( 0 );
+			@set_time_limit( 0 );
 		}
-		return 0;
 	}
 
 	public function set_current_action( $msg, $file = null ) {
