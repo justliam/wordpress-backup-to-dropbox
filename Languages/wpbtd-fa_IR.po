@@ -1,0 +1,345 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
+"POT-Creation-Date: 2012-02-29 02:46:45+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2012-03-15 13:43+0430\n"
+"Last-Translator: rezaonline.net <reza19sh@gmail.com>\n"
+"Language-Team: rezaonline.net/blog <LL@li.org>\n"
+
+#: Classes/class-dropbox-facade.php:119
+msgid "backup file does not exist."
+msgstr "فایل پشتیبان موجود نیست ."
+
+#: Classes/class-dropbox-facade.php:138
+msgid "Error while uploading %s to Dropbox. HTTP Status: %s"
+msgstr "خطا هنگام آپلود %s به دارپ باکس . وضعیت http :"
+
+#: Classes/class-wp-backup-config.php:72
+msgid "This php installation is running in safe mode so the time limit cannot be set."
+msgstr "تنظیمات پی اچ پی شما بصورت safe_mode است . در حالت sefe_mode ، time_limit ست نمیشود ."
+
+#: Classes/class-wp-backup-config.php:73
+msgid "Click %s for more information."
+msgstr "برای اطلاعات بیشتر کلیک کنید برروی %s"
+
+#: Classes/class-wp-backup-config.php:74
+msgid "here"
+msgstr "اینجا"
+
+#: Classes/class-wp-backup-config.php:169
+msgid "Invalid directory path. Path must only contain alphanumeric characters and the forward slash ('/') to separate directories."
+msgstr "مسیر دایرکتوری نامعتبر است . مسیر باید دارای کاراکتر های الفبای لاتین باشد و با کارکاتر اسلش (/) جدا شده باشد."
+
+#: Classes/class-wp-backup.php:91
+msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
+msgstr ""
+
+#: Classes/class-wp-backup.php:104
+msgid "Uploading"
+msgstr "در حال آپلود"
+
+#: Classes/class-wp-backup.php:111
+msgid "Could not upload '%s' due to the following error: %s"
+msgstr "%s آپلود نمیشود . خطا : %s"
+
+#: Classes/class-wp-backup.php:125
+msgid "Error while accessing database."
+msgstr "خطای هنگام دسترسی به دیتابیس"
+
+#: Classes/class-wp-backup.php:136
+#: Classes/class-wp-backup.php:305
+msgid "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually."
+msgstr "بک آپ دیتابیس ساخته نشد چون وردپرس دسترسی نوشتن ندارد برای %s . لطفاً پوشه %s را دستی بسازید."
+
+#: Classes/class-wp-backup.php:144
+msgid "Error creating sql dump file."
+msgstr "خطا در هنگام استخراج اطلاعات دیتابیس ."
+
+#: Classes/class-wp-backup.php:206
+msgid "Error closing sql dump file."
+msgstr "خطا هنگام بستن فایل بک آپ دیتابیس ."
+
+#: Classes/class-wp-backup.php:221
+msgid "Error writing to sql dump file."
+msgstr "خطا هنگام نوشتن فایل بک آپ دیتابیس."
+
+#: Classes/class-wp-backup.php:246
+msgid "Your Dropbox account is not authorized yet."
+msgstr "اکانت دراپ باکس شما هنوز مجوز ندارد ."
+
+#: Classes/class-wp-backup.php:257
+msgid "Creating SQL backup"
+msgstr "ساخت پشتیبان دیتابیس ."
+
+#: Classes/class-wp-backup.php:267
+msgid "Backup complete."
+msgstr "عملیات بک آپ تمام شد ."
+
+#: Classes/class-wp-backup.php:274
+msgid "The plugin is no longer authorized with Dropbox."
+msgstr "مجوز این پلاگین هنوز توسط دارپ باکس داده نشده است ."
+
+#: Classes/class-wp-backup.php:286
+msgid "Backup stopped by user."
+msgstr "بک آپ توسط کاربر متوقف شد ."
+
+#: Views/wp-backup-to-dropbox-monitor.php:63
+#: Views/wp-backup-to-dropbox-options.php:169
+msgid "WordPress Backup to Dropbox"
+msgstr "بک آپ وردپرس در دراپ باکس"
+
+#: Views/wp-backup-to-dropbox-monitor.php:64
+#: Views/wp-backup-to-dropbox-options.php:170
+msgid "Version %s"
+msgstr "ورژن  %s"
+
+#: Views/wp-backup-to-dropbox-monitor.php:65
+msgid "Backup Progress"
+msgstr "بک آپ در حال پردازش است"
+
+#: Views/wp-backup-to-dropbox-monitor.php:69
+msgid "Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee."
+msgstr "بک آپ زمانبندی شد . وردپرس به زودی آنرا شروع میکند . وقت خوبی است یک چایی بزنید بدن ;)"
+
+#: Views/wp-backup-to-dropbox-monitor.php:71
+msgid "No backup in progess."
+msgstr "هیچ بک آپی برای پردازش نیست"
+
+#: Views/wp-backup-to-dropbox-monitor.php:76
+msgid "Stop Backup"
+msgstr "توقف بک آپ"
+
+#: Views/wp-backup-to-dropbox-monitor.php:78
+msgid "Start Backup"
+msgstr "شروع بک آپ"
+
+#: Views/wp-backup-to-dropbox-options.php:24
+msgid "Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher."
+msgstr "ورژن پی اچ پی شما (%s) قدیمی است . ترجیحاً از 5.2 به بالا استفاده کنید ."
+
+#: Views/wp-backup-to-dropbox-options.php:90
+#: Views/wp-backup-to-dropbox-options.php:278
+#: Views/wp-backup-to-dropbox-options.php:339
+msgid "Daily"
+msgstr "روزانه"
+
+#: Views/wp-backup-to-dropbox-options.php:177
+msgid "Dropbox Account Details"
+msgstr "اطلاعات اکانت دارپ باکس"
+
+#: Views/wp-backup-to-dropbox-options.php:183
+msgid "you have"
+msgstr "شما دارید"
+
+#: Views/wp-backup-to-dropbox-options.php:185
+msgid "Gigabyte"
+msgstr "گیگا بایت"
+
+#: Views/wp-backup-to-dropbox-options.php:186
+msgid "of"
+msgstr "از"
+
+#: Views/wp-backup-to-dropbox-options.php:187
+msgid "free"
+msgstr "رایگان"
+
+#: Views/wp-backup-to-dropbox-options.php:189
+msgid "Unlink Account"
+msgstr "پاک کردن اکانت"
+
+#: Views/wp-backup-to-dropbox-options.php:191
+msgid "Next Scheduled"
+msgstr "زمانبندی بعدی"
+
+#: Views/wp-backup-to-dropbox-options.php:196
+msgid "Next backup scheduled for %s at %s"
+msgstr "زمانبندی بک آپ برای  %s در %s"
+
+#: Views/wp-backup-to-dropbox-options.php:198
+msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr "هیچ بک آپی زمانبندی نشده هنوز . لطفاً روزی ، ساعتی چیزی انتخاب کنید برای شروع."
+
+#: Views/wp-backup-to-dropbox-options.php:200
+msgid "History"
+msgstr "تاریخچه"
+
+#: Views/wp-backup-to-dropbox-options.php:211
+msgid "Backup started on %s at %s"
+msgstr "بک آپ شروع شده از %s در %s"
+
+#: Views/wp-backup-to-dropbox-options.php:214
+msgid "Backup completed on %s at %s"
+msgstr "بک آپ تمام شد در  %s در %s"
+
+#: Views/wp-backup-to-dropbox-options.php:217
+msgid "Backup warning on %s at %s: %s"
+msgstr "بک آپ خطا داد در  %s در %s:%s"
+
+#: Views/wp-backup-to-dropbox-options.php:220
+msgid "Backup error on %s at %s: %s"
+msgstr "بک آپ خطا داد در  %s در %s:%s"
+
+#: Views/wp-backup-to-dropbox-options.php:224
+msgid "Clear history"
+msgstr "پاک کردن  تاریخچه"
+
+#: Views/wp-backup-to-dropbox-options.php:226
+msgid "No history"
+msgstr "بدون تاریخچه"
+
+#: Views/wp-backup-to-dropbox-options.php:229
+#: wp-backup-to-dropbox.php:49
+msgid "Settings"
+msgstr "تنظیمات"
+
+#: Views/wp-backup-to-dropbox-options.php:234
+msgid "Temporarily store your database backup in this folder"
+msgstr "بطور موقت اطلاعات بک آپ دیتابیس در این پوشه قرار میگیرد."
+
+#: Views/wp-backup-to-dropbox-options.php:238
+#: Views/wp-backup-to-dropbox-options.php:252
+msgid "Default is"
+msgstr "پیشفرض"
+
+#: Views/wp-backup-to-dropbox-options.php:247
+msgid "Store backup in this folder within Dropbox"
+msgstr "بک آپ ها توسط داپ باکس در این پوشه قرار میگیرد ."
+
+#: Views/wp-backup-to-dropbox-options.php:260
+msgid "Day and Time"
+msgstr "روز و ساعت"
+
+#: Views/wp-backup-to-dropbox-options.php:264
+msgid "Monday"
+msgstr "دوشنبه"
+
+#: Views/wp-backup-to-dropbox-options.php:266
+msgid "Tuesday"
+msgstr "سه شنبه"
+
+#: Views/wp-backup-to-dropbox-options.php:268
+msgid "Wednesday"
+msgstr "چهارشنبه"
+
+#: Views/wp-backup-to-dropbox-options.php:270
+msgid "Thursday"
+msgstr "پینجشنبه"
+
+#: Views/wp-backup-to-dropbox-options.php:272
+msgid "Friday"
+msgstr "جمعه"
+
+#: Views/wp-backup-to-dropbox-options.php:274
+msgid "Saturday"
+msgstr "شنبه"
+
+#: Views/wp-backup-to-dropbox-options.php:276
+msgid "Sunday"
+msgstr "یک شنبه"
+
+#: Views/wp-backup-to-dropbox-options.php:280
+msgid "at"
+msgstr "در"
+
+#: Views/wp-backup-to-dropbox-options.php:331
+msgid "The day and time the backup to Dropbox is to be performed."
+msgstr "در روز و ساعت بک آپ توسط داپ باکس انجام میشود ."
+
+#: Views/wp-backup-to-dropbox-options.php:335
+msgid "Frequency"
+msgstr "دوره ای"
+
+#: Views/wp-backup-to-dropbox-options.php:342
+msgid "Weekly"
+msgstr "هفتگی"
+
+#: Views/wp-backup-to-dropbox-options.php:346
+msgid "Fortnightly"
+msgstr "هر دو هفته"
+
+#: Views/wp-backup-to-dropbox-options.php:349
+msgid "Every 4 weeks"
+msgstr "هر چهار هفته"
+
+#: Views/wp-backup-to-dropbox-options.php:353
+msgid "Every 8 weeks"
+msgstr "هر 8 هفته"
+
+#: Views/wp-backup-to-dropbox-options.php:357
+msgid "Every 12 weeks"
+msgstr "هر 12 هفته"
+
+#: Views/wp-backup-to-dropbox-options.php:360
+msgid "How often the backup to Dropbox is to be performed."
+msgstr "چقدر بک آپ دراپ باکس انجام میشود ."
+
+#: Views/wp-backup-to-dropbox-options.php:366
+msgid "Excluded Files and Directories"
+msgstr "به غیر از فایلها و دایرکتوری ها"
+
+#: Views/wp-backup-to-dropbox-options.php:369
+msgid "Select the files and directories that you wish to exclude from your backup. You can expand directories with contents by clicking its name."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:370
+msgid "Please Note:"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:370
+msgid "Your SQL dump file will always be backed up regardless of what is selected below."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:378
+msgid "Save Changes"
+msgstr "ذخیره تغییرات"
+
+#: Views/wp-backup-to-dropbox-options.php:388
+msgid "Thank you for installing WordPress Backup to Dropbox!"
+msgstr "تشکر به خاطر نصب افزونه ."
+
+#: Views/wp-backup-to-dropbox-options.php:389
+msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
+msgstr "برای استفاده از این افزونه شما باید اکانت دارپ باکس داشته باشید"
+
+#: Views/wp-backup-to-dropbox-options.php:390
+msgid "Please click the authorize button below and follow the instructions inside the pop up window."
+msgstr "لطفاً روی مجوز کلیک کنید و بقیه مراحل را انجام دهید."
+
+#: Views/wp-backup-to-dropbox-options.php:392
+msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
+msgstr "یک خطا در هنگام بررسی مجوز افزونه توسط دارپ باکس رخ داد . دوباره امتحان کنید ."
+
+#: Views/wp-backup-to-dropbox-options.php:397
+msgid "Authorize"
+msgstr "مجوز"
+
+#: Views/wp-backup-to-dropbox-options.php:400
+msgid "Continue"
+msgstr "ادامه"
+
+#: Views/wp-backup-to-dropbox-options.php:407
+msgid "There was a fatal error loading WordPress Backup to Dropbox"
+msgstr "یک خطا در هنگام لود شدن وردپرس به دارپ باکس پیش آمد ."
+
+#: wp-backup-to-dropbox.php:46
+msgid "Backup"
+msgstr "بک آپ"
+
+#: wp-backup-to-dropbox.php:53
+msgid "Monitor Backup"
+msgstr "مونیتور کردن بک آپ"
+
+#: wp-backup-to-dropbox.php:53
+msgid "Backup Now"
+msgstr "الان بک آپ بگیر"
+
+#: wp-backup-to-dropbox.php:116
+msgid "The backup process appears to have gone away. Resuming backup."
+msgstr ""
+

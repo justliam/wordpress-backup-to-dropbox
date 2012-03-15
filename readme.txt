@@ -72,6 +72,7 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Chinese (zh_CN) - [HostUCan CN](http://www.hostucan.cn/)
 * Taiwanese (zh_TN) - [HostUCan](http://www.hostucan.com/)
 * French (fr_FR) - [Yassine HANINI](http://www.yassine-hanini.info/)
+* Persian (fa_IR) - [Reza-sh](http://www.rezaonline.net/blog)
 
 == Installation ==
 
