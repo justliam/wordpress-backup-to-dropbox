@@ -23,6 +23,10 @@ class WP_Backup_Config {
 
 	const MAX_HISTORY_ITEMS = 100;
 
+	public statuc function construct() {
+		return new self();
+	}
+
 	public function __construct() {
 		if ( !is_array( get_option( 'backup-to-dropbox-history' ) ) ) {
 			add_option( 'backup-to-dropbox-history', array(), null, 'no' );

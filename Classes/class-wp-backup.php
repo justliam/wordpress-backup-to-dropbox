@@ -245,8 +245,6 @@ class WP_Backup {
 
 			$this->config->set_time_limit();
 
-			$this->config->log( WP_Backup::BACKUP_STATUS_STARTED );
-
 			if ( !$this->dropbox->is_authorized() ) {
 				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
 				return;

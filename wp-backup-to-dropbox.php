@@ -100,6 +100,7 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
+	WP_Backup_Config::construct()->log( WP_Backup::BACKUP_STATUS_STARTED );
 	wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
 	wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
 }
