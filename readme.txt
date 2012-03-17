@@ -72,12 +72,13 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Chinese (zh_CN) - [HostUCan CN](http://www.hostucan.cn/)
 * Taiwanese (zh_TN) - [HostUCan](http://www.hostucan.com/)
 * French (fr_FR) - [Yassine HANINI](http://www.yassine-hanini.info/)
+* Persian (fa_IR) - [Reza-sh](http://www.rezaonline.net/blog)
 
 == Installation ==
 
 1. Upload the contents of `wordpress-dropbox-backup.zip` to the `/wp-content/plugins/` directory or use WordPress' built-in plugin install tool
-2. Activate the plugin through the 'Plugins' menu within WordPress
-3. Authorize the plugin with Dropbox by following the instructions in the settings page found under Settings->Backup to Dropbox
+2. Once installed, you can access the plugins settings page under the new Backup menu
+3. The first time you access the settings you will be prompted to authorize it with Dropbox
 
 == Frequently Asked Questions ==
 
@@ -117,10 +118,22 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
-= 0.9.2 =
+= 1.0 =
+* Removed backup has gone away warning that seems to be confusing users
+* Made the monitor task delete itself once a backup has completed
+
+= 0.9.4 =
+* Fixed an issue where the SQL backup was not being uploaded to Dropbox
+* Fixed an issue where the default backup dir was not being displayed if WP_CONTE_DIR is not set
+* Fixed an issue where bakups where not stopping correctly
+
+= 0.9.3 =
+* Moved settings and monitor to their own paret menu
+* Database bacups are now removed after they are uploaded to Dropbox
+* Fixed free space issue
+* Made it so non standard WP_CONTENT_DIR is backed up
+* Lots of other bug fixes and performance updates
 * Fixed a bug in the file exclusion list that was preventing folders from being marked as partial
-* Added the ability to backup wp-content if it has a custom WP_CONTENT_DIR setting
-* Created a new menu item for backup to dropbox
 
 = 0.9.2 =
 * Fixed issues when open basedir restriction is on
@@ -174,4 +187,4 @@ if they have been modified since the last backup.
 
 == Upgrade Notice ==
 
-* Updates to the backup monitor, new clear history and stop backup button and some bug fixes
+* Very important bugfix introduce in 0.9.3 - sorry guys!

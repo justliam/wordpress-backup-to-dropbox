@@ -62,7 +62,6 @@ try {
 	try
 	{
 		$backup->create_dump_dir();
-		$backup->create_htaccess_file();
 	}
 	catch (Exception $e)
 	{
@@ -232,7 +231,7 @@ try {
 		<tbody>
 		<tr valign="top">
 			<th scope="row"><label
-					for="dump_location"><?php _e( 'Locally store your database backup in this folder', 'wpbtd' ); ?></label></th>
+					for="dump_location"><?php _e( 'Temporarily store your database backup in this folder', 'wpbtd' ); ?></label></th>
 			<td>
 				<input name="dump_location" type="text" id="dump_location" value="<?php echo $dump_location; ?>"
 					   class="regular-text code">

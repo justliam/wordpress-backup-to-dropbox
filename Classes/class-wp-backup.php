@@ -26,6 +26,8 @@ class WP_Backup {
 	const BACKUP_STATUS_WARNING = 2;
 	const BACKUP_STATUS_FAILED = 3;
 
+	const SELECT_QUERY_LIMIT = 10;
+
 	private $dropbox;
 	private $config;
 	private $database;
@@ -138,6 +140,7 @@ class WP_Backup {
 			$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
 			return false;
 		}
+
 		$filename =  $this->get_sql_file_name();
 		$handle = fopen( $filename, 'w+' );
 		if ( !$handle ) {
@@ -173,33 +176,35 @@ class WP_Backup {
 			}
 			$this->write_to_file( $handle, $table_create[1] . ";\n\n" );
 
-			$table_data = $this->database->get_results( "SELECT * FROM $table", ARRAY_A );
-			if ( $table_data === false ) {
-				throw new Exception( $db_error . ' (ERROR_4)' );
-			}
-
-			if ( empty( $table_data ) ) {
+			$table_count = $this->database->get_var( "SELECT COUNT(*) from $table" );
+			if ( $table_count == 0 ) {
 				$this->write_to_file( $handle, "--\n-- Table `$table` is empty\n--\n\n" );
 				continue;
-			}
+			} else {
+				$this->write_to_file( $handle, "--\n-- Dumping data for table `$table`\n--\n\n" );
+				for ($i = 0; $i < $table_count; $i = $i + self::SELECT_QUERY_LIMIT) {
+					$table_data = $this->database->get_results( "SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A );
+					if ( $table_data === false ) {
+						throw new Exception( $db_error . ' (ERROR_4)' );
+					}
 
-			$this->write_to_file( $handle, "--\n-- Dumping data for table `$table`\n--\n\n" );
+					$fields = '`' . implode( '`, `', array_keys( $table_data[0] ) ) . '`';
+					$this->write_to_file( $handle, "INSERT INTO `$table` ($fields) VALUES \n" );
 
-			$fields = '`' . implode( '`, `', array_keys( $table_data[0] ) ) . '`';
-			$this->write_to_file( $handle, "INSERT INTO `$table` ($fields) VALUES \n" );
-
-			$out = '';
-			foreach ( $table_data as $data ) {
-				$data_out = '(';
-				foreach ( $data as $value ) {
-					$value = addslashes( $value );
-					$value = str_replace( "\n", "\\n", $value );
-					$value = str_replace( "\r", "\\r", $value );
-					$data_out .= "'$value', ";
+					$out = '';
+					foreach ( $table_data as $data ) {
+						$data_out = '(';
+						foreach ( $data as $value ) {
+							$value = addslashes( $value );
+							$value = str_replace( "\n", "\\n", $value );
+							$value = str_replace( "\r", "\\r", $value );
+							$data_out .= "'$value', ";
+						}
+						$out .= rtrim( $data_out, ' ,' ) . "),\n";
+					}
+					$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n" );
 				}
-				$out .= rtrim( $data_out, ' ,' ) . "),\n";
 			}
-			$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n" );
 		}
 
 		if ( !fclose( $handle ) ) {
@@ -240,8 +245,6 @@ class WP_Backup {
 
 			$this->config->set_time_limit();
 
-			$this->config->log( WP_Backup::BACKUP_STATUS_STARTED );
-
 			if ( !$this->dropbox->is_authorized() ) {
 				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
 				return;
@@ -254,12 +257,12 @@ class WP_Backup {
 			$sql_file_name = $this->get_sql_file_name();
 			$uploaded_files = $this->config->get_uploaded_files();
 			if ( !in_array($sql_file_name, $uploaded_files) ) {
-				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ), $sql_file_name );
+				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ) );
 				$this->backup_database();
 			}
 
 			$this->backup_path( ABSPATH, $dropbox_location );
-			if ( !strstr( WP_CONTENT_DIR, ABSPATH ) ) {
+			if ( dirname ( WP_CONTENT_DIR ) . '/' != ABSPATH ) {
 				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content' );
 			}
 
@@ -284,7 +287,6 @@ class WP_Backup {
 	 */
 	public function stop() {
 		$this->config->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
-		$this->config->set_current_action( __( 'Stopping backup', 'wpbtd' ) );
 		$this->config->set_in_progress( false );
 		$this->config->set_last_backup_time( time() );
 		$this->config->clean_up();
@@ -310,32 +312,6 @@ class WP_Backup {
 			}
 		}
 		return $dump_dir;
-	}
-
-	/**
-	 * Creates a htaccess file within the dump directory, if it does not already exist, so the public cannot see the sql
-	 * backup within the backup directory
-	 * @throws Exception
-	 * @return void
-	 */
-	public function create_htaccess_file() {
-		$options = $this->config->get_options();
-		$dump_dir = ABSPATH . $options['dump_location'];
-		$htaccess = $dump_dir . '/.htaccess';
-		if ( !file_exists( $htaccess ) ) {
-			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
-			$fh = @fopen( $htaccess, 'w' );
-			if ( !$fh ) {
-				throw new Exception(
-					sprintf(
-						__( "A database backup cannot be created because the local dump directory ('%s') is not writable.", 'wpbtd'),
-						$dump_dir
-					)
-				);
-			}
-			fwrite( $fh, 'deny from all' );
-			fclose( $fh );
-		}
 	}
 
 	private function get_sql_file_name() {

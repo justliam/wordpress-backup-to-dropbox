@@ -584,15 +584,6 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->assertSame( $expected, $actual );
 	}
 
-	/**
-	 * @return void
-	 */
-	public function testCreate_htaccess_file() {
-		$this->backup->create_htaccess_file( 'Out' );
-		$this->assertEquals( 'deny from all', file_get_contents( 'Out/.htaccess' ) );
-		unlink( 'Out/.htaccess' );
-	}
-
 	/* Sets the file list to pick up any new files that may exist on the system
 	 * @param bool $init
 	 * @return void

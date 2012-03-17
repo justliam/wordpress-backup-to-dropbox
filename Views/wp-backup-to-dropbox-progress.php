@@ -1,10 +1,5 @@
 <?php
 /**
- * This file returns the contents of a directory to the jqueryFileTree
- *
- * The code was adapted from the original PHP connector created by Cory S.N. LaViska
- * at A Beautiful Site (http://abeautifulsite.net/)
- *
  * @copyright Copyright (C) 2011 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
@@ -29,5 +24,11 @@ if ( !$config->in_progress() )
 $action = $config->get_current_action();
 
 if ( $config->in_progress() ): ?>
-	<p><strong><?php echo date( 'H:i:s', $action['time'] ) ?>: </strong><?php echo $action['message'] . ' - ' . $action['file'] ?></p>
+	<p>
+		<strong><?php echo date( 'H:i:s', $action['time'] ) ?>: </strong>
+		<?php
+			echo $action['message'];
+			echo isset( $action['file'] ) && $action['file'] ? ' - ' . $action['file'] : '';
+		?>
+	</p>
 <?php endif; ?>
