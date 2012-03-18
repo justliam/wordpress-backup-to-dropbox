@@ -1,7 +1,5 @@
 <?php
 /**
- * A facade class with wrapping functions to administer a dropbox account
- *
  * @copyright Copyright (C) 2011 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
@@ -64,10 +62,10 @@ class Extension_Manager {
 		return $extensions;
 	}
 
-	public function install( $extensionId, $file ) {
+	public function install( $name, $file ) {
 		WP_Filesystem();
-		$download_file = download_url( "{$this->url}/download?key={$this->key}&extensionId=$extensionId&site=" . get_site_url() );
-		$result = unzip_file( $download_file, WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/PremiumExtensions/' );
+		$download_file = download_url( "{$this->url}/download?key={$this->key}&name=$name&site=" . get_site_url() );
+		$result = unzip_file( $download_file, EXTENSIONS_DIR );
 		unlink( $download_file );
 		if ( is_wp_error( $result ) ) {
 			$errorMsg = $result->get_error_messages();
@@ -76,9 +74,17 @@ class Extension_Manager {
 		$this->add_extension( $extensionId, $file );
 	}
 
-	private function add_extension( $extensionId, $file ) {
+	private function add_extension( $name, $file ) {
 		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
-		$extensions[$extensionId] = $file;
+		$extensions[$name] = $file;
 		update_option( 'backup-to-dropbox-premium-extensions', $extensions );
+	}
+
+	public function init() {
+		$installed = $this->get_installed();
+		foreach ($installed as $id => $file) {
+			if ( file_exists( EXTENSIONS_DIR . $file ) )
+				include EXTENSIONS_DIR . $file;
+		}
 	}
 }

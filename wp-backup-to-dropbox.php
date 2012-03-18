@@ -23,6 +23,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 */
 define( 'USE_BUNDLED_PEAR', true );
 define( 'BACKUP_TO_DROPBOX_VERSION', '1.0' );
+define( 'EXTENSIONS_DIR', WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/PremiumExtensions/' );
 
 require_once( 'Dropbox_API/autoload.php' );
 require_once( 'Classes/class-file-list.php' );

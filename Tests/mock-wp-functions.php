@@ -20,6 +20,7 @@ define( 'BACKUP_TO_DROPBOX_VERSION', 'UnitTest' );
 define( 'ABSPATH', dirname(__FILE__) . '/' );
 define( 'WP_CONTENT_DIR', ABSPATH );
 define( 'DB_NAME', 'TestDB' );
+define( 'EXTENSIONS_DIR', dirname( WP_CONTENT_DIR ) . '/PremiumExtensions/' );
 
 date_default_timezone_set( 'Australia/NSW' );
 
@@ -50,6 +51,7 @@ function wp_remote_get( $url ) {
 			'extensionid' => 1,
 			'name' => 'name',
 			'description' => 'description',
+			'file' => 'extension.php',
 			'price' => 'price',
 			'purchased' => true,
 		)
@@ -69,6 +71,10 @@ function download_url( $url ) {
 }
 
 function unzip_file( $file, $dir ) {
+	$fh = fopen($dir . 'extension.php', 'w');
+	fwrite($fh, "<?php\n");
+	fwrite($fh, 'function new_func() { return true; }');
+	fclose($fh);
 	return true;
 }
 

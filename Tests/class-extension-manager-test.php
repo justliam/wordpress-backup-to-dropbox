@@ -37,6 +37,7 @@ class Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 			'extensionid' => 1,
 			'name' => 'name',
 			'description' => 'description',
+			'file' => 'extension.php',
 			'price' => 'price',
 			'purchased' => true,
 		), $extensions[0]);
@@ -47,6 +48,18 @@ class Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(array(
 			1 => 'extension-file.php'
 		), $this->mgr->get_installed());
+	}
+
+	public function testInit() {
+		$this->assertFalse(function_exists('new_func'));
+
+		$this->mgr->install(1, 'extension.php');
+		$this->mgr->init();
+
+		$this->assertTrue(function_exists('new_func'));
+		$this->assertTrue(new_func());
+
+		unlink(EXTENSIONS_DIR . 'extension.php');
 	}
 
 }
