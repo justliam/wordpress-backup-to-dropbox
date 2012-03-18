@@ -34,7 +34,7 @@ if ( isset( $_REQUEST['title'] ) )
 
 try {
 	if ( isset( $_POST['extensionId'] ) )
-		$manager->install( $_POST['extensionId'], $_POST['name'] );
+		$manager->install( $_POST['extensionId'], $_POST['file'] );
 
 	$installed = $manager->get_installed();
 	$extensions = $manager->get_extensions();
@@ -107,7 +107,8 @@ table {
 			<td>$<?php echo $extension['price'] ?> USD</td>
 			<td>
 				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-1">
-					<input type="hidden" value="1" name="extensionId" />
+					<input type="hidden" value="<?php echo $extension['purchased'] ?>" name="extensionId" />
+					<input type="hidden" value="<?php echo $extension['file'] ?>" name="extensionFile" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
 					<?php if ( in_array(1, $installed ) ): ?>

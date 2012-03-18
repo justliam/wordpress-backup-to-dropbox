@@ -23,6 +23,10 @@ class Extension_Manager {
 	private $url = 'http://wpb2d.com';
 	private $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
 
+	public static function construct() {
+		return new self();
+	}
+
 	public function __construct() {
 		if ( !get_option( 'backup-to-dropbox-premium-extensions' ) )
 			add_option( 'backup-to-dropbox-premium-extensions', array(), null, 'no' );
@@ -54,13 +58,13 @@ class Extension_Manager {
 
 	public function get_installed() {
 		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
-		if ( !is_array( $extensions) )
+		if ( !is_array( $extensions ) )
 			return array();
 
 		return $extensions;
 	}
 
-	public function install( $extensionId ) {
+	public function install( $extensionId, $file ) {
 		WP_Filesystem();
 		$download_file = download_url( "{$this->url}/download?key={$this->key}&extensionId=$extensionId&site=" . get_site_url() );
 		$result = unzip_file( $download_file, WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/PremiumExtensions/' );
@@ -69,12 +73,12 @@ class Extension_Manager {
 			$errorMsg = $result->get_error_messages();
 			throw new Exception( __( 'There was an error installing your premium extension' ) . ' - ' . $errorMsg[0] );
 		}
-		$this->add_extension( $extensionId );
+		$this->add_extension( $extensionId, $file );
 	}
 
-	private function add_extension( $extensionId ) {
+	private function add_extension( $extensionId, $file ) {
 		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
-		$extensions[] = $extensionId;
+		$extensions[$extensionId] = $file;
 		update_option( 'backup-to-dropbox-premium-extensions', $extensions );
 	}
 }
