@@ -26,6 +26,7 @@ date_default_timezone_set( 'Australia/NSW' );
 global $options;
 global $schedule;
 global $current_time;
+global $remote_url;
 
 $options = array();
 $next_schedule = array();
@@ -38,6 +39,45 @@ function reset_globals() {
 	unset( $options );
 	unset( $schedule );
 	unset( $current_time );
+}
+
+function wp_remote_get( $url ) {
+	global $remote_url;
+	$remote_url = $url;
+
+	$ret['body'] = json_encode(array(
+		array(
+			'extensionid' => 1,
+			'name' => 'name',
+			'description' => 'description',
+			'price' => 'price',
+			'purchased' => true,
+		)
+	));
+
+	return $ret;
+}
+
+function WP_Filesystem() {}
+
+function download_url( $url ) {
+	$file = 'Out/file.zip';
+	$fh = fopen($file, 'a');
+	fwrite($fh, 'WRITE');
+	fclose($fh);
+	return $file;
+}
+
+function unzip_file( $file, $dir ) {
+	return true;
+}
+
+function is_wp_error( $val ) {
+	return false;
+}
+
+function get_site_url() {
+	return 'http://test.com';
 }
 
 function get_option( $key ) {
