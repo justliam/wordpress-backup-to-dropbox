@@ -264,6 +264,8 @@ class WP_Backup {
 			$this->config->set_current_action( __( 'Backup complete.', 'wpbtd' ) );
 			$this->config->clean_up();
 
+			Extension_Manager::construct()->on_complete();
+
 			unlink( $sql_file_name );
 
 		} catch ( Exception $e ) {

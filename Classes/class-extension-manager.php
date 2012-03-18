@@ -82,9 +82,25 @@ class Extension_Manager {
 
 	public function init() {
 		$installed = $this->get_installed();
-		foreach ($installed as $id => $file) {
+		foreach ($installed as $name => $file) {
 			if ( file_exists( EXTENSIONS_DIR . $file ) )
-				include EXTENSIONS_DIR . $file;
+				include_once EXTENSIONS_DIR . $file;
+		}
+	}
+
+	public function add_menu_items() {
+		$installed = $this->get_installed();
+		foreach ($installed as $name => $file) {
+			$class = str_replace( ' ', '_', ucwords( $name ) );
+			$class::construct()->menu();
+		}
+	}
+
+	public function on_complete() {
+		$installed = $this->get_installed();
+		foreach ($installed as $name => $file) {
+			$class = str_replace( ' ', '_', ucwords( $name ) );
+			$class::construct()->on_complete();
 		}
 	}
 }
