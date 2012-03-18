@@ -234,6 +234,7 @@ class WP_Backup {
 	 * @return bool
 	 */
 	public function execute() {
+		$manager = Extension_Manager::construct();
 		$this->config->set_in_progress( true );
 		try {
 
@@ -264,7 +265,7 @@ class WP_Backup {
 			$this->config->set_current_action( __( 'Backup complete.', 'wpbtd' ) );
 			$this->config->clean_up();
 
-			Extension_Manager::construct()->on_complete();
+			$manager->on_complete();
 
 			unlink( $sql_file_name );
 
@@ -273,6 +274,8 @@ class WP_Backup {
 				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
 			else
 				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
+
+			$manager->on_failure();
 		}
 		$this->config->set_last_backup_time( time() );
 		$this->config->set_in_progress( false );
