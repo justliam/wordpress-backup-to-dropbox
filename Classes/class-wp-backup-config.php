@@ -21,9 +21,14 @@
 include_once( 'class-file-list.php' );
 class WP_Backup_Config {
 
+	const BACKUP_STATUS_STARTED = 0;
+	const BACKUP_STATUS_FINISHED = 1;
+	const BACKUP_STATUS_WARNING = 2;
+	const BACKUP_STATUS_FAILED = 3;
+
 	const MAX_HISTORY_ITEMS = 100;
 
-	public statuc function construct() {
+	public static function construct() {
 		return new self();
 	}
 
@@ -54,12 +59,7 @@ class WP_Backup_Config {
 	}
 
 	public function get_history() {
-		$hist = get_option( 'backup-to-dropbox-history' );
-		if ( !is_array( $hist ) )
-			return array();
-
-		krsort( $hist );
-		return $hist;
+		return get_option( 'backup-to-dropbox-history' );
 	}
 
 	public function get_actions() {

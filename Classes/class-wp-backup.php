@@ -20,12 +20,6 @@
  */
 include_once( 'class-file-list.php' );
 class WP_Backup {
-
-	const BACKUP_STATUS_STARTED = 0;
-	const BACKUP_STATUS_FINISHED = 1;
-	const BACKUP_STATUS_WARNING = 2;
-	const BACKUP_STATUS_FAILED = 3;
-
 	const SELECT_QUERY_LIMIT = 10;
 
 	private $dropbox;
@@ -89,7 +83,7 @@ class WP_Backup {
 						continue;
 
 					if ( filesize( $file ) > $max_file_size ) {
-						$this->config->log( self::BACKUP_STATUS_WARNING,
+						$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING,
 									sprintf( __( "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd' ), basename( $file ) ) );
 						continue;
 					}
@@ -111,7 +105,7 @@ class WP_Backup {
 								throw $e;
 
 							$msg = sprintf( __( "Could not upload '%s' due to the following error: %s", 'wpbtd' ), $file, $e->getMessage() );
-							$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
+							$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, $msg );
 						}
 					}
 				}
@@ -137,7 +131,7 @@ class WP_Backup {
 		if ( !is_writable( $dump_location ) ) {
 			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
 							dirname( $dump_location ), basename( $dump_location ));
-			$this->config->log( self::BACKUP_STATUS_WARNING, $msg );
+			$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, $msg );
 			return false;
 		}
 
@@ -246,7 +240,7 @@ class WP_Backup {
 			$this->config->set_time_limit();
 
 			if ( !$this->dropbox->is_authorized() ) {
-				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
+				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
 				return;
 			}
 
@@ -266,7 +260,7 @@ class WP_Backup {
 				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content' );
 			}
 
-			$this->config->log( WP_Backup::BACKUP_STATUS_FINISHED );
+			$this->config->log( WP_Backup_Config::BACKUP_STATUS_FINISHED );
 			$this->config->set_current_action( __( 'Backup complete.', 'wpbtd' ) );
 			$this->config->clean_up();
 
@@ -274,9 +268,9 @@ class WP_Backup {
 
 		} catch ( Exception $e ) {
 			if ($e->getMessage() == 'Unauthorized')
-				$this->config->log( self::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
+				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
 			else
-				$this->config->log( WP_Backup::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
+				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
 		}
 		$this->config->set_last_backup_time( time() );
 		$this->config->set_in_progress( false );
@@ -286,7 +280,7 @@ class WP_Backup {
 	 * Stops the backup
 	 */
 	public function stop() {
-		$this->config->log( WP_Backup::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
+		$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
 		$this->config->set_in_progress( false );
 		$this->config->set_last_backup_time( time() );
 		$this->config->clean_up();
