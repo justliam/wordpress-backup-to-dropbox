@@ -113,9 +113,9 @@ function monitor_dropbox_backup() {
 	$action = $config->get_current_action();
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ( $config->in_progress() && ( $action['time'] < strtotime( current_time( 'mysql' ) ) - 300  ) )
+	if ( $action && $config->in_progress() && ( $action['time'] < strtotime( current_time( 'mysql' ) ) - 300  ) )
 		wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
-	else if ( !$config->in_progress() )
+	else if ( $action === false || !$config->in_progress() )
 		$config->clean_up();
 }
 

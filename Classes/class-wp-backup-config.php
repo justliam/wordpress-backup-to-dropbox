@@ -110,7 +110,10 @@ class WP_Backup_Config {
 	}
 
 	public function get_current_action() {
-		return end( get_option( 'backup-to-dropbox-actions' ) );
+		$actions = get_option( 'backup-to-dropbox-actions' );
+		if ( is_array( $actions ) )
+			return end( $actions );
+		return false;
 	}
 
 	public function clear_history() {

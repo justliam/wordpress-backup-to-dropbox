@@ -23,7 +23,7 @@ if ( !$config->in_progress() )
 
 $action = $config->get_current_action();
 
-if ( $config->in_progress() ): ?>
+if ( $action && $config->in_progress() ): ?>
 	<p>
 		<strong><?php echo date( 'H:i:s', $action['time'] ) ?>: </strong>
 		<?php
