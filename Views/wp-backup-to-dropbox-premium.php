@@ -36,7 +36,7 @@ try {
 	if ( isset( $_POST['name'] ) )
 		$manager->install( $_POST['name'], $_POST['file'] );
 
-	$installed = $manager->get_installed();
+	$installed = array_keys( $manager->get_installed() );
 	$extensions = $manager->get_extensions();
 } catch ( Exception $e ) {
 	$error = $e->getMessage();
@@ -106,9 +106,9 @@ table {
 			<td><?php echo $extension['description'] ?></td>
 			<td>$<?php echo $extension['price'] ?> USD</td>
 			<td>
-				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-1">
-					<input type="hidden" value="<?php echo strtolower( str_replace( ' ', '-', $extension['name'] ) ); ?>" name="name" />
-					<input type="hidden" value="<?php echo $extension['file'] ?>" name="extensionFile" />
+				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-<?php echo $extension['name'] ?>">
+					<input type="hidden" value="<?php echo $extension['name']; ?>" name="name" />
+					<input type="hidden" value="<?php echo $extension['file'] ?>" name="file" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
 					<?php if ( in_array($extension['name'], $installed ) ): ?>

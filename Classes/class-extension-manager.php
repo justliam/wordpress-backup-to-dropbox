@@ -71,7 +71,7 @@ class Extension_Manager {
 			$errorMsg = $result->get_error_messages();
 			throw new Exception( __( 'There was an error installing your premium extension' ) . ' - ' . $errorMsg[0] );
 		}
-		$this->add_extension( $extensionId, $file );
+		$this->add_extension( $name, $file );
 	}
 
 	private function add_extension( $name, $file ) {
