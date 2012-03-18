@@ -163,7 +163,7 @@ class WP_Backup_Config {
 	}
 
 	public function set_options( $options ) {
-		static $regex = '/[^A-Za-z0-9-_.\/]/';
+		static $regex = '/[^A-Za-z0-9-_.@\/]/';
 		$errors = array();
 		$error_msg = __( 'Invalid directory path. Path must only contain alphanumeric characters and the forward slash (\'/\') to separate directories.', 'wpbtd' );
 
