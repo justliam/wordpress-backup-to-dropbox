@@ -27,7 +27,7 @@ $buyUrl = $manager->get_buy_url();
 
 $error = $title = null;
 if ( isset( $_REQUEST['error'] ) )
-	$error = __( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt@gmail.com+wpb2d">Mikey</a>' ) );
+	$error = __( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>' ) );
 
 if ( isset( $_REQUEST['title'] ) )
 	$title = $_REQUEST['title'];
