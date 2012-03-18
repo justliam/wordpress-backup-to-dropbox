@@ -30,17 +30,20 @@ if ( isset( $_REQUEST['error'] ) )
 	$error = __( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>' ) );
 
 if ( isset( $_REQUEST['title'] ) )
-	$title = $_REQUEST['title'];
+	$successs = __( sprintf( 'You have succesfully purchased the %s premium extension, please install it below.', "<strong>{$_REQUEST['title']}</strong>" ) );
 
 try {
-	if ( isset( $_POST['name'] ) )
+	if ( isset( $_POST['name'] ) ) {
 		$manager->install( $_POST['name'], $_POST['file'] );
+		$success = sprintf( __( 'You have succesfully installed %s premium extension.' ), $_POST['name'] );
+	}
 
 	$installed = array_keys( $manager->get_installed() );
 	$extensions = $manager->get_extensions();
 } catch ( Exception $e ) {
 	$error = $e->getMessage();
 }
+
 ?>
 <style>
 th {
@@ -86,9 +89,9 @@ table {
 		<p class="error">
 			<?php echo $error ?>
 		</p>
-	<?php elseif ($title): ?>
+	<?php elseif ($success): ?>
 		<p class="success">
-			<?php _e( sprintf( 'You have succesfully purchased the %s premium extension, please install it below.', "<strong>$title</strong>" ) ) ?>
+			<?php echo $success ?>
 		</p>
 	<?php endif; ?>
 	<table id="extensions">
@@ -100,7 +103,7 @@ table {
 			<th></th>
 		</tr>
 
-		<?php foreach ($extensions as $extension): ?>
+		<?php if ( is_array( $extensions ) ) foreach ($extensions as $extension): ?>
 		<tr>
 			<td><?php echo $extension['name'] ?></td>
 			<td><?php echo $extension['description'] ?></td>
