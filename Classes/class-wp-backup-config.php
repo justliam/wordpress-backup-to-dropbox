@@ -162,40 +162,36 @@ class WP_Backup_Config {
 		return $schedule;
 	}
 
-	public function set_options( $dump_location, $dropbox_location ) {
+	public function set_options( $options ) {
 		static $regex = '/[^A-Za-z0-9-_.\/]/';
 		$errors = array();
 		$error_msg = __( 'Invalid directory path. Path must only contain alphanumeric characters and the forward slash (\'/\') to separate directories.', 'wpbtd' );
 
-		preg_match( $regex, $dump_location, $matches );
-		if ( !empty( $matches ) ) {
-			$errors['dump_location'] = array(
-				'original' => $dump_location,
-				'message' => $error_msg
-			);
-		}
-
-		preg_match( $regex, $dropbox_location, $matches );
-		if ( !empty( $matches ) ) {
-			$errors['dropbox_location'] = array(
-				'original' => $dropbox_location,
-				'message' => $error_msg
-			);
+		foreach ( $options as $key => $value ) {
+			preg_match( $regex, $value, $matches );
+			if ( !empty( $matches ) ) {
+				$errors[$key] = array(
+					'original' => $value,
+					'message' => $error_msg
+				);
+			}
 		}
 
 		if ( empty( $errors ) ) {
-			$dump_location = ltrim( $dump_location, '/' );
-			$dropbox_location = ltrim( $dropbox_location, '/' );
-
-			$dump_location = rtrim( $dump_location, '/' );
-			$dropbox_location = rtrim( $dropbox_location, '/' );
-
-			$dump_location = preg_replace( '/[\/]+/', '/', $dump_location );
-			$dropbox_location = preg_replace( '/[\/]+/', '/', $dropbox_location );
+			$newOptions = array();
+			foreach ( $options as $key => $value ) {
+				$newOptions[$key] = $value;
+				if ( strstr( $key, 'location' ) ) {
+					$newOptions[$key] = ltrim( $newOptions[$key], '/' );
+					$newOptions[$key] = rtrim( $newOptions[$key], '/' );
+					$newOptions[$key] = preg_replace( '/[\/]+/', '/', $newOptions[$key] );
+				}
+			}
 
 			$options = $this->get_options();
-			$options['dump_location'] = $dump_location;
-			$options['dropbox_location'] = $dropbox_location;
+			foreach ( $newOptions as $key => $value ) {
+				$options[$key] = $newOptions[$key];
+			}
 
 			update_option( 'backup-to-dropbox-options', $options );
 		}

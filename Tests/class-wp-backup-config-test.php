@@ -200,7 +200,13 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$bad_chars = array('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '{', '}', ']', '[', ':', ';', '"', '\'', '<', '>', '?', ',', '~', '`', '|', '\\');
 		foreach ($bad_chars as $bad_char) {
 			$error_msg = 'Invalid directory path. Path must only contain alphanumeric characters and the forward slash (\'/\') to separate directories.';
-			$errors = $this->config->set_options($bad_char, $bad_char);
+
+			$options['dump_location'] = $bad_char;
+			$options['dropbox_location'] = $bad_char;
+			$options['in_progress'] = false;
+			$options['last_backup_time'] = false;
+
+			$errors = $this->config->set_options($options);
 			$this->assertNotEmpty($errors);
 			$this->assertEquals($bad_char, $errors['dump_location']['original']);
 			$this->assertEquals($error_msg, $errors['dump_location']['message']);
@@ -214,18 +220,25 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('WordPressBackup', $config['dropbox_location']);
 
 		//Test good paths
-		$errors = $this->config->set_options('wp-content/backups', 'WordPressBackup');
+		$options['dump_location'] = 'wp-content/backups';
+		$options['dropbox_location'] = 'WordPressBackup';
+		$errors = $this->config->set_options($options);
 		$this->assertEmpty($errors);
 		$config = $this->config->get_options();
 		$this->assertEquals('wp-content/backups', $config['dump_location']);
 		$this->assertEquals('WordPressBackup', $config['dropbox_location']);
 
 		//It is expected that any leading slashes are removed and extra slashes in between are removed
-		$errors = $this->config->set_options('///wp-content////backups///', '////WordPressBackups///SiteOne////');
+		$options['dump_location'] = '///wp-content////backups///';
+		$options['dropbox_location'] = '////WordPressBackups///SiteOne////';
+		$errors = $this->config->set_options($options);
 		$config = $this->config->get_options();
 		$this->assertEmpty($errors);
 		$this->assertEquals('wp-content/backups', $config['dump_location']);
 		$this->assertEquals('WordPressBackups/SiteOne', $config['dropbox_location']);
+
+		$this->assertTrue(isset($options['last_backup_time']));
+		$this->assertTrue(isset($options['in_progress']));
 	}
 
 	public function testCleanUp() {
