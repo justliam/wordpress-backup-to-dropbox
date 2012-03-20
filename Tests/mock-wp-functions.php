@@ -16,6 +16,11 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
+require_once 'Mockery/Loader.php';
+
+$loader = new \Mockery\Loader;
+$loader->register();
+
 define( 'BACKUP_TO_DROPBOX_VERSION', 'UnitTest' );
 define( 'ABSPATH', dirname(__FILE__) . '/' );
 define( 'WP_CONTENT_DIR', ABSPATH );
