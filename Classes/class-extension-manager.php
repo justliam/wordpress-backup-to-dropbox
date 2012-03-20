@@ -106,6 +106,13 @@ class Extension_Manager {
 		}
 	}
 
+	public function get_output() {
+		$keys = array_keys( $this->get_installed() );
+		if ( in_array( 'Zip backup', $keys ) && class_exists( 'Zip_Backup' ) )
+			return new Zip_Backup();
+		return new WP_Output();
+	}
+
 	public function add_menu_items() {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file)

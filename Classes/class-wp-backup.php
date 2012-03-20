@@ -25,12 +25,14 @@ class WP_Backup {
 	private $dropbox;
 	private $config;
 	private $database;
+	private $output;
 
 	public function __construct( $dropbox, $config, $wpdb = null ) {
 		if ( !$wpdb ) global $wpdb;
 		$this->database = $wpdb;
 		$this->dropbox = $dropbox;
 		$this->config = $config;
+		$this->output = Extension_Manager::construct()->get_output();
 	}
 
 	/**
@@ -44,23 +46,6 @@ class WP_Backup {
 	 * @return string - Path to the database dump
 	 */
 	public function backup_path( $path, $dropbox_location ) {
-		//Grab the memory limit setting in the php ini to ensure we do not exceed it
-		$memory_limit_string = ini_get( 'memory_limit' );
-		$memory_limit = ( preg_replace( '/\D/', '', $memory_limit_string ) * 1048576 );
-
-		$suhosin_memory_limit_string = ini_get( 'suhosin.memory_limit' );
-		$suhosin_memory_limit = ( preg_replace( '/\D/', '', $suhosin_memory_limit_string ) * 1048576 );
-
-		if ( $suhosin_memory_limit && $suhosin_memory_limit < $memory_limit ) {
-			$memory_limit = $suhosin_memory_limit;
-		}
-		$max_file_size = $memory_limit / 2.5;
-
-		$options = $this->config->get_options();
-		$last_backup_time = $options['last_backup_time'];
-
-		$uploaded_files = $this->config->get_uploaded_files();
-
 		$file_list = new File_List( $this->database );
 		if ( file_exists( $path ) ) {
 			$source = realpath( $path );
@@ -76,38 +61,10 @@ class WP_Backup {
 					if ( File_List::in_ignore_list( $trimmed_file ) )
 						continue;
 
-					if ( in_array( $file, $uploaded_files ) )
-						continue;
-
 					if ( $file_list->get_file_state( $file ) == File_List::EXCLUDED )
 						continue;
 
-					if ( filesize( $file ) > $max_file_size ) {
-						$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING,
-									sprintf( __( "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd' ), basename( $file ) ) );
-						continue;
-					}
-
-					$dropbox_path = $dropbox_location . DIRECTORY_SEPARATOR . str_replace( $source . DIRECTORY_SEPARATOR, '', $file );
-					if ( PHP_OS == 'WINNT' ) {
-						//The dropbox api requires a forward slash as the directory separator
-						$dropbox_path = str_replace( DIRECTORY_SEPARATOR, '/', $dropbox_path );
-					}
-
-					$directory_contents = $this->dropbox->get_directory_contents( dirname( $dropbox_path ) );
-					if ( !in_array( $trimmed_file, $directory_contents ) || filemtime( $file ) > $last_backup_time ) {
-						try {
-							$this->config->set_current_action( __( 'Uploading' ), $file );
-							$this->dropbox->upload_file( $dropbox_path, $file );
-						} catch ( Exception $e ) {
-
-							if ( $e->getMessage() == 'Unauthorized' )
-								throw $e;
-
-							$msg = sprintf( __( "Could not upload '%s' due to the following error: %s", 'wpbtd' ), $file, $e->getMessage() );
-							$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, $msg );
-						}
-					}
+					$this->output->out( $file );
 				}
 			}
 		}
