@@ -118,6 +118,12 @@ class Extension_Manager {
 			$this->get_instance( $name )->on_complete();
 	}
 
+	public function on_failure() {
+		$installed = $this->get_installed();
+		foreach ($installed as $name => $file)
+			$this->get_instance( $name )->on_failure();
+	}
+
 	private function get_instance( $name ) {
 		$class = str_replace( ' ', '_', ucwords( $name ) );
 		return new $class();
