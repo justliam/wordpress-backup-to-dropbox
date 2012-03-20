@@ -207,13 +207,13 @@ try {
 				$backup_date = date( 'Y-m-d', $backup_time );
 				$backup_time_str = date( 'H:i:s', $backup_time );
 				switch ( $status ) {
-					case WP_Backup::BACKUP_STATUS_STARTED:
+					case WP_Backup_Config::BACKUP_STATUS_STARTED:
 						echo "<span class='backup_ok'>" . sprintf( __( 'Backup started on %s at %s', 'wpbtd' ), $backup_date, $backup_time_str ) . "</span><br />";
 						break;
-					case WP_Backup::BACKUP_STATUS_FINISHED:
+					case WP_Backup_Config::BACKUP_STATUS_FINISHED:
 						echo "<span class='backup_ok'>" . sprintf( __( 'Backup completed on %s at %s', 'wpbtd' ), $backup_date, $backup_time_str ) . "</span><br />";
 						break;
-					case WP_Backup::BACKUP_STATUS_WARNING:
+					case WP_Backup_Config::BACKUP_STATUS_WARNING:
 						echo "<span class='backup_warning'>" . sprintf( __( 'Backup warning on %s at %s: %s', 'wpbtd' ), $backup_date, $backup_time_str, $msg ) . "</span><br />";
 						break;
 					default:
