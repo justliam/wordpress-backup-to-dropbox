@@ -197,7 +197,7 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 	public function testSetGetOptions() {
 		//Test bad paths
-		$bad_chars = array('!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '{', '}', ']', '[', ':', ';', '"', '\'', '<', '>', '?', ',', '~', '`', '|', '\\');
+		$bad_chars = array('!', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '{', '}', ']', '[', ':', ';', '"', '\'', '<', '>', '?', ',', '~', '`', '|', '\\');
 		foreach ($bad_chars as $bad_char) {
 			$error_msg = 'Invalid directory path. Path must only contain alphanumeric characters and the forward slash (\'/\') to separate directories.';
 
