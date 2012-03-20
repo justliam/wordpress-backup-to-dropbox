@@ -23,7 +23,7 @@ class WP_Backup_Config {
 
 	const MAX_HISTORY_ITEMS = 100;
 
-	public statuc function construct() {
+	public static function construct() {
 		return new self();
 	}
 
