@@ -47,7 +47,12 @@ class Extension_Manager {
 	}
 
 	public function get_extensions() {
-		$response = wp_remote_get( "{$this->url}/extensions?key={$this->key}&site=" . get_site_url() );
+		$params = array(
+			'key' => $this->key,
+			'site' => get_site_url(),
+		);
+
+		$response = wp_remote_get( "{$this->url}/extensions?" . http_build_query($params) );
 		if ( is_wp_error( $response )  )
 			throw new Exception( __( 'There was an error getting the list of premium extensions' ) );
 
@@ -64,7 +69,20 @@ class Extension_Manager {
 
 	public function install( $name, $file ) {
 		WP_Filesystem();
-		$download_file = download_url( "{$this->url}/download?key={$this->key}&name=$name&site=" . get_site_url() );
+
+		$params = array(
+			'key' => $this->key,
+			'name' => $name,
+			'site' => get_site_url(),
+		);
+
+		$download_file = download_url( "{$this->url}/download?" . http_build_query($params) );
+
+		if ( is_wp_error( $download_file ) ) {
+			$errorMsg = $download_file->get_error_messages();
+			throw new Exception( __( 'There was an error installing your premium extension' ) . ' - ' . $errorMsg[0] );
+		}
+
 		$result = unzip_file( $download_file, EXTENSIONS_DIR );
 		unlink( $download_file );
 		if ( is_wp_error( $result ) ) {
@@ -90,17 +108,18 @@ class Extension_Manager {
 
 	public function add_menu_items() {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$class = str_replace( ' ', '_', ucwords( $name ) );
-			$class::construct()->menu();
-		}
+		foreach ($installed as $name => $file)
+			$this->get_instance( $name )->menu();
 	}
 
 	public function on_complete() {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$class = str_replace( ' ', '_', ucwords( $name ) );
-			$class::construct()->on_complete();
-		}
+		foreach ($installed as $name => $file)
+			$this->get_instance( $name )->on_complete();
+	}
+
+	private function get_instance( $name ) {
+		$class = str_replace( ' ', '_', ucwords( $name ) );
+		return new $class();
 	}
 }

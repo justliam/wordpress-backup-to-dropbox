@@ -39,7 +39,13 @@ try {
 	if ( array_key_exists( 'save_changes', $_POST ) ) {
 		check_admin_referer( 'backup_to_dropbox_options_save' );
 		$config->set_schedule( $_POST['day'], $_POST['time'], $_POST['frequency'] );
-		$validation_errors = $config->set_options( $_POST['dump_location'], $_POST['dropbox_location'], $_POST['keep_local'], $_POST['backup_count'] );
+
+		$options = array(
+			'dump_location' => $_POST['dump_location'],
+			'dropbox_location' => $_POST['dropbox_location'],
+		);
+		$validation_errors = $config->set_options( $options );
+
 		$file_list->set_file_list( $_POST['file_tree_list'] );
 		$file_list->save();
 	} else if ( array_key_exists( 'unlink', $_POST ) ) {
