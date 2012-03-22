@@ -64,9 +64,6 @@ class WP_Backup_Output {
 	public function out($source, $file) {
 		$dropbox_location = $this->get_dropbox_location();
 		$last_backup_time = $this->get_last_backup_time();
-
-		echo $dropbox_location;
-
 		$uploaded_files = $this->config->get_uploaded_files();
 
 		if (filesize($file) > $this->get_max_file_size()) {

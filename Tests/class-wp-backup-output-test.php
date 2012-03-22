@@ -24,6 +24,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	private $dropbox;
 
 	public function setUp() {
+		reset_globals();
 		$this->dropbox = Mockery::mock('Dropbox_Facade');
 		$this->out = new WP_Backup_Output($this->dropbox, false);
 

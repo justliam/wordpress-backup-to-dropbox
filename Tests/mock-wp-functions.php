@@ -50,9 +50,9 @@ function reset_globals() {
 	global $options;
 	global $schedule;
 	global $current_time;
-	unset( $options );
-	unset( $schedule );
-	unset( $current_time );
+	$options = array();
+	$schedule = array();
+	$current_time = array();
 }
 
 function wp_remote_get( $url ) {

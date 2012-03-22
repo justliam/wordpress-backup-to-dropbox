@@ -23,6 +23,7 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 	private $mgr;
 
 	public function setUp() {
+		reset_globals();
 		$this->mgr = WP_Backup_Extension_Manager::construct();
 	}
 
