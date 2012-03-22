@@ -241,6 +241,11 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(isset($options['in_progress']));
 	}
 
+	public function setGetOption() {
+		$this->config->set_option('option', 'value');
+		$this->assertEquals('value', $this->config->get_option('option'));
+	}
+
 	public function testCleanUp() {
 		$this->config->set_schedule('Monday', '00:00:00', 'daily');
 

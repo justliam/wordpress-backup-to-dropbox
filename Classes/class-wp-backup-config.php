@@ -60,6 +60,30 @@ class WP_Backup_Config {
 		return array();
 	}
 
+	public function get_max_file_size() {
+		$memory_limit_string = ini_get( 'memory_limit' );
+		$memory_limit = ( preg_replace( '/\D/', '', $memory_limit_string ) * 1048576 );
+
+		$suhosin_memory_limit_string = ini_get( 'suhosin.memory_limit' );
+		$suhosin_memory_limit = ( preg_replace( '/\D/', '', $suhosin_memory_limit_string ) * 1048576 );
+
+		if ( $suhosin_memory_limit && $suhosin_memory_limit < $memory_limit ) {
+			$memory_limit = $suhosin_memory_limit;
+		}
+		return $memory_limit / 2.5;
+	}
+
+	public function set_option( $option, $value ) {
+		$options = $this->get_options();
+		$options[$option] = $value;
+		$this->set_options($options);
+	}
+
+	public function get_option( $option ) {
+		$options = $this->get_options();
+		return $options[$option];
+	}
+
 	public function get_options() {
 		return $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 	}
