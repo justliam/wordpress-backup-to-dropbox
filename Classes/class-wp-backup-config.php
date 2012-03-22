@@ -2,7 +2,7 @@
 /**
  * A class with functions the perform a backup of WordPress
  *
- * @copyright Copyright (C) 2011 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
@@ -54,16 +54,22 @@ class WP_Backup_Config {
 		}
 	}
 
+	private function as_array( $val ) {
+		if ( is_array( $val ) )
+			return $val;
+		return array();
+	}
+
 	public function get_options() {
-		return get_option( 'backup-to-dropbox-options' );
+		return $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 	}
 
 	public function get_history() {
-		return get_option( 'backup-to-dropbox-history' );
+		return $this->as_array( get_option( 'backup-to-dropbox-history' ) );
 	}
 
 	public function get_actions() {
-		return get_option( 'backup-to-dropbox-actions' );
+		return $this->as_array( get_option( 'backup-to-dropbox-actions' ) );
 	}
 
 	public function set_time_limit() {
@@ -80,10 +86,7 @@ class WP_Backup_Config {
 	}
 
 	public function set_current_action( $msg, $file = null ) {
-		$actions = get_option( 'backup-to-dropbox-actions' );
-		if ( !is_array( $actions ) ) {
-			$actions = array();
-		}
+		$actions = $this->as_array( get_option( 'backup-to-dropbox-actions' ) );
 		$actions[] = array(
 			'time' => strtotime( current_time( 'mysql' ) ),
 			'message' => $msg,
@@ -110,10 +113,7 @@ class WP_Backup_Config {
 	}
 
 	public function get_current_action() {
-		$actions = get_option( 'backup-to-dropbox-actions' );
-		if ( is_array( $actions ) )
-			return end( $actions );
-		return false;
+		return end ( $this->as_array( get_option( 'backup-to-dropbox-actions' ) ) );
 	}
 
 	public function clear_history() {
