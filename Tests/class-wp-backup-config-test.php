@@ -17,7 +17,6 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 require_once 'mock-wp-functions.php';
-require_once '../Classes/class-wp-backup-config.php';
 
 class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
@@ -25,7 +24,6 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		reset_globals();
-
 		$this->config = WP_Backup_Config::construct();
 	}
 
@@ -155,44 +153,40 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasPastAndNoDaySupplied() {
-		//The blog time is -4 hours from now
-		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('-10 hours')));
+		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+2 hours')));
 		set_current_time(date('Y-m-d H:i:s ', $blog_time));
 
-		$this->config->set_schedule(null, date('H', $blog_time) . ':00', 'daily');
+		$this->config->set_schedule(null, date('H') . ':00', 'daily');
 		$schedule = $this->config->get_schedule();
 
 		//Today in the blog time time is expected
-		$expected_date_time = date('Y-m-d', strtotime('+1 day', $blog_time)) . ' ' . date('H', $blog_time) . ':00:00';
+		$expected_date_time = date('Y-m-d', strtotime('+1 day')) . ' ' . date('H') . ':00:00';
 		$this->assertEquals($expected_date_time, date('Y-m-d H:i:s', $schedule[0]));
 		$this->assertEquals('daily', $schedule[1]);
 
 		//Today in the server time is expected
 		$schedule = wp_next_scheduled('execute_periodic_drobox_backup');
-		$this->assertEquals(strtotime('+1 day', strtotime(date('Y-m-d H:00:00'))), $schedule);
+		$this->assertEquals(strtotime('+1 day',  strtotime(date('Y-m-d H:00:00', strtotime('-2 hours')))), $schedule);
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasNotPast() {
-		//The blog time is 2 hours from now
-		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('-10 hours')));
+		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+2 hours')));
 		set_current_time(date('Y-m-d H:i:s ', $blog_time));
 
-		$day = date('H', $blog_time) + 1;
-		if ($day < 10) {
-			$day = "0$day";
+		$hour = date('H', $blog_time) + 1;
+		if ($hour < 10) {
+			$hour = "0$hour";
 		}
 
-		$this->config->set_schedule(date('D', $blog_time), $day . ':00', 'daily');
+		$this->config->set_schedule(date('D', $blog_time), $hour . ':00', 'weekly');
 		$schedule = $this->config->get_schedule();
 
-		//Today in the blog time time is expected
-		$expected_date_time = date('Y-m-d', $blog_time) . ' ' . $day . ':00:00';
+		$expected_date_time = date('Y-m-d', $blog_time) . ' ' . $hour . ':00:00';
 		$this->assertEquals($expected_date_time, date('Y-m-d H:i:s', $schedule[0]));
-		$this->assertEquals('daily', $schedule[1]);
+		$this->assertEquals('weekly', $schedule[1]);
 
-		//Today in the server time is expected
 		$schedule = wp_next_scheduled('execute_periodic_drobox_backup');
-		$this->assertEquals(strtotime('+1 hour', strtotime(date('Y-m-d H:00:00'))), $schedule);
+		$this->assertEquals(strtotime(date('Y-m-d H:00:00', strtotime('+1 hours'))), $schedule);
 	}
 
 	public function testSetGetOptions() {

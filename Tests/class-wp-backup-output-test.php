@@ -17,9 +17,6 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 require_once 'mock-wp-functions.php';
-require_once '../Classes/class-wp-backup-extension-manager.php';
-require_once '../Classes/class-wp-backup-output.php';
-require_once '../Classes/class-wp-backup-config.php';
 
 class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 

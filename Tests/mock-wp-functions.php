@@ -17,6 +17,14 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 require_once 'Mockery/Loader.php';
+require_once '../Classes/class-wp-backup-extension-manager.php';
+require_once '../Classes/class-wp-backup-extension.php';
+require_once '../Classes/class-wp-backup-output.php';
+require_once '../Classes/class-wp-backup-config.php';
+require_once '../Classes/class-dropbox-facade.php';
+require_once '../Dropbox_API/autoload.php';
+
+set_include_path(dirname(dirname( __FILE__ )) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path());
 
 $loader = new \Mockery\Loader;
 $loader->register();
