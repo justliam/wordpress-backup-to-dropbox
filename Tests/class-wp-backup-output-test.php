@@ -17,26 +17,27 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 require_once 'mock-wp-functions.php';
-require_once '../Classes/class-extension-manager.php';
-require_once '../Classes/class-wp-output.php';
+require_once '../Classes/class-wp-backup-extension-manager.php';
+require_once '../Classes/class-wp-backup-output.php';
 require_once '../Classes/class-wp-backup-config.php';
 
-class WP_Output_Test extends PHPUnit_Framework_TestCase {
+class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 	private $out;
+	private $dropbox;
 
 	public function setUp() {
-		$mockDropbox = Mockery::mock('Dropbox_Facade');
-		$this->out = new WP_Output($mockDropbox);
-	}
-
-	public function testGetMaxFileSize() {
-		$memory_limit_string = ini_get('memory_limit');
-		$memory_limit = preg_replace('/\D/', '', $memory_limit_string) * 1048576;
-		$this->assertEquals($memory_limit / 2.5, $this->out->get_max_file_size());
+		$this->dropbox = Mockery::mock('Dropbox_Facade');
+		$this->out = new WP_Backup_Output($this->dropbox);
 	}
 
 	public function testOut() {
+		WP_Backup_Config::construct()->set_option()
+		$this
+			->dropbox
+			->shouldReceive('get_directory_contents')
+			->with()
+			;
 		$this->out->out( dirname( __FILE__ ), basename( __FILE__ ) );
 	}
 }
