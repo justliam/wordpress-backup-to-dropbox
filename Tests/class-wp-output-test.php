@@ -18,48 +18,25 @@
  */
 require_once 'mock-wp-functions.php';
 require_once '../Classes/class-extension-manager.php';
+require_once '../Classes/class-wp-output.php';
+require_once '../Classes/class-wp-backup-config.php';
 
-class Extension_Manager_Test extends PHPUnit_Framework_TestCase {
+class WP_Output_Test extends PHPUnit_Framework_TestCase {
 
-	private $mgr;
+	private $out;
 
 	public function setUp() {
-		$this->mgr = Extension_Manager::construct();
+		$mockDropbox = Mockery::mock('Dropbox_Facade');
+		$this->out = new WP_Output($mockDropbox);
 	}
 
-	public function testConstruct() {
-		$this->assertEquals(array(), $this->mgr->get_installed());
+	public function testGetMaxFileSize() {
+		$memory_limit_string = ini_get('memory_limit');
+		$memory_limit = preg_replace('/\D/', '', $memory_limit_string) * 1048576;
+		$this->assertEquals($memory_limit / 2.5, $this->out->get_max_file_size());
 	}
 
-	public function testGetExtensions() {
-		$extensions = $this->mgr->get_extensions();
-		$this->assertEquals(array(
-			'extensionid' => 1,
-			'name' => 'name',
-			'description' => 'description',
-			'file' => 'extension.php',
-			'price' => 'price',
-			'purchased' => true,
-		), $extensions[0]);
+	public function testOut() {
+		$this->out->out( dirname( __FILE__ ), basename( __FILE__ ) );
 	}
-
-	public function testInstall() {
-		$this->mgr->install(1, 'extension-file.php');
-		$this->assertEquals(array(
-			1 => 'extension-file.php'
-		), $this->mgr->get_installed());
-	}
-
-	public function testInit() {
-		$this->assertFalse(function_exists('new_func'));
-
-		$this->mgr->install(1, 'extension.php');
-		$this->mgr->init();
-
-		$this->assertTrue(function_exists('new_func'));
-		$this->assertTrue(new_func());
-
-		unlink(EXTENSIONS_DIR . 'extension.php');
-	}
-
 }

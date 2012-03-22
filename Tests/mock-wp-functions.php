@@ -78,7 +78,15 @@ function download_url( $url ) {
 function unzip_file( $file, $dir ) {
 	$fh = fopen($dir . 'extension.php', 'w');
 	fwrite($fh, "<?php\n");
-	fwrite($fh, 'function new_func() { return true; }');
+	fwrite($fh, 'class Test_Extension extends WP_Backup_Extension {');
+	fwrite($fh, 'public static $lastCalled;');
+	fwrite($fh, 'public function on_complete() { self::$lastCalled = "on_complete"; return true; }');
+	fwrite($fh, 'public function on_failure() { self::$lastCalled = "on_failure"; return true; }');
+	fwrite($fh, 'public function get_menu() { self::$lastCalled = "get_menu"; return true; }');
+	fwrite($fh, 'public function get_type() { self::$lastCalled = "get_type"; return self::TYPE_OUTPUT; }');
+	fwrite($fh, 'public function is_enabled() { self::$lastCalled = "is_enabled"; return true; }');
+	fwrite($fh, 'public function set_enabled($bool) { self::$lastCalled = "set_enabled"; return $bool; }');
+	fwrite($fh, '}');
 	fclose($fh);
 	return true;
 }

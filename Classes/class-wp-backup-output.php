@@ -18,16 +18,17 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-include_once( 'class-file-list.php' );
-class WP_Output {
+class WP_Backup_Output {
 
 	private $config;
+	private $dropbox;
 
-	public function __construct() {
+	public function __construct( $dropbox = false ) {
+		$this->dropbox = $dropbox ? $dropbox : new Dropbox_Facade();
 		$this->config = WP_Backup_Config::construct();
 	}
 
-	private function get_max_file_size() {
+	public function get_max_file_size() {
 		$memory_limit_string = ini_get( 'memory_limit' );
 		$memory_limit = ( preg_replace( '/\D/', '', $memory_limit_string ) * 1048576 );
 
@@ -40,10 +41,12 @@ class WP_Output {
 		return $memory_limit / 2.5;
 	}
 
-	public function out( $file ) {
-
+	public function out( $source, $file ) {
 		$options = $this->config->get_options();
+
 		$last_backup_time = $options['last_backup_time'];
+		$dropbox_location = $options['dropbox_location'];
+
 		$uploaded_files = $this->config->get_uploaded_files();
 
 		if ( filesize( $file ) > $this->get_max_file_size() ) {

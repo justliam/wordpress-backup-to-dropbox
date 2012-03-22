@@ -51,7 +51,7 @@ class WP_Backup {
 			$source = realpath( $path );
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
-				if (!$this->config->in_progress())
+				if ( !$this->config->in_progress() )
 					return false;
 
 				$file = realpath( $file );
@@ -64,7 +64,7 @@ class WP_Backup {
 					if ( $file_list->get_file_state( $file ) == File_List::EXCLUDED )
 						continue;
 
-					$this->output->out( $file );
+					$this->output->out( $source, $file );
 				}
 			}
 		}

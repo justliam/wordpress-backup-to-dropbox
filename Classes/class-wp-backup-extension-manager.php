@@ -16,7 +16,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class Extension_Manager {
+class WP_Backup_Extension_Manager {
 
 	private $url = 'http://wpb2d.com';
 	private $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
@@ -26,8 +26,8 @@ class Extension_Manager {
 	}
 
 	public function __construct() {
-		if ( !get_option( 'backup-to-dropbox-premium-extensions' ) )
-			add_option( 'backup-to-dropbox-premium-extensions', array(), null, 'no' );
+		if (!get_option('backup-to-dropbox-premium-extensions'))
+			add_option('backup-to-dropbox-premium-extensions', array(), null, 'no');
 	}
 
 	public function get_key() {
@@ -52,22 +52,22 @@ class Extension_Manager {
 			'site' => get_site_url(),
 		);
 
-		$response = wp_remote_get( "{$this->url}/extensions?" . http_build_query($params) );
-		if ( is_wp_error( $response )  )
-			throw new Exception( __( 'There was an error getting the list of premium extensions' ) );
+		$response = wp_remote_get("{$this->url}/extensions?" . http_build_query($params));
+		if (is_wp_error($response))
+			throw new Exception(__('There was an error getting the list of premium extensions'));
 
-		return json_decode( $response['body'], true );
+		return json_decode($response['body'], true);
 	}
 
 	public function get_installed() {
-		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
-		if ( !is_array( $extensions ) )
+		$extensions = get_option('backup-to-dropbox-premium-extensions');
+		if (!is_array($extensions))
 			return array();
 
 		return $extensions;
 	}
 
-	public function install( $name, $file ) {
+	public function install($name, $file) {
 		WP_Filesystem();
 
 		$params = array(
@@ -76,63 +76,64 @@ class Extension_Manager {
 			'site' => get_site_url(),
 		);
 
-		$download_file = download_url( "{$this->url}/download?" . http_build_query($params) );
+		$download_file = download_url("{$this->url}/download?" . http_build_query($params));
 
-		if ( is_wp_error( $download_file ) ) {
+		if (is_wp_error($download_file)) {
 			$errorMsg = $download_file->get_error_messages();
-			throw new Exception( __( 'There was an error installing your premium extension' ) . ' - ' . $errorMsg[0] );
+			throw new Exception(__('There was an error installing your premium extension') . ' - ' . $errorMsg[0]);
 		}
 
-		$result = unzip_file( $download_file, EXTENSIONS_DIR );
-		unlink( $download_file );
-		if ( is_wp_error( $result ) ) {
+		$result = unzip_file($download_file, EXTENSIONS_DIR);
+		unlink($download_file);
+		if (is_wp_error($result)) {
 			$errorMsg = $result->get_error_messages();
-			throw new Exception( __( 'There was an error installing your premium extension' ) . ' - ' . $errorMsg[0] );
+			throw new Exception(__('There was an error installing your premium extension') . ' - ' . $errorMsg[0]);
 		}
-		$this->add_extension( $name, $file );
+
+		$extensions = get_option('backup-to-dropbox-premium-extensions');
+		$extensions[$name] = $file;
+		update_option('backup-to-dropbox-premium-extensions', $extensions);
 	}
 
-	private function add_extension( $name, $file ) {
-		$extensions = get_option( 'backup-to-dropbox-premium-extensions' );
-		$extensions[$name] = $file;
-		update_option( 'backup-to-dropbox-premium-extensions', $extensions );
-	}
 
 	public function init() {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file) {
-			if ( file_exists( EXTENSIONS_DIR . $file ) )
+			if (file_exists(EXTENSIONS_DIR . $file))
 				include_once EXTENSIONS_DIR . $file;
 		}
 	}
 
 	public function get_output() {
-		$keys = array_keys( $this->get_installed() );
-		if ( in_array( 'Zip backup', $keys ) && class_exists( 'Zip_Backup' ) )
-			return new Zip_Backup();
-		return new WP_Output();
+		$installed = $this->get_installed();
+		foreach ($installed as $name => $file) {
+			$obj = $this->get_instance($name);
+			if ($obj->get_type() == WP_Backup_Extension::TYPE_OUTPUT && $obj->is_enabled())
+				return $obj;
+		}
+		return new WP_Backup_Output();
 	}
 
 	public function add_menu_items() {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file)
-			$this->get_instance( $name )->menu();
+			$this->get_instance($name)->get_menu();
 	}
 
 	public function on_complete() {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file)
-			$this->get_instance( $name )->on_complete();
+			$this->get_instance($name)->on_complete();
 	}
 
 	public function on_failure() {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file)
-			$this->get_instance( $name )->on_failure();
+			$this->get_instance($name)->on_failure();
 	}
 
-	private function get_instance( $name ) {
-		$class = str_replace( ' ', '_', ucwords( $name ) );
+	private function get_instance($name) {
+		$class = str_replace(' ', '_', ucwords($name));
 		return new $class();
 	}
 }
