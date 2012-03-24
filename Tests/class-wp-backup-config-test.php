@@ -28,13 +28,10 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testConstruct() {
-		$options = $this->config->get_options();
-		$this->assertEquals($options, array(
-			'dump_location' => 'Tests/backups',
-			'dropbox_location' => 'WordPressBackup',
-			'last_backup_time' => false,
-			'in_progress' => false,
-		));
+		$this->assertEquals('Tests/backups', $this->config->get_option('dump_location'));
+		$this->assertEquals('WordPressBackup', $this->config->get_option('dropbox_location'));
+		$this->assertEquals(false, $this->config->get_option('last_backup_time'));
+		$this->assertEquals(false, $this->config->get_option('in_progress'));
 
 		$history = $this->config->get_history();
 		$this->assertEquals($history, array());
@@ -48,13 +45,10 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$options['backup-to-dropbox-options'] = array('bad');
 
 		$this->config = WP_Backup_Config::construct();
-		$options = $this->config->get_options();
-		$this->assertEquals($options, array(
-			'dump_location' => 'Tests/backups',
-			'dropbox_location' => 'WordPressBackup',
-			'last_backup_time' => false,
-			'in_progress' => false,
-		));
+		$this->assertEquals('Tests/backups', $this->config->get_option('dump_location'));
+		$this->assertEquals('WordPressBackup', $this->config->get_option('dropbox_location'));
+		$this->assertEquals(false, $this->config->get_option('last_backup_time'));
+		$this->assertEquals(false, $this->config->get_option('in_progress'));
 	}
 
 	public function testSetGetClearHistory() {
@@ -209,35 +203,29 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		}
 
 		//The there where errors so the data should remain as it was set in the unit test setup
-		$config = $this->config->get_options();
-		$this->assertEquals('Tests/backups', $config['dump_location']);
-		$this->assertEquals('WordPressBackup', $config['dropbox_location']);
+		$this->assertEquals('Tests/backups', $this->config->get_option('dump_location'));
+		$this->assertEquals('WordPressBackup', $this->config->get_option('dropbox_location'));
 
 		//Test good paths
 		$options['dump_location'] = 'wp-content/backups';
 		$options['dropbox_location'] = 'WordPressBackup';
 		$errors = $this->config->set_options($options);
+
 		$this->assertEmpty($errors);
-		$config = $this->config->get_options();
-		$this->assertEquals('wp-content/backups', $config['dump_location']);
-		$this->assertEquals('WordPressBackup', $config['dropbox_location']);
+		$this->assertEquals('wp-content/backups', $this->config->get_option('dump_location'));
+		$this->assertEquals('WordPressBackup', $this->config->get_option('dropbox_location'));
 
 		//It is expected that any leading slashes are removed and extra slashes in between are removed
 		$options['dump_location'] = '///wp-content////backups///';
 		$options['dropbox_location'] = '////WordPressBackups///SiteOne////';
 		$errors = $this->config->set_options($options);
-		$config = $this->config->get_options();
+
 		$this->assertEmpty($errors);
-		$this->assertEquals('wp-content/backups', $config['dump_location']);
-		$this->assertEquals('WordPressBackups/SiteOne', $config['dropbox_location']);
+		$this->assertEquals('wp-content/backups', $this->config->get_option('dump_location'));
+		$this->assertEquals('WordPressBackups/SiteOne', $this->config->get_option('dropbox_location'));
 
 		$this->assertTrue(isset($options['last_backup_time']));
 		$this->assertTrue(isset($options['in_progress']));
-	}
-
-	public function setGetOption() {
-		$this->config->set_option('option', 'value');
-		$this->assertEquals('value', $this->config->get_option('option'));
 	}
 
 	public function testCleanUp() {

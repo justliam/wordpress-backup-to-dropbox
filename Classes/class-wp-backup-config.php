@@ -37,7 +37,7 @@ class WP_Backup_Config {
 			add_option( 'backup-to-dropbox-history', array(), null, 'no' );
 		}
 
-		$options = $this->get_options();
+		$options = $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 		if ( !is_array( $options ) || ( !isset( $options['dump_location'] ) || !isset( $options['dropbox_location'] ) ) ) {
 			$options = array(
 				'dump_location' => basename( WP_CONTENT_DIR ) . '/backups',
@@ -74,18 +74,14 @@ class WP_Backup_Config {
 	}
 
 	public function set_option( $option, $value ) {
-		$options = $this->get_options();
+		$options = $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 		$options[$option] = $value;
-		$this->set_options($options);
+		return $this->set_options($options);
 	}
 
 	public function get_option( $option ) {
-		$options = $this->get_options();
+		$options = $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 		return $options[$option];
-	}
-
-	public function get_options() {
-		return $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 	}
 
 	public function get_history() {
@@ -120,8 +116,7 @@ class WP_Backup_Config {
 	}
 
 	public function in_progress() {
-		$options = $this->get_options();
-		return $options['in_progress'];
+		return $this->get_option('in_progress');
 	}
 
 	public function is_scheduled() {
@@ -131,9 +126,7 @@ class WP_Backup_Config {
 	}
 
 	public function set_in_progress( $bool ) {
-		$options = $this->get_options();
-		$options['in_progress'] = $bool;
-		update_option( 'backup-to-dropbox-options', $options );
+		$this->set_option('in_progress', $bool);
 	}
 
 	public function get_current_action() {
@@ -215,7 +208,7 @@ class WP_Backup_Config {
 				}
 			}
 
-			$options = $this->get_options();
+			$options = $this->as_array( get_option( 'backup-to-dropbox-options' ) );
 			foreach ( $newOptions as $key => $value ) {
 				$options[$key] = $newOptions[$key];
 			}
@@ -227,9 +220,7 @@ class WP_Backup_Config {
 	}
 
 	public function set_last_backup_time( $time ) {
-		$options = $this->get_options();
-		$options['last_backup_time'] = $time;
-		update_option( 'backup-to-dropbox-options', $options );
+		$this->set_option('last_backup_time', $time);
 	}
 
 	public function get_uploaded_files() {
