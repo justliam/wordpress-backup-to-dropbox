@@ -29,6 +29,8 @@ set_include_path(dirname(dirname(__FILE__)) . '/PEAR_Includes' . PATH_SEPARATOR 
 $loader = new \Mockery\Loader;
 $loader->register();
 
+define('ARRAY_A', true);
+define('ARRAY_N', true);
 define('BACKUP_TO_DROPBOX_VERSION', 'UnitTest');
 define('ABSPATH', dirname(__FILE__) . '/');
 define('WP_CONTENT_DIR', ABSPATH);
@@ -134,26 +136,26 @@ function wp_next_scheduled($key) {
 	return array_key_exists($key, $schedule) ? $schedule[$key][0] : false;
 }
 
-function wp_get_schedule($key ) {
+function wp_get_schedule($key) {
 	global $schedule;
-	return array_key_exists($key, $schedule ) ? $schedule[$key][1] : false;
+	return array_key_exists($key, $schedule) ? $schedule[$key][1] : false;
 }
 
-function __($str ) {
+function __($str) {
 	return $str;
 }
 
-function set_current_time($time ) {
+function set_current_time($time) {
 	global $current_time;
 	$current_time = $time;
 }
 
-function current_time($str ) {
-	if ($str != 'mysql' ) {
-		throw new Exception('Current time var must be mysql' );
+function current_time($str) {
+	if ($str != 'mysql') {
+		throw new Exception('Current time var must be mysql');
 	}
 	global $current_time;
-	if ($current_time ) {
+	if ($current_time) {
 		return $current_time;
 	}
 	return date('Y-m-d H:i:s');

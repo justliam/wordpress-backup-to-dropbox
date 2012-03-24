@@ -27,12 +27,12 @@ class WP_Backup {
 	private $database;
 	private $output;
 
-	public function __construct( $dropbox, $config, $wpdb = null ) {
+	public function __construct( $dropbox = null, $wpdb = null, $output = null ) {
 		if ( !$wpdb ) global $wpdb;
 		$this->database = $wpdb;
-		$this->dropbox = $dropbox;
-		$this->config = $config;
-		$this->output = Extension_Manager::construct()->get_output();
+		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
+		$this->config = WP_Backup_Config::construct();
+		$this->output = $output ? $output : Extension_Manager::construct()->get_output();
 	}
 
 	/**
@@ -52,7 +52,7 @@ class WP_Backup {
 			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
 			foreach ( $files as $file ) {
 				if ( !$this->config->in_progress() )
-					return false;
+					return;
 
 				$file = realpath( $file );
 				if ( is_file( $file ) ) {
@@ -82,8 +82,7 @@ class WP_Backup {
 			throw new Exception( $db_error . ' (ERROR_1)' );
 		}
 
-		$options = $this->config->get_options();
-		$dump_location = $options['dump_location'];
+		$dump_location = $this->config->get_option('dump_location');
 
 		if ( !is_writable( $dump_location ) ) {
 			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
@@ -102,7 +101,7 @@ class WP_Backup {
 
 		$this->write_to_file( $handle, "-- WordPress Backup to Dropbox SQL Dump\n" );
 		$this->write_to_file( $handle, "-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n" );
-		$this->write_to_file( $handle, "-- http://www.mikeyd.com.au/wordpress-backup-to-dropbox/\n" );
+		$this->write_to_file( $handle, "-- http://wpb2d.com\n" );
 		$this->write_to_file( $handle, "-- Generation Time: " . date( "F j, Y", $blog_time ) . " at " . date( "H:i", $blog_time ) . "\n\n" );
 		$this->write_to_file( $handle, 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n" );
 
@@ -127,7 +126,7 @@ class WP_Backup {
 			}
 			$this->write_to_file( $handle, $table_create[1] . ";\n\n" );
 
-			$table_count = $this->database->get_var( "SELECT COUNT(*) from $table" );
+			$table_count = $this->database->get_var( "SELECT COUNT(*) FROM $table" );
 			if ( $table_count == 0 ) {
 				$this->write_to_file( $handle, "--\n-- Table `$table` is empty\n--\n\n" );
 				continue;
@@ -153,7 +152,7 @@ class WP_Backup {
 						}
 						$out .= rtrim( $data_out, ' ,' ) . "),\n";
 					}
-					$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n" );
+					$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n\n" );
 				}
 			}
 		}
@@ -202,9 +201,8 @@ class WP_Backup {
 				return;
 			}
 
-			$options = $this->config->get_options();
-			$dump_location = $options['dump_location'];
-			$dropbox_location = $options['dropbox_location'];
+			$dump_location = $this->config->get_option('dump_location');
+			$dropbox_location = $this->config->get_option('dropbox_location');
 
 			$sql_file_name = $this->get_sql_file_name();
 			$uploaded_files = $this->config->get_uploaded_files();
@@ -271,7 +269,6 @@ class WP_Backup {
 	}
 
 	private function get_sql_file_name() {
-		$options = $this->config->get_options();
-		return ABSPATH . rtrim( $options['dump_location'], DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
+		return ABSPATH . rtrim( $this->config->get_option('dump_location'), DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
 	}
 }
