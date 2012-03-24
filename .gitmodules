@@ -1,3 +1,3 @@
-[submodule "premiumextensions"]
-	path = premiumextensions
+[submodule "Extensions"]
+	path = Extensions
 	url = git@bitbucket.org:michaeldewildt/premiumextensions.git
