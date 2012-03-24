@@ -36,13 +36,11 @@ class Dropbox_Facade {
 	 */
 	private $tokens = null;
 
-	/**
-	 * Creates a new instance of the Dropbox facade by connecting to Dropbox with the application tokens and then create
-	 * a new instance of the Dropbox api for use by ths facade.
-	 *
-	 * @return \Dropbox_Facade
-	 */
-	function __construct() {
+	public static function construct() {
+		return new self();
+	}
+
+	public function __construct() {
 		$this->tokens = get_option( 'backup-to-dropbox-tokens' );
 		if ( !$this->tokens ) {
 			$this->tokens = array( 'access' => false, 'request' => false );
