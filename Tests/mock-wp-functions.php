@@ -16,13 +16,14 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
+$prefix = isset($prefix) ? $prefix : '';
 require_once 'Mockery/Loader.php';
-require_once '../Classes/class-wp-backup-extension-manager.php';
-require_once '../Classes/class-wp-backup-extension.php';
-require_once '../Classes/class-wp-backup-output.php';
-require_once '../Classes/class-wp-backup-config.php';
-require_once '../Classes/class-dropbox-facade.php';
-require_once '../Dropbox_API/autoload.php';
+require_once $prefix . '../Classes/class-wp-backup-extension-manager.php';
+require_once $prefix . '../Classes/class-wp-backup-extension.php';
+require_once $prefix . '../Classes/class-wp-backup-output.php';
+require_once $prefix . '../Classes/class-wp-backup-config.php';
+require_once $prefix . '../Classes/class-dropbox-facade.php';
+require_once $prefix . '../Dropbox_API/autoload.php';
 
 set_include_path(dirname(dirname(__FILE__)) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path());
 
@@ -107,6 +108,10 @@ function is_wp_error($val) {
 
 function get_site_url() {
 	return 'http://test.com';
+}
+
+function get_bloginfo($key) {
+	return 'Test blog';
 }
 
 function get_option($key) {
