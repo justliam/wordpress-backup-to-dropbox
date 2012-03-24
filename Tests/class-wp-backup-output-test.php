@@ -21,12 +21,15 @@ require_once 'mock-wp-functions.php';
 class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 	private $out;
+	private $config;
 	private $dropbox;
 
 	public function setUp() {
 		reset_globals();
 		$this->dropbox = Mockery::mock('Dropbox_Facade');
 		$this->out = new WP_Backup_Output($this->dropbox, false);
+		$this->config = WP_Backup_Config::construct();
+		$this->config->set_option('dropbox_location', 'DropboxLocation');
 
 		$fh = fopen(__DIR__ . '/Out/file.txt', 'w');
 		fwrite($fh, "file.txt");
@@ -39,25 +42,21 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetCachedVal() {
-		$config = WP_Backup_Config::construct();
 		$out = new WP_Backup_Output($this->dropbox);
 
-		$config->set_option('last_backup_time', 111);
+		$this->config->set_option('last_backup_time', 111);
 		$this->assertEquals(111, $out->get_last_backup_time());
 
-		$config->set_option('last_backup_time', 222);
+		$this->config->set_option('last_backup_time', 222);
 		$this->assertEquals(111, $out->get_last_backup_time());
 
-		$config->set_option('dropbox_location', 'DropboxLocation');
 		$this->assertEquals('DropboxLocation', $out->get_dropbox_location());
 
-		$config->set_option('dropbox_location', 'Meh');
+		$this->config->set_option('dropbox_location', 'Meh');
 		$this->assertEquals('DropboxLocation', $out->get_dropbox_location());
 	}
 
 	public function testOutFileNotInDropbox() {
-		$config = WP_Backup_Config::construct();
-		$config->set_option('dropbox_location', 'DropboxLocation');
 
 		$this
 			->dropbox
@@ -72,15 +71,13 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $config->get_uploaded_files();
+		$uploaded = $this->config->get_uploaded_files();
 		$this->assertNotEmpty($uploaded);
 		$this->assertEquals(__DIR__ . '/Out/file.txt', $uploaded[0]);
 	}
 
 	public function testOutFileInDropboxButOlder() {
-		$config = WP_Backup_Config::construct();
-		$config->set_option('dropbox_location', 'DropboxLocation');
-		$config->set_option('last_backup_time', filemtime(__DIR__ . '/Out/file.txt') - 1);
+		$this->config->set_option('last_backup_time', filemtime(__DIR__ . '/Out/file.txt') - 1);
 
 		$this
 			->dropbox
@@ -95,15 +92,13 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $config->get_uploaded_files();
+		$uploaded = $this->config->get_uploaded_files();
 		$this->assertNotEmpty($uploaded);
 		$this->assertEquals(__DIR__ . '/Out/file.txt', $uploaded[0]);
 	}
 
 	public function testOutFileInDropboxAndNotUpdated() {
-		$config = WP_Backup_Config::construct();
-		$config->set_option('dropbox_location', 'DropboxLocation');
-		$config->set_option('last_backup_time', filemtime(__DIR__ . '/Out/file.txt') + 1);
+		$this->config->set_option('last_backup_time', filemtime(__DIR__ . '/Out/file.txt') + 1);
 
 		$this
 			->dropbox
@@ -115,14 +110,11 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $config->get_uploaded_files();
+		$uploaded = $this->config->get_uploaded_files();
 		$this->assertEmpty($uploaded);
 	}
 
 	public function testOutFileUploadWarning() {
-		$config = WP_Backup_Config::construct();
-		$config->set_option('dropbox_location', 'DropboxLocation');
-
 		$this
 			->dropbox
 			->shouldReceive('get_directory_contents')
@@ -135,16 +127,43 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $config->get_uploaded_files();
-		$history = $config->get_history();
+		$history = $this->config->get_history();
 		$this->assertEquals(
 			"Could not upload '/Users/mikey/Documents/wpb2d/git/WordPress-Backup-to-Dropbox/Tests/Out/file.txt' due to the following error: Error",
 			$history[0][2]
 		);
 	}
+
+	public function testOutFileUploadFileTooLarge() {
+		if (!file_exists(__DIR__ . '/Out/bigFile.txt')) {
+			$fh = fopen(__DIR__ . '/Out/bigFile.txt', 'w');
+			for ($i = 0; $i < 3461120; $i++)
+				fwrite($fh, "a");
+			fclose($fh);
+		}
+
+		ini_set( 'memory_limit', '8M' );
+		$this
+			->dropbox
+			->shouldReceive('get_directory_contents')
+			->once()
+			->with('DropboxLocation/Out')
+			->andReturn(array())
+			->shouldReceive('upload_file')
+			->never()
+			;
+
+		$this->out->out(__DIR__, __DIR__ . '/Out/bigFile.txt');
+
+		$history = $this->config->get_history();
+		$this->assertNotEmpty($history);
+		$this->assertEquals(
+			"file 'bigFile.txt' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.",
+			$history[0][2]
+		);
+	}
+
 	public function testOutFileUploadUnauthorized() {
-		$config = WP_Backup_Config::construct();
-		$config->set_option('dropbox_location', 'DropboxLocation');
 
 		$this
 			->dropbox
