@@ -142,7 +142,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			fclose($fh);
 		}
 
-		ini_set( 'memory_limit', '8M' );
+		ini_set('memory_limit', '8M');
 		$this
 			->dropbox
 			->shouldReceive('get_directory_contents')
@@ -161,6 +161,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			"file 'bigFile.txt' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.",
 			$history[0][2]
 		);
+		ini_restore('memory_limit');
 	}
 
 	public function testOutFileUploadUnauthorized() {

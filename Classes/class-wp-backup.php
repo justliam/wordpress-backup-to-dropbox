@@ -190,7 +190,7 @@ class WP_Backup {
 	 * @return bool
 	 */
 	public function execute() {
-		$manager = Extension_Manager::construct();
+		$manager = WP_Backup_Extension_Manager::construct();
 		$this->config->set_in_progress( true );
 		try {
 
@@ -252,8 +252,7 @@ class WP_Backup {
 	 * @return string
 	 */
 	public function create_dump_dir() {
-		$options = $this->config->get_options();
-		$dump_dir = ABSPATH . $options['dump_location'];
+		$dump_dir = ABSPATH .  $this->config->get_option('dump_location');
 		if ( !file_exists( $dump_dir ) ) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
 			if ( !@mkdir( $dump_dir ) ) {

@@ -71,7 +71,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		);
 	}
 
-	public function testBackupDatabase() {
+	private function setUpDbMock() {
 		$tableData = array();
 		for ($i = 0; $i < 10; $i++) {
 			$tableData[] = array(
@@ -115,9 +115,84 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			->with('SELECT * FROM table2 LIMIT 10 OFFSET 10', ARRAY_A)
 			->andReturn($tableData)
 			;
+	}
+
+	public function testBackupDatabase() {
+		$this->setUpDbMock();
 
 		$this->backup->backup_database();
 		$this->assertEmpty($this->config->get_history());
+	}
+
+	public function testExecuteNotAuthorized() {
+		$this
+			->dropbox
+			->shouldReceive('is_authorized')
+			->andReturn(false)
+			;
+
+		$this->backup->execute();
+
+		$history = $this->config->get_history();
+		$this->assertNotEmpty($history);
+		$this->assertEquals(
+			"Your Dropbox account is not authorized yet.",
+			$history[0][2]
+		);
+	}
+
+	public function testExecute() {
+		$this
+			->dropbox
+			->shouldReceive('is_authorized')
+			->andReturn(true)
+			;
+
+		$this->setUpDbMock();
+
+		$this
+			->output
+			->shouldReceive('out')
+			->with(__DIR__, Mockery::any())
+			;
+
+		$this->backup->execute();
+
+		$history = $this->config->get_history();
+		$this->assertNotEmpty($history);
+		$this->assertEquals(strtotime('2012-03-12 00:00:00'), $history[0][0]);
+		$this->assertEquals(WP_Backup_Config::BACKUP_STATUS_FINISHED, $history[0][1]);
+	}
+
+
+	public function testBackupNow() {
+		$this->backup->backup_now();
+		$this->assertEquals(time(), wp_next_scheduled('execute_instant_drobox_backup'));
+	}
+
+	public function testStop() {
+		$this->config->set_in_progress(true);
+
+		$this->backup->stop();
+
+		$this->assertFalse($this->config->in_progress());
+		$this->assertEquals(time(), $this->config->get_option('last_backup_time'));
+
+		$history = $this->config->get_history();
+		$this->assertNotEmpty($history);
+		$this->assertEquals(
+			"Backup stopped by user.",
+			$history[0][2]
+		);
+
+		$this->assertEmpty($this->config->get_uploaded_files());
+	}
+
+	public function testCreateDumpDir() {
+		$this->config->set_option('dump_location', 'Out/Dump');
+		$this->backup->create_dump_dir();
+		$this->assertTrue(file_exists('Out/Dump'));
+		rmdir('Out/Dump');
 	}
 }
 ?>
