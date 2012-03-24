@@ -85,8 +85,7 @@ class WP_Backup {
 		$dump_location = $this->config->get_option('dump_location');
 
 		if ( !is_writable( $dump_location ) ) {
-			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
-							dirname( $dump_location ), basename( $dump_location ));
+			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
 			$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, $msg );
 			return false;
 		}

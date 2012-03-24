@@ -81,7 +81,7 @@ class WP_Backup_Config {
 
 	public function get_option( $option ) {
 		$options = $this->as_array( get_option( 'backup-to-dropbox-options' ) );
-		return $options[$option];
+		return isset($options[$option]) ? $options[$option] : false;
 	}
 
 	public function get_history() {
