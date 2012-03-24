@@ -39,7 +39,7 @@ if (USE_BUNDLED_PEAR)
 else
 	set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/PEAR_Includes' );
 
-Extension_Manager::construct()->init();
+WP_Backup_Extension_Manager::construct()->init();
 
 /**
  * A wrapper function that adds an options page to setup Dropbox Backup
@@ -59,7 +59,7 @@ function backup_to_dropbox_admin_menu() {
 
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
 
-	Extension_Manager::construct()->add_menu_items();
+	WP_Backup_Extension_Manager::construct()->add_menu_items();
 
 	$text = __( 'Premium Extensions', 'wpbtd' );
 	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium' );
