@@ -66,7 +66,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$history = $this->config->get_history();
 		$this->assertNotEmpty($history);
 		$this->assertEquals(
-			"A database backup cannot be created because WordPress does not have write access to 'Tests', please create the folder 'backups' manually.",
+			"A database backup cannot be created because WordPress does not have write access to 'Tests/backups', please ensure this directory has write access.",
 			$history[0][2]
 		);
 	}

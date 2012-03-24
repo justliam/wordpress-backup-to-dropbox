@@ -129,8 +129,7 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasPast() {
-		//The blog time is 10 hours from now
-		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+10 hours')));
+		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+2 hours')));
 		set_current_time(date('Y-m-d H:i:s ', $blog_time));
 
 		$this->config->set_schedule(date('D', $blog_time), date('H', $blog_time) . ':00', 'daily');
