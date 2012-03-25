@@ -32,7 +32,7 @@ class WP_Backup {
 		$this->database = $wpdb;
 		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
 		$this->config = WP_Backup_Config::construct();
-		$this->output = $output ? $output : Extension_Manager::construct()->get_output();
+		$this->output = $output ? $output : WP_Backup_Extension_Manager::construct()->get_output();
 	}
 
 	/**

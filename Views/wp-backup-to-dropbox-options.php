@@ -61,9 +61,9 @@ try {
 	if ( !$frequency ) {
 		$frequency = 'weekly';
 	}
-	$options = $config->get_options();
-	$dump_location = $options['dump_location'];
-	$dropbox_location = $options['dropbox_location'];
+
+	$dump_location = $config->get_option('dump_location');
+	$dropbox_location = $config->get_option('dropbox_location');
 
 	try
 	{
