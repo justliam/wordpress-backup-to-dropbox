@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-include_once( 'class-file-list.php' );
+include_once('class-file-list.php');
 class WP_Backup {
 	const SELECT_QUERY_LIMIT = 10;
 
@@ -31,8 +31,8 @@ class WP_Backup {
 		return new self();
 	}
 
-	public function __construct( $dropbox = null, $wpdb = null, $output = null ) {
-		if ( !$wpdb ) global $wpdb;
+	public function __construct($dropbox = null, $wpdb = null, $output = null) {
+		if (!$wpdb) global $wpdb;
 		$this->database = $wpdb;
 		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
 		$this->config = WP_Backup_Config::construct();
@@ -49,26 +49,26 @@ class WP_Backup {
 	 * @param $max_execution_time
 	 * @return string - Path to the database dump
 	 */
-	public function backup_path( $path, $dropbox_location ) {
-		$file_list = new File_List( $this->database );
-		if ( file_exists( $path ) ) {
-			$source = realpath( $path );
-			$files = new RecursiveIteratorIterator( new RecursiveDirectoryIterator( $source ), RecursiveIteratorIterator::SELF_FIRST );
-			foreach ( $files as $file ) {
-				if ( !$this->config->in_progress() )
+	public function backup_path($path, $dropbox_location) {
+		$file_list = new File_List($this->database);
+		if (file_exists($path)) {
+			$source = realpath($path);
+			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
+			foreach ($files as $file) {
+				if (!$this->config->in_progress())
 					return;
 
-				$file = realpath( $file );
-				if ( is_file( $file ) ) {
-					$trimmed_file = basename( $file );
+				$file = realpath($file);
+				if (is_file($file)) {
+					$trimmed_file = basename($file);
 
-					if ( File_List::in_ignore_list( $trimmed_file ) )
+					if (File_List::in_ignore_list($trimmed_file))
 						continue;
 
-					if ( $file_list->get_file_state( $file ) == File_List::EXCLUDED )
+					if ($file_list->get_file_state($file) == File_List::EXCLUDED)
 						continue;
 
-					$this->output->out( $source, $file );
+					$this->output->out($source, $file);
 				}
 			}
 		}
@@ -79,89 +79,89 @@ class WP_Backup {
 	 * @return string
 	 */
 	public function backup_database() {
-		$db_error = __( 'Error while accessing database.', 'wpbtd' );
+		$db_error = __('Error while accessing database.', 'wpbtd');
 
-		$tables = $this->database->get_results( 'SHOW TABLES', ARRAY_N );
-		if ( $tables === false ) {
-			throw new Exception( $db_error . ' (ERROR_1)' );
+		$tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
+		if ($tables === false) {
+			throw new Exception($db_error . ' (ERROR_1)');
 		}
 
 		$dump_location = $this->config->get_option('dump_location');
 
-		if ( !is_writable( $dump_location ) ) {
-			$msg = sprintf(__( "A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
-			$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, $msg );
+		if (!is_writable($dump_location)) {
+			$msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
+			$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, $msg);
 			return false;
 		}
 
 		$filename =  $this->get_sql_file_name();
-		$handle = fopen( $filename, 'w+' );
-		if ( !$handle ) {
-			throw new Exception( __( 'Error creating sql dump file.', 'wpbtd' ) . ' (ERROR_2)' );
+		$handle = fopen($filename, 'w+');
+		if (!$handle) {
+			throw new Exception(__('Error creating sql dump file.', 'wpbtd') . ' (ERROR_2)');
 		}
 
-		$blog_time = strtotime( current_time( 'mysql' ) );
+		$blog_time = strtotime(current_time('mysql'));
 
-		$this->write_to_file( $handle, "-- WordPress Backup to Dropbox SQL Dump\n" );
-		$this->write_to_file( $handle, "-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n" );
-		$this->write_to_file( $handle, "-- http://wpb2d.com\n" );
-		$this->write_to_file( $handle, "-- Generation Time: " . date( "F j, Y", $blog_time ) . " at " . date( "H:i", $blog_time ) . "\n\n" );
-		$this->write_to_file( $handle, 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n" );
+		$this->write_to_file($handle, "-- WordPress Backup to Dropbox SQL Dump\n");
+		$this->write_to_file($handle, "-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n");
+		$this->write_to_file($handle, "-- http://wpb2d.com\n");
+		$this->write_to_file($handle, "-- Generation Time: " . date("F j, Y", $blog_time) . " at " . date("H:i", $blog_time) . "\n\n");
+		$this->write_to_file($handle, 'SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n");
 
 		//I got this out of the phpMyAdmin database dump to make sure charset is correct
-		$this->write_to_file( $handle, "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n" );
-		$this->write_to_file( $handle, "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n" );
-		$this->write_to_file( $handle, "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n" );
-		$this->write_to_file( $handle, "/*!40101 SET NAMES utf8 */;\n\n" );
+		$this->write_to_file($handle, "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n");
+		$this->write_to_file($handle, "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n");
+		$this->write_to_file($handle, "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n");
+		$this->write_to_file($handle, "/*!40101 SET NAMES utf8 */;\n\n");
 
-		$this->write_to_file( $handle, "--\n-- Create and use the backed up database\n--\n\n" );
-		$this->write_to_file( $handle, "CREATE DATABASE " . DB_NAME . ";\n" );
-		$this->write_to_file( $handle, "USE " . DB_NAME . ";\n\n" );
+		$this->write_to_file($handle, "--\n-- Create and use the backed up database\n--\n\n");
+		$this->write_to_file($handle, "CREATE DATABASE " . DB_NAME . ";\n");
+		$this->write_to_file($handle, "USE " . DB_NAME . ";\n\n");
 
-		foreach ( $tables as $t ) {
+		foreach ($tables as $t) {
 			$table = $t[0];
 
-			$this->write_to_file( $handle, "--\n-- Table structure for table `$table`\n--\n\n" );
+			$this->write_to_file($handle, "--\n-- Table structure for table `$table`\n--\n\n");
 
-			$table_create = $this->database->get_row( "SHOW CREATE TABLE $table", ARRAY_N );
-			if ( $table_create === false ) {
-				throw new Exception( $db_error . ' (ERROR_3)' );
+			$table_create = $this->database->get_row("SHOW CREATE TABLE $table", ARRAY_N);
+			if ($table_create === false) {
+				throw new Exception($db_error . ' (ERROR_3)');
 			}
-			$this->write_to_file( $handle, $table_create[1] . ";\n\n" );
+			$this->write_to_file($handle, $table_create[1] . ";\n\n");
 
-			$table_count = $this->database->get_var( "SELECT COUNT(*) FROM $table" );
-			if ( $table_count == 0 ) {
-				$this->write_to_file( $handle, "--\n-- Table `$table` is empty\n--\n\n" );
+			$table_count = $this->database->get_var("SELECT COUNT(*) FROM $table");
+			if ($table_count == 0) {
+				$this->write_to_file($handle, "--\n-- Table `$table` is empty\n--\n\n");
 				continue;
 			} else {
-				$this->write_to_file( $handle, "--\n-- Dumping data for table `$table`\n--\n\n" );
+				$this->write_to_file($handle, "--\n-- Dumping data for table `$table`\n--\n\n");
 				for ($i = 0; $i < $table_count; $i = $i + self::SELECT_QUERY_LIMIT) {
-					$table_data = $this->database->get_results( "SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A );
-					if ( $table_data === false ) {
-						throw new Exception( $db_error . ' (ERROR_4)' );
+					$table_data = $this->database->get_results("SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A);
+					if ($table_data === false) {
+						throw new Exception($db_error . ' (ERROR_4)');
 					}
 
-					$fields = '`' . implode( '`, `', array_keys( $table_data[0] ) ) . '`';
-					$this->write_to_file( $handle, "INSERT INTO `$table` ($fields) VALUES \n" );
+					$fields = '`' . implode('`, `', array_keys($table_data[0])) . '`';
+					$this->write_to_file($handle, "INSERT INTO `$table` ($fields) VALUES \n");
 
 					$out = '';
-					foreach ( $table_data as $data ) {
+					foreach ($table_data as $data) {
 						$data_out = '(';
-						foreach ( $data as $value ) {
-							$value = addslashes( $value );
-							$value = str_replace( "\n", "\\n", $value );
-							$value = str_replace( "\r", "\\r", $value );
+						foreach ($data as $value) {
+							$value = addslashes($value);
+							$value = str_replace("\n", "\\n", $value);
+							$value = str_replace("\r", "\\r", $value);
 							$data_out .= "'$value', ";
 						}
-						$out .= rtrim( $data_out, ' ,' ) . "),\n";
+						$out .= rtrim($data_out, ' ,') . "),\n";
 					}
-					$this->write_to_file( $handle, rtrim( $out, ",\n" ) . ";\n\n" );
+					$this->write_to_file($handle, rtrim($out, ",\n") . ";\n\n");
 				}
 			}
 		}
 
-		if ( !fclose( $handle ) ) {
-			throw new Exception( __( 'Error closing sql dump file.', 'wpbtd' ) . ' (ERROR_5)' );
+		if (!fclose($handle)) {
+			throw new Exception(__('Error closing sql dump file.', 'wpbtd') . ' (ERROR_5)');
 		}
 
 		return true;
@@ -174,9 +174,9 @@ class WP_Backup {
 	 * @param  $out
 	 * @return void
 	 */
-	private function write_to_file( $handle, $out ) {
-		if ( !fwrite( $handle, $out ) ) {
-			throw new Exception( __( 'Error writing to sql dump file.', 'wpbtd' ) . ' (ERROR_6)' );
+	private function write_to_file($handle, $out) {
+		if (!fwrite($handle, $out)) {
+			throw new Exception(__('Error writing to sql dump file.', 'wpbtd') . ' (ERROR_6)');
 		}
 	}
 
@@ -185,7 +185,7 @@ class WP_Backup {
 	 * @return void
 	 */
 	public function backup_now() {
-		wp_schedule_single_event( time(), 'execute_instant_drobox_backup' );
+		wp_schedule_single_event(time(), 'execute_instant_drobox_backup');
 	}
 
 	/**
@@ -194,13 +194,13 @@ class WP_Backup {
 	 */
 	public function execute() {
 		$manager = WP_Backup_Extension_Manager::construct();
-		$this->config->set_in_progress( true );
+		$this->config->set_in_progress(true);
 		try {
 
 			$this->config->set_time_limit();
 
-			if ( !$this->dropbox->is_authorized() ) {
-				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, __( 'Your Dropbox account is not authorized yet.', 'wpbtd' ) );
+			if (!$this->dropbox->is_authorized()) {
+				$this->config->log(WP_Backup_Config::BACKUP_STATUS_FAILED, __('Your Dropbox account is not authorized yet.', 'wpbtd'));
 				return;
 			}
 
@@ -209,43 +209,43 @@ class WP_Backup {
 
 			$sql_file_name = $this->get_sql_file_name();
 			$uploaded_files = $this->config->get_uploaded_files();
-			if ( !in_array($sql_file_name, $uploaded_files) ) {
-				$this->config->set_current_action( __( 'Creating SQL backup', 'wpbtd' ) );
+			if (!in_array($sql_file_name, $uploaded_files)) {
+				$this->config->set_current_action(__('Creating SQL backup', 'wpbtd'));
 				$this->backup_database();
 			}
 
-			$this->backup_path( ABSPATH, $dropbox_location );
-			if ( dirname ( WP_CONTENT_DIR ) . '/' != ABSPATH ) {
-				$this->backup_path( WP_CONTENT_DIR, $dropbox_location . '/wp-content' );
+			$this->backup_path(ABSPATH, $dropbox_location);
+			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH) {
+				$this->backup_path(WP_CONTENT_DIR, $dropbox_location . '/wp-content');
 			}
 
-			$this->config->log( WP_Backup_Config::BACKUP_STATUS_FINISHED );
-			$this->config->set_current_action( __( 'Backup complete.', 'wpbtd' ) );
+			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);
+			$this->config->set_current_action(__('Backup complete.', 'wpbtd'));
 			$this->config->clean_up();
 
 			$manager->on_complete();
 
-			unlink( $sql_file_name );
+			unlink($sql_file_name);
 
-		} catch ( Exception $e ) {
+		} catch (Exception $e) {
 			if ($e->getMessage() == 'Unauthorized')
-				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, __( 'The plugin is no longer authorized with Dropbox.', 'wpbtd' ) );
+				$this->config->log(WP_Backup_Config::BACKUP_STATUS_FAILED, __('The plugin is no longer authorized with Dropbox.', 'wpbtd'));
 			else
-				$this->config->log( WP_Backup_Config::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage() );
+				$this->config->log(WP_Backup_Config::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage());
 
 			$manager->on_failure();
 		}
-		$this->config->set_last_backup_time( time() );
-		$this->config->set_in_progress( false );
+		$this->config->set_last_backup_time(time());
+		$this->config->set_in_progress(false);
 	}
 
 	/**
 	 * Stops the backup
 	 */
 	public function stop() {
-		$this->config->log( WP_Backup_Config::BACKUP_STATUS_WARNING, __( 'Backup stopped by user.', 'wpbtd' ) );
-		$this->config->set_in_progress( false );
-		$this->config->set_last_backup_time( time() );
+		$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, __('Backup stopped by user.', 'wpbtd'));
+		$this->config->set_in_progress(false);
+		$this->config->set_last_backup_time(time());
 		$this->config->clean_up();
 	}
 
@@ -256,13 +256,13 @@ class WP_Backup {
 	 */
 	public function create_dump_dir() {
 		$dump_dir = ABSPATH .  $this->config->get_option('dump_location');
-		if ( !file_exists( $dump_dir ) ) {
+		if (!file_exists($dump_dir)) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
-			if ( !@mkdir( $dump_dir ) ) {
+			if (!@mkdir($dump_dir)) {
 				throw new Exception(
 				sprintf(
-						__( "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
-						dirname( $dump_dir ), basename( $dump_dir )
+						__("A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
+						dirname($dump_dir), basename($dump_dir)
 					)
 				);
 			}
@@ -271,6 +271,6 @@ class WP_Backup {
 	}
 
 	private function get_sql_file_name() {
-		return ABSPATH . rtrim( $this->config->get_option('dump_location'), DIRECTORY_SEPARATOR ) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
+		return ABSPATH . rtrim($this->config->get_option('dump_location'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
 	}
 }

@@ -85,7 +85,9 @@ class WP_Backup_Config {
 	}
 
 	public function get_history() {
-		return $this->as_array( get_option( 'backup-to-dropbox-history' ) );
+		$history = $this->as_array( get_option( 'backup-to-dropbox-history' ) );
+		arsort($history);
+		return $history;
 	}
 
 	public function get_actions() {

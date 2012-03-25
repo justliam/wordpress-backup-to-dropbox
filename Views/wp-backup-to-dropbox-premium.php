@@ -26,21 +26,21 @@ $installUrl = $manager->get_install_url();
 $buyUrl = $manager->get_buy_url();
 
 $error = $title = null;
-if ( isset( $_REQUEST['error'] ) )
-	$error = __( sprintf( 'There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>' ) );
+if (isset($_REQUEST['error']))
+	$error = __(sprintf('There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>'));
 
-if ( isset( $_REQUEST['title'] ) )
-	$successs = __( sprintf( 'You have succesfully purchased the %s premium extension, please install it below.', "<strong>{$_REQUEST['title']}</strong>" ) );
+if (isset($_REQUEST['title']))
+	$successs = __(sprintf('You have succesfully purchased the %s premium extension, please install it below.', "<strong>{$_REQUEST['title']}</strong>"));
 
 try {
-	if ( isset( $_POST['name'] ) ) {
-		$manager->install( $_POST['name'], $_POST['file'] );
-		$success = sprintf( __( 'You have succesfully installed %s premium extension.' ), $_POST['name'] );
+	if (isset($_POST['name'])) {
+		$manager->install($_POST['name'], $_POST['file']);
+		$success = sprintf(__('You have succesfully installed %s premium extension.'), $_POST['name']);
 	}
 
-	$installed = array_keys( $manager->get_installed() );
+	$installed = array_keys($manager->get_installed());
 	$extensions = $manager->get_extensions();
-} catch ( Exception $e ) {
+} catch (Exception $e) {
 	$error = $e->getMessage();
 }
 
@@ -73,16 +73,16 @@ table {
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
 								 alt="WordPress Backup to Dropbox Logo"></div>
-	<h2><?php _e( 'WordPress Backup to Dropbox', 'wpbtd' ); ?></h2>
-	<p class="description"><?php printf( __( 'Version %s', 'wpbtd' ), BACKUP_TO_DROPBOX_VERSION ) ?></p>
-	<h3><?php _e( 'Premium Extensions', 'wpbtd' ); ?></h3>
+	<h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
+	<p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
+	<h3><?php _e('Premium Extensions', 'wpbtd'); ?></h3>
 	<p>
-		<?php _e( 'Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd' ); ?>
-		<?php _e( 'Installing a premium extensions is easy:', 'wpbtd' ); ?>
+		<?php _e('Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd'); ?>
+		<?php _e('Installing a premium extensions is easy:', 'wpbtd'); ?>
 		<ol>
-			<li><?php _e( 'Click Buy Now and pay for your extension using PayPal', 'wpbtd' ); ?></li>
-			<li><?php _e( 'Click Install & Acitvate to download and install the extension', 'wpbtd' ); ?></li>
-			<li><?php _e( 'Thats it, options for your extension will be available in the menu on the left', 'wpbtd' ); ?></li>
+			<li><?php _e('Click Buy Now and pay for your extension using PayPal', 'wpbtd'); ?></li>
+			<li><?php _e('Click Install & Acitvate to download and install the extension', 'wpbtd'); ?></li>
+			<li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
 		</ol>
 	</p>
 	<?php if ($error): ?>
@@ -97,13 +97,13 @@ table {
 	<table id="extensions">
 
 		<tr>
-			<th><?php _e( 'Name' ) ?></th>
-			<th><?php _e( 'Description' ) ?></th>
-			<th><?php _e( 'Price' ) ?></th>
+			<th><?php _e('Name') ?></th>
+			<th><?php _e('Description') ?></th>
+			<th><?php _e('Price') ?></th>
 			<th></th>
 		</tr>
 
-		<?php if ( is_array( $extensions ) ) foreach ($extensions as $extension): ?>
+		<?php if (is_array($extensions)) foreach ($extensions as $extension): ?>
 		<tr>
 			<td><?php echo $extension['name'] ?></td>
 			<td><?php echo $extension['description'] ?></td>
@@ -114,10 +114,10 @@ table {
 					<input type="hidden" value="<?php echo $extension['file'] ?>" name="file" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
-					<?php if ( in_array($extension['name'], $installed ) ): ?>
+					<?php if (in_array($extension['name'], $installed)): ?>
 						<span class="installed">Installed</span>
 					<?php else: ?>
-						<input type="submit" value="<?php echo $extension['purchased'] ? __( 'Download & Install' ) : __( 'Buy Now' ); ?>" class="submitBtn" />
+						<input type="submit" value="<?php echo $extension['purchased'] ? __('Download & Install') : __('Buy Now'); ?>" class="submitBtn" />
 					<?php endif; ?>
 				</form>
 			</td>

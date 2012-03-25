@@ -23,23 +23,23 @@
  */
 $file_list = new File_List();
 
-$_POST['dir'] = urldecode( $_POST['dir'] );
-if ( file_exists( $_POST['dir'] ) && is_readable($_POST['dir']) ) {
-    $files = scandir( $_POST['dir'] );
-    natcasesort( $files );
-    if ( count( $files ) > 2 ) { /* The 2 accounts for . and .. */
+$_POST['dir'] = urldecode($_POST['dir']);
+if (file_exists($_POST['dir']) && is_readable($_POST['dir'])) {
+    $files = scandir($_POST['dir']);
+    natcasesort($files);
+    if (count($files) > 2) { /* The 2 accounts for . and .. */
         echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
         // All dirs
-        foreach ( $files as $file ) {
-            if ( file_exists( $_POST['dir'] . $file ) && $file != '.' && $file != '..' && is_dir( $_POST['dir'] . $file ) ) {
+        foreach ($files as $file) {
+            if (file_exists($_POST['dir'] . $file) && $file != '.' && $file != '..' && is_dir($_POST['dir'] . $file)) {
 
-	            if ( !is_readable( $_POST['dir'] ) || $_POST['dir'] == dirname( ABSPATH ) . '/' && !strstr( $file, basename( ABSPATH ) ) ) {
+	            if (!is_readable($_POST['dir']) || $_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
 		            continue;
 	            }
 
-                $full_path = htmlentities( $_POST['dir'] . $file ) . "/";
-                $file = htmlentities( $file );
-                $class = $file_list->get_check_box_class( $full_path );
+                $full_path = htmlentities($_POST['dir'] . $file) . "/";
+                $file = htmlentities($file);
+                $class = $file_list->get_check_box_class($full_path);
 
                 echo "<li class='directory collapsed'>";
                 echo "<a href='#' rel='$full_path' class='tree'>$file</a>";
@@ -48,26 +48,26 @@ if ( file_exists( $_POST['dir'] ) && is_readable($_POST['dir']) ) {
             }
         }
         // All files
-        foreach ( $files as $file ) {
+        foreach ($files as $file) {
 
-            if ( file_exists( $_POST['dir'] . $file ) && $file != '.' && $file != '..' && !is_dir( $_POST['dir'] . $file ) ) {
+            if (file_exists($_POST['dir'] . $file) && $file != '.' && $file != '..' && !is_dir($_POST['dir'] . $file)) {
 
-	            if ( $_POST['dir'] == dirname( ABSPATH ) . '/' && !strstr( $file, basename( ABSPATH ) ) ) {
+	            if ($_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
 		            continue;
 	            }
 
-                if ( $file_list->in_ignore_list( $file ) ) {
+                if ($file_list->in_ignore_list($file)) {
                     continue;
                 }
 
-                $full_path = htmlentities( $_POST['dir'] . $file );
-                $file = htmlentities( $file );
-                $class = $file_list->get_check_box_class( $full_path );
-                $ext = preg_replace( '/^.*\./', '', $file );
+                $full_path = htmlentities($_POST['dir'] . $file);
+                $file = htmlentities($file);
+                $class = $file_list->get_check_box_class($full_path);
+                $ext = preg_replace('/^.*\./', '', $file);
 
                 echo "<li class='file ext_$ext'>";
                 echo "<a href='#' rel='$full_path' class='tree'>$file</a>";
-				if ( strstr( $_POST['dir'] . $file, DB_NAME . '-backup.sql' ) === false ) {
+				if (strstr($_POST['dir'] . $file, DB_NAME . '-backup.sql') === false) {
                 	echo "<a href='#' rel='$full_path' class='checkbox $class'></a>";
                 }
                 echo "</li>";

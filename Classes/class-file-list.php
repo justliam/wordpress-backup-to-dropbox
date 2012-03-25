@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-include_once( 'class-wp-backup.php' );
+include_once('class-wp-backup.php');
 class File_List {
 
 	const EXCLUDED = 0;
@@ -41,24 +41,24 @@ class File_List {
 	 * These files cannot be uploaded to Dropbox
 	 * @var array
 	 */
-	private static $ignored_files = array( '.DS_Store', 'Thumbs.db', 'desktop.ini' );
+	private static $ignored_files = array('.DS_Store', 'Thumbs.db', 'desktop.ini');
 
 	/**
 	 * Construct the file list
 	 * @param $wpdb
 	 */
-	public function __construct( $wpdb = null ) {
-		if ( !$wpdb ) global $wpdb;
+	public function __construct($wpdb = null) {
+		if (!$wpdb) global $wpdb;
 
 		$this->database = $wpdb;
 
-		$file_list = get_option( 'backup-to-dropbox-file-list' );
-		if ( $file_list === false ) {
+		$file_list = get_option('backup-to-dropbox-file-list');
+		if ($file_list === false) {
 			$this->partial_directories = array();
 			$this->excluded_files = array();
-			add_option( 'backup-to-dropbox-file-list', array( $this->partial_directories, $this->excluded_files ), null, 'no' );
+			add_option('backup-to-dropbox-file-list', array($this->partial_directories, $this->excluded_files), null, 'no');
 		} else {
-			list( $this->partial_directories, $this->excluded_files ) = $file_list;
+			list($this->partial_directories, $this->excluded_files) = $file_list;
 		}
 	}
 
@@ -67,28 +67,28 @@ class File_List {
 	 * @param  $path
 	 * @return bool
 	 */
-	public function get_file_state( $path ) {
-		$parent_path = dirname( $path ) . '/';
-		if ( $path == dirname( ABSPATH ) . '/' ) {
+	public function get_file_state($path) {
+		$parent_path = dirname($path) . '/';
+		if ($path == dirname(ABSPATH) . '/') {
 			return self::PARTIAL;
-		} else if ( strstr( $path, DB_NAME . '-backup.sql' ) ) {
+		} else if (strstr($path, DB_NAME . '-backup.sql')) {
 			return self::INCLUDED;
-		} else if ( in_array( $path, $this->excluded_files ) ) {
+		} else if (in_array($path, $this->excluded_files)) {
 			return self::EXCLUDED;
-		} else if ( in_array( $path, $this->partial_directories ) ) {
-			$parent_state = $this->get_file_state( $parent_path );
-			if ( $parent_state == self::INCLUDED && $parent_path != ABSPATH ) {
-				$this->remove_from_partial( $path );
-				$this->remove_from_excluded( $path );
+		} else if (in_array($path, $this->partial_directories)) {
+			$parent_state = $this->get_file_state($parent_path);
+			if ($parent_state == self::INCLUDED && $parent_path != ABSPATH) {
+				$this->remove_from_partial($path);
+				$this->remove_from_excluded($path);
 				return self::INCLUDED;
 			}
 			return self::PARTIAL;
 		}
 
-		$state = $this->get_file_state( $parent_path );
-		if ( $state == self::PARTIAL ) {
-			$this->remove_from_partial( $path );
-			$this->remove_from_excluded( $path );
+		$state = $this->get_file_state($parent_path);
+		if ($state == self::PARTIAL) {
+			$this->remove_from_partial($path);
+			$this->remove_from_excluded($path);
 			return self::INCLUDED;
 		}
 		return $state;
@@ -98,9 +98,9 @@ class File_List {
 	 * @param $full_path string
 	 * @return string
 	 */
-	function get_check_box_class( $full_path ) {
-		$state = $this->get_file_state( $full_path );
-		switch ( $state ) {
+	function get_check_box_class($full_path) {
+		$state = $this->get_file_state($full_path);
+		switch ($state) {
 			case self::EXCLUDED:
 				$class = 'checked';
 				break;
@@ -119,8 +119,8 @@ class File_List {
 	 * @param $file
 	 * @return void
 	 */
-	private function add_to_excluded( $file ) {
-		if ( !in_array( $file, $this->excluded_files ) ) {
+	private function add_to_excluded($file) {
+		if (!in_array($file, $this->excluded_files)) {
 			$this->excluded_files[] = $file;
 		}
 	}
@@ -130,8 +130,8 @@ class File_List {
 	 * @param $file
 	 * @return void
 	 */
-	private function add_to_partial( $file ) {
-		if ( !in_array( $file, $this->partial_directories ) ) {
+	private function add_to_partial($file) {
+		if (!in_array($file, $this->partial_directories)) {
 			$this->partial_directories[] = $file;
 		}
 	}
@@ -141,19 +141,19 @@ class File_List {
 	 * @param  $json_list
 	 * @return void
 	 */
-	public function set_file_list( $json_list ) {
-		$new_list = json_decode( stripslashes( $json_list ), true );
-		foreach ( $new_list as $fl ) {
-			list ( $file, $state ) = $fl;
-			if ( $state == self::PARTIAL ) {
-				$this->add_to_partial( $file );
-				$this->remove_from_excluded( $file );
-			} else if ( $state == self::EXCLUDED) {
-				$this->add_to_excluded( $file );
-				$this->remove_from_partial( $file );
+	public function set_file_list($json_list) {
+		$new_list = json_decode(stripslashes($json_list), true);
+		foreach ($new_list as $fl) {
+			list ($file, $state) = $fl;
+			if ($state == self::PARTIAL) {
+				$this->add_to_partial($file);
+				$this->remove_from_excluded($file);
+			} else if ($state == self::EXCLUDED) {
+				$this->add_to_excluded($file);
+				$this->remove_from_partial($file);
 			} else {
-				$this->remove_from_excluded( $file );
-				$this->remove_from_partial( $file );
+				$this->remove_from_excluded($file);
+				$this->remove_from_partial($file);
 			}
 		}
 	}
@@ -163,10 +163,10 @@ class File_List {
 	 * @param $file
 	 * @return void
 	 */
-	private function remove_from_excluded( $file ) {
-		if ( in_array( $file, $this->excluded_files ) ) {
-			$i = array_search( $file, $this->excluded_files );
-			unset( $this->excluded_files[$i] );
+	private function remove_from_excluded($file) {
+		if (in_array($file, $this->excluded_files)) {
+			$i = array_search($file, $this->excluded_files);
+			unset($this->excluded_files[$i]);
 		}
 	}
 
@@ -175,10 +175,10 @@ class File_List {
 	 * @param $file
 	 * @return void
 	 */
-	private function remove_from_partial( $file ) {
-		if ( in_array( $file, $this->partial_directories ) ) {
-			$i = array_search( $file, $this->partial_directories );
-			unset( $this->partial_directories[$i] );
+	private function remove_from_partial($file) {
+		if (in_array($file, $this->partial_directories)) {
+			$i = array_search($file, $this->partial_directories);
+			unset($this->partial_directories[$i]);
 		}
 	}
 
@@ -187,19 +187,19 @@ class File_List {
 	 * @return void
 	 */
 	public function save() {
-		update_option( 'backup-to-dropbox-file-list', array( $this->partial_directories, $this->excluded_files ) );
+		update_option('backup-to-dropbox-file-list', array($this->partial_directories, $this->excluded_files));
 	}
 
 	/**
 	 * @param $dir
 	 * @return int
 	 */
-	private function get_directory_state( $dir ) {
-		$files = scandir( $dir );
-		natcasesort( $files );
-		foreach ( $files as $file ) {
-			$state = $this->get_file_state( $file );
-			if ( $state == self::PARTIAL || $state == self::EXCLUDED ) {
+	private function get_directory_state($dir) {
+		$files = scandir($dir);
+		natcasesort($files);
+		foreach ($files as $file) {
+			$state = $this->get_file_state($file);
+			if ($state == self::PARTIAL || $state == self::EXCLUDED) {
 				return self::PARTIAL;
 			}
 		}
@@ -212,7 +212,7 @@ class File_List {
 	 * @param $file
 	 * @return bool
 	 */
-	public static function in_ignore_list( $file ) {
-		return in_array( $file, self::$ignored_files );
+	public static function in_ignore_list($file) {
+		return in_array($file, self::$ignored_files);
 	}
 }

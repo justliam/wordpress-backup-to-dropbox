@@ -122,14 +122,20 @@ class WP_Backup_Extension_Manager {
 
 	public function on_complete() {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file)
-			$this->get_instance($name)->on_complete();
+		foreach ($installed as $name => $file) {
+			$obj = $this->get_instance($name);
+			if ($obj->is_enabled())
+				$obj->on_complete();
+		}
 	}
 
 	public function on_failure() {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file)
-			$this->get_instance($name)->on_failure();
+		foreach ($installed as $name => $file) {
+			$obj = $this->get_instance($name);
+			if ($obj->is_enabled())
+				$obj->on_failure();
+		}
 	}
 
 	private function get_instance($name) {

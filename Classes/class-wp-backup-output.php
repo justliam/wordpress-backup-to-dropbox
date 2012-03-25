@@ -58,7 +58,7 @@ class WP_Backup_Output {
 		if (!$this->cache)
 			return $val;
 
-		return $this->get_cached_val('dropbox_location', $val);
+		return $this->get_cached_val('max_file_size', $val);
 	}
 
 	public function out($source, $file) {

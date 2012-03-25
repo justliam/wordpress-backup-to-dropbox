@@ -18,17 +18,17 @@
  */
 $config = new WP_Backup_Config();
 
-if ( !$config->in_progress() )
+if (!$config->in_progress())
 	spawn_cron();
 
 $action = $config->get_current_action();
 
-if ( $action && $config->in_progress() ): ?>
+if ($action && $config->in_progress()): ?>
 	<p>
-		<strong><?php echo date( 'H:i:s', $action['time'] ) ?>: </strong>
+		<strong><?php echo date('H:i:s', $action['time']) ?>: </strong>
 		<?php
 			echo $action['message'];
-			echo isset( $action['file'] ) && $action['file'] ? ' - ' . $action['file'] : '';
+			echo isset($action['file']) && $action['file'] ? ' - ' . $action['file'] : '';
 		?>
 	</p>
 <?php endif; ?>
