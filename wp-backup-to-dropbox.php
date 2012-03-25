@@ -120,7 +120,7 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-	WP_Backup_Config::construct()->log( WP_Backup::BACKUP_STATUS_STARTED );
+	WP_Backup_Config::construct()->log( WP_Backup_Config::BACKUP_STATUS_STARTED );
 	wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
 	wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
 }
@@ -135,16 +135,13 @@ function monitor_dropbox_backup() {
 	//5 mins to allow for socket timeouts and long uploads
 	if ( $action && $config->in_progress() && ( $action['time'] < strtotime( current_time( 'mysql' ) ) - 300  ) )
 		wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
-	else if ( $action === false || !$config->in_progress() )
-		$config->clean_up();
 }
 
 /**
  * @return void
  */
 function run_dropbox_backup() {
-	$backup = new WP_Backup( new Dropbox_Facade(), new WP_Backup_Config() );
-	$backup->execute();
+	WP_Backup::construct()->execute();
 }
 
 /**

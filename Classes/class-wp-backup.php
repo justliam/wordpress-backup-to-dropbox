@@ -27,6 +27,10 @@ class WP_Backup {
 	private $database;
 	private $output;
 
+	public static function construct() {
+		return new self();
+	}
+
 	public function __construct( $dropbox = null, $wpdb = null, $output = null ) {
 		if ( !$wpdb ) global $wpdb;
 		$this->database = $wpdb;
