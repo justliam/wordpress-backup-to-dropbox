@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$manager = new Extension_Manager();
+$manager = new WP_Backup_Extension_Manager();
 
 $wpb2d = $manager->get_url();
 $key = $manager->get_key();
