@@ -219,11 +219,10 @@ class WP_Backup {
 				$this->backup_path(WP_CONTENT_DIR, $dropbox_location . '/wp-content');
 			}
 
-			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);
-			$this->config->set_current_action(__('Backup complete.', 'wpbtd'));
-			$this->config->clean_up();
-
 			$manager->on_complete();
+
+			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);
+			$this->config->clean_up();
 
 			unlink($sql_file_name);
 

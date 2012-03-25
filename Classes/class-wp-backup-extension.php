@@ -20,6 +20,7 @@ abstract class WP_Backup_Extension {
 	const TYPE_DEFAULT = 1;
 	const TYPE_OUTPUT = 2;
 
+	abstract function on_start();
 	abstract function on_complete();
 	abstract function on_failure();
 

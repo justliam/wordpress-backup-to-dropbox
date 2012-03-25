@@ -84,6 +84,13 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals('get_menu', Test_Extension::$lastCalled);
 	}
 
+	public function testOnStart() {
+		$this->mgr->install('Test extension', 'extension.php');
+		$this->mgr->init();
+		$this->mgr->on_start();
+		$this->assertEquals('on_start', Test_Extension::$lastCalled);
+	}
+
 	public function testOnComplete() {
 		$this->mgr->install('Test extension', 'extension.php');
 		$this->mgr->init();

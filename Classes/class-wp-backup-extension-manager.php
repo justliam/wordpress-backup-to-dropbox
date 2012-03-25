@@ -120,22 +120,25 @@ class WP_Backup_Extension_Manager {
 			$this->get_instance($name)->get_menu();
 	}
 
-	public function on_complete() {
+	private function call($func) {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file) {
 			$obj = $this->get_instance($name);
 			if ($obj->is_enabled())
-				$obj->on_complete();
+				$obj->$func();
 		}
 	}
 
+	public function on_start() {
+		$this->call('on_start');
+	}
+
+	public function on_complete() {
+		$this->call('on_complete');
+	}
+
 	public function on_failure() {
-		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$obj = $this->get_instance($name);
-			if ($obj->is_enabled())
-				$obj->on_failure();
-		}
+		$this->call('on_failure');
 	}
 
 	private function get_instance($name) {

@@ -91,6 +91,7 @@ function unzip_file($file, $dir) {
 	fwrite($fh, "<?php\n");
 	fwrite($fh, 'class Test_Extension extends WP_Backup_Extension {');
 	fwrite($fh, 'public static $lastCalled;');
+	fwrite($fh, 'public function on_start() { self::$lastCalled = "on_start"; return true; }');
 	fwrite($fh, 'public function on_complete() { self::$lastCalled = "on_complete"; return true; }');
 	fwrite($fh, 'public function on_failure() { self::$lastCalled = "on_failure"; return true; }');
 	fwrite($fh, 'public function get_menu() { self::$lastCalled = "get_menu"; return true; }');
