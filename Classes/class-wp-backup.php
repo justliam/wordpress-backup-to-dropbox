@@ -214,7 +214,9 @@ class WP_Backup {
 				$this->backup_database();
 			}
 
+			$manager->on_start();
 			$this->backup_path(ABSPATH, $dropbox_location);
+
 			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH) {
 				$this->backup_path(WP_CONTENT_DIR, $dropbox_location . '/wp-content');
 			}

@@ -30,6 +30,7 @@ require_once('Classes/class-file-list.php');
 require_once('Classes/class-dropbox-facade.php');
 require_once('Classes/class-wp-backup-config.php');
 require_once('Classes/class-wp-backup.php');
+require_once('Classes/class-wp-backup-output.php');
 require_once('Classes/class-wp-backup-extension.php');
 require_once('Classes/class-wp-backup-extension-manager.php');
 
