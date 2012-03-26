@@ -25,15 +25,7 @@ class Dropbox_Facade {
 	const CONSUMER_KEY = '0kopgx3zvfd0876';
 	const CONSUMER_SECRET = 'grpp5f0dai90bon';
 
-	/**
-	 * @var Dropbox_API
-	 */
 	private $dropbox = null;
-
-	/**
-	 * The users Dropbox tokens
-	 * @var object
-	 */
 	private $tokens = null;
 
 	public static function construct() {
@@ -66,10 +58,6 @@ class Dropbox_Facade {
 		}
 	}
 
-	/**
-	 * If we have successfully retrieved the users email and password from the wp options table then this uer is authorized
-	 * @return bool
-	 */
 	public function is_authorized() {
 		if ( !$this->tokens['access'] ) {
 			return false;
@@ -84,10 +72,6 @@ class Dropbox_Facade {
 		}
 	}
 
-	/**
-	 * Returns the Dropbox authorization url
-	 * @return string
-	 */
 	public function get_authorize_url() {
 		$oauth = new Dropbox_OAuth_PEAR( self::CONSUMER_KEY, self::CONSUMER_SECRET );
 		$this->tokens['request'] = $oauth->getRequestToken();
@@ -95,10 +79,6 @@ class Dropbox_Facade {
 		return $oauth->getAuthorizeUrl();
 	}
 
-	/**
-	 * Return the users Dropbox info
-	 * @return array
-	 */
 	public function get_account_info() {
 		return $this->dropbox->getAccountInfo();
 	}
@@ -107,14 +87,9 @@ class Dropbox_Facade {
 		update_option( 'backup-to-dropbox-tokens', $this->tokens );
 	}
 
-	/**
-	 * Uploads a file to Dropbox
-	 * @param  $file
-	 * @return bool
-	 */
-	function upload_file( $path, $file ) {
+	public function upload_file( $path, $file ) {
 		if ( !file_exists( $file ) ) {
-			throw new Exception( __( 'backup file does not exist.', 'wpbtd' ) );
+			throw new Exception( sprintf(__( 'backup file (%s) does not exist.', 'wpbtd' ), $file)  );
 		}
 		$retries = 0;
 		$ret = false;
@@ -140,14 +115,21 @@ class Dropbox_Facade {
 		return true;
 	}
 
-	/**
-	 * Grabs the contents of a directory from Dropbox. The contents are cached to limit the amount of requests in one
-	 * execution.
-	 *
-	 * @param  $path - The location of the file on this server
-	 * @return array
-	 */
-	function get_directory_contents( $path ) {
+	public function delete_file($file) {
+		if ( !file_exists( $file ) ) {
+			throw new Exception( sprintf(__( 'backup file (%s) does not exist.', 'wpbtd' ), $file)  );
+		}
+		$ret = $this->dropbox->delete($file);
+		if ( $ret[ 'httpStatus' ] == 401 ) {
+			throw new Exception( 'Unauthorized' );
+		} else if ( $ret[ 'httpStatus' ] != 200 ) {
+			throw new Exception( sprintf( __( 'Error while deleting %s from Dropbox. HTTP Status: %s', 'wpbtd' ),
+										  $file,
+										  $ret[ 'httpStatus' ] ) );
+		}
+	}
+
+	public function get_directory_contents( $path ) {
 		static $directory_cache = array();
 		if ( !isset( $directory_cache[$path] ) ) {
 			$directory_cache[$path] = array();
@@ -164,9 +146,6 @@ class Dropbox_Facade {
 		return $directory_cache[$path];
 	}
 
-	/**
-	 * @return void
-	 */
 	public function unlink_account() {
 		delete_option( 'backup-to-dropbox-tokens' );
 		$this->tokens['access'] = false;
