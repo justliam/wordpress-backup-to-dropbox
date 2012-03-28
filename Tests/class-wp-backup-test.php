@@ -66,7 +66,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$history = $this->config->get_history();
 		$this->assertNotEmpty($history);
 		$this->assertEquals(
-			"A database backup cannot be created because WordPress does not have write access to 'Tests/backups', please ensure this directory has write access.",
+			"A database backup cannot be created because WordPress does not have write access to 'WordPress-Backup-to-Dropbox/backups', please ensure this directory has write access.",
 			$history[0][2]
 		);
 	}
@@ -83,7 +83,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			);
 		}
 
-		$this->config->set_option('dump_location', '/Out');
+		$this->config->set_option('dump_location', 'Tests/Out');
 		$this
 			->wpdb
 
@@ -153,7 +153,6 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this
 			->output
 			->shouldReceive('out')
-			->with(__DIR__, Mockery::any())
 			;
 
 		$this->backup->execute();
@@ -189,7 +188,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testCreateDumpDir() {
-		$this->config->set_option('dump_location', 'Out/Dump');
+		$this->config->set_option('dump_location', 'Tests/Out/Dump');
 		$this->backup->create_dump_dir();
 		$this->assertTrue(file_exists('Out/Dump'));
 		rmdir('Out/Dump');

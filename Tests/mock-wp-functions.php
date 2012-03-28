@@ -33,10 +33,10 @@ $loader->register();
 define('ARRAY_A', true);
 define('ARRAY_N', true);
 define('BACKUP_TO_DROPBOX_VERSION', 'UnitTest');
-define('ABSPATH', dirname(__FILE__) . '/');
+define('ABSPATH', dirname(dirname(__FILE__)) . '/');
 define('WP_CONTENT_DIR', ABSPATH);
 define('DB_NAME', 'TestDB');
-define('EXTENSIONS_DIR', dirname(WP_CONTENT_DIR) . '/Extensions/');
+define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/Extensions/');
 
 date_default_timezone_set('Australia/NSW');
 
