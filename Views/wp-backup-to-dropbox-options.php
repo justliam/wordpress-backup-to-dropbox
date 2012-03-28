@@ -377,7 +377,6 @@ try {
 		</span>
 	</p>
 	<div id="file_tree"></div>
-	<input name="file_tree_list" id="file_tree_list" type="hidden" value="[]">
 	<a href="#" id="toggle-all">toggle all</a>
 	<!--<![endif]-->
 	<p class="submit">

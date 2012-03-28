@@ -36,11 +36,20 @@ class File_List {
 		}
 	}
 
-	public function exclude($path) {
+	public function set_included($path) {
 		if (is_dir($path))
-			$this->exclude_dir(rtrim(ABSPATH,'/'));
+			$this->include_dir(rtrim($path,'/'));
+		else
+			$this->include_file($path);
+		$this->save();
+	}
+
+	public function set_excluded($path) {
+		if (is_dir($path))
+			$this->exclude_dir(rtrim($path,'/'));
 		else
 			$this->exclude_file($path);
+		$this->save();
 	}
 
 	public function is_excluded($path) {
@@ -51,11 +60,23 @@ class File_List {
 	}
 
 	private function exclude_file($file) {
-		$this->excluded_files[] = $file;
+		if (!in_array($file, $this->excluded_files))
+			$this->excluded_files[] = $file;
 	}
 
 	private function exclude_dir($dir) {
-		$this->excluded_dirs[] = $dir;
+		if (!in_array($dir, $this->excluded_dirs))
+			$this->excluded_dirs[] = $dir;
+	}
+
+	private function include_file($file) {
+		$key = array_search($file, $this->excluded_files);
+		unset($this->excluded_files[$key]);
+	}
+
+	private function include_dir($dir) {
+		$key = array_search($dir, $this->excluded_dirs);
+		unset($this->excluded_dirs[$key]);
 	}
 
 	private function is_excluded_file($file) {
@@ -78,6 +99,12 @@ class File_List {
 		if (is_dir($dir)) {
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST);
 			foreach ($files as $file) {
+				if ($file == $dir)
+					continue;
+
+				if (self::in_ignore_list(basename($file)))
+					continue;
+
 				if ($this->is_excluded($file))
 					return true;
 			}
@@ -87,7 +114,7 @@ class File_List {
 
 	public function get_checkbox_class($path) {
 		$class = '';
-		if ($this->is_excluded($path))
+		if ($this->is_excluded(rtrim($path, '/')))
 			$class = 'checked';
 		else if ($this->is_partial_dir($path))
 			$class = 'partial';
@@ -96,7 +123,7 @@ class File_List {
 	}
 
 	public function save() {
-		update_option('backup-to-dropbox-file-list', array($this->partial_directories, $this->excluded_files));
+		update_option('backup-to-dropbox-file-list', array($this->excluded_dirs, $this->excluded_files));
 	}
 
 	public static function in_ignore_list($file) {

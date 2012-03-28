@@ -30,22 +30,48 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSetGetExcludedFile() {
-		$this->list->exclude(__FILE__);
+		$this->list->set_excluded(__FILE__);
 		$this->assertTrue($this->list->is_excluded(__FILE__));
+	}
+
+	public function testExcludedIncludeFile() {
+		$this->list->set_excluded(__FILE__);
+		$this->list->set_excluded(__FILE__);
+
+		$this->assertTrue($this->list->is_excluded(__FILE__));
+
+		$this->list->set_included(__FILE__);
+		$this->assertFalse($this->list->is_excluded(__FILE__));
+	}
+
+	public function testExcludedIncludeDir() {
+		$this->list->set_excluded(__DIR__);
+		$this->list->set_excluded(__DIR__);
+
+		$this->assertTrue($this->list->is_excluded(__DIR__));
+
+		$this->list->set_included(__DIR__);
+		$this->assertFalse($this->list->is_excluded(__DIR__));
 	}
 
 	public function testSetGetExcludedDir() {
-		$this->list->exclude(__DIR__);
+		$this->list->set_excluded(__DIR__);
 		$this->assertTrue($this->list->is_excluded(__DIR__));
+
+		$this->list->set_included(__DIR__);
+		$this->assertFalse($this->list->is_excluded(__DIR__));
 	}
 
 	public function testGetExcludedFileWithExcludedParentDir() {
-		$this->list->exclude(__DIR__);
+		$this->list->set_excluded(__FILE__);
 		$this->assertTrue($this->list->is_excluded(__FILE__));
+
+		$this->list->set_included(__FILE__);
+		$this->assertFalse($this->list->is_excluded(__FILE__));
 	}
 
 	public function testGetExcludedFileWithExcludedRootDir() {
-		$this->list->exclude(ABSPATH);
+		$this->list->set_excluded(ABSPATH);
 		$this->assertTrue($this->list->is_excluded(__FILE__));
 	}
 
@@ -58,12 +84,12 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetCheckBoxClassCheckedFile() {
-		$this->list->exclude(__FILE__);
+		$this->list->set_excluded(__FILE__);
 		$this->assertEquals('checked', $this->list->get_checkbox_class(__FILE__));
 	}
 
 	public function testGetCheckBoxClassCheckedDir() {
-		$this->list->exclude(__DIR__);
+		$this->list->set_excluded(__DIR__);
 		$this->assertEquals('checked', $this->list->get_checkbox_class(__DIR__));
 	}
 
@@ -76,7 +102,7 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetCheckBoxClassPartialDir() {
-		$this->list->exclude(__FILE__);
+		$this->list->set_excluded(__FILE__);
 		$this->assertEquals('partial', $this->list->get_checkbox_class(__DIR__));
 	}
 }
