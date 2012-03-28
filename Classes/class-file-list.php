@@ -21,197 +21,84 @@
 include_once('class-wp-backup.php');
 class File_List {
 
-	const EXCLUDED = 0;
-	const INCLUDED = 1;
-	const PARTIAL = 2;
+	private static $ignored_files = array( '.DS_Store', 'Thumbs.db', 'desktop.ini' );
+	private $excluded_files;
+	private $excluded_dirs;
 
-	/**
-	 * A list of directories to mark as partial
-	 * @var null
-	 */
-	private $partial_directories = array();
-
-	/**
-	 * A list of files that are not allowed to be backed up
-	 * @var null
-	 */
-	private $excluded_files = array();
-
-	/**
-	 * These files cannot be uploaded to Dropbox
-	 * @var array
-	 */
-	private static $ignored_files = array('.DS_Store', 'Thumbs.db', 'desktop.ini');
-
-	/**
-	 * Construct the file list
-	 * @param $wpdb
-	 */
-	public function __construct($wpdb = null) {
-		if (!$wpdb) global $wpdb;
-
-		$this->database = $wpdb;
-
+	public function __construct() {
 		$file_list = get_option('backup-to-dropbox-file-list');
 		if ($file_list === false) {
-			$this->partial_directories = array();
 			$this->excluded_files = array();
-			add_option('backup-to-dropbox-file-list', array($this->partial_directories, $this->excluded_files), null, 'no');
+			$this->excluded_dirs = array();
+			add_option('backup-to-dropbox-file-list', array($this->excluded_dirs, $this->excluded_files), null, 'no');
 		} else {
-			list($this->partial_directories, $this->excluded_files) = $file_list;
+			list($this->excluded_dirs, $this->excluded_files) = $file_list;
 		}
 	}
 
-	/**
-	 * Return the state of a file in the list the SQL dump is always included
-	 * @param  $path
-	 * @return bool
-	 */
-	public function get_file_state($path) {
-		$parent_path = dirname($path) . '/';
-		if ($path == dirname(ABSPATH) . '/') {
-			return self::PARTIAL;
-		} else if (strstr($path, DB_NAME . '-backup.sql')) {
-			return self::INCLUDED;
-		} else if (in_array($path, $this->excluded_files)) {
-			return self::EXCLUDED;
-		} else if (in_array($path, $this->partial_directories)) {
-			$parent_state = $this->get_file_state($parent_path);
-			if ($parent_state == self::INCLUDED && $parent_path != ABSPATH) {
-				$this->remove_from_partial($path);
-				$this->remove_from_excluded($path);
-				return self::INCLUDED;
+	public function exclude($path) {
+		if (is_dir($path))
+			$this->exclude_dir(rtrim(ABSPATH,'/'));
+		else
+			$this->exclude_file($path);
+	}
+
+	public function is_excluded($path) {
+		if (is_dir($path))
+			return $this->is_excluded_dir($path);
+		else
+			return $this->is_excluded_file($path);
+	}
+
+	private function exclude_file($file) {
+		$this->excluded_files[] = $file;
+	}
+
+	private function exclude_dir($dir) {
+		$this->excluded_dirs[] = $dir;
+	}
+
+	private function is_excluded_file($file) {
+		if (!in_array($file, $this->excluded_files))
+			return $this->is_excluded_dir(dirname($file));
+
+		return true;
+	}
+
+	private function is_excluded_dir($dir) {
+		if (in_array($dir, $this->excluded_dirs))
+			return true;
+		else if ($dir == rtrim(ABSPATH,'/'))
+			return false;
+
+		return $this->is_excluded_dir(dirname($dir));
+	}
+
+	private function is_partial_dir($dir) {
+		if (is_dir($dir)) {
+			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST);
+			foreach ($files as $file) {
+				if ($this->is_excluded($file))
+					return true;
 			}
-			return self::PARTIAL;
 		}
-
-		$state = $this->get_file_state($parent_path);
-		if ($state == self::PARTIAL) {
-			$this->remove_from_partial($path);
-			$this->remove_from_excluded($path);
-			return self::INCLUDED;
-		}
-		return $state;
+		return false;
 	}
 
-	/**
-	 * @param $full_path string
-	 * @return string
-	 */
-	function get_check_box_class($full_path) {
-		$state = $this->get_file_state($full_path);
-		switch ($state) {
-			case self::EXCLUDED:
-				$class = 'checked';
-				break;
-			case self::PARTIAL:
-				$class = 'partial';
-				break;
-			default: //INCLUDED so do not check
-				$class = '';
-				break;
-		}
+	public function get_checkbox_class($path) {
+		$class = '';
+		if ($this->is_excluded($path))
+			$class = 'checked';
+		else if ($this->is_partial_dir($path))
+			$class = 'partial';
+
 		return $class;
 	}
 
-	/**
-	 * Adds a file to the excluded list if it does not already exist
-	 * @param $file
-	 * @return void
-	 */
-	private function add_to_excluded($file) {
-		if (!in_array($file, $this->excluded_files)) {
-			$this->excluded_files[] = $file;
-		}
-	}
-
-	/**
-	 * Adds a file to the partial list if it does not already exist
-	 * @param $file
-	 * @return void
-	 */
-	private function add_to_partial($file) {
-		if (!in_array($file, $this->partial_directories)) {
-			$this->partial_directories[] = $file;
-		}
-	}
-
-	/**
-	 * Accepts a JSON encoded list of files and directories and adds their states to the appropriate lists
-	 * @param  $json_list
-	 * @return void
-	 */
-	public function set_file_list($json_list) {
-		$new_list = json_decode(stripslashes($json_list), true);
-		foreach ($new_list as $fl) {
-			list ($file, $state) = $fl;
-			if ($state == self::PARTIAL) {
-				$this->add_to_partial($file);
-				$this->remove_from_excluded($file);
-			} else if ($state == self::EXCLUDED) {
-				$this->add_to_excluded($file);
-				$this->remove_from_partial($file);
-			} else {
-				$this->remove_from_excluded($file);
-				$this->remove_from_partial($file);
-			}
-		}
-	}
-
-	/**
-	 * Removes a file from the excluded list if it exists
-	 * @param $file
-	 * @return void
-	 */
-	private function remove_from_excluded($file) {
-		if (in_array($file, $this->excluded_files)) {
-			$i = array_search($file, $this->excluded_files);
-			unset($this->excluded_files[$i]);
-		}
-	}
-
-	/**
-	 * Removes a file from the partial list if it exists
-	 * @param $file
-	 * @return void
-	 */
-	private function remove_from_partial($file) {
-		if (in_array($file, $this->partial_directories)) {
-			$i = array_search($file, $this->partial_directories);
-			unset($this->partial_directories[$i]);
-		}
-	}
-
-	/**
-	 * Saves the file list
-	 * @return void
-	 */
 	public function save() {
 		update_option('backup-to-dropbox-file-list', array($this->partial_directories, $this->excluded_files));
 	}
 
-	/**
-	 * @param $dir
-	 * @return int
-	 */
-	private function get_directory_state($dir) {
-		$files = scandir($dir);
-		natcasesort($files);
-		foreach ($files as $file) {
-			$state = $this->get_file_state($file);
-			if ($state == self::PARTIAL || $state == self::EXCLUDED) {
-				return self::PARTIAL;
-			}
-		}
-		return self::INCLUDED;
-	}
-
-	/**
-	 * Some files cannot be uploaded to Dropbox so check them here
-	 * @static
-	 * @param $file
-	 * @return bool
-	 */
 	public static function in_ignore_list($file) {
 		return in_array($file, self::$ignored_files);
 	}

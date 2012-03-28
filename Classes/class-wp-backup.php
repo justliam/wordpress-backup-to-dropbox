@@ -59,13 +59,13 @@ class WP_Backup {
 					return;
 
 				$file = realpath($file);
+				if ($file_list->is_excluded($file))
+					continue;
+
 				if (is_file($file)) {
 					$trimmed_file = basename($file);
 
 					if (File_List::in_ignore_list($trimmed_file))
-						continue;
-
-					if ($file_list->get_file_state($file) == File_List::EXCLUDED)
 						continue;
 
 					$this->output->out($source, $file);
@@ -88,7 +88,7 @@ class WP_Backup {
 
 		$dump_location = $this->config->get_option('dump_location');
 
-		if (!is_writable($dump_location)) {
+		if (!is_writable(WP_CONTENT_DIR . $dump_location)) {
 			$msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, $msg);
 			return false;
@@ -233,6 +233,7 @@ class WP_Backup {
 				$this->config->log(WP_Backup_Config::BACKUP_STATUS_FAILED, "Exception - " . $e->getMessage());
 
 			$manager->on_failure();
+
 		}
 		$this->config->set_last_backup_time(time());
 		$this->config->set_in_progress(false);

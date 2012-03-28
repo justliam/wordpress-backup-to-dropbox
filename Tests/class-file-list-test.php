@@ -22,8 +22,62 @@ require_once 'mock-wp-functions.php';
 
 class File_List_Test extends PHPUnit_Framework_TestCase {
 
+	private $list;
+
 	public function setUp() {
 		reset_globals();
+		$this->list = new File_List();
+	}
+
+	public function testSetGetExcludedFile() {
+		$this->list->exclude(__FILE__);
+		$this->assertTrue($this->list->is_excluded(__FILE__));
+	}
+
+	public function testSetGetExcludedDir() {
+		$this->list->exclude(__DIR__);
+		$this->assertTrue($this->list->is_excluded(__DIR__));
+	}
+
+	public function testGetExcludedFileWithExcludedParentDir() {
+		$this->list->exclude(__DIR__);
+		$this->assertTrue($this->list->is_excluded(__FILE__));
+	}
+
+	public function testGetExcludedFileWithExcludedRootDir() {
+		$this->list->exclude(ABSPATH);
+		$this->assertTrue($this->list->is_excluded(__FILE__));
+	}
+
+	public function testGetIncludedDir() {
+		$this->assertFalse($this->list->is_excluded(__DIR__));
+	}
+
+	public function testGetIncludedFile() {
+		$this->assertFalse($this->list->is_excluded(__FILE__));
+	}
+
+	public function testGetCheckBoxClassCheckedFile() {
+		$this->list->exclude(__FILE__);
+		$this->assertEquals('checked', $this->list->get_checkbox_class(__FILE__));
+	}
+
+	public function testGetCheckBoxClassCheckedDir() {
+		$this->list->exclude(__DIR__);
+		$this->assertEquals('checked', $this->list->get_checkbox_class(__DIR__));
+	}
+
+	public function testGetCheckBoxClassNotCheckedFile() {
+		$this->assertEquals('', $this->list->get_checkbox_class(__FILE__));
+	}
+
+	public function testGetCheckBoxClassNotCheckedDir() {
+		$this->assertEquals('', $this->list->get_checkbox_class(__DIR__));
+	}
+
+	public function testGetCheckBoxClassPartialDir() {
+		$this->list->exclude(__FILE__);
+		$this->assertEquals('partial', $this->list->get_checkbox_class(__DIR__));
 	}
 }
 ?>
