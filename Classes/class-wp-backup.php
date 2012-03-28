@@ -222,9 +222,7 @@ class WP_Backup {
 			}
 
 			$manager->on_complete();
-
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);
-			$this->config->clean_up();
 
 			unlink($sql_file_name);
 
@@ -238,6 +236,7 @@ class WP_Backup {
 		}
 		$this->config->set_last_backup_time(time());
 		$this->config->set_in_progress(false);
+		$this->config->clean_up();
 	}
 
 	/**
