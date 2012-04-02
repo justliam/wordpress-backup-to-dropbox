@@ -83,7 +83,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			);
 		}
 
-		$this->config->set_option('dump_location', 'Tests/Out');
+		$this->config->set_option('dump_location', 'Out');
 		$this
 			->wpdb
 
