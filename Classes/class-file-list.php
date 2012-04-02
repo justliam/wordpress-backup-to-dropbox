@@ -87,8 +87,12 @@ class File_List {
 	}
 
 	private function is_excluded_dir($dir) {
+		if (empty($this->excluded_dirs))
+			return false;
+
 		if (in_array($dir, $this->excluded_dirs))
 			return true;
+
 		else if ($dir == rtrim(ABSPATH,'/'))
 			return false;
 
