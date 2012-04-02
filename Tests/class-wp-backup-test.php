@@ -184,7 +184,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			$history[0][2]
 		);
 
-		$this->assertEmpty($this->config->get_uploaded_files());
+		$this->assertEmpty($this->config->get_processed_files());
 	}
 
 	public function testCreateDumpDir() {

@@ -114,7 +114,7 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->config->set_current_action('Action1', 'File1');
 		$this->config->set_current_action('Action2', 'File2');
 
-		$files = $this->config->get_uploaded_files();
+		$files = $this->config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2'));
 	}
 

@@ -212,8 +212,8 @@ class WP_Backup {
 			$dropbox_location = $this->config->get_option('dropbox_location');
 
 			$sql_file_name = $this->get_sql_file_name();
-			$uploaded_files = $this->config->get_uploaded_files();
-			if (!in_array($sql_file_name, $uploaded_files)) {
+			$processed_files = $this->config->get_processed_files();
+			if (!in_array($sql_file_name, $processed_files)) {
 				$this->config->set_current_action(__('Creating SQL backup', 'wpbtd'));
 				$this->backup_database();
 			}

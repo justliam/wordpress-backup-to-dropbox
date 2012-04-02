@@ -71,7 +71,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $this->config->get_uploaded_files();
+		$uploaded = $this->config->get_processed_files();
 		$this->assertNotEmpty($uploaded);
 		$this->assertEquals(__DIR__ . '/Out/file.txt', $uploaded[0]);
 	}
@@ -92,7 +92,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $this->config->get_uploaded_files();
+		$uploaded = $this->config->get_processed_files();
 		$this->assertNotEmpty($uploaded);
 		$this->assertEquals(__DIR__ . '/Out/file.txt', $uploaded[0]);
 	}
@@ -110,7 +110,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$uploaded = $this->config->get_uploaded_files();
+		$uploaded = $this->config->get_processed_files();
 		$this->assertEmpty($uploaded);
 	}
 
