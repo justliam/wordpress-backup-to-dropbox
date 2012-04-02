@@ -58,6 +58,10 @@ class WP_Backup {
 				if (!$this->config->in_progress())
 					return;
 
+				$processed_files = $this->config->get_processed_files();
+				if (in_array($file, $processed_files))
+					return;
+
 				$file = realpath($file);
 				if ($file_list->is_excluded($file))
 					continue;

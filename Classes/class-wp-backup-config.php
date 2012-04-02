@@ -225,7 +225,7 @@ class WP_Backup_Config {
 		$this->set_option('last_backup_time', $time);
 	}
 
-	public function get_uploaded_files() {
+	public function get_processed_files() {
 		$actions = $this->get_actions();
 		$files = array();
 		if (is_array($actions)) {

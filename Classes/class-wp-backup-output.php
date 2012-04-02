@@ -64,16 +64,12 @@ class WP_Backup_Output {
 	public function out($source, $file) {
 		$dropbox_location = $this->get_dropbox_location();
 		$last_backup_time = $this->get_last_backup_time();
-		$uploaded_files = $this->config->get_uploaded_files();
 
 		if (filesize($file) > $this->get_max_file_size()) {
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING,
 						sprintf(__("file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd'), basename($file)));
 			return;
 		}
-
-		if (in_array($file, $uploaded_files))
-			return;
 
 		$dropbox_path = $dropbox_location . DIRECTORY_SEPARATOR . str_replace($source . DIRECTORY_SEPARATOR, '', $file);
 		if (PHP_OS == 'WINNT') {
