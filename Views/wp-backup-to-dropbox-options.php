@@ -32,7 +32,6 @@ try {
 	$config = new WP_Backup_Config();
 	$backup = new WP_Backup();
 
-	$file_list = new File_List($wpdb);
 	$disable_backup_now = $config->in_progress();
 
 	//We have a form submit so update the schedule and options
@@ -45,9 +44,6 @@ try {
 			'dropbox_location' => $_POST['dropbox_location'],
 		);
 		$validation_errors = $config->set_options($options);
-
-		$file_list->set_file_list($_POST['file_tree_list']);
-		$file_list->save();
 	} else if (array_key_exists('unlink', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
 		$dropbox->unlink_account();
