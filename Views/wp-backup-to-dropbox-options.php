@@ -30,7 +30,7 @@ try {
 
 	$dropbox = new Dropbox_Facade();
 	$config = new WP_Backup_Config();
-	$backup = new WP_Backup($dropbox, $config);
+	$backup = new WP_Backup();
 
 	$file_list = new File_List($wpdb);
 	$disable_backup_now = $config->in_progress();

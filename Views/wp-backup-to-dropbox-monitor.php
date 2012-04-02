@@ -19,15 +19,13 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 $config = new WP_Backup_Config();
-$dropbox = new Dropbox_Facade();
-$backup = new WP_Backup($dropbox, $config);
 
 if (array_key_exists('stop_backup', $_POST)) {
 	check_admin_referer('backup_to_dropbox_monitor_stop');
-	$backup->stop();
+	WP_Backup::construct()->stop();
 } else if (array_key_exists('start_backup', $_POST)) {
 	check_admin_referer('backup_to_dropbox_monitor_stop');
-	$backup->backup_now();
+	WP_Backup::construct()->backup_now();
 	$started = true;
 }
 
