@@ -27,9 +27,9 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		reset_globals();
 		$this->dropbox = Mockery::mock('Dropbox_Facade');
-		$this->out = new WP_Backup_Output($this->dropbox, false);
 		$this->config = WP_Backup_Config::construct();
 		$this->config->set_option('dropbox_location', 'DropboxLocation');
+		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
 
 		$fh = fopen(__DIR__ . '/Out/file.txt', 'w');
 		fwrite($fh, "file.txt");
@@ -38,22 +38,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		unlink(__DIR__ . '/Out/file.txt');
-		WP_Backup_Config::construct()->clean_up();
-	}
-
-	public function testGetCachedVal() {
-		$out = new WP_Backup_Output($this->dropbox);
-
-		$this->config->set_option('last_backup_time', 111);
-		$this->assertEquals(111, $out->get_last_backup_time());
-
-		$this->config->set_option('last_backup_time', 222);
-		$this->assertEquals(111, $out->get_last_backup_time());
-
-		$this->assertEquals('DropboxLocation', $out->get_dropbox_location());
-
-		$this->config->set_option('dropbox_location', 'Meh');
-		$this->assertEquals('DropboxLocation', $out->get_dropbox_location());
+		$this->config->clean_up();
 	}
 
 	public function testOutFileNotInDropbox() {
@@ -108,6 +93,8 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			->andReturn(array('file.txt'))
 			;
 
+		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
+
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
 		$uploaded = $this->config->get_processed_files();
@@ -143,6 +130,8 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 		}
 
 		ini_set('memory_limit', '8M');
+		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
+
 		$this
 			->dropbox
 			->shouldReceive('get_directory_contents')
