@@ -50,29 +50,38 @@ class WP_Backup {
 	 * @return string - Path to the database dump
 	 */
 	public function backup_path($path, $dropbox_location) {
-		$file_list = new File_List($this->database);
+		$this->config->set_current_action(sprintf(__('Backing up WordPress root %s', 'wpbtd'), $path));
+		$processed_files = $this->config->get_processed_files();
+		$file_list = new File_List();
+		$next_check = 0;
+		$processed_files = array();
 		if (file_exists($path)) {
 			$source = realpath($path);
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
 			foreach ($files as $file) {
-				if (!$this->config->in_progress())
-					return;
 
-				$processed_files = $this->config->get_processed_files();
-				if (in_array($file, $processed_files))
-					return;
+				if (time() > $next_check) {
+					$next_check = time() + 10;
 
-				$file = realpath($file);
+					$this->config->add_processed_files($processed_files);
+					if (!$this->config->in_progress())
+						return;
+				}
+
 				if ($file_list->is_excluded($file))
 					continue;
 
 				if (is_file($file)) {
-					$trimmed_file = basename($file);
-
-					if (File_List::in_ignore_list($trimmed_file))
+					if (File_List::in_ignore_list(basename($file)))
 						continue;
 
+					if (in_array($file, $processed_files))
+						continue;
+
+					$file = realpath($file);
 					$this->output->out($source, $file);
+
+					$processed_files[] = $file;
 				}
 			}
 		}
