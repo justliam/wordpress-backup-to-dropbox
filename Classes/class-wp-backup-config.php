@@ -52,6 +52,11 @@ class WP_Backup_Config {
 		if (!is_array($actions)) {
 			add_option('backup-to-dropbox-actions', array(), null, 'no');
 		}
+
+		$actions = $this->get_processed_files();
+		if (!is_array($actions)) {
+			add_option('backup-to-dropbox-processed-files', array(), null, 'no');
+		}
 	}
 
 	private function as_array($val) {
@@ -94,6 +99,16 @@ class WP_Backup_Config {
 		return $this->as_array(get_option('backup-to-dropbox-actions'));
 	}
 
+	public function get_processed_files() {
+		return $this->as_array(get_option('backup-to-dropbox-processed-files'));
+	}
+
+	public function add_processed_files($new_files) {
+		$files = $this->get_processed_files();
+		$files = array_merge($new_files, $files);
+		update_option('backup-to-dropbox-processed-files', $files);
+	}
+
 	public function set_time_limit() {
 		if (ini_get('safe_mode')) {
 			if (ini_get('max_execution_time') != 0) {
@@ -107,12 +122,11 @@ class WP_Backup_Config {
 		}
 	}
 
-	public function set_current_action($msg, $file = null) {
+	public function set_current_action($msg) {
 		$actions = $this->as_array(get_option('backup-to-dropbox-actions'));
 		$actions[] = array(
 			'time' => strtotime(current_time('mysql')),
 			'message' => $msg,
-			'file' => $file
 		);
 		update_option('backup-to-dropbox-actions', $actions);
 	}
@@ -132,7 +146,7 @@ class WP_Backup_Config {
 	}
 
 	public function get_current_action() {
-		return end ($this->as_array(get_option('backup-to-dropbox-actions')));
+		return end($this->as_array(get_option('backup-to-dropbox-actions')));
 	}
 
 	public function clear_history() {
@@ -225,21 +239,11 @@ class WP_Backup_Config {
 		$this->set_option('last_backup_time', $time);
 	}
 
-	public function get_processed_files() {
-		$actions = $this->get_actions();
-		$files = array();
-		if (is_array($actions)) {
-			foreach ($actions as $action) {
-				$files[] = $action['file'];
-			}
-		}
-		return $files;
-	}
-
 	public function clean_up() {
 		wp_clear_scheduled_hook('monitor_dropbox_backup_hook');
 		wp_clear_scheduled_hook('run_dropbox_backup_hook');
 		update_option('backup-to-dropbox-actions', array());
+		update_option('backup-to-dropbox-processed-files', array());
 	}
 
 	public function log($status, $msg = null) {
