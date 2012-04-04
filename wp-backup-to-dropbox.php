@@ -80,8 +80,7 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
-	$dropbox = new Dropbox_Facade();
-	if (!$dropbox->is_authorized()) {
+	if (!Dropbox_Facade::construct()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
 	} else {
 		$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
