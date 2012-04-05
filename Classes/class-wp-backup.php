@@ -54,18 +54,18 @@ class WP_Backup {
 		$processed_files = $this->config->get_processed_files();
 		$file_list = new File_List();
 		$next_check = 0;
-		$processed_files = array();
 		if (file_exists($path)) {
 			$source = realpath($path);
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
-			foreach ($files as $file) {
+			foreach ($files as $fileInfo) {
+				$file = $fileInfo->getPathname();
 
 				if (time() > $next_check) {
-					$next_check = time() + 10;
-
-					$this->config->add_processed_files($processed_files);
 					if (!$this->config->in_progress())
 						return;
+
+					$this->config->add_processed_files($processed_files);
+					$next_check = time() + 5;
 				}
 
 				if ($file_list->is_excluded($file))
@@ -78,7 +78,6 @@ class WP_Backup {
 					if (in_array($file, $processed_files))
 						continue;
 
-					$file = realpath($file);
 					$this->output->out($source, $file);
 
 					$processed_files[] = $file;

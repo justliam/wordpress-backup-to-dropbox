@@ -29,6 +29,7 @@ if ($action && $config->in_progress()): ?>
 		<?php
 			echo $action['message'];
 			echo isset($action['file']) && $action['file'] ? ' - ' . $action['file'] : '';
+			echo __('Processed', 'wpbtd') . ' ' . count($config->get_processed_files());
 		?>
 	</p>
 <?php endif; ?>

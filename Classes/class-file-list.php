@@ -25,6 +25,10 @@ class File_List {
 	private $excluded_files;
 	private $excluded_dirs;
 
+	public static function construct() {
+		return new self();
+	}
+
 	public function __construct() {
 		$file_list = get_option('backup-to-dropbox-file-list');
 		if ($file_list === false) {

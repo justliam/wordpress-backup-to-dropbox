@@ -39,26 +39,25 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		unlink(__DIR__ . '/Out/file.txt');
 		$this->config->clean_up();
+		Mockery::close();
 	}
 
 	public function testOutFileNotInDropbox() {
-
+		$this->config->set_option('last_backup_time', time());
 		$this
 			->dropbox
+
 			->shouldReceive('get_directory_contents')
-			->once()
 			->with('DropboxLocation/Out')
 			->andReturn(array())
-			->shouldReceive('upload_file')
 			->once()
-			->with('DropboxLocation/Out', 'file.txt')
+
+			->shouldReceive('upload_file')
+			->with('DropboxLocation/Out/file.txt', __DIR__ . '/Out/file.txt')
+			->once()
 			;
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
-
-		$uploaded = $this->config->get_processed_files();
-		$this->assertNotEmpty($uploaded);
-		$this->assertEquals(__DIR__ . '/Out/file.txt', $uploaded[0]);
 	}
 
 	public function testOutFileInDropboxButOlder() {
@@ -66,20 +65,18 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this
 			->dropbox
+
 			->shouldReceive('get_directory_contents')
-			->once()
 			->with('DropboxLocation/Out')
 			->andReturn(array('file.txt'))
-			->shouldReceive('upload_file')
 			->once()
-			->with('DropboxLocation/Out', 'file.txt')
+
+			->shouldReceive('upload_file')
+			->with('DropboxLocation/Out/file.txt', __DIR__ . '/Out/file.txt')
+			->once()
 			;
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
-
-		$uploaded = $this->config->get_processed_files();
-		$this->assertNotEmpty($uploaded);
-		$this->assertEquals(__DIR__ . '/Out/file.txt', $uploaded[0]);
 	}
 
 	public function testOutFileInDropboxAndNotUpdated() {
@@ -87,10 +84,14 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this
 			->dropbox
+
 			->shouldReceive('get_directory_contents')
-			->once()
 			->with('DropboxLocation/Out')
 			->andReturn(array('file.txt'))
+			->once()
+
+			->shouldReceive('upload_file')
+			->never()
 			;
 
 		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
@@ -104,12 +105,15 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	public function testOutFileUploadWarning() {
 		$this
 			->dropbox
+
 			->shouldReceive('get_directory_contents')
-			->once()
 			->with('DropboxLocation/Out')
+			->once()
+
 			->andReturn(array())
 			->shouldReceive('upload_file')
 			->andThrow(new Exception('Error'))
+			->once()
 			;
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
@@ -134,10 +138,10 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this
 			->dropbox
+
 			->shouldReceive('get_directory_contents')
-			->once()
-			->with('DropboxLocation/Out')
-			->andReturn(array())
+			->never()
+
 			->shouldReceive('upload_file')
 			->never()
 			;
@@ -157,12 +161,15 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this
 			->dropbox
+
 			->shouldReceive('get_directory_contents')
-			->once()
 			->with('DropboxLocation/Out')
 			->andReturn(array())
+			->once()
+
 			->shouldReceive('upload_file')
 			->andThrow(new Exception('Unauthorized'))
+			->once()
 			;
 
 		try {

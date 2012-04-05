@@ -28,6 +28,10 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	private $output;
 	private $config;
 
+	public function tearDown() {
+		Mockery::close();
+	}
+
 	public function setUp() {
 		reset_globals();
 		set_current_time('2012-03-12 00:00:00');
@@ -48,7 +52,55 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this
 			->output
 			->shouldReceive('out')
-			->with(__DIR__, Mockery::any())
+			->with(
+				__DIR__,
+				Mockery::anyOf(
+					__DIR__ . '/Out/bigFile.txt',
+					__DIR__ . '/class-file-list-test.php',
+					__DIR__ . '/class-wp-backup-config-test.php',
+					__DIR__ . '/class-wp-backup-extension-manager-test.php',
+					__DIR__ . '/class-wp-backup-output-test.php',
+					__DIR__ . '/class-wp-backup-test.php',
+					__DIR__ . '/mock-wp-functions.php',
+					__DIR__ . '/phpunit.xml'
+				)
+			)
+			->times(8)
+			;
+
+		$this->backup->backup_path(__DIR__, 'DropboxLocation');
+	}
+
+	public function testBackupPathWithExcludedFile() {
+		File_List::construct()->set_excluded(__DIR__ . '/Out');
+		$this->config->set_in_progress(true);
+
+		$this
+			->output
+			->shouldReceive('out')
+			->with(__DIR__,	Mockery::not(__DIR__ . '/Out/bigFile.txt'))
+			->times(7)
+			;
+
+		$this->backup->backup_path(__DIR__, 'DropboxLocation');
+	}
+
+	public function testBackupPathWithProcessedFile() {
+		$this->config->clean_up();
+		$this->config->set_in_progress(true);
+		$this->config->add_processed_files(array(__FILE__, __DIR__ . '/class-file-list-test.php'));
+
+		$this
+			->output
+			->shouldReceive('out')
+			->with(
+				__DIR__,
+				Mockery::notAnyOf(
+					__FILE__,
+					__DIR__ . '/class-file-list-test.php'
+				)
+			)
+			->times(6)
 			;
 
 		$this->backup->backup_path(__DIR__, 'DropboxLocation');

@@ -98,24 +98,27 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 	public function testSetGetAction() {
 		set_current_time('2012-03-12 00:00:00');
-		$this->config->set_current_action('Action1', 'File1');
+		$this->config->set_current_action('Action1');
 		set_current_time('2012-03-12 00:00:01');
-		$this->config->set_current_action('Action2', 'File2');
+		$this->config->set_current_action('Action2');
 
 		$action = $this->config->get_current_action();
 		$this->assertEquals($action, array(
 			'time' => strtotime('2012-03-12 00:00:01'),
-			'message' => 'Action2',
-			'file' => 'File2',
+			'message' => 'Action2'
 		));
 	}
 
 	public function testGetUploadedFiles() {
-		$this->config->set_current_action('Action1', 'File1');
-		$this->config->set_current_action('Action2', 'File2');
+		$files = $this->config->add_processed_files(array('File1', 'File2'));
 
 		$files = $this->config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2'));
+
+		$files = $this->config->add_processed_files(array('File1', 'File2', 'File3', 'File4'));
+
+		$files = $this->config->get_processed_files();
+		$this->assertEquals($files, array('File1', 'File2', 'File3', 'File4'));
 	}
 
 	public function testInProgess() {
