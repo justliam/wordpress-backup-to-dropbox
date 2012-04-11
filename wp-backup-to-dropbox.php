@@ -49,7 +49,7 @@ WP_Backup_Extension_Manager::construct()->init();
 function backup_to_dropbox_admin_menu() {
 	$imgUrl = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
 
-	$text = __('WPB2D Backup', 'wpbtd');
+	$text = __('WPB2D', 'wpbtd');
 	add_utility_page($text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
 
 	$text = __('Backup Settings', 'wpbtd');
