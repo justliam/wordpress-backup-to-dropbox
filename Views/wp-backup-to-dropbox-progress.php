@@ -22,14 +22,15 @@ if (!$config->in_progress())
 	spawn_cron();
 
 $action = $config->get_current_action();
+$file_count = count($config->get_processed_files());
 
 if ($action && $config->in_progress()): ?>
 	<p>
 		<strong><?php echo date('H:i:s', $action['time']) ?>: </strong>
-		<?php
-			echo $action['message'];
-			echo isset($action['file']) && $action['file'] ? ' - ' . $action['file'] : '';
-			echo __('Processed', 'wpbtd') . ' ' . count($config->get_processed_files());
-		?>
+		<?php echo $action['message']; ?>
+	</p>
+	<p>
+		<strong><?php echo date('H:i:s', strtotime(current_time('mysql')))) ?>: </strong>
+		<?php echo $file_count > 0  : sprintf(__('Processed %d files.', 'wpbtd'), $file_count) : ''; ?>
 	</p>
 <?php endif; ?>
