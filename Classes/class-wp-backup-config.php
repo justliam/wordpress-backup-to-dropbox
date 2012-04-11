@@ -142,9 +142,7 @@ class WP_Backup_Config {
 	}
 
 	public function is_scheduled() {
-		return
-			wp_get_schedule('monitor_dropbox_backup_hook') !== false ||
-			wp_get_schedule('execute_instant_drobox_backup') !== false;
+		return wp_get_schedule('execute_instant_drobox_backup') !== false;
 	}
 
 	public function set_in_progress($bool) {
