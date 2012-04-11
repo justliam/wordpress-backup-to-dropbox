@@ -50,7 +50,7 @@ class WP_Backup {
 	 * @return string - Path to the database dump
 	 */
 	public function backup_path($path, $dropbox_location) {
-		$this->config->set_current_action(sprintf(__('Backing up WordPress root %s', 'wpbtd'), $path));
+		$this->config->set_current_action(sprintf(__('Backing up WordPress path at (%s)', 'wpbtd'), $path));
 		$processed_files = $this->config->get_processed_files();
 		$file_list = new File_List();
 		$next_check = 0;

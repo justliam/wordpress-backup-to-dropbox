@@ -108,7 +108,7 @@ class Dropbox_Facade {
 		} else if ( $ret[ 'httpStatus' ] == 401 ) {
 			throw new Exception( 'Unauthorized' );
 		} else if ( $ret[ 'httpStatus' ] != 200 ) {
-			throw new Exception( sprintf( __( 'Error while uploading %s to Dropbox. HTTP Status: %s', 'wpbtd' ),
+			throw new Exception( sprintf( __( 'HTTP Status %s received from Dropbox while uploading file.', 'wpbtd' ),
 										  $file,
 										  $ret[ 'httpStatus' ] ) );
 		}
@@ -123,7 +123,7 @@ class Dropbox_Facade {
 		if ( $ret[ 'httpStatus' ] == 401 ) {
 			throw new Exception( 'Unauthorized' );
 		} else if ( $ret[ 'httpStatus' ] != 200 ) {
-			throw new Exception( sprintf( __( 'Error while deleting %s from Dropbox. HTTP Status: %s', 'wpbtd' ),
+			throw new Exception( sprintf( __( 'HTTP Status %s received from Dropbox while deleting file.', 'wpbtd' ),
 										  $file,
 										  $ret[ 'httpStatus' ] ) );
 		}
