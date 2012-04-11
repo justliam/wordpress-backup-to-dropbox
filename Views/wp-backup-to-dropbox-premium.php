@@ -35,7 +35,7 @@ if (isset($_REQUEST['title']))
 try {
 	if (isset($_POST['name'])) {
 		$manager->install($_POST['name'], $_POST['file']);
-		$success = sprintf(__('You have succesfully installed %s premium extension.'), $_POST['name']);
+		echo '<script>window.location.reload(true);</script>';
 	}
 
 	$installed = array_keys($manager->get_installed());
