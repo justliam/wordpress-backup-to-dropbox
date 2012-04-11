@@ -108,7 +108,7 @@ class WP_Backup_Extension_Manager {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file) {
 			$obj = $this->get_instance($name);
-			if ($obj->get_type() == WP_Backup_Extension::TYPE_OUTPUT && $obj->is_enabled())
+			if ($obj && $obj->get_type() == WP_Backup_Extension::TYPE_OUTPUT && $obj->is_enabled())
 				return $obj;
 		}
 		return new WP_Backup_Output();
@@ -124,7 +124,7 @@ class WP_Backup_Extension_Manager {
 		$installed = $this->get_installed();
 		foreach ($installed as $name => $file) {
 			$obj = $this->get_instance($name);
-			if ($obj->is_enabled())
+			if ($obj && $obj->is_enabled())
 				$obj->$func();
 		}
 	}
@@ -143,6 +143,7 @@ class WP_Backup_Extension_Manager {
 
 	private function get_instance($name) {
 		$class = str_replace(' ', '_', ucwords($name));
-		return new $class();
+		if (class_exists($class))
+			return new $class();
 	}
 }
