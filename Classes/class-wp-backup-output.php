@@ -62,4 +62,6 @@ class WP_Backup_Output {
 			}
 		}
 	}
+
+	public function end() {}
 }

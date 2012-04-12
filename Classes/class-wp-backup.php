@@ -80,9 +80,13 @@ class WP_Backup {
 
 					$this->output->out($source, $file);
 
+					if ($file == $this->get_sql_file_name())
+						unlink($sql_file_name);
+
 					$processed_files[] = $file;
 				}
 			}
+			$this->output->end();
 		}
 	}
 
@@ -232,8 +236,6 @@ class WP_Backup {
 			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH) {
 				$this->backup_path(WP_CONTENT_DIR, $dropbox_location . '/wp-content');
 			}
-
-			unlink($sql_file_name);
 
 			$manager->on_complete();
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);
