@@ -29,8 +29,10 @@ if ($action && $config->in_progress()): ?>
 		<strong><?php echo date('H:i:s', $action['time']) ?>: </strong>
 		<?php echo $action['message']; ?>
 	</p>
-	<p>
-		<strong><?php echo date('H:i:s', strtotime(current_time('mysql')))) ?>: </strong>
-		<?php echo $file_count > 0  : sprintf(__('Processed %d files.', 'wpbtd'), $file_count) : ''; ?>
-	</p>
+	<?php if ($file_count > 0 ): ?>
+		<p>
+			<strong><?php echo date('H:i:s', strtotime(current_time('mysql'))) ?>: </strong>
+			<?php echo sprintf(__('Processed %d files.', 'wpbtd'), $file_count); ?>
+		</p>
+	<?php endif; ?>
 <?php endif; ?>
