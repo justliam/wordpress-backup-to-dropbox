@@ -54,13 +54,13 @@ class WP_Backup_Config {
 		if (!$this->get_option('dropbox_location'))
 			$this->set_option('dropbox_location', 'WordPressBackup');
 
-		$actions = $this->get_actions();
-		if (!is_array($actions)) {
+		$actions = get_option('backup-to-dropbox-actions');
+		if (!$actions) {
 			add_option('backup-to-dropbox-actions', array(), null, 'no');
 		}
 
-		$actions = $this->get_processed_files();
-		if (!is_array($actions)) {
+		$files = get_option('backup-to-dropbox-processed-files');
+		if (!$files) {
 			add_option('backup-to-dropbox-processed-files', array(), null, 'no');
 		}
 	}
