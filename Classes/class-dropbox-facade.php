@@ -116,9 +116,6 @@ class Dropbox_Facade {
 	}
 
 	public function delete_file($file) {
-		if ( !file_exists( $file ) ) {
-			throw new Exception( sprintf(__( 'backup file (%s) does not exist.', 'wpbtd' ), $file)  );
-		}
 		$ret = $this->dropbox->delete($file);
 		if ( $ret[ 'httpStatus' ] == 401 ) {
 			throw new Exception( 'Unauthorized' );
