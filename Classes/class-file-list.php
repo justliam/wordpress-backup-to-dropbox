@@ -30,11 +30,13 @@ class File_List {
 	}
 
 	public function __construct() {
-		$file_list = get_option('backup-to-dropbox-file-list');
+		delete_option('backup-to-dropbox-file-list');
+
+		$file_list = get_option('backup-to-dropbox-excluded-files');
 		if ($file_list === false) {
 			$this->excluded_files = array();
 			$this->excluded_dirs = array();
-			add_option('backup-to-dropbox-file-list', array($this->excluded_dirs, $this->excluded_files), null, 'no');
+			add_option('backup-to-dropbox-excluded-files', array($this->excluded_dirs, $this->excluded_files), null, 'no');
 		} else {
 			list($this->excluded_dirs, $this->excluded_files) = $file_list;
 		}
@@ -131,7 +133,7 @@ class File_List {
 	}
 
 	public function save() {
-		update_option('backup-to-dropbox-file-list', array($this->excluded_dirs, $this->excluded_files));
+		update_option('backup-to-dropbox-excluded-files', array($this->excluded_dirs, $this->excluded_files));
 	}
 
 	public static function in_ignore_list($file) {

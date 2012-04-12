@@ -27,6 +27,7 @@ delete_option('backup-to-dropbox-options');
 delete_option('backup-to-dropbox-history');
 delete_option('backup-to-dropbox-current-action');
 delete_option('backup-to-dropbox-actions');
+delete_option('backup-to-dropbox-excluded-files');
 delete_option('backup-to-dropbox-file-list');
 delete_option('backup-to-dropbox-in-progress');
 delete_option('backup-to-dropbox-premium-extensions');
