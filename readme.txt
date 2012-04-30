@@ -79,6 +79,8 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Taiwanese (zh_TN) - [HostUCan](http://www.hostucan.com/)
 * French (fr_FR) - [Yassine HANINI](http://www.yassine-hanini.info/)
 * Persian (fa_IR) - [Reza-sh](http://www.rezaonline.net/blog)
+* Dutch (nl_NL) - [Rinze Hiddink](http://www.rinzehiddink.nl)
+* Hebrew (he_HE) - [Menachem](http://luckyboost.com)
 
 == Installation ==
 
