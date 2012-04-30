@@ -18,23 +18,28 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-if ( !defined( 'ABSPATH' ) && !defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if (!defined('ABSPATH') && !defined('WP_UNINSTALL_PLUGIN')) {
 	exit();
 }
 
-delete_option( 'backup-to-dropbox-tokens' );
-delete_option( 'backup-to-dropbox-options' );
-delete_option( 'backup-to-dropbox-history' );
-delete_option( 'backup-to-dropbox-current-action' );
-delete_option( 'backup-to-dropbox-actions' );
-delete_option( 'backup-to-dropbox-file-list' );
-delete_option( 'backup-to-dropbox-in-progress' );
+delete_option('backup-to-dropbox-tokens');
+delete_option('backup-to-dropbox-options');
+delete_option('backup-to-dropbox-history');
+delete_option('backup-to-dropbox-current-action');
+delete_option('backup-to-dropbox-actions');
+delete_option('backup-to-dropbox-excluded-files');
+delete_option('backup-to-dropbox-file-list');
+delete_option('backup-to-dropbox-in-progress');
+delete_option('backup-to-dropbox-premium-extensions');
 
-wp_clear_scheduled_hook( 'execute_periodic_drobox_backup' );
+wp_clear_scheduled_hook('execute_periodic_drobox_backup');
+wp_clear_scheduled_hook('execute_instant_drobox_backup');
+wp_clear_scheduled_hook('monitor_dropbox_backup_hook');
 
-remove_action( 'run_dropbox_backup_hook', 'run_dropbox_backup' );
-remove_action( 'monitor_dropbox_backup_hook', 'monitor_dropbox_backup' );
-remove_action( 'execute_instant_drobox_backup', 'execute_drobox_backup' );
-remove_action( 'execute_periodic_drobox_backup', 'execute_drobox_backup' );
-remove_action( 'admin_menu', 'backup_to_dropbox_admin_menu' );
-
+remove_action('run_dropbox_backup_hook', 'run_dropbox_backup');
+remove_action('monitor_dropbox_backup_hook', 'monitor_dropbox_backup');
+remove_action('execute_instant_drobox_backup', 'execute_drobox_backup');
+remove_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
+remove_action('admin_menu', 'backup_to_dropbox_admin_menu');
+remove_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
+remove_action('wp_ajax_progress', 'backup_to_dropbox_progress');

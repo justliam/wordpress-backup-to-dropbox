@@ -35,8 +35,8 @@ if(jQuery) (function($){
 	$.extend($.fn, {
 		fileTree: function(o) {
 			var EXCLUDED = 0;
-	        var INCLUDED = 1;
-	        var PARTIAL = 2;
+			var INCLUDED = 1;
+			var PARTIAL = 2;
 
 			// Defaults
 			if( !o ) var o = {};
@@ -53,6 +53,11 @@ if(jQuery) (function($){
 			$(this).each( function() {
 
 				function showTree(c, t) {
+					if (get_checkbox_state(c.find('.checkbox')) == EXCLUDED) {
+						alert('Please include this directory to see its contents.')
+						return;
+					}
+
 					$(c).addClass('wait');
 					$(".jqueryFileTree.start").remove();
 					$.post(o.script, { action: 'file_tree', dir: t }, function(data) {
@@ -60,17 +65,6 @@ if(jQuery) (function($){
 						$(c).removeClass('wait').append(data);
 						if( o.root == t ) $(c).find('UL:hidden').show(); else $(c).find('UL:hidden').slideDown({ duration: o.expandSpeed, easing: o.expandEasing });
 
-						//Check that the list of files that we got from the server have not already
-						//been included or excluded in the UI.
-						$('.checkbox').each(function () {
-                            var dir = escape(dirname($(this).attr('rel')));
-                            if (dir == t) {
-                                var state = get_include_state($(this).attr('rel'));
-                                if (state !== false) {
-                                    set_checkbox_state(this, state);
-                                }
-                            }
-						});
 						bindTree(c);
 					});
 				}
@@ -89,8 +83,7 @@ if(jQuery) (function($){
 								$(this).parent().removeClass('collapsed').addClass('expanded');
 							} else {
 								// Collapse
-								$(this).parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
-								$(this).parent().removeClass('expanded').addClass('collapsed');
+								collapse(this);
 							}
 						} else {
 							var element = $(this).parent().find('.checkbox');
@@ -103,6 +96,9 @@ if(jQuery) (function($){
 
 					//Bind our check box clicks
 					$(t).find('ul').find('.checkbox').bind('click', function() {
+						if (get_checkbox_state(this) == PARTIAL)
+							return;
+
 						checkbox_click(this);
 					});
 
@@ -114,6 +110,20 @@ if(jQuery) (function($){
 				// Get the initial file list
 				showTree( $(this), escape(o.root) );
 			});
+
+
+			function collapse(ele) {
+				$(ele).parent().find('UL').slideUp({ duration: o.collapseSpeed, easing: o.collapseEasing });
+				$(ele).parent().removeClass('expanded').addClass('collapsed');
+			}
+
+			/**
+			 * Just like PHP's dirname
+			 * @param path
+			 */
+			function dirname(path) {
+				return path.replace(/\/$/, '').replace(/\/[^\/]*$/, '/');
+			}
 
 			/**
 			 * Updates the tri state check box based on the state hidden element passed
@@ -133,51 +143,6 @@ if(jQuery) (function($){
 					default:
 						break; //INCLUDED - Do nothing
 				}
-			}
-
-			/**
-			 * Toggles the hidden list input with what has changed
-			 * @param element
-			 */
-			function set_include_state(element) {
-                var file = $(element).attr('rel');
-                var state = get_checkbox_state(element);
-				var file_tree_list = JSON.parse($('#file_tree_list').val());
-				var in_list = false;
-                for (var i = 0; i < file_tree_list.length; i++) {
-					if (file_tree_list[i][0] == file) {
-						file_tree_list[i][1] = state;
-                        in_list = true;
-						break;
-					}
-				}
-                if (!in_list) {
-                    file_tree_list.push([file, state])
-                }
-				$('#file_tree_list').val(JSON.stringify(file_tree_list));
-			}
-
-			/**
-			 * Get the file state from the local list
-			 * @param file
-			 * @return int
-			 */
-			function get_include_state(file) {
-				var file_list = JSON.parse($('#file_tree_list').val());
-				for (var i = 0; i < file_list.length; i++) {
-					if (file_list[i][0] == file) {
-						return file_list[i][1];
-					}
-				}
-				return false;
-			}
-
-			/**
-			 * Just like PHP's dirname
-			 * @param path
-			 */
-			function dirname(path) {
-				return path.replace(/\/$/, '').replace(/\/[^\/]*$/, '/');
 			}
 
 			/**
@@ -206,12 +171,11 @@ if(jQuery) (function($){
 					if ($(this).attr('rel') == clicked_parent_dir) {
 						if (checked_count == total) {
 							set_checkbox_state(this, EXCLUDED);
- 						} else if (checked_count == 0) {
+						} else if (checked_count == 0) {
 							set_checkbox_state(this, INCLUDED);
 						} else {
 							set_checkbox_state(this, PARTIAL);
 						}
-                        set_include_state(this);
 						toggle_directory_check(this);
 					}
 				});
@@ -232,35 +196,19 @@ if(jQuery) (function($){
 			}
 
 			/**
-			 * Set all the children of a directory to a state
-			 * @param parent
-			 */
-			function set_directory_children(parent, state) {
-				//If this is an expanded directory recursively update all its children
-				if ($(parent).parent().hasClass('expanded') && $(parent).hasClass('directory')) {
-					$('.checkbox').each(function () {
-						if (dirname($(this).attr('rel')) == $(parent).attr('rel')) {
-							set_checkbox_state(this, state);
-							set_include_state(this);
-							set_directory_children(this, state);
-						}
-					});
-				}
-			}
-
-			/**
 			 * The on click function for a file check box. If the user clicks on a directory then all its open children
 			 * need to be updated accordingly.
 			 * @param clicked
 			 */
 			function checkbox_click(clicked) {
 				var state = get_checkbox_state(clicked) == EXCLUDED ? INCLUDED : EXCLUDED;
+				if (state == EXCLUDED)
+					collapse(clicked);
 
-				set_checkbox_state(clicked, state);
-				set_include_state(clicked);
-
-				set_directory_children(clicked, state);
-                toggle_directory_check(clicked);
+				$.post(o.script, { action: 'file_tree', path: $(clicked).attr('rel'), exclude : !state }, function(data) {
+					set_checkbox_state(clicked, state);
+					toggle_directory_check(clicked);
+				});
 			}
 		}
 	});

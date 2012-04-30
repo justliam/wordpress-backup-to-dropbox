@@ -210,7 +210,7 @@ class Dropbox_API {
 
 		if (is_null($root)) $root = $this->root;
 		$response = $this->oauth->fetch('http://api.dropbox.com/0/fileops/delete', array('path' => $path, 'root' => $root));
-		return json_decode($response['body']);
+		return json_decode($response['body'], true);
 
 	}
 
@@ -229,7 +229,7 @@ class Dropbox_API {
 		if (is_null($root)) $root = $this->root;
 		$response = $this->oauth->fetch('http://api.dropbox.com/0/fileops/move', array('from_path' => $from, 'to_path' => $to, 'root' => $root));
 
-		return json_decode($response['body'],true);
+		return json_decode($response['body'], true);
 
 	}
 

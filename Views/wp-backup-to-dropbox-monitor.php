@@ -19,15 +19,13 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 $config = new WP_Backup_Config();
-$dropbox = new Dropbox_Facade();
-$backup = new WP_Backup( $dropbox, $config );
 
-if ( array_key_exists( 'stop_backup', $_POST ) ) {
-	check_admin_referer( 'backup_to_dropbox_monitor_stop' );
-	$backup->stop();
-} else if ( array_key_exists( 'start_backup', $_POST ) ) {
-	check_admin_referer( 'backup_to_dropbox_monitor_stop' );
-	$backup->backup_now();
+if (array_key_exists('stop_backup', $_POST)) {
+	check_admin_referer('backup_to_dropbox_monitor_stop');
+	WP_Backup::construct()->stop();
+} else if (array_key_exists('start_backup', $_POST)) {
+	check_admin_referer('backup_to_dropbox_monitor_stop');
+	WP_Backup::construct()->backup_now();
 	$started = true;
 }
 
@@ -39,7 +37,7 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 				jQuery('#progress').html(data);
 			}
 		});
-		setTimeout("reload()", 1000);
+		setTimeout("reload()", 9000);
 	}
     jQuery(document).ready(function ($) {
 		reload();
@@ -60,24 +58,24 @@ if ( array_key_exists( 'stop_backup', $_POST ) ) {
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
 								 alt="WordPress Backup to Dropbox Logo"></div>
-	<h2><?php _e( 'WordPress Backup to Dropbox', 'wpbtd' ); ?></h2>
-	<p class="description"><?php printf( __( 'Version %s', 'wpbtd' ), BACKUP_TO_DROPBOX_VERSION ) ?></p>
-	<h3><?php _e( 'Backup Progress', 'wpbtd' ); ?></h3>
+	<h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
+	<p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
+	<h3><?php _e('Backup Progress', 'wpbtd'); ?></h3>
 	<div id="progress">
 		<?php
-		if ( $started || $config->is_scheduled() )
-			echo '<p>' . __( 'Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.' ) . '</p>';
+		if (isset($started) || $config->is_scheduled())
+			echo '<p>' . __('Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.') . '</p>';
 		else
-			echo '<p>' . __( 'No backup in progess.' ) . '</p>';
+			echo '<p>' . __('No backup in progess.') . '</p>';
 		?>
 	</div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
-		<?php if ( $config->in_progress() || isset($started) || $config->is_scheduled() ): ?>
-			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e( 'Stop Backup', 'wpbtd' ); ?>">
+		<?php if ($config->in_progress() || isset($started) || $config->is_scheduled()): ?>
+			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
 		<?php else: ?>
-			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e( 'Start Backup', 'wpbtd' ); ?>">
+			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e('Start Backup', 'wpbtd'); ?>">
 		<?php endif; ?>
 
-		<?php wp_nonce_field( 'backup_to_dropbox_monitor_stop' ); ?>
+		<?php wp_nonce_field('backup_to_dropbox_monitor_stop'); ?>
 	</form>
 </div>

@@ -21,37 +21,49 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 		along with this program; if not, write to the Free Software
 		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-define( 'USE_BUNDLED_PEAR', true );
-define( 'BACKUP_TO_DROPBOX_VERSION', '1.0' );
+define('USE_BUNDLED_PEAR', true);
+define('BACKUP_TO_DROPBOX_VERSION', '1.0');
+define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Extensions/');
 
-require_once( 'Dropbox_API/autoload.php' );
-require_once( 'Classes/class-file-list.php' );
-require_once( 'Classes/class-dropbox-facade.php' );
-require_once( 'Classes/class-wp-backup-config.php' );
-require_once( 'Classes/class-wp-backup.php' );
+require_once('Dropbox_API/autoload.php');
+require_once('Classes/class-file-list.php');
+require_once('Classes/class-dropbox-facade.php');
+require_once('Classes/class-wp-backup-config.php');
+require_once('Classes/class-wp-backup.php');
+require_once('Classes/class-wp-backup-output.php');
+require_once('Classes/class-wp-backup-extension.php');
+require_once('Classes/class-wp-backup-extension-manager.php');
 
 //We need to set the PEAR_Includes folder in the path
 if (USE_BUNDLED_PEAR)
-	set_include_path( dirname( __FILE__ ) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path() );
+	set_include_path(dirname(__FILE__) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path());
 else
-	set_include_path( get_include_path() . PATH_SEPARATOR . dirname( __FILE__ ) . '/PEAR_Includes' );
+	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/PEAR_Includes');
+
+WP_Backup_Extension_Manager::construct()->init();
 
 /**
  * A wrapper function that adds an options page to setup Dropbox Backup
  * @return void
  */
 function backup_to_dropbox_admin_menu() {
-	$imgUrl = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
+	$imgUrl = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
 
-	$text = __( 'Backup', 'wpbtd' );
-	add_utility_page( $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
+	$text = __('WPB2D', 'wpbtd');
+	add_utility_page($text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
 
-	$text = __( 'Settings', 'wpbtd' );
-	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents' );
+	$text = __('Backup Settings', 'wpbtd');
+	add_submenu_page('backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
 
 	$backup = new WP_Backup_Config();
-	$text = $backup->is_scheduled() ? __( 'Monitor Backup', 'wpbtd' ) : __( 'Backup Now', 'wpbtd' );
-	add_submenu_page( 'backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor' );
+	$text = $backup->is_scheduled() ? __('Monitor Backup', 'wpbtd') : __('Backup Now', 'wpbtd');
+
+	add_submenu_page('backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
+
+	WP_Backup_Extension_Manager::construct()->add_menu_items();
+
+	$text = __('Premium Extensions', 'wpbtd');
+	add_submenu_page('backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');
 }
 
 /**
@@ -59,8 +71,8 @@ function backup_to_dropbox_admin_menu() {
  * @return void
  */
 function backup_to_dropbox_admin_menu_contents() {
-	$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
-	include( 'Views/wp-backup-to-dropbox-options.php' );
+	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
+	include('Views/wp-backup-to-dropbox-options.php');
 }
 
 /**
@@ -68,13 +80,21 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
-	$dropbox = new Dropbox_Facade();
-	if ( !$dropbox->is_authorized() ) {
+	if (!Dropbox_Facade::construct()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
 	} else {
-		$uri = rtrim( WP_PLUGIN_URL, '/' ) . '/wordpress-backup-to-dropbox';
-		include( 'Views/wp-backup-to-dropbox-monitor.php' );
+		$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
+		include('Views/wp-backup-to-dropbox-monitor.php');
 	}
+}
+
+/**
+ * A wrapper function that includes the backup to Dropbox premium page
+ * @return void
+ */
+function backup_to_dropbox_premium() {
+	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
+	include('Views/wp-backup-to-dropbox-premium.php');
 }
 
 /**
@@ -82,7 +102,7 @@ function backup_to_dropbox_monitor() {
  * @return void
  */
 function backup_to_dropbox_file_tree() {
-	include( 'Views/wp-backup-to-dropbox-file-tree.php' );
+	include('Views/wp-backup-to-dropbox-file-tree.php');
 	die();
 }
 
@@ -91,7 +111,7 @@ function backup_to_dropbox_file_tree() {
  * @return void
  */
 function backup_to_dropbox_progress() {
-	include( 'Views/wp-backup-to-dropbox-progress.php' );
+	include('Views/wp-backup-to-dropbox-progress.php');
 	die();
 }
 
@@ -100,9 +120,9 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-	WP_Backup_Config::construct()->log( WP_Backup::BACKUP_STATUS_STARTED );
-	wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
-	wp_schedule_event( time(), 'every_min', 'monitor_dropbox_backup_hook' );
+	WP_Backup_Config::construct()->log(WP_Backup_Config::BACKUP_STATUS_STARTED);
+	wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
+	wp_schedule_event(time(), 'every_min', 'monitor_dropbox_backup_hook');
 }
 
 /**
@@ -113,18 +133,15 @@ function monitor_dropbox_backup() {
 	$action = $config->get_current_action();
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ( $action && $config->in_progress() && ( $action['time'] < strtotime( current_time( 'mysql' ) ) - 300  ) )
-		wp_schedule_single_event( time(), 'run_dropbox_backup_hook' );
-	else if ( $action === false || !$config->in_progress() )
-		$config->clean_up();
+	if ($action && $config->in_progress() && ($action['time'] < strtotime(current_time('mysql')) - 300 ))
+		wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
 }
 
 /**
  * @return void
  */
 function run_dropbox_backup() {
-	$backup = new WP_Backup( new Dropbox_Facade(), new WP_Backup_Config() );
-	$backup->execute();
+	WP_Backup::construct()->execute();
 }
 
 /**
@@ -132,7 +149,7 @@ function run_dropbox_backup() {
  * @param  $schedules
  * @return array
  */
-function backup_to_dropbox_cron_schedules( $schedules ) {
+function backup_to_dropbox_cron_schedules($schedules) {
 	$new_schedules = array(
 		'every_min' => array(
 			'interval' => 60,
@@ -163,18 +180,18 @@ function backup_to_dropbox_cron_schedules( $schedules ) {
 			'display' => 'Once Every 12 weeks'
 		),
 	);
-	return array_merge( $schedules, $new_schedules );
+	return array_merge($schedules, $new_schedules);
 }
 
 //WordPress filters and actions
-add_filter( 'cron_schedules', 'backup_to_dropbox_cron_schedules' );
-add_action( 'monitor_dropbox_backup_hook', 'monitor_dropbox_backup' );
-add_action( 'run_dropbox_backup_hook', 'run_dropbox_backup' );
-add_action( 'execute_periodic_drobox_backup', 'execute_drobox_backup' );
-add_action( 'execute_instant_drobox_backup', 'execute_drobox_backup' );
-add_action( 'admin_menu', 'backup_to_dropbox_admin_menu' );
-add_action( 'wp_ajax_file_tree', 'backup_to_dropbox_file_tree' );
-add_action( 'wp_ajax_progress', 'backup_to_dropbox_progress' );
+add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
+add_action('monitor_dropbox_backup_hook', 'monitor_dropbox_backup');
+add_action('run_dropbox_backup_hook', 'run_dropbox_backup');
+add_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
+add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
+add_action('admin_menu', 'backup_to_dropbox_admin_menu');
+add_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
+add_action('wp_ajax_progress', 'backup_to_dropbox_progress');
 
 //i18n language text domain
-load_plugin_textdomain( 'wpbtd', true, 'wordpress-backup-to-dropbox/Languages/' );
+load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');

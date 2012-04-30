@@ -16,23 +16,17 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$config = new WP_Backup_Config();
+abstract class WP_Backup_Extension {
+	const TYPE_DEFAULT = 1;
+	const TYPE_OUTPUT = 2;
 
-if (!$config->in_progress())
-	spawn_cron();
+	abstract function on_start();
+	abstract function on_complete();
+	abstract function on_failure();
 
-$action = $config->get_current_action();
-$file_count = count($config->get_processed_files());
+	abstract function get_menu();
+	abstract function get_type();
 
-if ($action && $config->in_progress()): ?>
-	<p>
-		<strong><?php echo date('H:i:s', $action['time']) ?>: </strong>
-		<?php echo $action['message']; ?>
-	</p>
-	<?php if ($file_count > 0 ): ?>
-		<p>
-			<strong><?php echo date('H:i:s', strtotime(current_time('mysql'))) ?>: </strong>
-			<?php echo sprintf(__('Processed %d files.', 'wpbtd'), $file_count); ?>
-		</p>
-	<?php endif; ?>
-<?php endif; ?>
+	abstract function is_enabled();
+	abstract function set_enabled($bool);
+}
