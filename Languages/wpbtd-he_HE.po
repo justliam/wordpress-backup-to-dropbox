@@ -1,0 +1,372 @@
+﻿# Copyright (C) 2010 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: WordPress Backup to Dropbox 0.8\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
+"POT-Creation-Date: 2011-06-02 23:56:09+00:00\n"
+"PO-Revision-Date: 2011-07-03 22:08+0100\n"
+"Last-Translator: Lucky boost <Luckyboost@ymail.com>\n"
+"Language-Team: WordPress Hebrew <http://he.wordpress.org/>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Language: Hebrew\n"
+"X-Poedit-Country: Isreal\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: Classes/class-dropbox-facade.php:119
+msgid "קובץ גיבוי אינו קיים."
+msgstr ""
+
+#: Classes/class-dropbox-facade.php:138
+msgid "שגיעה במהלך העלאת %s לדרופבוקס. סטטוס HTTP: %s"
+msgstr ""
+
+#: Classes/class-wp-backup-config.php:72
+msgid ""
+"PHP פועל במצב בטוח כך שאי אפשר לקבוע מגבלת "
+"זמן."
+msgstr ""
+
+#: Classes/class-wp-backup-config.php:73
+msgid "לחצו %s לעוד מידע."
+msgstr ""
+
+#: Classes/class-wp-backup-config.php:74
+msgid "כאן"
+msgstr ""
+
+#: Classes/class-wp-backup-config.php:169
+msgid ""
+"שגיעה בכתובת התיקיה. הכתובת יכולה לקבל אותיות לטיניות בלבד"
+"או מקף נטוי ('/') בין תיקיות."
+msgstr ""
+
+#: Classes/class-wp-backup.php:91
+msgid ""
+"הקובץ '%s' עבר את 40% של תיקרת הזיכרון בPHP. הגדל את התיקרה "
+"כדי לגבות את הקובץ"
+msgstr ""
+
+#: Classes/class-wp-backup.php:104
+msgid "מעלה"
+msgstr ""
+
+#: Classes/class-wp-backup.php:111
+msgid "העלאה נכשלה עבור '%s' בעקבות השגיאה: $s"
+msgstr ""
+
+#: Classes/class-wp-backup.php:125
+msgid "שגיעה במהלך הגישה למסד הנתונים."
+msgstr ""
+
+#: Classes/class-wp-backup.php:136 Classes/class-wp-backup.php:305
+msgid ""
+"גיבוי עבור מסד הנתונים נכשל מפני שלוורדפרס אין הרשאות כתיבה "
+"ל'%s', צור תיקיה '%s' בצורה ידנית."
+msgstr ""
+
+#: Classes/class-wp-backup.php:144
+msgid "שגיעה במהלך יצירת קובץ sql dump."
+msgstr ""
+
+#: Classes/class-wp-backup.php:206
+msgid "שגיעה במהלך סגירת קובץ sql dump."
+msgstr ""
+
+#: Classes/class-wp-backup.php:221
+msgid "שגיעה במהלך כתיבה לקובץ sql dump."
+msgstr ""
+
+#: Classes/class-wp-backup.php:246
+msgid "חשבון דרופבוקס שלך אינו מורשה." 
+msgstr ""
+
+#: Classes/class-wp-backup.php:257
+msgid "יוצר גיבוי לSQL"
+msgstr ""
+
+#: Classes/class-wp-backup.php:267
+msgid "הגיבוי הושלם."
+msgstr ""
+
+#: Classes/class-wp-backup.php:274
+msgid "התוסף כבר אינו מורשה לדרופבוקס."
+msgstr ""
+
+#: Classes/class-wp-backup.php:286
+msgid "הגיבוי הופסק על ידי המשתמש."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:63
+#: Views/wp-backup-to-dropbox-options.php:169
+msgid "גיבוי וורדפרס לדרופבוקס"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:64
+#: Views/wp-backup-to-dropbox-options.php:170
+msgid "גירסה %s"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:65
+msgid "מצב התקדמות הגיבוי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:69
+msgid ""
+"תהליך הגיבוי מוכן, ממתין לפקודת הפעלה מוורדפרס. "
+"זה יכול לקחת כמה דקות, עכשיו זה זמן טוב להכין כוס "
+"קפה."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:71
+msgid "כרגע לא מתבצע תהליך גיבוי."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:76
+msgid "הפסק גיבוי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-monitor.php:78
+msgid "התחל גיבוי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:24
+msgid ""
+"גירסת PHP (%s) שלך ישנה מידי על מנת להפעיל את התוסף כראוי "
+"עדכן PHP לגרסת 5.2 ומעלה."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:90
+#: Views/wp-backup-to-dropbox-options.php:278
+#: Views/wp-backup-to-dropbox-options.php:339
+msgid "יומי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:177
+msgid "פרטי חשבון דרופבוקס"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:183
+msgid "יש לך"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:185
+msgid "גיגביט"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:186
+msgid "של"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:187
+msgid "פנוי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:189
+msgid "נתק חשבון"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:191
+msgid "גיבוי הבא"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:196
+msgid "הגיבוי הבא מתוכנן ל%s בשעה %s"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:198
+msgid ""
+"אין תכנון לביצוע גיבוי. בחר יום שעה ותדירות בהמשך העמוד. "
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:200
+msgid "היסטוריה"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:211
+msgid "הגיבוי החל בתאריך %s, בשעה %s"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:214
+msgid "הגיבוי הושלם בתאריך %s, בשעה %s"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:217
+msgid "אזהרת גיבוי בעקבות %s ב%s: %s"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:220
+msgid "שגיעת גיבוי בעקבות %s ב%s: %s"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:224
+msgid "נקה הסטוריה"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:226
+msgid "אין היסטוריה"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:229 wp-backup-to-dropbox.php:49
+msgid "הגדרות"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:234
+msgid "זמנית שמור גיבוי למסד הנתונים בתיקיה זו"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:238
+#: Views/wp-backup-to-dropbox-options.php:252
+msgid "ברירת המחדל היא"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:247
+msgid "שמור גיבוי בתקיה זו בדרופבוקס"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:260
+msgid "תאריך ושעה"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:264
+msgid "שני"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:266
+msgid "שלישי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:268
+msgid "רביעי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:270
+msgid "חמישי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:272
+msgid "שישי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:274
+msgid "שבת"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:276
+msgid "ראשון"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:280
+msgid "בשעה"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:331
+msgid "היום והשעה לביצוע הגיבוי לדרופבוקס"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:335
+msgid "תדירות"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:342
+msgid "שבועי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:346
+msgid "דו-שבועי"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:349
+msgid "פעם ב-4 שבועות"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:353
+msgid "פעם ב-8 שבועות"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:357
+msgid "פעם ב-12 שבועות"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:360
+msgid "התדירות בה מתבצעת הגיבוי לדרופבוקס"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:366
+msgid "המנע מגיבוי קבצים ותיקיות"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:369
+msgid ""
+"בחר את הקבצים והתקיות שאינך רוצה לגבות. "
+"לפרוט קבצים בתוך תקיות לחץ על התקיה."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:370
+msgid "לצומת לבך:"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:370
+msgid ""
+"תקית SQL dump יגובה בכל מקרה ללא קשר לתיקיות"
+"שסומנו."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:378
+msgid "שמור שינוים"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:388
+msgid "תודה על התקנת גיבוי וורדפרס לדרופבוקס!"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:389
+msgid ""
+"על מנת להשתמש בתוסף, נצרך לתת לו הרשאות גישה לחשבון "
+"הדרופבוקס שלך."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:390
+msgid ""
+"לחץ על כפתור האישור ופעל על פי ההוראות "
+"בחלונית הקופצת."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:392
+msgid ""
+"שגיעה במהלך אישור התקשרות בין התוסף לדרופבוקס. "
+"נסה שנית."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:397
+msgid "אישור"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:400
+msgid "המשך"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:407
+msgid "שגיעה חמורה במהלך גיבוי הוורדפרס לדרופבוקס"
+msgstr ""
+
+#: wp-backup-to-dropbox.php:46
+msgid "גבה"
+msgstr ""
+
+#: wp-backup-to-dropbox.php:53
+msgid "ניטור גיבוי"
+msgstr ""
+
+#: wp-backup-to-dropbox.php:53
+msgid "גבה עכשיו"
+msgstr ""
+
+#: wp-backup-to-dropbox.php:116
+msgid "תהליך הגיבוי נעלם. מחדש גיבוי."
+msgstr ""
