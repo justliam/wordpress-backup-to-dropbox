@@ -108,22 +108,14 @@ class Dropbox_Facade {
 		} else if ( $ret[ 'httpStatus' ] == 401 ) {
 			throw new Exception( 'Unauthorized' );
 		} else if ( $ret[ 'httpStatus' ] != 200 ) {
-			throw new Exception( sprintf( __( 'HTTP Status %s received from Dropbox while uploading file.', 'wpbtd' ),
-										  $file,
-										  $ret[ 'httpStatus' ] ) );
+			throw new Exception( sprintf( __( 'HTTP Status %s received from Dropbox while uploading file %s.', 'wpbtd' ),
+										  $ret[ 'httpStatus' ], $file) );
 		}
 		return true;
 	}
 
 	public function delete_file($file) {
-		$ret = $this->dropbox->delete($file);
-		if ( $ret[ 'httpStatus' ] == 401 ) {
-			throw new Exception( 'Unauthorized' );
-		} else if ( $ret[ 'httpStatus' ] != 200 ) {
-			throw new Exception( sprintf( __( 'HTTP Status %s received from Dropbox while deleting file.', 'wpbtd' ),
-										  $file,
-										  $ret[ 'httpStatus' ] ) );
-		}
+		$this->dropbox->delete($file);
 	}
 
 	public function get_directory_contents( $path ) {
