@@ -81,6 +81,7 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Persian (fa_IR) - [Reza-sh](http://www.rezaonline.net/blog)
 * Dutch (nl_NL) - [Rinze Hiddink](http://www.rinzehiddink.nl)
 * Hebrew (he_HE) - [Menachem](http://luckyboost.com)
+* Italian (it_IT) - [René Querin](http://q-design.it)
 
 == Installation ==
 
@@ -134,6 +135,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 * Removed backup has gone away warning that seems to be confusing users
 * Made a whole bunch of perfomrance improvmentws
 * Added premium extensions
+* Tested with WordPress 3.4
 * See  http://www.mikeyd.com.au/2012/04/30/wordpress-backup-to-dropbox-1-0 for details
 
 = 0.9.4 =
@@ -201,4 +203,4 @@ if they have been modified since the last backup.
 
 == Upgrade Notice ==
 
-* Very important bugfix introduce in 0.9.3 - sorry guys!
+* Major performance increases, bug fixes and introducing premium extensions
