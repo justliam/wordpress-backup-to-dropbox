@@ -12,7 +12,7 @@ cp -r JQueryFileTree $TRUNK
 cp -r Dropbox_API $TRUNK
 cp -r Classes $TRUNK
 cp -r Views $TRUNK
-cp -r Images/*.png $TRUNK/Images/
+cp -r Images/WordPressBackupToDropbox_16.png $TRUNK/Images/
 
 cd $TRUNK
 zip -r $ARCHIVE * -x '*/.svn/*'
