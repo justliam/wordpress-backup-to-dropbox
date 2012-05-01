@@ -27,10 +27,10 @@ $buyUrl = $manager->get_buy_url();
 
 $error = $title = null;
 if (isset($_REQUEST['error']))
-	$error = __(sprintf('There was an error with your payment, please contact %s to resolve.', '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>'));
+	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.'), '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>');
 
 if (isset($_REQUEST['title']))
-	$successs = __(sprintf('You have succesfully purchased the %s premium extension, please install it below.', "<strong>{$_REQUEST['title']}</strong>"));
+	$successs = sprintf(__('You have succesfully purchased the %s premium extension, please install it below.'), "<strong>{$_REQUEST['title']}</strong>");
 
 try {
 	if (isset($_POST['name'])) {
@@ -125,4 +125,8 @@ table {
 		<?php endforeach; ?>
 
 	</table>
+	<p>
+		<strong><?php _e('Please Note:') ?></strong>&nbsp;
+		<?php echo sprintf(__('Each extension can only be activated on a single website. If you manage multiple websites please contact %s for details on activation plans.'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>') ?>
+	</p>
 </div>
