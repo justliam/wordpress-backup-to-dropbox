@@ -27,10 +27,10 @@ $buyUrl = $manager->get_buy_url();
 
 $error = $title = null;
 if (isset($_REQUEST['error']))
-	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.'), '<a href="mailto:michael.dewildt+wpb2d@gmail.com">Mikey</a>');
+	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>');
 
 if (isset($_REQUEST['title']))
-	$successs = sprintf(__('You have succesfully purchased the %s premium extension, please install it below.'), "<strong>{$_REQUEST['title']}</strong>");
+	$success = sprintf(__('You have succesfully purchased the %s premium extension, please install it below.'), "<strong>{$_REQUEST['title']}</strong>");
 
 try {
 	if (isset($_POST['name'])) {
