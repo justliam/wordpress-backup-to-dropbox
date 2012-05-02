@@ -31,7 +31,7 @@ if (isset($_POST['dir'])) {
 			echo "<ul class=\"jqueryFileTree\" style=\"display: none;\">";
 			// All dirs
 			foreach ($files as $file) {
-				if (file_exists($_POST['dir'] . $file) && $file != '.' && $file != '..' && is_dir($_POST['dir'] . $file)) {
+				if ($file != '.' && $file != '..' && file_exists($_POST['dir'] . $file) && is_dir($_POST['dir'] . $file)) {
 
 					if (!is_readable($_POST['dir']) || $_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
 						continue;
@@ -50,7 +50,7 @@ if (isset($_POST['dir'])) {
 			// All files
 			foreach ($files as $file) {
 
-				if (file_exists($_POST['dir'] . $file) && $file != '.' && $file != '..' && !is_dir($_POST['dir'] . $file)) {
+				if ($file != '.' && $file != '..' && file_exists($_POST['dir'] . $file) && !is_dir($_POST['dir'] . $file)) {
 
 					if ($_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
 						continue;
