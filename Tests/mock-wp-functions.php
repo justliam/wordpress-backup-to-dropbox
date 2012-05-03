@@ -178,6 +178,8 @@ function wp_schedule_single_event($server_time, $key) {
 	return true;
 }
 
+function delete_option($option) {}
+
 function wp_unschedule_event($server_time, $key) {
 	global $schedule;
 	if (!array_key_exists($key, $schedule)) {

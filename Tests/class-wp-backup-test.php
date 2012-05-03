@@ -66,6 +66,9 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 				)
 			)
 			->times(8)
+
+			->shouldReceive('end')
+			->once()
 			;
 
 		$this->backup->backup_path(__DIR__, 'DropboxLocation');
@@ -80,6 +83,9 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			->shouldReceive('out')
 			->with(__DIR__,	Mockery::not(__DIR__ . '/Out/bigFile.txt'))
 			->times(7)
+
+			->shouldReceive('end')
+			->once()
 			;
 
 		$this->backup->backup_path(__DIR__, 'DropboxLocation');
@@ -101,6 +107,9 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 				)
 			)
 			->times(6)
+
+			->shouldReceive('end')
+			->once()
 			;
 
 		$this->backup->backup_path(__DIR__, 'DropboxLocation');
@@ -205,12 +214,14 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this
 			->output
 			->shouldReceive('out')
+			->shouldReceive('end')
 			;
 
 		$this->backup->execute();
 
 		$history = $this->config->get_history();
 		$this->assertNotEmpty($history);
+
 		$this->assertEquals(strtotime('2012-03-12 00:00:00'), $history[0][0]);
 		$this->assertEquals(WP_Backup_Config::BACKUP_STATUS_FINISHED, $history[0][1]);
 	}
