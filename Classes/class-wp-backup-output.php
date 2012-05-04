@@ -20,11 +20,14 @@
  */
 class WP_Backup_Output {
 
+	const MAX_ERRORS = 10;
+
 	private $dropbox;
 	private $config;
 	private $last_backup_time;
 	private $dropbox_location;
 	private $max_file_size;
+	private $error_count;
 
 	public function __construct($dropbox = false, $config = false) {
 		$this->dropbox = $dropbox ? $dropbox : new Dropbox_Facade();
@@ -36,6 +39,10 @@ class WP_Backup_Output {
 	}
 
 	public function out($source, $file) {
+
+		if ($this->error_count > self::MAX_ERRORS) {
+			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.'), self::MAX_ERRORS));
+		}
 
 		if (filesize($file) > $this->max_file_size) {
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING,
@@ -54,11 +61,9 @@ class WP_Backup_Output {
 			try {
 				$this->dropbox->upload_file($dropbox_path, $file);
 			} catch (Exception $e) {
-				if ($e->getMessage() == 'Unauthorized')
-					throw $e;
-
-				$msg = sprintf(__("Could not upload '%s' due to the following error: %s", 'wpbtd'), $file, $e->getMessage());
+				$msg = sprintf(__("There was an error uploading '%s' to Dropbox", 'wpbtd'), $file);
 				$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, $msg);
+				$this->error_count++;
 			}
 		}
 	}

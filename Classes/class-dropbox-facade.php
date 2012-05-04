@@ -21,7 +21,7 @@
 
 class Dropbox_Facade {
 
-	const RETRY_COUNT = 3;
+	const RETRY_COUNT = 5;
 	const CONSUMER_KEY = '0kopgx3zvfd0876';
 	const CONSUMER_SECRET = 'grpp5f0dai90bon';
 
@@ -33,37 +33,37 @@ class Dropbox_Facade {
 	}
 
 	public function __construct() {
-		$this->tokens = get_option( 'backup-to-dropbox-tokens' );
-		if ( !$this->tokens ) {
-			$this->tokens = array( 'access' => false, 'request' => false );
-			add_option( 'backup-to-dropbox-tokens', $this->tokens, null, 'no' );
+		$this->tokens = get_option('backup-to-dropbox-tokens');
+		if (!$this->tokens) {
+			$this->tokens = array('access' => false, 'request' => false);
+			add_option('backup-to-dropbox-tokens', $this->tokens, null, 'no');
 		} else {
 			//Get the users drop box credentials
-			$oauth = new Dropbox_OAuth_PEAR( self::CONSUMER_KEY, self::CONSUMER_SECRET );
+			$oauth = new Dropbox_OAuth_PEAR(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
 			//If we have not got an access token then we need to grab one
-			if ( $this->tokens['access'] == false ) {
+			if ($this->tokens['access'] == false) {
 				try {
-					$oauth->setToken( $this->tokens['request'] );
+					$oauth->setToken($this->tokens['request']);
 					$this->tokens['access'] = $oauth->getAccessToken();
 					$this->save_tokens();
-				} catch ( Exception $e ) {
+				} catch (Exception $e) {
 					//Authorization failed so we are still pending
 					$this->tokens['access'] = false;
 				}
 			} else {
-				$oauth->setToken( $this->tokens['access'] );
+				$oauth->setToken($this->tokens['access']);
 			}
-			$this->dropbox = new Dropbox_API( $oauth );
+			$this->dropbox = new Dropbox_API($oauth);
 		}
 	}
 
 	public function is_authorized() {
-		if ( !$this->tokens['access'] ) {
+		if (!$this->tokens['access']) {
 			return false;
 		}
 		$info = $this->get_account_info();
-		if ( isset( $info['error'] ) ) {
+		if (isset($info['error'])) {
 			$this->tokens = null;
 			$this->save_tokens();
 			return false;
@@ -73,7 +73,7 @@ class Dropbox_Facade {
 	}
 
 	public function get_authorize_url() {
-		$oauth = new Dropbox_OAuth_PEAR( self::CONSUMER_KEY, self::CONSUMER_SECRET );
+		$oauth = new Dropbox_OAuth_PEAR(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 		$this->tokens['request'] = $oauth->getRequestToken();
 		$this->save_tokens();
 		return $oauth->getAuthorizeUrl();
@@ -84,32 +84,27 @@ class Dropbox_Facade {
 	}
 
 	private function save_tokens() {
-		update_option( 'backup-to-dropbox-tokens', $this->tokens );
+		update_option('backup-to-dropbox-tokens', $this->tokens);
 	}
 
-	public function upload_file( $path, $file ) {
-		if ( !file_exists( $file ) ) {
-			throw new Exception( sprintf(__( 'backup file (%s) does not exist.', 'wpbtd' ), $file)  );
+	public function upload_file($path, $file) {
+		if (!file_exists( $file)) {
+			throw new Exception(sprintf(__('backup file (%s) does not exist.', 'wpbtd'), $file));
 		}
 		$retries = 0;
-		$ret = false;
+		$success = false;
 		$e = null;
-		while ( $retries < self::RETRY_COUNT ) {
+		while ($retries < self::RETRY_COUNT) {
 			try {
-				$ret = $this->dropbox->putFile( $path, $file );
+				$success = $this->dropbox->putFile($path, $file);
 				break;
-			} catch ( Exception $e ) {
+			} catch (Exception $e) {
 				$retries++;
-				sleep( 1 );
+				sleep(1);
 			}
 		}
-		if ( !$ret ) {
+		if (!$success) {
 			throw $e;
-		} else if ( $ret[ 'httpStatus' ] == 401 ) {
-			throw new Exception( 'Unauthorized' );
-		} else if ( $ret[ 'httpStatus' ] != 200 ) {
-			throw new Exception( sprintf( __( 'HTTP Status %s received from Dropbox while uploading file %s.', 'wpbtd' ),
-										  $ret[ 'httpStatus' ], $file) );
 		}
 		return true;
 	}
@@ -118,25 +113,25 @@ class Dropbox_Facade {
 		$this->dropbox->delete($file);
 	}
 
-	public function get_directory_contents( $path ) {
+	public function get_directory_contents($path) {
 		static $directory_cache = array();
-		if ( !isset( $directory_cache[$path] ) ) {
+		if (!isset($directory_cache[$path])) {
 			$directory_cache[$path] = array();
 			try {
-				$meta_data = $this->dropbox->getMetaData( $path );
-				foreach ( $meta_data['contents'] as $val ) {
-					if ( !$val['is_dir'] ) {
-						$directory_cache[$path][] = basename( $val['path'] );
+				$meta_data = $this->dropbox->getMetaData($path);
+				foreach ($meta_data['contents'] as $val) {
+					if (!$val['is_dir']) {
+						$directory_cache[$path][] = basename($val['path']);
 					}
 				}
 				//No need to do anything with the exception because the dir does not exist
-			} catch ( Dropbox_Exception_NotFound $e ) {}
+			} catch (Dropbox_Exception_NotFound $e) {}
 		}
 		return $directory_cache[$path];
 	}
 
 	public function unlink_account() {
-		delete_option( 'backup-to-dropbox-tokens' );
+		delete_option('backup-to-dropbox-tokens');
 		$this->tokens['access'] = false;
 	}
 }
