@@ -18,7 +18,6 @@
  */
 class WP_Backup_Extension_Manager {
 
-	private $url = 'http://wpb2d.com';
 	private $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
 
 	public static function construct() {
@@ -35,7 +34,10 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function get_url() {
-		return $this->url;
+		if (defined('WPB2D_URL'))
+			return WPB2D_URL;
+
+		return 'http://wpb2d.com';
 	}
 
 	public function get_install_url() {
@@ -43,7 +45,7 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function get_buy_url() {
-		return $this->url . '/buy';
+		return $this->get_url() . '/buy';
 	}
 
 	public function get_extensions() {
@@ -52,7 +54,7 @@ class WP_Backup_Extension_Manager {
 			'site' => get_site_url(),
 		);
 
-		$response = wp_remote_get("{$this->url}/extensions?" . http_build_query($params));
+		$response = wp_remote_get("{$this->get_url()}/extensions?" . http_build_query($params));
 		if (is_wp_error($response))
 			throw new Exception(__('There was an error getting the list of premium extensions'));
 
@@ -76,7 +78,7 @@ class WP_Backup_Extension_Manager {
 			'site' => get_site_url(),
 		);
 
-		$download_file = download_url("{$this->url}/download?" . http_build_query($params));
+		$download_file = download_url("{$this->get_url()}/download?" . http_build_query($params));
 
 		if (is_wp_error($download_file)) {
 			$errorMsg = $download_file->get_error_messages();
