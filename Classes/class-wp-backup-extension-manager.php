@@ -98,10 +98,15 @@ class WP_Backup_Extension_Manager {
 
 	public function init() {
 		$installed = $this->get_installed();
+		$active = array();
 		foreach ($installed as $name => $file) {
-			if (file_exists(EXTENSIONS_DIR . $file))
+			if (file_exists(EXTENSIONS_DIR . $file)) {
 				include_once EXTENSIONS_DIR . $file;
+				$active[$name] = $file;
+			}
+
 		}
+		update_option('backup-to-dropbox-premium-extensions', $active);
 	}
 
 	public function get_output() {
@@ -122,11 +127,8 @@ class WP_Backup_Extension_Manager {
 
 	private function call($func) {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$obj = $this->get_instance($name);
-			if ($obj && $obj->is_enabled())
-				$obj->$func();
-		}
+		foreach ($installed as $name => $file)
+			$this->get_instance($name)->$func();
 	}
 
 	public function on_start() {
