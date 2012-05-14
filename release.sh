@@ -13,6 +13,7 @@ cp -r Dropbox_API $TRUNK
 cp -r Classes $TRUNK
 cp -r Views $TRUNK
 cp -r Images/WordPressBackupToDropbox_16.png $TRUNK/Images/
+cp -r Images/guarantee.gif $TRUNK/Images/
 
 cd $TRUNK
 zip -r $ARCHIVE * -x '*/.svn/*'
