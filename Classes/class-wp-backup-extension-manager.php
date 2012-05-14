@@ -82,15 +82,20 @@ class WP_Backup_Extension_Manager {
 
 		if (is_wp_error($download_file)) {
 			$errorMsg = $download_file->get_error_messages();
-			throw new Exception(__('There was an error installing your premium extension') . ' - ' . $errorMsg[0]);
+			throw new Exception(__('There was an error downloading your premium extension') . ' - ' . $errorMsg[0]);
 		}
 
 		$result = unzip_file($download_file, EXTENSIONS_DIR);
-		unlink($download_file);
 		if (is_wp_error($result)) {
 			$errorMsg = $result->get_error_messages();
+			if ($errorMsg[0] == "Incompatible Archive.")
+				$errorMsg[0] = file_get_contents($download_file);
+
+			unlink($download_file);
 			throw new Exception(__('There was an error installing your premium extension') . ' - ' . $errorMsg[0]);
 		}
+
+		unlink($download_file);
 
 		$extensions = get_option('backup-to-dropbox-premium-extensions');
 		$extensions[$name] = $file;
