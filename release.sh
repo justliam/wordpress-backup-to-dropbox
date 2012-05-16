@@ -9,7 +9,7 @@ cp *.js $TRUNK
 cp -r PEAR_Includes $TRUNK
 cp -r Languages $TRUNK
 cp -r JQueryFileTree $TRUNK
-cp -r Dropbox_API $TRUNK
+cp -r Dropbox_API/src/Dropbox $TRUNK/Dropbox_API/src/
 cp -r Classes $TRUNK
 cp -r Views $TRUNK
 cp -r Images/WordPressBackupToDropbox_16.png $TRUNK/Images/
