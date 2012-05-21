@@ -31,6 +31,9 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 		$this->config->set_option('dropbox_location', 'DropboxLocation');
 		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
 
+		if (!file_exists(__DIR__ . '/Out'))
+			mkdir(__DIR__ . '/Out');
+
 		$fh = fopen(__DIR__ . '/Out/file.txt', 'w');
 		fwrite($fh, "file.txt");
 		fclose($fh);
@@ -120,7 +123,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$history = $this->config->get_history();
 		$this->assertEquals(
-			"Could not upload '/Users/mikey/Documents/wpb2d/git/WordPress-Backup-to-Dropbox/Tests/Out/file.txt' due to the following error: Error",
+			"There was an error uploading '/Users/mikey/Documents/wpb2d/git/WordPress-Backup-to-Dropbox/Tests/Out/file.txt' to Dropbox",
 			$history[0][2]
 		);
 	}
@@ -155,29 +158,5 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			$history[0][2]
 		);
 		ini_restore('memory_limit');
-	}
-
-	public function testOutFileUploadUnauthorized() {
-
-		$this
-			->dropbox
-
-			->shouldReceive('get_directory_contents')
-			->with('DropboxLocation/Out')
-			->andReturn(array())
-			->once()
-
-			->shouldReceive('upload_file')
-			->andThrow(new Exception('Unauthorized'))
-			->once()
-			;
-
-		try {
-			$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
-		} catch (Exception $e) {
-			return;
-		}
-
-		$this->fail('An expected exception has not been raised.');
 	}
 }
