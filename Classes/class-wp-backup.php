@@ -56,7 +56,7 @@ class WP_Backup {
 		$next_check = 0;
 		if (file_exists($path)) {
 			$source = realpath($path);
-			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST);
+			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
 			foreach ($files as $fileInfo) {
 				$file = $fileInfo->getPathname();
 
