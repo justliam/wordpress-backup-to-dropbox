@@ -128,6 +128,11 @@ class WP_Backup_Config {
 		}
 	}
 
+	public function set_memory_limit() {
+		if (function_exists('memory_get_usage'))
+			@ini_set('memory_limit', '256M');
+	}
+
 	public function set_current_action($msg) {
 		$actions = $this->as_array(get_option('backup-to-dropbox-actions'));
 		$actions[] = array(

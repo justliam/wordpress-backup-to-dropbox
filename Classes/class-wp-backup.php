@@ -210,6 +210,7 @@ class WP_Backup {
 		$this->config->set_in_progress(true);
 		try {
 
+			$this->config->set_memory_limit();
 			$this->config->set_time_limit();
 
 			if (!$this->dropbox->is_authorized()) {
