@@ -14,6 +14,7 @@ cp -r Classes $TRUNK
 cp -r Views $TRUNK
 cp -r Images/WordPressBackupToDropbox_16.png $TRUNK/Images/
 cp -r Images/guarantee.gif $TRUNK/Images/
+cp -r Images/banner-772x250.png $TRUNK/../assets/
 
 cd $TRUNK
 zip -r $ARCHIVE * -x '*/.svn/*'
