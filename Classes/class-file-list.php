@@ -30,6 +30,8 @@ class File_List {
 	}
 
 	public function __construct() {
+		WP_Backup_Config::construct()->set_memory_limit();
+
 		delete_option('backup-to-dropbox-file-list');
 
 		$file_list = get_option('backup-to-dropbox-excluded-files');
