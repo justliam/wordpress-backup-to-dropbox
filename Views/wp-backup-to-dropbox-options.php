@@ -233,19 +233,6 @@ try {
 		<tbody>
 		<tr valign="top">
 			<th scope="row"><label
-					for="dump_location"><?php _e('Temporarily store your database backup in this folder', 'wpbtd'); ?></label></th>
-			<td>
-				<input name="dump_location" type="text" id="dump_location" value="<?php echo $dump_location; ?>"
-					   class="regular-text code">
-				<span class="description"><?php _e('Default is', 'wpbtd'); ?><code><?php echo basename(WP_CONTENT_DIR) ?>/backups</code></span>
-				<?php if ($validation_errors && array_key_exists('dump_location', $validation_errors)) { ?>
-				<br/><span class="description"
-						   style="color: red"><?php echo $validation_errors['dump_location']['message'] ?></span>
-				<?php } ?>
-			</td>
-		</tr>
-		<tr valign="top">
-			<th scope="row"><label
 					for="dropbox_location"><?php _e('Store backup in this folder within Dropbox', 'wpbtd'); ?></label>
 			</th>
 			<td>
