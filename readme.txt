@@ -132,75 +132,21 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.1 =
+* Updated the Dropbox PHP API to fix various issues processing some files
+* Un readable directories or files are now skipped instead of causing an exception
+* Added Hungarian language
+* The backup now attempts to set the memory limit to 256M before backup
+* Removed the option to set the temp backup dir for simpicity
+* Migrated to Dropbox App Folder mode for added security of your Dropbox account
+* See http://www.mikeyd.com.au/2012/06/04/wordpress-backup-to-dropbox-1-1 for details
+
 = 1.0 =
 * Removed backup has gone away warning that seems to be confusing users
 * Made a whole bunch of perfomrance improvmentws
 * Added premium extensions
 * Tested with WordPress 3.4
-* See  http://www.mikeyd.com.au/2012/04/30/wordpress-backup-to-dropbox-1-0 for details
-
-= 0.9.4 =
-* Fixed an issue where the SQL backup was not being uploaded to Dropbox
-* Fixed an issue where the default backup dir was not being displayed if WP_CONTE_DIR is not set
-* Fixed an issue where bakups where not stopping correctly
-
-= 0.9.3 =
-* Moved settings and monitor to their own paret menu
-* Database bacups are now removed after they are uploaded to Dropbox
-* Fixed free space issue
-* Made it so non standard WP_CONTENT_DIR is backed up
-* Lots of other bug fixes and performance updates
-* Fixed a bug in the file exclusion list that was preventing folders from being marked as partial
-
-= 0.9.2 =
-* Fixed issues when open basedir restriction is on
-* Removed DISABLE_WP_CRON check for users who use a real cron
-* Added a clear history button
-* Added a stop backup button and updated the backup monitor a bit
-
-= 0.9.1 =
-* Added a backup monitor and fixed backup now
-* Fixed various issues to do with permissions
-* Added chinese, taiwanese and german translations
-
-= 0.9 =
-* Added feature #5 the ability to exclude certain files or directories from the backup
-* Fixed a bug where the plugin would not recognise that an account had been unlikned within Dropbox
-* Fixed issue #18 where Windows users getting errors during backup
-* Added a text domain to i18n functions and added pt_BR, pt_PT, es_ES, gl_GL and AR translation files
-* Added 'desktop.ini' to the ignored file list
-* Fixed issue #28 - repeated 'Backup appears to have gone away' messages to do with the suhosin.memory_limit being exceeded
-* Fixed issue #31 Recognize alternate wp-content location via wp-config.php constants
-* Added an unlink account button to unlink your Dropbox account
-
-= 0.8 =
-* A major change to improve performance. The wordpress files are no longer zipped, instead they are individually uploaded
-if they have been modified since the last backup.
-* Added validation of the path fields to fix issue #11
-* Changed the path include order to fix issue #14
-* Disabled the day select list if the daily frequency is selected to fix issue #8
-* For more information please visit http://www.mikeyd.com.au/2011/05/26/wordpress-backup-to-dropbox-0-8/
-
-= 0.7.2 =
-* Automatically add a htaccess file to the backups directory so your website archives are not exposed to the public
-
-= 0.7.1 =
-* Fixed issue #3: Backup starts but fails without an error message due to the zip process running out of memory
-* Removed 'double zipping' of archive. Now the SQL dump will appear in 'wp-content/backups'
-* Fixed an issue where backup now was removing periodic backups
-* Added upload started history item
-* Added create database statement to db dump
-* Added error messages for missing required php extensions
-* Removed extra 'the' resolves issue #7
-
-= 0.7 =
-* Added feature #4: Backup now button
-* Fixed issue #2: Allow legitimately empty tables in backup
-* Fixed some minor look and feel issues
-* Added logo artwork, default i18n POT file and a daily schedule interval
-
-= 0.6 =
-* Initial stable release
+* See http://www.mikeyd.com.au/2012/04/30/wordpress-backup-to-dropbox-1-0 for details
 
 == Upgrade Notice ==
 
