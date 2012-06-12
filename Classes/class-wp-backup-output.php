@@ -34,7 +34,11 @@ class WP_Backup_Output {
 		$this->config = $config ? $config : new WP_Backup_Config();
 
 		$this->last_backup_time = $this->config->get_option('last_backup_time');
-		$this->dropbox_location = $this->config->get_option('dropbox_location');
+
+		$this->dropbox_location = null;
+		if ($this->config->get_option('store_in_subfolder'))
+			$this->dropbox_location = $this->config->get_option('dropbox_location');
+
 		$this->max_file_size = $this->config->get_max_file_size();
 	}
 
