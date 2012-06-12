@@ -39,17 +39,7 @@ class WP_Backup {
 		$this->output = $output ? $output : WP_Backup_Extension_Manager::construct()->get_output();
 	}
 
-	/**
-	 * Backs up the WordPress blog by checking if each file exists in Dropbox and has changed since the last backup.
-	 * Files that are too big to be uploaded due to memory restrictions or fails to upload to Dropbox are skipped
-	 * and a warning is logged.
-	 *
-	 * @param $max_execution_time
-	 * @param $dropbox_location
-	 * @param $max_execution_time
-	 * @return string - Path to the database dump
-	 */
-	public function backup_path($path, $dropbox_location) {
+	public function backup_path($path) {
 		$this->config->set_current_action(sprintf(__('Backing up WordPress path at (%s)', 'wpbtd'), $path));
 		$processed_files = $this->config->get_processed_files();
 		$file_list = new File_List();
@@ -219,7 +209,6 @@ class WP_Backup {
 			}
 
 			$dump_location = $this->config->get_option('dump_location');
-			$dropbox_location = $this->config->get_option('dropbox_location');
 
 			$sql_file_name = $this->get_sql_file_name();
 			$processed_files = $this->config->get_processed_files();
@@ -229,11 +218,10 @@ class WP_Backup {
 			}
 
 			$manager->on_start();
-			$this->backup_path(ABSPATH, $dropbox_location);
+			$this->backup_path(ABSPATH);
 
-			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH) {
-				$this->backup_path(WP_CONTENT_DIR, $dropbox_location . '/wp-content');
-			}
+			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH)
+				$this->backup_path(WP_CONTENT_DIR);
 
 			if (file_exists($sql_file_name))
 				unlink($sql_file_name);
