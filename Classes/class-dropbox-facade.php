@@ -87,13 +87,17 @@ class Dropbox_Facade {
 		if (!$this->tokens['access']) {
 			return false;
 		}
-		$info = $this->get_account_info();
-		if (isset($info['error'])) {
-			$this->tokens = null;
-			$this->save_tokens();
+		try {
+			$info = $this->get_account_info();
+			if (isset($info['error'])) {
+				$this->unlink_account();
+				return false;
+			} else {
+				return true;
+			}
+		} catch (Exception $e) {
+			$this->unlink_account();
 			return false;
-		} else {
-			return true;
 		}
 	}
 
