@@ -81,7 +81,10 @@ class WP_Backup_Config {
 		if ($suhosin_memory_limit && $suhosin_memory_limit < $memory_limit) {
 			$memory_limit = $suhosin_memory_limit;
 		}
-		return $memory_limit / 2.5;
+
+		$memory_limit /= 2.5;
+
+		return $memory_limit < Dropbox_Facade::MAX_UPLOAD_SIZE ? $memory_limit : Dropbox_Facade::MAX_UPLOAD_SIZE;
 	}
 
 	public function set_option($option, $value) {

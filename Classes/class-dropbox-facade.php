@@ -29,6 +29,8 @@ class Dropbox_Facade {
 	const CONSUMER_KEY = 'u1i8xniul59ggxs';
 	const CONSUMER_SECRET = '0ssom5yd1ybebhy';
 
+	const MAX_UPLOAD_SIZE = 157286400;
+
 	private $dropbox = null;
 	private $tokens = null;
 
