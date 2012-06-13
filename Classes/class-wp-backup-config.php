@@ -44,6 +44,7 @@ class WP_Backup_Config {
 				'dropbox_location' => 'WordPressBackup',
 				'last_backup_time' => false,
 				'in_progress' => false,
+				'store_in_subfolder' => false,
 			);
 			add_option('backup-to-dropbox-options', $options, null, 'no');
 		}
