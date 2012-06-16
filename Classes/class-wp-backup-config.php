@@ -84,8 +84,8 @@ class WP_Backup_Config {
 		return $memory_limit < Dropbox_Facade::MAX_UPLOAD_SIZE ? $memory_limit : Dropbox_Facade::MAX_UPLOAD_SIZE;
 	}
 
-	public function get_backup_dir() {
-		return WP_CONTENT_DIR . 'backups/';
+	public static function get_backup_dir() {
+		return WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'backups';
 	}
 
 	public function set_option($option, $value) {

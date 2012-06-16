@@ -68,6 +68,9 @@ class WP_Backup {
 					if (in_array($file, $processed_files))
 						continue;
 
+					if (dirname($file) == $this->config->get_backup_dir())
+						continue;
+
 					$this->output->out($source, $file);
 
 					$processed_files[] = $file;
@@ -215,6 +218,7 @@ class WP_Backup {
 			if (!in_array($sql_file_name, $processed_files)) {
 				$this->config->set_current_action(__('Creating SQL backup', 'wpbtd'));
 				$this->backup_database();
+				$this->output->out(realpath(ABSPATH), $sql_file_name);
 			}
 
 			$manager->on_start();
