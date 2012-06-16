@@ -89,7 +89,7 @@ class WP_Backup {
 			throw new Exception($db_error . ' (ERROR_1)');
 		}
 
-		$dump_location = $this->config->get_option('dump_location');
+		$dump_location = $this->config->get_backup_dir();
 
 		if (!is_writable($dump_location)) {
 			$msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
@@ -208,7 +208,7 @@ class WP_Backup {
 				return;
 			}
 
-			$dump_location = $this->config->get_option('dump_location');
+			$dump_location = $this->config->get_backup_dir();
 
 			$sql_file_name = $this->get_sql_file_name();
 			$processed_files = $this->config->get_processed_files();
@@ -259,7 +259,7 @@ class WP_Backup {
 	 * @return string
 	 */
 	public function create_dump_dir() {
-		$dump_dir = ABSPATH .  $this->config->get_option('dump_location');
+		$dump_dir = $this->config->get_backup_dir();
 		if (!file_exists($dump_dir)) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
 			if (!@mkdir($dump_dir)) {
@@ -275,6 +275,6 @@ class WP_Backup {
 	}
 
 	private function get_sql_file_name() {
-		return ABSPATH . rtrim($this->config->get_option('dump_location'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
+		return rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . '-backup.sql';
 	}
 }

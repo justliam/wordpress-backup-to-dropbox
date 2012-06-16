@@ -40,7 +40,6 @@ class WP_Backup_Config {
 		$options = get_option('backup-to-dropbox-options');
 		if (!$options) {
 			$options = array(
-				'dump_location' => basename(WP_CONTENT_DIR) . '/backups',
 				'dropbox_location' => 'WordPressBackup',
 				'last_backup_time' => false,
 				'in_progress' => false,
@@ -48,9 +47,6 @@ class WP_Backup_Config {
 			);
 			add_option('backup-to-dropbox-options', $options, null, 'no');
 		}
-
-		if (!$this->get_option('dump_location'))
-			$this->set_option('dump_location', basename(WP_CONTENT_DIR) . '/backups');
 
 		if (!$this->get_option('dropbox_location'))
 			$this->set_option('dropbox_location', 'WordPressBackup');
@@ -86,6 +82,10 @@ class WP_Backup_Config {
 		$memory_limit /= 2.5;
 
 		return $memory_limit < Dropbox_Facade::MAX_UPLOAD_SIZE ? $memory_limit : Dropbox_Facade::MAX_UPLOAD_SIZE;
+	}
+
+	public function get_backup_dir() {
+		return WP_CONTENT_DIR . 'backups/';
 	}
 
 	public function set_option($option, $value) {

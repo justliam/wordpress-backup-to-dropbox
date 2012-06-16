@@ -116,6 +116,8 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testBackupDatabaseNoWriteAcess() {
+		chmod(WP_CONTENT_DIR . 'backups/', 0555);
+
 		$this
 			->wpdb
 			->shouldReceive('get_results')
@@ -127,9 +129,10 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$history = $this->config->get_history();
 		$this->assertNotEmpty($history);
 		$this->assertEquals(
-			"A database backup cannot be created because WordPress does not have write access to 'WordPress-Backup-to-Dropbox/backups', please ensure this directory has write access.",
+			"A database backup cannot be created because WordPress does not have write access to '" . WP_CONTENT_DIR . "backups/', please ensure this directory has write access.",
 			$history[0][2]
 		);
+		chmod(WP_CONTENT_DIR . 'backups/', 0755);
 	}
 
 	private function setUpDbMock() {
@@ -251,10 +254,8 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testCreateDumpDir() {
-		$this->config->set_option('dump_location', 'Tests/Out/Dump');
 		$this->backup->create_dump_dir();
-		$this->assertTrue(file_exists('Out/Dump'));
-		rmdir('Out/Dump');
+		$this->assertTrue(file_exists(WP_CONTENT_DIR . 'backups'));
 	}
 }
 ?>
