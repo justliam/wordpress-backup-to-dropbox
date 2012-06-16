@@ -139,6 +139,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 * The backup now attempts to set the memory limit to 256M before backup
 * Removed the option to set the temp backup dir for simpicity
 * Migrated to Dropbox App Folder mode for added security of your Dropbox account
+* Fixed exclude widet issues on Windows Server
 * See http://www.mikeyd.com.au/2012/06/04/wordpress-backup-to-dropbox-1-1 for details
 
 = 1.0 =
