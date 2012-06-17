@@ -50,20 +50,20 @@ function backup_to_dropbox_admin_menu() {
 	$imgUrl = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
 
 	$text = __('WPB2D', 'wpbtd');
-	add_utility_page($text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
+	add_utility_page($text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
 
 	$text = __('Backup Settings', 'wpbtd');
-	add_submenu_page('backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
+	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
 
 	$backup = new WP_Backup_Config();
 	$text = $backup->is_scheduled() ? __('Monitor Backup', 'wpbtd') : __('Backup Now', 'wpbtd');
 
-	add_submenu_page('backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
+	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
 	WP_Backup_Extension_Manager::construct()->add_menu_items();
 
 	$text = __('Premium Extensions', 'wpbtd');
-	add_submenu_page('backup-to-dropbox', $text, $text, 'edit_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');
+	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');
 }
 
 /**
