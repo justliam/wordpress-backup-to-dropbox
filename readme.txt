@@ -147,8 +147,8 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 * Made a whole bunch of perfomrance improvmentws
 * Added premium extensions
 * Tested with WordPress 3.4
-* See http://www.mikeyd.com.au/2012/04/30/wordpress-backup-to-dropbox-1-0 for details
+* See http://www.mikeyd.com.au/2012/06/17/wordpress-backup-to-dropbox-1-0 for details
 
 == Upgrade Notice ==
 
-* Major performance increases, bug fixes and introducing premium extensions
+* New more secure Dropbox App folder verson and bug fixes

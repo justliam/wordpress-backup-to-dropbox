@@ -144,6 +144,6 @@ table {
 	</table>
 	<p>
 		<strong><?php _e('Please Note:') ?></strong>&nbsp;
-		<?php echo sprintf(__('Each extension can only be activated on a single website. If you manage multiple websites please %s.'), '<a href="http://wpb2d.com/buy-subscription">' . __('purchase a subscription') . '</a>') ?>
+		<?php echo sprintf(__('Each extension can only be activated on a single website for one year. If you manage multiple websites please %s.'), '<a href="http://wpb2d.com/buy-subscription">' . __('purchase a subscription') . '</a>') ?>
 	</p>
 </div>

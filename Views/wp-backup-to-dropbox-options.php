@@ -247,7 +247,7 @@ try {
 		<tbody>
 		<tr valign="top">
 			<th scope="row"><label
-					for="dropbox_location"><?php _e("Store backup in a subfolder of the 'wpb2d' app folder", 'wpbtd'); ?></label>
+					for="dropbox_location"><?php _e("Store backup in a subfolder of the wpb2d app folder", 'wpbtd'); ?></label>
 			</th>
 			<td>
 				<input name="store_in_subfolder" type="checkbox" id="store_in_subfolder"
