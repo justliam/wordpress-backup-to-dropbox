@@ -33,6 +33,7 @@ class Dropbox_Facade {
 
 	private $dropbox = null;
 	private $tokens = null;
+	private $directory_cache = array();
 
 	public static function construct() {
 		return new self();
@@ -131,7 +132,7 @@ class Dropbox_Facade {
 				break;
 			} catch (Exception $e) {
 				$retries++;
-				sleep(1);
+				sleep(BACKUP_TO_DROPBOX_ERROR_TIMEOUT);
 			}
 		}
 		if (!$success) {
@@ -145,20 +146,35 @@ class Dropbox_Facade {
 	}
 
 	public function get_directory_contents($path) {
-		static $directory_cache = array();
-		if (!isset($directory_cache[$path])) {
-			$directory_cache[$path] = array();
-			try {
-				$meta_data = $this->dropbox->getMetaData($path);
-				foreach ($meta_data['contents'] as $val) {
-					if (!$val['is_dir']) {
-						$directory_cache[$path][] = basename($val['path']);
+		$retries = 0;
+		$success = false;
+		$e = null;
+		if (!isset($this->directory_cache[$path])) {
+			while ($retries < self::RETRY_COUNT) {
+				$this->directory_cache[$path] = array();
+				try {
+					$meta_data = $this->dropbox->getMetaData($path);
+					foreach ($meta_data['contents'] as $val) {
+						if (!$val['is_dir']) {
+							$this->directory_cache[$path][] = basename($val['path']);
+						}
 					}
+					$success = true;
+					break;
+				} catch (Dropbox_Exception_NotFound $e) {
+					//No need to do anything with the exception because the dir does not exist
+					$success = true;
+					break;
+				} catch (Exception $e) {
+					$retries++;
+					sleep(BACKUP_TO_DROPBOX_ERROR_TIMEOUT);
 				}
-				//No need to do anything with the exception because the dir does not exist
-			} catch (Dropbox_Exception_NotFound $e) {}
+			}
+			if (!$success) {
+				throw $e;
+			}
 		}
-		return $directory_cache[$path];
+		return $this->directory_cache[$path];
 	}
 
 	public function unlink_account() {

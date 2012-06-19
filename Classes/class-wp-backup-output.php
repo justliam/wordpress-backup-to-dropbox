@@ -60,15 +60,16 @@ class WP_Backup_Output {
 			$dropbox_path = str_replace(DIRECTORY_SEPARATOR, '/', $dropbox_path);
 		}
 
-		$directory_contents = $this->dropbox->get_directory_contents(dirname($dropbox_path));
-		if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time) {
-			try {
+		try {
+
+			$directory_contents = $this->dropbox->get_directory_contents(dirname($dropbox_path));
+			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time)
 				$this->dropbox->upload_file($dropbox_path, $file);
-			} catch (Exception $e) {
-				$msg = sprintf(__("There was an error uploading '%s' to Dropbox", 'wpbtd'), $file);
-				$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, $msg);
-				$this->error_count++;
-			}
+
+		} catch (Exception $e) {
+			$msg = sprintf(__("There was an error uploading '%s' to Dropbox", 'wpbtd'), $file);
+			$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, $msg);
+			$this->error_count++;
 		}
 	}
 
