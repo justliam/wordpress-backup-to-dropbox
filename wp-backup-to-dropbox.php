@@ -24,7 +24,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 define('USE_BUNDLED_PEAR', true);
 define('BACKUP_TO_DROPBOX_VERSION', '1.1');
 define('BACKUP_TO_DROPBOX_ERROR_TIMEOUT', 5); //seconds
-define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Extensions/');
+define('EXTENSIONS_DIR', implode(array(WP_CONTENT_DIR, 'plugins', 'wordpress-backup-to-dropbox', 'Extensions'), DIRECTORY_SEPARATOR));
 
 require_once('Dropbox_API/src/Dropbox/autoload.php');
 require_once('Classes/class-file-list.php');
@@ -37,9 +37,9 @@ require_once('Classes/class-wp-backup-extension-manager.php');
 
 //We need to set the PEAR_Includes folder in the path
 if (USE_BUNDLED_PEAR)
-	set_include_path(dirname(__FILE__) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path());
+	set_include_path(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'PEAR_Includes' . PATH_SEPARATOR . get_include_path());
 else
-	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . '/PEAR_Includes');
+	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . DIRECTORY_SEPARATOR . 'PEAR_Includes');
 
 WP_Backup_Extension_Manager::construct()->init();
 
