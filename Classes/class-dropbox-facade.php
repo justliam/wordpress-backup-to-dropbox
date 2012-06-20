@@ -98,7 +98,7 @@ class Dropbox_Facade {
 			} else {
 				return true;
 			}
-		} catch (Exception $e) {
+		} catch (Dropbox_Exception_Forbidden $e) {
 			$this->unlink_account();
 			return false;
 		}
