@@ -31,6 +31,7 @@ delete_option('backup-to-dropbox-excluded-files');
 delete_option('backup-to-dropbox-file-list');
 delete_option('backup-to-dropbox-in-progress');
 delete_option('backup-to-dropbox-premium-extensions');
+delete_option('backup-to-dropbox-processed-files');
 
 wp_clear_scheduled_hook('execute_periodic_drobox_backup');
 wp_clear_scheduled_hook('execute_instant_drobox_backup');
