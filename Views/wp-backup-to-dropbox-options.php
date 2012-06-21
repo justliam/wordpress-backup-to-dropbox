@@ -62,15 +62,8 @@ try {
 	$dropbox_location = $config->get_option('dropbox_location');
 	$store_in_subfolder = $config->get_option('store_in_subfolder');
 
-	try
-	{
-		$backup->create_dump_dir();
-	}
-	catch (Exception $e)
-	{
-		$validation_errors['dump_location']['original'] = $dump_location;
-		$validation_errors['dump_location']['message'] = $e->getMessage();
-	}
+	$backup->create_dump_dir();
+	$backup->create_silence_file();
 
 	if (!empty($validation_errors)) {
 		$dump_location = array_key_exists('dump_location', $validation_errors)

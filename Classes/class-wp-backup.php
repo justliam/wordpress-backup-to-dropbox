@@ -257,11 +257,23 @@ class WP_Backup {
 		$this->config->clean_up();
 	}
 
-	/**
-	 * Creates the dump directory if it does not already exist
-	 * @throws Exception
-	 * @return string
-	 */
+	public function create_silence_file() {
+		$silence = $this->config->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
+		if (!file_exists($silence)) {
+			$fh = @fopen($silence, 'w');
+			if (!$fh) {
+				throw new Exception(
+					sprintf(
+						__("WordPress does not have write access to '%s'. Please grant it write privileges before using this plugin."),
+						$this->config->get_backup_dir()
+					)
+				);
+			}
+			fwrite($fh, "<?php\n// Silence is golden.\n");
+			fclose($fh);
+		}
+	}
+
 	public function create_dump_dir() {
 		$dump_dir = $this->config->get_backup_dir();
 		if (!file_exists($dump_dir)) {
