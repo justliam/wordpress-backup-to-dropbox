@@ -70,6 +70,7 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function install($name, $file) {
+		define('FS_METHOD', 'direct');
 		WP_Filesystem();
 
 		$params = array(
