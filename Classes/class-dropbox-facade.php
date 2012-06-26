@@ -81,10 +81,15 @@ class Dropbox_Facade {
 	}
 
 	public function get_authorize_url() {
-		$oauth = new Dropbox_OAuth_PEAR(self::CONSUMER_KEY, self::CONSUMER_SECRET);
-		$this->tokens['request'] = $oauth->getRequestToken();
-		$this->save_tokens();
-		return $oauth->getAuthorizeUrl();
+		try {
+			$oauth = new Dropbox_OAuth_PEAR(self::CONSUMER_KEY, self::CONSUMER_SECRET);
+			$this->tokens['request'] = $oauth->getRequestToken();
+			$this->save_tokens();
+			return $oauth->getAuthorizeUrl();
+		} catch (HTTP_OAuth_Consumer_Exception_InvalidResponse $e) {
+			$this->unlink_account();
+			throw $e;
+		}
 	}
 
 	public function get_account_info() {
@@ -155,6 +160,6 @@ class Dropbox_Facade {
 
 	public function unlink_account() {
 		delete_option('backup-to-dropbox-tokens');
-		$this->tokens['access'] = false;
+		$this->tokens = null;
 	}
 }
