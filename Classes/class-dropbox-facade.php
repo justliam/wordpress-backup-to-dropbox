@@ -23,9 +23,6 @@ class Dropbox_Facade {
 
 	const RETRY_COUNT = 5;
 
-	const CONSUMER_KEY_FULL = '0kopgx3zvfd0876';
-	const CONSUMER_SECRET_FULL = 'grpp5f0dai90bon';
-
 	const CONSUMER_KEY = 'u1i8xniul59ggxs';
 	const CONSUMER_SECRET = '0ssom5yd1ybebhy';
 
@@ -46,7 +43,7 @@ class Dropbox_Facade {
 			add_option('backup-to-dropbox-tokens', $this->tokens, null, 'no');
 		} else {
 			//Get the users drop box credentials
-			$oauth = new Dropbox_OAuth_PEAR($this->get_key(), $this->get_secret());
+			$oauth = new Dropbox_OAuth_PEAR(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
 			//If we have not got an access token then we need to grab one
 			if ($this->tokens['access'] == false) {
@@ -61,29 +58,8 @@ class Dropbox_Facade {
 			} else {
 				$oauth->setToken($this->tokens['access']);
 			}
-			$this->dropbox = new Dropbox_API($oauth, $this->get_root_path());
+			$this->dropbox = new Dropbox_API($oauth, Dropbox_API::ROOT_SANDBOX);
 		}
-	}
-
-	private function get_root_path() {
-		if (BACKUP_TO_DROPBOX_VERSION > 1)
-			return Dropbox_API::ROOT_SANDBOX;
-
-		return Dropbox_API::ROOT_DROPBOX;
-	}
-
-	private function get_key() {
-		if (BACKUP_TO_DROPBOX_VERSION > 1)
-			return self::CONSUMER_KEY;
-
-		return self::CONSUMER_KEY_FULL;
-	}
-
-	private function get_secret() {
-		if (BACKUP_TO_DROPBOX_VERSION > 1)
-			return self::CONSUMER_SECRET;
-
-		return self::CONSUMER_SECRET_FULL;
 	}
 
 	public function is_authorized() {
@@ -105,7 +81,7 @@ class Dropbox_Facade {
 	}
 
 	public function get_authorize_url() {
-		$oauth = new Dropbox_OAuth_PEAR($this->get_key(), $this->get_secret());
+		$oauth = new Dropbox_OAuth_PEAR(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 		$this->tokens['request'] = $oauth->getRequestToken();
 		$this->save_tokens();
 		return $oauth->getAuthorizeUrl();
