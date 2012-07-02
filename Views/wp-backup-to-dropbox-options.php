@@ -68,8 +68,11 @@ try {
 	if (!empty($validation_errors)) {
 		$dump_location = array_key_exists('dump_location', $validation_errors)
 				? $validation_errors['dump_location']['original'] : $dump_location;
-		$dropbox_location = array_key_exists('dropbox_location', $validation_errors)
-				? $validation_errors['dropbox_location']['original'] : $dropbox_location;
+
+		if (array_key_exists('dropbox_location', $validation_errors)) {
+			$dropbox_location = $validation_errors['dropbox_location']['original'];
+			$store_in_subfolder = true;
+		}
 	}
 
 	$time = date('H:i', $unixtime);
@@ -111,7 +114,8 @@ try {
 				$('.dropbox_location').show('fast', function() {
 					$('#dropbox_location').focus();
 				});
-			 } else {
+			} else {
+				$('#dropbox_location').val('');
 				$('.dropbox_location').hide();
 			}
 		});

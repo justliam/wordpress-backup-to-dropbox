@@ -211,7 +211,7 @@ class WP_Backup_Config {
 	public function set_options($options) {
 		static $regex = '/[^A-Za-z0-9-_.@]/';
 		$errors = array();
-		$error_msg = __('Invalid directory path. Path must only contain alphanumeric characters.', 'wpbtd');
+		$error_msg = __('The sub directory must only contain alphanumeric characters.', 'wpbtd');
 
 		foreach ($options as $key => $value) {
 			preg_match($regex, $value, $matches);
