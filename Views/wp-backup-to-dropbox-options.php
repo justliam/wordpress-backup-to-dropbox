@@ -107,10 +107,13 @@ try {
 		});
 
 		$('#store_in_subfolder').click(function (e) {
-			if ($('#store_in_subfolder').is(':checked'))
-				$('.dropbox_location').show();
-			else
+			if ($('#store_in_subfolder').is(':checked')) {
+				$('.dropbox_location').show('fast', function() {
+					$('#dropbox_location').focus();
+				});
+			 } else {
 				$('.dropbox_location').hide();
+			}
 		});
 	});
 
@@ -249,7 +252,6 @@ try {
 				<span class="dropbox_location">
 					<input name="dropbox_location" type="text" id="dropbox_location"
 						   value="<?php echo $dropbox_location; ?>" class="regular-text code">
-					<span class="description"><?php _e('Default is', 'wpbtd'); ?><code>WordPressBackup</code></span>
 					<?php if ($validation_errors && array_key_exists('dropbox_location', $validation_errors)) { ?>
 					<br/><span class="description"
 							   style="color: red"><?php echo $validation_errors['dropbox_location']['message'] ?></span>

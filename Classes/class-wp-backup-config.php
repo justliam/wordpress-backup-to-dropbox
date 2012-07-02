@@ -40,16 +40,13 @@ class WP_Backup_Config {
 		$options = get_option('backup-to-dropbox-options');
 		if (!$options) {
 			$options = array(
-				'dropbox_location' => 'WordPressBackup',
+				'dropbox_location' => null,
 				'last_backup_time' => false,
 				'in_progress' => false,
 				'store_in_subfolder' => false,
 			);
 			add_option('backup-to-dropbox-options', $options, null, 'no');
 		}
-
-		if (!$this->get_option('dropbox_location'))
-			$this->set_option('dropbox_location', 'WordPressBackup');
 
 		$actions = get_option('backup-to-dropbox-actions');
 		if (!$actions) {
@@ -212,9 +209,9 @@ class WP_Backup_Config {
 	}
 
 	public function set_options($options) {
-		static $regex = '/[^A-Za-z0-9-_.@\/]/';
+		static $regex = '/[^A-Za-z0-9-_.@]/';
 		$errors = array();
-		$error_msg = __('Invalid directory path. Path must only contain alphanumeric characters and the forward slash (\'/\') to separate directories.', 'wpbtd');
+		$error_msg = __('Invalid directory path. Path must only contain alphanumeric characters.', 'wpbtd');
 
 		foreach ($options as $key => $value) {
 			preg_match($regex, $value, $matches);

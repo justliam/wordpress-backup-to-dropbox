@@ -132,6 +132,9 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.2 =
+* Reuduced directory nesting to one subfolder
+
 = 1.1 =
 * Updated the Dropbox PHP API to fix various issues processing some files
 * Un readable directories or files are now skipped instead of causing an exception
