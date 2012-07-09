@@ -74,10 +74,12 @@ class Dropbox_Facade {
 			} else {
 				return true;
 			}
-		} catch (Dropbox_Exception_Forbidden $e) {
+		} catch (Dropbox_Exception_BadOAuth $e) {
 			$this->unlink_account();
-			return false;
+		} catch (Dropbox_Exception_BadToken $e) {
+			$this->unlink_account();
 		}
+		return false;
 	}
 
 	public function get_authorize_url() {

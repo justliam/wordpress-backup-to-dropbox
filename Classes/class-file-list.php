@@ -108,7 +108,7 @@ class File_List {
 	}
 
 	private function is_partial_dir($dir) {
-		if (is_dir($dir)) {
+		if (is_dir($dir) && is_readable($dir)) {
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
 			foreach ($files as $file) {
 				if ($file == $dir)
