@@ -29,7 +29,7 @@ try {
 	$validation_errors = null;
 
 	$dropbox = new Dropbox_Facade();
-	$config = new WP_Backup_Config();
+	$config = WP_Backup_Config::construct();
 	$backup = new WP_Backup();
 
 	$disable_backup_now = $config->in_progress();

@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$config = new WP_Backup_Config();
+$config = WP_Backup_Config::construct();
 
 if (array_key_exists('stop_backup', $_POST)) {
 	check_admin_referer('backup_to_dropbox_monitor_stop');

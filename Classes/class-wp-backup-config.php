@@ -20,6 +20,7 @@
  */
 include_once('class-file-list.php');
 class WP_Backup_Config {
+	private static $instance;
 
 	const BACKUP_STATUS_STARTED = 0;
 	const BACKUP_STATUS_FINISHED = 1;
@@ -29,7 +30,10 @@ class WP_Backup_Config {
 	const MAX_HISTORY_ITEMS = 100;
 
 	public static function construct() {
-		return new self();
+		if (!self::$instance)
+			self::$instance = new self();
+
+		return self::$instance;
 	}
 
 	public function __construct() {

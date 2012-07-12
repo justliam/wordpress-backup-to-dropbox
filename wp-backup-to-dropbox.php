@@ -56,8 +56,7 @@ function backup_to_dropbox_admin_menu() {
 	$text = __('Backup Settings', 'wpbtd');
 	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
 
-	$backup = new WP_Backup_Config();
-	$text = $backup->is_scheduled() ? __('Monitor Backup', 'wpbtd') : __('Backup Now', 'wpbtd');
+	$text = WP_Backup_Config::construct()->is_scheduled() ? __('Monitor Backup', 'wpbtd') : __('Backup Now', 'wpbtd');
 
 	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
@@ -130,7 +129,7 @@ function execute_drobox_backup() {
  * @return void
  */
 function monitor_dropbox_backup() {
-	$config = new WP_Backup_Config();
+	$config = WP_Backup_Config::construct();
 	$action = $config->get_current_action();
 
 	//5 mins to allow for socket timeouts and long uploads

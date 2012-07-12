@@ -31,7 +31,7 @@ class WP_Backup_Output {
 
 	public function __construct($dropbox = false, $config = false) {
 		$this->dropbox = $dropbox ? $dropbox : new Dropbox_Facade();
-		$this->config = $config ? $config : new WP_Backup_Config();
+		$this->config = $config ? $config : WP_Backup_Config::construct();
 
 		$this->last_backup_time = $this->config->get_option('last_backup_time');
 
