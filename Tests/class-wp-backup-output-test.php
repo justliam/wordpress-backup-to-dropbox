@@ -27,8 +27,11 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		reset_globals();
 		$this->dropbox = Mockery::mock('Dropbox_Facade');
+
 		$this->config = WP_Backup_Config::construct();
+		$this->config->set_option('store_in_subfolder', true);
 		$this->config->set_option('dropbox_location', 'DropboxLocation');
+
 		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
 
 		if (!file_exists(__DIR__ . '/Out'))
