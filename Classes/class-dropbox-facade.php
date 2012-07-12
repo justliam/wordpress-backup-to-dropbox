@@ -20,6 +20,7 @@
  */
 
 class Dropbox_Facade {
+	private static $instance;
 
 	const RETRY_COUNT = 5;
 
@@ -33,7 +34,10 @@ class Dropbox_Facade {
 	private $directory_cache = array();
 
 	public static function construct() {
-		return new self();
+		if (!self::$instance)
+			self::$instance = new self();
+
+		return self::$instance;
 	}
 
 	public function __construct() {

@@ -28,7 +28,7 @@ try {
 
 	$validation_errors = null;
 
-	$dropbox = new Dropbox_Facade();
+	$dropbox = Dropbox_Facade::construct();
 	$config = WP_Backup_Config::construct();
 	$backup = new WP_Backup();
 
