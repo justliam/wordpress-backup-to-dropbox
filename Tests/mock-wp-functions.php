@@ -82,7 +82,7 @@ function wp_remote_get($url) {
 function WP_Filesystem() {}
 
 function download_url($url) {
-	$file = ABSPATH . 'Tests/Out/file.zip';
+	$file = ABSPATH . '/Tests/file.zip';
 	$fh = fopen($file, 'a');
 	fwrite($fh, 'WRITE');
 	fclose($fh);
