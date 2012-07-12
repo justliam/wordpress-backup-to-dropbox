@@ -17,11 +17,15 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 class WP_Backup_Extension_Manager {
+	private static $instance;
 
 	private $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
 
 	public static function construct() {
-		return new self();
+		if (!self::$instance)
+			self::$instance = new self();
+
+		return self::$instance;
 	}
 
 	public function __construct() {
