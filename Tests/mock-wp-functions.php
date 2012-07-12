@@ -22,6 +22,9 @@ require_once $prefix . '../Classes/class-wp-backup-extension-manager.php';
 require_once $prefix . '../Classes/class-wp-backup-extension.php';
 require_once $prefix . '../Classes/class-wp-backup-output.php';
 require_once $prefix . '../Classes/class-wp-backup-config.php';
+require_once $prefix . '../Classes/class-wp-backup-database.php';
+require_once $prefix . '../Classes/class-wp-backup-database-core.php';
+require_once $prefix . '../Classes/class-wp-backup-database-plugins.php';
 require_once $prefix . '../Classes/class-dropbox-facade.php';
 require_once $prefix . '../Dropbox_API/src/Dropbox/autoload.php';
 
@@ -33,7 +36,7 @@ $loader->register();
 define('ARRAY_A', true);
 define('ARRAY_N', true);
 define('BACKUP_TO_DROPBOX_VERSION', 'UnitTest');
-define('ABSPATH', dirname(dirname(__FILE__)) . '/');
+define('ABSPATH', dirname(dirname(__FILE__)));
 define('WP_CONTENT_DIR', ABSPATH);
 define('DB_NAME', 'TestDB');
 define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/Extensions/');
