@@ -38,7 +38,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->config = WP_Backup_Config::construct();
 		$this->output = Mockery::mock('WP_Backup_Output');
 		$this->dropbox = Mockery::mock('Dropbox_Facade');
-		$this->wpdb = Mockery::mock('Wpdb');
+		$this->database = Mockery::mock('DB');
 		$this->backup = new WP_Backup($this->dropbox, $this->wpdb, $this->output);
 	}
 
