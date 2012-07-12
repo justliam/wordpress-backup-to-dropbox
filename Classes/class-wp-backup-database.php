@@ -21,25 +21,40 @@
 abstract class WP_Backup_Database {
 	const SELECT_QUERY_LIMIT = 10;
 
-	protected $database;
 	private $handle;
-	private $config;
+	private $type;
+
+	protected $database;
+	protected $config;
 
 	abstract function execute();
 
 	public function __construct($type, $wpdb = null) {
 		if (!$wpdb) global $wpdb;
 
+		$this->type = $type;
 		$this->database = $wpdb;
 		$this->config = WP_Backup_Config::construct();
+	}
 
-		$filename = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-$type.sql";
-		$this->handle = fopen($filename, 'w+');
-		if (!$this->handle)
-			throw new Exception(__('Error creating sql dump file.', 'wpbtd'));
+	private function get_file() {
+		if (!$this->type)
+			throw new Exception();
+
+		return rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
+	}
+
+	protected function processed() {
+		$processed_files = $this->config->get_processed_files();
+		if (in_array($this->get_file(), $processed_files))
+			return true;
 	}
 
 	protected function write_db_dump_header() {
+		$this->handle = fopen($this->get_file(), 'w+');
+		if (!$this->handle)
+			throw new Exception(__('Error creating sql dump file.', 'wpbtd'));
+
 		$dump_location = $this->config->get_backup_dir();
 
 		if (!is_writable($dump_location)) {
@@ -118,5 +133,7 @@ abstract class WP_Backup_Database {
 	protected function close_file() {
 		if (!fclose($this->handle))
 			throw new Exception(__('Error closing sql dump file.', 'wpbtd'));
+
+		return true;
 	}
 }

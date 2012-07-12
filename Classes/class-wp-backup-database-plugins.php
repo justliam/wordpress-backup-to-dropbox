@@ -22,6 +22,11 @@ class WP_Backup_Database_Plugins extends WP_Backup_Database {
 	}
 
 	public function execute() {
+		if ($this->processed())
+			return false;
+
+		$this->config->set_current_action(__('Creating SQL backup of your WordPress plugins', 'wpbtd'));
+
 		$this->write_db_dump_header();
 
 		$tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
@@ -37,6 +42,6 @@ class WP_Backup_Database_Plugins extends WP_Backup_Database {
 		if (!empty($tables_to_backup))
 			$this->backup_database_tables($tables_to_backup);
 
-		$this->close_file();
+		return $this->close_file();
 	}
 }
