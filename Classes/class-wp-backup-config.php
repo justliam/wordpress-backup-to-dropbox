@@ -229,14 +229,8 @@ class WP_Backup_Config {
 
 		if (empty($errors)) {
 			$newOptions = array();
-			foreach ($options as $key => $value) {
+			foreach ($options as $key => $value)
 				$newOptions[$key] = $value;
-				if (strstr($key, 'location')) {
-					$newOptions[$key] = ltrim($newOptions[$key], '/');
-					$newOptions[$key] = rtrim($newOptions[$key], '/');
-					$newOptions[$key] = preg_replace('/[\/]+/', '/', $newOptions[$key]);
-				}
-			}
 
 			$options = $this->as_array(get_option('backup-to-dropbox-options'));
 			foreach ($newOptions as $key => $value) {
