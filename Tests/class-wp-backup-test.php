@@ -24,12 +24,14 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 	private $backup;
 	private $dropbox;
-	private $wpdb;
 	private $output;
 	private $config;
 
 	public function tearDown() {
 		Mockery::close();
+		$dir = $this->config->get_backup_dir();
+		if (file_exists($dir))
+			rmdir($dir);
 	}
 
 	public function setUp() {
@@ -38,8 +40,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->config = WP_Backup_Config::construct();
 		$this->output = Mockery::mock('WP_Backup_Output');
 		$this->dropbox = Mockery::mock('Dropbox_Facade');
-		$this->database = Mockery::mock('DB');
-		$this->backup = new WP_Backup($this->dropbox, $this->wpdb, $this->output);
+		$this->backup = new WP_Backup($this->dropbox, $this->output);
 	}
 
 	public function testBackupPath() {
@@ -58,6 +59,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 					__DIR__ . '/Out/bigFile.txt',
 					__DIR__ . '/class-file-list-test.php',
 					__DIR__ . '/class-wp-backup-config-test.php',
+					__DIR__ . '/class-wp-backup-database-test.php',
 					__DIR__ . '/class-wp-backup-extension-manager-test.php',
 					__DIR__ . '/class-wp-backup-output-test.php',
 					__DIR__ . '/class-wp-backup-test.php',
@@ -65,7 +67,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 					__DIR__ . '/phpunit.xml'
 				)
 			)
-			->times(8)
+			->times(9)
 
 			->shouldReceive('end')
 			->once()
@@ -82,7 +84,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			->output
 			->shouldReceive('out')
 			->with(__DIR__,	Mockery::not(__DIR__ . '/Out/bigFile.txt'))
-			->times(7)
+			->times(8)
 
 			->shouldReceive('end')
 			->once()
@@ -106,86 +108,13 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 					__DIR__ . '/class-file-list-test.php'
 				)
 			)
-			->times(6)
+			->times(7)
 
 			->shouldReceive('end')
 			->once()
 			;
 
 		$this->backup->backup_path(__DIR__, 'DropboxLocation');
-	}
-
-	public function testBackupDatabaseNoWriteAcess() {
-		chmod(WP_CONTENT_DIR . 'backups/', 0555);
-
-		$this
-			->wpdb
-			->shouldReceive('get_results')
-			->with('SHOW TABLES', ARRAY_N)
-			;
-
-		$this->backup->backup_database();
-
-		$history = $this->config->get_history();
-		$this->assertNotEmpty($history);
-		$this->assertEquals(
-			"A database backup cannot be created because WordPress does not have write access to '" . WP_CONTENT_DIR . "backups/', please ensure this directory has write access.",
-			$history[0][2]
-		);
-		chmod(WP_CONTENT_DIR . 'backups/', 0755);
-	}
-
-	private function setUpDbMock() {
-		$tableData = array();
-		for ($i = 0; $i < 10; $i++) {
-			$tableData[] = array(
-				'field1' => 'value1',
-				'field2' => 'value2',
-				'field3' => 'value3',
-				'field4' => 'value4',
-				'field5' => 'value5',
-			);
-		}
-
-		$this->config->set_option('dump_location', 'Out');
-		$this
-			->wpdb
-
-			->shouldReceive('get_results')
-			->with('SHOW TABLES', ARRAY_N)
-			->andReturn(array(array('table1'), array('table2')))
-
-			->shouldReceive('get_row')
-			->with('SHOW CREATE TABLE table1', ARRAY_N)
-			->andReturn(array(1, 'SHOW CREATE TABLE table1'))
-
-			->shouldReceive('get_row')
-			->with('SHOW CREATE TABLE table2', ARRAY_N)
-			->andReturn(array(1, 'SHOW CREATE TABLE table2'))
-
-			->shouldReceive('get_var')
-			->with('SELECT COUNT(*) FROM table1')
-			->andReturn(0)
-
-			->shouldReceive('get_var')
-			->with('SELECT COUNT(*) FROM table2')
-			->andReturn(20)
-
-			->shouldReceive('get_results')
-			->with('SELECT * FROM table2 LIMIT 10 OFFSET 0', ARRAY_A)
-			->andReturn($tableData)
-
-			->shouldReceive('get_results')
-			->with('SELECT * FROM table2 LIMIT 10 OFFSET 10', ARRAY_A)
-			->andReturn($tableData)
-			;
-	}
-
-	public function testBackupDatabase() {
-		$this->setUpDbMock();
-
-		$this->backup->backup_database();
-		$this->assertEmpty($this->config->get_history());
 	}
 
 	public function testExecuteNotAuthorized() {
@@ -204,31 +133,6 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			$history[0][2]
 		);
 	}
-
-	public function testExecute() {
-		$this
-			->dropbox
-			->shouldReceive('is_authorized')
-			->andReturn(true)
-			;
-
-		$this->setUpDbMock();
-
-		$this
-			->output
-			->shouldReceive('out')
-			->shouldReceive('end')
-			;
-
-		$this->backup->execute();
-
-		$history = $this->config->get_history();
-		$this->assertNotEmpty($history);
-
-		$this->assertEquals(strtotime('2012-03-12 00:00:00'), $history[0][0]);
-		$this->assertEquals(WP_Backup_Config::BACKUP_STATUS_FINISHED, $history[0][1]);
-	}
-
 
 	public function testBackupNow() {
 		$this->backup->backup_now();
@@ -255,7 +159,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 	public function testCreateDumpDir() {
 		$this->backup->create_dump_dir();
-		$this->assertTrue(file_exists(WP_CONTENT_DIR . 'backups'));
+		$this->assertTrue(file_exists(WP_CONTENT_DIR . '/backups'));
 	}
 }
 ?>

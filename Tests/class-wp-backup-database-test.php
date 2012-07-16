@@ -18,7 +18,7 @@
  */
 require_once 'mock-wp-functions.php';
 
-class WP_Backup_Test extends PHPUnit_Framework_TestCase {
+class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 	private function assertOutput($actual, $expected) {
 		$actual = explode("\n", file_get_contents($actual));
