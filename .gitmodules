@@ -3,4 +3,4 @@
 	url = git@bitbucket.org:michaeldewildt/premiumextensions.git
 [submodule "Dropbox_API"]
 	path = Dropbox_API
-	url = https://github.com/Dropbox-PHP/dropbox-php.git
+	url = https://github.com/michaeldewildt/dropbox-php.git
