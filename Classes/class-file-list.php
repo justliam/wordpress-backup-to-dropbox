@@ -21,7 +21,7 @@
 include_once('class-wp-backup.php');
 class File_List {
 
-	private static $ignored_files = array( '.DS_Store', 'Thumbs.db', 'desktop.ini' );
+	private static $ignored_files = array('.DS_Store', 'Thumbs.db', 'desktop.ini');
 	private $excluded_files;
 	private $excluded_dirs;
 
@@ -30,7 +30,9 @@ class File_List {
 	}
 
 	public function __construct() {
-		WP_Backup_Config::construct()->set_memory_limit();
+		$limit = WP_Backup_Config::construct()->set_memory_limit();
+		if ($limit < 64)
+			throw new Exception(sprintf(__('Memory limit could not be set and your settings are too low to use this widget, please increase your PHP memory_limit to at least %sM.', 64)));
 
 		delete_option('backup-to-dropbox-file-list');
 
