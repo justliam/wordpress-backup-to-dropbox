@@ -50,7 +50,7 @@ abstract class WP_Backup_Database {
 		return rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
 	}
 
-	protected function processed() {
+	public function processed() {
 		$processed_files = $this->config->get_processed_files();
 		if (in_array($this->get_file(), $processed_files))
 			return true;

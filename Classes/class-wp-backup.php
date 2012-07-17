@@ -75,12 +75,11 @@ class WP_Backup {
 		$class = "WP_Backup_Database_" . ucfirst($type);
 		$db_backup = new $class();
 
-		if ($db_backup->execute()) {
-			$file = $db_backup->get_file();
+		$file = $db_backup->get_file();
 
+		if (!$db_backup->processed()) {
+			$db_backup->execute();
 			$this->output->out(dirname($file), $file);
-			$this->config->add_processed_files(array($file));
-
 			$db_backup->remove_file();
 		}
 	}

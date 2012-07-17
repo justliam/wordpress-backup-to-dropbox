@@ -22,10 +22,9 @@ class WP_Backup_Database_Core extends WP_Backup_Database {
 	}
 
 	public function execute() {
-		if ($this->processed())
-			return false;
-
+		$this->config->add_processed_files(array($file));
 		$this->config->set_current_action(__('Creating SQL backup of your WordPress core', 'wpbtd'));
+
 		$this->write_db_dump_header();
 		$this->backup_database_tables(array_values($this->database->tables()));
 
