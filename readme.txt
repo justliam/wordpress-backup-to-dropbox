@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.4
+Tested up to: 3.4.1
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -133,7 +133,12 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 == Changelog ==
 
 = 1.2 =
-* Reuduced directory nesting to one subfolder
+* Reuduced directory nesting to one subfolder and fixed up error message
+* Fixed issues where accounts where being incorrectly unliked
+* Added singltons for better performance
+* Fixed issue #63 Out of memory in settings page - display error in exlude widget if memory is too low
+* Fixed issue #64 UnexpectedValueException
+* WordPress core and plugin database tables are now backed up separatly
 
 = 1.1 =
 * Updated the Dropbox PHP API to fix various issues processing some files
