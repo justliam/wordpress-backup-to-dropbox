@@ -38,8 +38,8 @@ class WP_Backup {
 		if (file_exists($path)) {
 			$source = realpath($path);
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($source), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
-			foreach ($files as $fileInfo) {
-				$file = $fileInfo->getPathname();
+			foreach ($files as $file_info) {
+				$file = $file_info->getPathname();
 
 				if (time() > $next_check) {
 					if (!$this->config->in_progress())
@@ -71,6 +71,20 @@ class WP_Backup {
 		}
 	}
 
+	private function backup_database($type) {
+		$class = "WP_Backup_Database_" . ucfirst($type);
+		$db_backup = new $class();
+
+		if ($db_backup->execute()) {
+			$file = $db_backup->get_file();
+
+			$this->output->out(dirname($file), $file);
+			$this->config->add_processed_files(array($file));
+
+			$db_backup->remove_file();
+		}
+	}
+
 	public function execute() {
 		$manager = WP_Backup_Extension_Manager::construct();
 		$this->config->set_in_progress(true);
@@ -84,23 +98,14 @@ class WP_Backup {
 				return;
 			}
 
-			$dump_location = $this->config->get_backup_dir();
-
-			$core = new WP_Backup_Database_Core();
-			$core->execute();
-
-			$plugins = new WP_Backup_Database_Plugins();
-			$plugins->execute();
+			$this->backup_database('core');
+			$this->backup_database('plugins');
 
 			$manager->on_start();
 
 			$this->backup_path(ABSPATH);
 			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH)
 				$this->backup_path(WP_CONTENT_DIR);
-
-
-			$core->remove_file();
-			$plugins->remove_file();
 
 			$manager->on_complete();
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);

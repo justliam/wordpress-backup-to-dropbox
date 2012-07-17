@@ -43,7 +43,7 @@ abstract class WP_Backup_Database {
 			unlink($sql_file_name);
 	}
 
-	private function get_file() {
+	public function get_file() {
 		if (!$this->type)
 			throw new Exception();
 
