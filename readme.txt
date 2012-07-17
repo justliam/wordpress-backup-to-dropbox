@@ -96,6 +96,9 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 
 Browse to http://db.tt/szCyl7o and create a free account.
 
+= Where is my backup located? Can I move it? =
+By default your backup is located in 'Applications/wpb2d'. You can move the 'wpb2d' folder anywhere your want in your Dropbox. You can even rename it to 'my super awesome backup' or anything else if you want!
+
 = Nothing seems to happen when backing up, whats up? =
 
 Your server settings (.htaccess file) might be blocking wp-cron wich is required to start the backup process. Please refer to the following thread for information on to solve the issue - http://wordpress.org/support/topic/plugin-wordpress-backup-to-dropbox-nothing-seems-to-happen-when-backing-up
