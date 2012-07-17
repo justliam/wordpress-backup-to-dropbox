@@ -141,8 +141,11 @@ class WP_Backup_Extension_Manager {
 
 	private function call($func) {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file)
-			$this->get_instance($name)->$func();
+		foreach ($installed as $name => $file) {
+			$obj = $this->get_instance($name);
+			if ($obj->is_enabled())
+				$obj->$func();
+		}
 	}
 
 	public function on_start() {
