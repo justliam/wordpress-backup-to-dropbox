@@ -37,6 +37,12 @@ abstract class WP_Backup_Database {
 		$this->config = WP_Backup_Config::construct();
 	}
 
+	public function remove_file() {
+		$sql_file_name = $this->get_file();
+		if (file_exists($sql_file_name))
+			unlink($sql_file_name);
+	}
+
 	private function get_file() {
 		if (!$this->type)
 			throw new Exception();

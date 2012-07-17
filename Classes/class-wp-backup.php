@@ -98,8 +98,9 @@ class WP_Backup {
 			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH)
 				$this->backup_path(WP_CONTENT_DIR);
 
-			if (file_exists($sql_file_name))
-				unlink($sql_file_name);
+
+			$core->remove_file();
+			$plugins->remove_file();
 
 			$manager->on_complete();
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);
