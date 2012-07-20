@@ -40,6 +40,7 @@ define('ABSPATH', dirname(dirname(__FILE__)));
 define('WP_CONTENT_DIR', ABSPATH);
 define('DB_NAME', 'TestDB');
 define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/Extensions/');
+define('BACKUP_TO_DROPBOX_MEMORY_LIMIT', 150);
 
 date_default_timezone_set('Australia/NSW');
 

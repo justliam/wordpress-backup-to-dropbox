@@ -56,18 +56,6 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 		return $tableData;
 	}
 
-	public function testExecuteCoreProcessed() {
-		$this->config->add_processed_files(array($this->config->get_backup_dir() . '/TestDB-backup-core.sql'));
-		$backup = new WP_Backup_Database_Core(null, $this->config);
-		$this->assertFalse($backup->execute());
-	}
-
-	public function testExecutePluginsProcessed() {
-		$this->config->add_processed_files(array($this->config->get_backup_dir() . '/TestDB-backup-plugins.sql'));
-		$backup = new WP_Backup_Database_Plugins(null, $this->config);
-		$this->assertFalse($backup->execute());
-	}
-
 	public function testExecuteCore() {
 		$wpdb = Mockery::mock('wpdb')
 
