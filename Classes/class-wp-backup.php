@@ -59,7 +59,7 @@ class WP_Backup {
 					if (in_array($file, $processed_files))
 						continue;
 
-					if (dirname($file) == $this->config->get_backup_dir())
+					if (dirname($file) == $this->config->get_backup_dir() && substr(basename($file), -4, 4) == '.sql')
 						continue;
 
 					$this->output->out($source, $file);
@@ -68,19 +68,6 @@ class WP_Backup {
 				}
 			}
 			$this->output->end();
-		}
-	}
-
-	private function backup_database($type) {
-		$class = "WP_Backup_Database_" . ucfirst($type);
-		$db_backup = new $class();
-
-		$file = $db_backup->get_file();
-
-		if (!$db_backup->processed()) {
-			$db_backup->execute();
-			$this->output->out(dirname($file), $file);
-			$db_backup->remove_file();
 		}
 	}
 
@@ -97,14 +84,20 @@ class WP_Backup {
 				return;
 			}
 
-			$this->backup_database('core');
-			$this->backup_database('plugins');
+			$core = new WP_Backup_Database_Core();
+			$core->execute();
+
+			$plugins = new WP_Backup_Database_Plugins();
+			$plugins->execute();
 
 			$manager->on_start();
 
 			$this->backup_path(ABSPATH);
 			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH)
 				$this->backup_path(WP_CONTENT_DIR);
+
+			$core->remove_file();
+			$plugins->remove_file();
 
 			$manager->on_complete();
 			$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED);

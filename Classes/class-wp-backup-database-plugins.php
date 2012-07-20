@@ -22,7 +22,6 @@ class WP_Backup_Database_Plugins extends WP_Backup_Database {
 	}
 
 	public function execute() {
-		$this->config->add_processed_files(array($file));
 		$this->config->set_current_action(__('Creating SQL backup of your WordPress plugins', 'wpbtd'));
 
 		$this->write_db_dump_header();
