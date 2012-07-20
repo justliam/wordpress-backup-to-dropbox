@@ -145,7 +145,8 @@ function monitor_dropbox_backup() {
  * @return void
  */
 function run_dropbox_backup() {
-	WP_Backup::construct()->execute();
+	$backup = new WP_Backup();
+	$backup->execute();
 }
 
 /**
