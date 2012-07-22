@@ -113,6 +113,10 @@ The database is backed up into a file named '[database name]-backup.sql'. It wil
 you have set. Using the default settings the file will be found at the path 'WordPressBackups/wp-content/backups' within
 your Dropbox.
 
+= Wow! My second backup was heaps faster. Why is that? =
+In order to save time and bandwidth the plugin only uploads files that have changed since the last backup. The only exception
+is your SQL dump file that will be uploaded every time.
+
 = Can I perform a backup if my PHP installation has safe mode enabled? =
 Yes you can, however you need to modify the max execution time in your php.ini manually.
 [Please read this blog post for more information.](http://www.mikeyd.com.au/2011/05/24/setting-the-maximum-execution-time-when-php-is-running-in-safe-mode/)
