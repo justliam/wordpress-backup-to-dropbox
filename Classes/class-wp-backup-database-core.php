@@ -22,6 +22,9 @@ class WP_Backup_Database_Core extends WP_Backup_Database {
 	}
 
 	public function execute() {
+		if ($this->exists())
+			return false;
+
 		$this->config->set_current_action(__('Creating SQL backup of your WordPress core', 'wpbtd'));
 
 		$this->write_db_dump_header();
