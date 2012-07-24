@@ -30,10 +30,6 @@ class File_List {
 	}
 
 	public function __construct() {
-		$limit = WP_Backup_Config::construct()->set_memory_limit();
-		if ($limit < 64)
-			throw new Exception(sprintf(__('Memory limit could not be set and your settings are too low to use this widget, please increase your PHP memory_limit to at least %sM.', 64)));
-
 		delete_option('backup-to-dropbox-file-list');
 
 		$file_list = get_option('backup-to-dropbox-excluded-files');
@@ -44,6 +40,12 @@ class File_List {
 		} else {
 			list($this->excluded_dirs, $this->excluded_files) = $file_list;
 		}
+	}
+
+	public function test_memory() {
+		$limit = WP_Backup_Config::construct()->set_memory_limit();
+		if ($limit < 64)
+			throw new Exception(sprintf(__('Memory limit could not be set and your settings are too low to use this widget, please increase your PHP memory_limit to at least %sM (%sM is recommended).'), 64, 150));
 	}
 
 	public function set_included($path) {

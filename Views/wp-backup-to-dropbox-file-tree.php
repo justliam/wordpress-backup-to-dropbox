@@ -23,6 +23,8 @@
  */
 try {
 	$file_list = new File_List();
+	$file_list->test_memory();
+
 	if (isset($_POST['dir'])) {
 		$_POST['dir'] = urldecode($_POST['dir']);
 		if (file_exists($_POST['dir']) && is_readable($_POST['dir'])) {
