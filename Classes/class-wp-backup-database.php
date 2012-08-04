@@ -23,15 +23,17 @@ abstract class WP_Backup_Database {
 
 	private $handle;
 	private $type;
+	private $zip_sql;
 
 	protected $database;
 	protected $config;
 
 	abstract function execute();
 
-	public function __construct($type, $wpdb = null) {
+	public function __construct($type, $wpdb = null, $zip_sql = true) {
 		if (!$wpdb) global $wpdb;
 
+		$this->zip_sql = $zip_sql ? class_exists('ZipArchive') : false;
 		$this->type = $type;
 		$this->database = $wpdb;
 		$this->config = WP_Backup_Config::construct();
@@ -41,6 +43,9 @@ abstract class WP_Backup_Database {
 		$sql_file_name = $this->get_file();
 		if (file_exists($sql_file_name))
 			unlink($sql_file_name);
+
+		if (file_exists("$sql_file_name.zip"))
+			unlink($zip_file_name);
 	}
 
 	private function get_file() {
@@ -51,7 +56,11 @@ abstract class WP_Backup_Database {
 	}
 
 	protected function exists() {
-		return file_exists($this->get_file());
+		$file = $this->get_file();
+		if ($this->zip_sql)
+			return file_exists("$file.zip");
+
+		return file_exists($file);
 	}
 
 	protected function write_db_dump_header() {
@@ -139,5 +148,19 @@ abstract class WP_Backup_Database {
 			throw new Exception(__('Error closing sql dump file.', 'wpbtd'));
 
 		return true;
+	}
+
+	protected function zip_file() {
+		if (!$this->zip_sql)
+			return;
+
+		$file = $this->get_file();
+		$zip = new ZipArchive();
+		if ($zip->open("$file.zip", ZIPARCHIVE::CREATE) === true) {
+			$this->config->set_current_action(__('Zipping SQL backups', 'wpbtd'));
+			$zip->addFile($file, basename($file));
+			$zip->close();
+			unlink($file);
+		}
 	}
 }
