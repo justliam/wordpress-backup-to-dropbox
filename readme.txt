@@ -138,13 +138,17 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.2.1 =
+* Fixed random unlinking issue... again
+* SQL backups are now zipped after they are dumped
+
 = 1.2 =
 * Reuduced directory nesting to one subfolder and fixed up error message
-* Fixed issues where accounts where being incorrectly unliked
-* Added singltons for better performance
-* Fixed issue #63 Out of memory in settings page - display error in exlude widget if memory is too low
+* Fixed issues where accounts where being incorrectly unlinked
+* Added singletons for better performance
+* Fixed issue #63 Out of memory in settings page - display error in exclude widget if memory is too low
 * Fixed issue #64 UnexpectedValueException
-* WordPress core and plugin database tables are now backed up separatly
+* WordPress core and plugin database tables are now backed up separately
 
 = 1.1 =
 * Updated the Dropbox PHP API to fix various issues processing some files
