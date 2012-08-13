@@ -88,7 +88,17 @@ class Dropbox_Facade {
 	}
 
 	public function get_account_info() {
-		return $this->dropbox->getAccountInfo();
+		$retries = 0;
+		$e = null;
+		while ($retries < self::RETRY_COUNT) {
+			try {
+				return $this->dropbox->getAccountInfo();
+			} catch (Exception $e) {
+				$retries++;
+				sleep(BACKUP_TO_DROPBOX_ERROR_TIMEOUT);
+			}
+		}
+		throw $e;
 	}
 
 	private function save_tokens() {
