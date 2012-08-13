@@ -67,7 +67,7 @@ if (array_key_exists('stop_backup', $_POST)) {
 		if (isset($started) || $config->is_scheduled())
 			echo '<p>' . __('Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.') . '</p>';
 		else
-			echo '<p>' . __('No backup in progess.') . '</p>';
+			echo '<p>' . __('No backup in progress.') . '</p>';
 		?>
 	</div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
