@@ -45,7 +45,7 @@ abstract class WP_Backup_Database {
 			unlink($sql_file_name);
 
 		if (file_exists("$sql_file_name.zip"))
-			unlink($zip_file_name);
+			unlink("$sql_file_name.zip");
 	}
 
 	private function get_file() {
