@@ -169,4 +169,4 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Upgrade Notice ==
 
-* New more secure Dropbox App folder verson and bug fixes
+* Fixed a major issue upgrading to 1.2 with the Dropbox API autoloader not finding classes
