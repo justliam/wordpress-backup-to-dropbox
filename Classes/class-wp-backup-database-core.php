@@ -17,8 +17,8 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 class WP_Backup_Database_Core extends WP_Backup_Database {
-	public function __construct($wpdb = null, $zip = true) {
-		parent::__construct('core', $wpdb, $zip);
+	public function __construct($wpdb = null) {
+		parent::__construct('core', $wpdb);
 	}
 
 	public function execute() {
@@ -30,7 +30,6 @@ class WP_Backup_Database_Core extends WP_Backup_Database {
 		$this->write_db_dump_header();
 		$this->backup_database_tables(array_values($this->database->tables()));
 
-		$this->close_file();
-		$this->zip_file();
+		return $this->close_file();
 	}
 }

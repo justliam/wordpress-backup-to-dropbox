@@ -19,25 +19,9 @@
 require_once 'mock-wp-functions.php';
 
 class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
-	private function assertZipOutput($type, $expected) {
-		$file = $this->config->get_backup_dir() . "/TestDB-backup-$type.sql";
 
-		$zip = new ZipArchive();
-		$zip->open("$file.zip");
-
-		$actual = explode("\n", $zip->getFromName(basename($file)));
-		$expected = explode("\n", $expected);
-
-		for ($i = 0; $i < count($actual); $i++)
-			$this->assertEquals($expected[$i], $actual[$i]);
-
-		$zip->close();
-	}
-
-	private function assertOutput($type, $expected) {
-		$file = $this->config->get_backup_dir() . "/TestDB-backup-$type.sql";
-
-		$actual = explode("\n", file_get_contents($file));
+	private function assertOutput($actual, $expected) {
+		$actual = explode("\n", file_get_contents($actual));
 		$expected = explode("\n", $expected);
 
 		for ($i = 0; $i < count($actual); $i++)
@@ -46,6 +30,7 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		Mockery::close();
+		rmdir($this->config->get_backup_dir());
 	}
 
 	public function setUp() {
@@ -71,8 +56,8 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 		return $tableData;
 	}
 
-	private function setupCoreDBMock() {
-		return Mockery::mock('wpdb')
+	public function testExecuteCore() {
+		$wpdb = Mockery::mock('wpdb')
 
 			->shouldReceive('tables')
 			->andReturn(
@@ -114,54 +99,19 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 			->once()
 
 			->mock();
-	}
-
-	public function testExecuteCore() {
-		$wpdb = $this->setupCoreDBMock();
 
 		$backup = new WP_Backup_Database_Core($wpdb, $this->config);
-		$backup->execute();
+		$this->assertTrue($backup->execute());
 
-		$this->assertZipOutput('core', $this->getExpectedCoreDBDump());
+		$out = $this->config->get_backup_dir() . '/TestDB-backup-core.sql';
+
+		$this->assertOutput($out, $this->getExpectedCoreDBDump());
+
+		unlink($out);
 	}
 
-	public function testSkipIfCoreFileExists()
-	{
+	public function testExecutePlugins() {
 		$wpdb = Mockery::mock('wpdb')
-			->shouldReceive('tables')
-			->never();
-
-		$backup = new WP_Backup_Database_Core($wpdb, $this->config);
-		$backup->execute();
-
-		unlink($this->config->get_backup_dir() . '/TestDB-backup-core.sql.zip');
-		rmdir($this->config->get_backup_dir());
-	}
-
-	public function testExecuteCoreNoZip() {
-		$wpdb = $this->setupCoreDBMock();
-
-		$backup = new WP_Backup_Database_Core($wpdb, false);
-		$backup->execute();
-
-		$this->assertOutput('core', $this->getExpectedCoreDBDump());
-	}
-
-	public function testSkipIfCoreFileExistsNoZip()
-	{
-		$wpdb = Mockery::mock('wpdb')
-			->shouldReceive('tables')
-			->never();
-
-		$backup = new WP_Backup_Database_Core($wpdb, false);
-		$backup->execute();
-
-		unlink($this->config->get_backup_dir() . '/TestDB-backup-core.sql');
-		rmdir($this->config->get_backup_dir());
-	}
-
-	public function setupPluginsDBMock() {
-		return Mockery::mock('wpdb')
 
 			->shouldReceive('tables')
 			->andReturn(
@@ -215,52 +165,16 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 			->once()
 
 			->mock();
-	}
-
-	public function testExecutePlugins() {
-		$wpdb = $this->setupPluginsDBMock();
 
 		$backup = new WP_Backup_Database_Plugins($wpdb, $this->config);
-		$backup->execute();
+		$this->assertTrue($backup->execute());
 
-		$this->assertZipOutput('plugins', $this->getExpectedPluginsDBDump());
+		$out = $this->config->get_backup_dir() . '/TestDB-backup-plugins.sql';
+
+		$this->assertOutput($out, $this->getExpectedPluginDBDump());
+
+		unlink($out);
 	}
-
-	public function testSkipIfPluginsFileExists()
-	{
-		$wpdb = Mockery::mock('wpdb')
-			->shouldReceive('tables')
-			->never();
-
-		$backup = new WP_Backup_Database_Plugins($wpdb, $this->config);
-		$backup->execute();
-
-		unlink($this->config->get_backup_dir() . '/TestDB-backup-plugins.sql.zip');
-		rmdir($this->config->get_backup_dir());
-	}
-
-	public function testExecutePluginsNoZip() {
-		$wpdb = $this->setupPluginsDBMock();
-
-		$backup = new WP_Backup_Database_Plugins($wpdb, false);
-		$backup->execute();
-
-		$this->assertOutput('plugins', $this->getExpectedPluginsDBDump());
-	}
-
-	public function testSkipIfPluginsFileExistsNoZip()
-	{
-		$wpdb = Mockery::mock('wpdb')
-			->shouldReceive('tables')
-			->never();
-
-		$backup = new WP_Backup_Database_Plugins($wpdb, false);
-		$backup->execute();
-
-		unlink($this->config->get_backup_dir() . '/TestDB-backup-plugins.sql');
-		rmdir($this->config->get_backup_dir());
-	}
-
 
 	private function getCreateTable($table) {
 return "CREATE TABLE `$table` (\n" . <<<EOS
@@ -358,7 +272,7 @@ INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 EOS;
 	}
 
-		private function getExpectedPluginsDBDump()
+		private function getExpectedPluginDBDump()
 	{
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
