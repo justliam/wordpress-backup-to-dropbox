@@ -59,7 +59,7 @@ class WP_Backup {
 					if (in_array($file, $processed_files))
 						continue;
 
-					if (dirname($file) == $this->config->get_backup_dir() && !(substr(basename($file), -4, 4) == '.sql' || substr(basename($file), -8, 8) == '.sql.zip'))
+					if (dirname($file) == $this->config->get_backup_dir() && substr(basename($file), -4, 4) != '.sql')
 						continue;
 
 					$this->output->out($source, $file);
