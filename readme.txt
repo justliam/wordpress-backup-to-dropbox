@@ -140,7 +140,6 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 = 1.2.1 =
 * Fixed random unlinking issue... again
-* SQL backups are now zipped after they are dumped
 
 = 1.2 =
 * Reuduced directory nesting to one subfolder and fixed up error message
