@@ -23,7 +23,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 */
 define('USE_BUNDLED_PEAR', true);
 define('BACKUP_TO_DROPBOX_MEMORY_LIMIT', 150);
-define('BACKUP_TO_DROPBOX_VERSION', '1.2');
+define('BACKUP_TO_DROPBOX_VERSION', '1.2.1');
 define('BACKUP_TO_DROPBOX_ERROR_TIMEOUT', 5); //seconds
 define('EXTENSIONS_DIR', implode(array(WP_CONTENT_DIR, 'plugins', 'wordpress-backup-to-dropbox', 'Extensions'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 
