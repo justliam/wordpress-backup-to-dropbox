@@ -138,8 +138,12 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.2.2 =
+* Removed zipping of the SQL dump due to random PHP memory leaks... intersingly the Zip extension does not share the same issue. Ah PHP you keep me on my toes!
+
 = 1.2.1 =
 * Fixed random unlinking issue... again
+* Added zipping of the SQL dump file
 
 = 1.2 =
 * Reuduced directory nesting to one subfolder and fixed up error message
@@ -168,4 +172,4 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Upgrade Notice ==
 
-* Fixed a major issue upgrading to 1.2 with the Dropbox API autoloader not finding classes
+* Removed zipping of the SQL dump due to random PHP memory leaks, please update ASAP. I am looking into a new Dropbox API to solve issues with uploading large SQL files so hold tight if your in this category.
