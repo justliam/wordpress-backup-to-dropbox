@@ -1,0 +1,465 @@
+# Copyright (C) 2012 
+# This file is distributed under the same license as the  package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Wordpress Backup to Dropbox\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-08-07 19:45+0400\n"
+"PO-Revision-Date: 2012-08-14 10:36+0400\n"
+"Last-Translator: evgeny <work@verha.net>\n"
+"Language-Team: Evgeny Vlasov <work@verha.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: ..\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: ../wp-backup-to-dropbox.php:57
+msgid "WPB2D"
+msgstr "WPB2D"
+
+#: ../wp-backup-to-dropbox.php:60
+msgid "Backup Settings"
+msgstr "Настройки"
+
+#: ../wp-backup-to-dropbox.php:63
+msgid "Monitor Backup"
+msgstr "Процесс копирования"
+
+#: ../wp-backup-to-dropbox.php:63
+msgid "Backup Now"
+msgstr "Создать резервную копию"
+
+#: ../wp-backup-to-dropbox.php:69
+msgid "Premium Extensions"
+msgstr "Расширенные возможности"
+
+#: ../Classes/class-dropbox-facade.php:111
+#, php-format
+msgid "backup file (%s) does not exist."
+msgstr "Файл резервной копии не существует."
+
+#: ../Classes/class-file-list.php:48
+#, php-format
+msgid "Memory limit could not be set and your settings are too low to use this widget, please increase your PHP memory_limit to at least %sM (%sM is recommended)."
+msgstr "Для использования плагина необходимо увеличить PHP memory_limit, минимум на %sM (%sM рекомендуется)."
+
+#: ../Classes/class-wp-backup-config.php:127
+msgid "This php installation is running in safe mode so the time limit cannot be set."
+msgstr "Эта установка PHP работает в безопасном режиме, так что срок не может быть установлен."
+
+#: ../Classes/class-wp-backup-config.php:128
+#, php-format
+msgid "Click %s for more information."
+msgstr "Нажмите %s для получения подробной информации."
+
+#: ../Classes/class-wp-backup-config.php:129
+msgid "here"
+msgstr "здесь"
+
+#: ../Classes/class-wp-backup-config.php:220
+msgid "The sub directory must only contain alphanumeric characters."
+msgstr "Подкаталог должен содержать только алфавитно-цифровые символы."
+
+#: ../Classes/class-wp-backup-database-core.php:28
+msgid "Creating SQL backup of your WordPress core"
+msgstr "Создание резервной копии базы данных"
+
+#: ../Classes/class-wp-backup-database-plugins.php:28
+msgid "Creating SQL backup of your WordPress plugins"
+msgstr "Создание резервной копии базы данных"
+
+#: ../Classes/class-wp-backup-database.php:60
+msgid "Error creating sql dump file."
+msgstr "Ошибка создания файла дампа базы данных."
+
+#: ../Classes/class-wp-backup-database.php:65
+#, php-format
+msgid "A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access."
+msgstr "Резервная копия базы данных не может быть создана, потому что WordPress не имеет доступа на запись '% S', пожалуйста, создайте '% S' папку вручную."
+
+#: ../Classes/class-wp-backup-database.php:90
+msgid "Error while accessing database."
+msgstr "Ошибка доступа к базе данных."
+
+#: ../Classes/class-wp-backup-database.php:134
+msgid "Error writing to sql dump file."
+msgstr "Ошибка записи в файл дампа базы данных."
+
+#: ../Classes/class-wp-backup-database.php:139
+msgid "Error closing sql dump file."
+msgstr "Ошибка закрытия файла дампа базы данных."
+
+#: ../Classes/class-wp-backup-extension-manager.php:63
+msgid "There was an error getting the list of premium extensions"
+msgstr "Ошибка при получении списка платных расширений."
+
+#: ../Classes/class-wp-backup-extension-manager.php:92
+msgid "There was an error downloading your premium extension"
+msgstr "Ошибка при установке платных расширений"
+
+#: ../Classes/class-wp-backup-extension-manager.php:102
+msgid "There was an error installing your premium extension"
+msgstr "Ошибка при установке платных расширений"
+
+#: ../Classes/class-wp-backup-output.php:48
+#, php-format
+msgid "The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup."
+msgstr "Проблема загрузки на Dropbox. %s"
+
+#: ../Classes/class-wp-backup-output.php:53
+#, php-format
+msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
+msgstr "Файл '% S' превышает 40 процентов своего предела памяти PHP. Предел должен быть увеличен до резервного копирования данного файла."
+
+#: ../Classes/class-wp-backup-output.php:70
+#, php-format
+msgid "There was an error uploading '%s' to Dropbox"
+msgstr "Ошибка загрузки WordPress Backup to Dropbox"
+
+#: ../Classes/class-wp-backup.php:34
+#, php-format
+msgid "Backing up WordPress path at (%s)"
+msgstr "Резервное копирование из (%s)"
+
+#: ../Classes/class-wp-backup.php:83
+msgid "Your Dropbox account is not authorized yet."
+msgstr "Ваш Dropbox аккаунт не авторизован."
+
+#: ../Classes/class-wp-backup.php:107
+msgid "The plugin is no longer authorized with Dropbox."
+msgstr "Плагин не авторизован в Dropbox."
+
+#: ../Classes/class-wp-backup.php:123
+msgid "Backup stopped by user."
+msgstr "Создание резервной копии остановлено пользователем."
+
+#: ../Classes/class-wp-backup.php:136
+#, php-format
+msgid "WordPress does not have write access to '%s'. Please grant it write privileges before using this plugin."
+msgstr "WordPress не имеет доступа на запись '%s'. Пожалуйста, предоставить права на запись, прежде чем использовать этот плагин."
+
+#: ../Classes/class-wp-backup.php:153
+#, php-format
+msgid "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually."
+msgstr "Резервная копия базы данных не может быть создана, потому что WordPress не имеет доступа на запись '% S', пожалуйста, создайте '% S' папку вручную."
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:62
+#: ../Views/wp-backup-to-dropbox-options.php:185
+#: ../Views/wp-backup-to-dropbox-premium.php:83
+msgid "WordPress Backup to Dropbox"
+msgstr "Wordpress Backup to Dropbox"
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:63
+#: ../Views/wp-backup-to-dropbox-options.php:186
+#: ../Views/wp-backup-to-dropbox-premium.php:84
+#, php-format
+msgid "Version %s"
+msgstr "Версия %s"
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:64
+msgid "Backup Progress"
+msgstr "Статус резервного копирования"
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:68
+msgid "Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee."
+msgstr "Cоздание резервной копии. Ожидаю реакцию WordPress для начала процесса. Это может занять несколько минут, сейчас самое подходящее время пойти и взять чашечку кофе."
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:70
+msgid "No backup in progress."
+msgstr "No backup in progress."
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:75
+msgid "Stop Backup"
+msgstr "Остановить резервное копирование"
+
+#: ../Views/wp-backup-to-dropbox-monitor.php:77
+msgid "Start Backup"
+msgstr "Начать резервное копирование"
+
+#: ../Views/wp-backup-to-dropbox-options.php:24
+#, php-format
+msgid "Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher."
+msgstr "Текущая версия PHP (% S) не подходит для корректной работы плагина, требуется PHP 5.2 или выше."
+
+#: ../Views/wp-backup-to-dropbox-options.php:89
+#: ../Views/wp-backup-to-dropbox-options.php:286
+#: ../Views/wp-backup-to-dropbox-options.php:347
+msgid "Daily"
+msgstr "Ежедневно"
+
+#: ../Views/wp-backup-to-dropbox-options.php:193
+msgid "Dropbox Account Details"
+msgstr "Состояние аккаунта Dropbox "
+
+#: ../Views/wp-backup-to-dropbox-options.php:199
+msgid "you have"
+msgstr "доступно"
+
+#: ../Views/wp-backup-to-dropbox-options.php:201
+msgid "Gigabyte"
+msgstr "гигабайт"
+
+#: ../Views/wp-backup-to-dropbox-options.php:202
+msgid "of"
+msgstr "из"
+
+#: ../Views/wp-backup-to-dropbox-options.php:203
+msgid "free"
+msgstr "свободно"
+
+#: ../Views/wp-backup-to-dropbox-options.php:205
+msgid "Unlink Account"
+msgstr "Отключить аккаунт"
+
+#: ../Views/wp-backup-to-dropbox-options.php:207
+msgid "Next Scheduled"
+msgstr "Следующая задача"
+
+#: ../Views/wp-backup-to-dropbox-options.php:212
+#, php-format
+msgid "Next backup scheduled for %s at %s"
+msgstr "Следующее копирование назначено %s на %s"
+
+#: ../Views/wp-backup-to-dropbox-options.php:214
+msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr "Резервное копирование пока не запланировано. Пожалуйста, выберите день, время и периодичность."
+
+#: ../Views/wp-backup-to-dropbox-options.php:216
+msgid "History"
+msgstr "История"
+
+#: ../Views/wp-backup-to-dropbox-options.php:227
+#, php-format
+msgid "Backup started on %s at %s"
+msgstr "Резервное копирование началось %s в %s"
+
+#: ../Views/wp-backup-to-dropbox-options.php:230
+#, php-format
+msgid "Backup completed on %s at %s"
+msgstr "Резервное копирование завершено %s в %s"
+
+#: ../Views/wp-backup-to-dropbox-options.php:233
+#, php-format
+msgid "Backup warning on %s at %s: %s"
+msgstr "Предупреждения при копировании %s в %s: %s"
+
+#: ../Views/wp-backup-to-dropbox-options.php:236
+#, php-format
+msgid "Backup error on %s at %s: %s"
+msgstr "Ошибки копирования %s om %s: %s"
+
+#: ../Views/wp-backup-to-dropbox-options.php:240
+msgid "Clear history"
+msgstr "Очистить историю"
+
+#: ../Views/wp-backup-to-dropbox-options.php:242
+msgid "No history"
+msgstr "История пуста"
+
+#: ../Views/wp-backup-to-dropbox-options.php:245
+msgid "Settings"
+msgstr "Настройки"
+
+#: ../Views/wp-backup-to-dropbox-options.php:250
+msgid "Store backup in a subfolder of the wpb2d app folder"
+msgstr "Сохранить резервную копию на  Dropbox в папку:"
+
+#: ../Views/wp-backup-to-dropbox-options.php:268
+msgid "Day and Time"
+msgstr "День и время"
+
+#: ../Views/wp-backup-to-dropbox-options.php:272
+msgid "Monday"
+msgstr "Понедельник"
+
+#: ../Views/wp-backup-to-dropbox-options.php:274
+msgid "Tuesday"
+msgstr "Вторник"
+
+#: ../Views/wp-backup-to-dropbox-options.php:276
+msgid "Wednesday"
+msgstr "Среда"
+
+#: ../Views/wp-backup-to-dropbox-options.php:278
+msgid "Thursday"
+msgstr "Четверг"
+
+#: ../Views/wp-backup-to-dropbox-options.php:280
+msgid "Friday"
+msgstr "Пятница"
+
+#: ../Views/wp-backup-to-dropbox-options.php:282
+msgid "Saturday"
+msgstr "Суббота"
+
+#: ../Views/wp-backup-to-dropbox-options.php:284
+msgid "Sunday"
+msgstr "Воскресенье"
+
+#: ../Views/wp-backup-to-dropbox-options.php:288
+msgid "at"
+msgstr "в"
+
+#: ../Views/wp-backup-to-dropbox-options.php:339
+msgid "The day and time the backup to Dropbox is to be performed."
+msgstr "День и время резервного копирования."
+
+#: ../Views/wp-backup-to-dropbox-options.php:343
+msgid "Frequency"
+msgstr "Периодичность"
+
+#: ../Views/wp-backup-to-dropbox-options.php:350
+msgid "Weekly"
+msgstr "Еженедельно"
+
+#: ../Views/wp-backup-to-dropbox-options.php:354
+msgid "Fortnightly"
+msgstr "Раз в две недели"
+
+#: ../Views/wp-backup-to-dropbox-options.php:357
+msgid "Every 4 weeks"
+msgstr "Каждые 4 недели"
+
+#: ../Views/wp-backup-to-dropbox-options.php:361
+msgid "Every 8 weeks"
+msgstr "Каждые 8 недель"
+
+#: ../Views/wp-backup-to-dropbox-options.php:365
+msgid "Every 12 weeks"
+msgstr "Каждые 12 недель"
+
+#: ../Views/wp-backup-to-dropbox-options.php:368
+msgid "How often the backup to Dropbox is to be performed."
+msgstr "Периодичность резервного копирования."
+
+#: ../Views/wp-backup-to-dropbox-options.php:374
+msgid "Excluded Files and Directories"
+msgstr "Исключение файлов и каталогов"
+
+#: ../Views/wp-backup-to-dropbox-options.php:377
+msgid "Select the files and directories that you wish to exclude from your backup. You can expand directories with contents by clicking its name."
+msgstr "Выберите файлы и каталоги, которые необходимо исключить из резервной копии. Клик по имени каталога раскроет его."
+
+#: ../Views/wp-backup-to-dropbox-options.php:378
+#: ../Views/wp-backup-to-dropbox-premium.php:146
+msgid "Please Note:"
+msgstr "Обратите внимание:"
+
+#: ../Views/wp-backup-to-dropbox-options.php:378
+msgid "Your SQL dump file will always be backed up regardless of what is selected below."
+msgstr "Резервное копирование базы данных будет выполняться независимо от выбора ниже."
+
+#: ../Views/wp-backup-to-dropbox-options.php:385
+msgid "Save Changes"
+msgstr "Сохранить изменения"
+
+#: ../Views/wp-backup-to-dropbox-options.php:395
+msgid "Thank you for installing WordPress Backup to Dropbox!"
+msgstr "Wordpress Backup to Dropbox"
+
+#: ../Views/wp-backup-to-dropbox-options.php:396
+msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
+msgstr "Для того, чтобы использовать этот плагин Вам необходимо связять его с Вашим аккаунтом Dropbox."
+
+#: ../Views/wp-backup-to-dropbox-options.php:397
+msgid "Please click the authorize button below and follow the instructions inside the pop up window."
+msgstr "Пожалуйста, нажмите на кнопку разрешить и следуйте дальнейшим инструкциям."
+
+#: ../Views/wp-backup-to-dropbox-options.php:399
+msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
+msgstr "Возникла ошибка авторизации в Dropbox. Пожалуйста, попробуйте еще раз."
+
+#: ../Views/wp-backup-to-dropbox-options.php:404
+msgid "Authorize"
+msgstr "Авторизация"
+
+#: ../Views/wp-backup-to-dropbox-options.php:407
+msgid "Continue"
+msgstr "Продолжить"
+
+#: ../Views/wp-backup-to-dropbox-options.php:415
+msgid "There was a fatal error loading WordPress Backup to Dropbox, please reload the page and try again."
+msgstr "Ошибка загрузки WordPress Backup to Dropbox"
+
+#: ../Views/wp-backup-to-dropbox-options.php:416
+msgid "If the problem persists please re-install WordPress Backup to Dropbox."
+msgstr "Благодарим Вас за установку WordPress Backup to Dropbox!"
+
+#: ../Views/wp-backup-to-dropbox-options.php:417
+msgid "Error message:"
+msgstr "Сообщение об ошибке:"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:30
+#, php-format
+msgid "There was an error with your payment, please contact %s to resolve."
+msgstr "Ошибка платежа, пожалуйста, свяжитесь с %s для решения."
+
+#: ../Views/wp-backup-to-dropbox-premium.php:33
+#, php-format
+msgid "You have succesfully purchased the %s premium extension, please install it below."
+msgstr "Вы успешно приобрели расширенные настройки %s, пожалуйста, установите их ниже."
+
+#: ../Views/wp-backup-to-dropbox-premium.php:88
+msgid "Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox."
+msgstr "Пожалуйста, выберите необходимую опцию WordPress Backup to Dropbox."
+
+#: ../Views/wp-backup-to-dropbox-premium.php:89
+msgid "Installing a premium extensions is easy:"
+msgstr "Установка расширенных возможностей проста:"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:92
+msgid "Click Buy Now and pay for your extension using PayPal"
+msgstr "Нажмите кнопку Купить и оплатите расширение с помощью PayPal"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:93
+msgid "Click Install & Acitvate to download and install the extension"
+msgstr "Нажмите Install и Acitvate, чтобы загрузить и установить расширение"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:94
+msgid "Thats it, options for your extension will be available in the menu on the left"
+msgstr "Расширенные возможности будут доступны в меню слева"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:101
+msgid "100% money back guarantee"
+msgstr "100% гарантия возврата денег."
+
+#: ../Views/wp-backup-to-dropbox-premium.php:118
+msgid "Name"
+msgstr "Наименование"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:119
+msgid "Description"
+msgstr "Описание"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:120
+msgid "Price"
+msgstr "Стоимость"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:138
+msgid "Download & Install"
+msgstr "Скачать и установитьl"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:138
+msgid "Buy Now"
+msgstr "Купить"
+
+#: ../Views/wp-backup-to-dropbox-premium.php:147
+#, php-format
+msgid "Each extension can only be activated on a single website for one year. If you manage multiple websites please %s."
+msgstr "Активация возожна только на одном сайте в течение одного года. Если вы управляете несколькими веб-сайтами, пожалуйста, %s."
+
+#: ../Views/wp-backup-to-dropbox-premium.php:147
+msgid "purchase a subscription"
+msgstr "приобрести подписку"
+
+#: ../Views/wp-backup-to-dropbox-progress.php:35
+#, php-format
+msgid "Processed %d files."
+msgstr "Обработка %d файлов."
+

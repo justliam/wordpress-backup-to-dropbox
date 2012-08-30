@@ -83,6 +83,7 @@ If you notice any bugs or want to request a feature please do so on GitHub - htt
 * Hebrew (he_HE) - [Menachem](http://luckyboost.com)
 * Italian (it_IT) - [René Querin](http://q-design.it)
 * Hungarian (hu_HU) - [Lazarevics](http://hardverborze.tk)
+* Russian (ru_RU) - [Evgeny Vlasov](http://verha.net)
 
 == Installation ==
 

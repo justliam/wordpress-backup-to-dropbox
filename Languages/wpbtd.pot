@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version:  \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/wordpress-backup-to-dropbox\n"
-"POT-Creation-Date: 2012-05-01 00:06:24+00:00\n"
+"POT-Creation-Date: 2012-08-30 11:37:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,133 +12,153 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: Classes/class-dropbox-facade.php:92
+#: Classes/class-dropbox-facade.php:110
 msgid "backup file (%s) does not exist."
 msgstr ""
 
-#: Classes/class-dropbox-facade.php:111
-msgid "HTTP Status %s received from Dropbox while uploading file %s."
+#: Classes/class-file-list.php:48
+msgid ""
+"Memory limit could not be set and your settings are too low to use this "
+"widget, please increase your PHP memory_limit to at least %sM (%sM is "
+"recommended)."
 msgstr ""
 
-#: Classes/class-wp-backup-config.php:122
+#: Classes/class-wp-backup-config.php:127
 msgid ""
 "This php installation is running in safe mode so the time limit cannot be "
 "set."
 msgstr ""
 
-#: Classes/class-wp-backup-config.php:123
+#: Classes/class-wp-backup-config.php:128
 msgid "Click %s for more information."
 msgstr ""
 
-#: Classes/class-wp-backup-config.php:124
+#: Classes/class-wp-backup-config.php:129
 msgid "here"
 msgstr ""
 
-#: Classes/class-wp-backup-config.php:208
-msgid ""
-"Invalid directory path. Path must only contain alphanumeric characters and "
-"the forward slash ('/') to separate directories."
+#: Classes/class-wp-backup-config.php:220
+msgid "The sub directory must only contain alphanumeric characters."
 msgstr ""
 
-#: Classes/class-wp-backup-extension-manager.php:57
-msgid "There was an error getting the list of premium extensions"
+#: Classes/class-wp-backup-database-core.php:28
+msgid "Creating SQL backup of your WordPress core"
 msgstr ""
 
-#: Classes/class-wp-backup-extension-manager.php:83
-#: Classes/class-wp-backup-extension-manager.php:90
-msgid "There was an error installing your premium extension"
+#: Classes/class-wp-backup-database-plugins.php:28
+msgid "Creating SQL backup of your WordPress plugins"
 msgstr ""
 
-#: Classes/class-wp-backup-output.php:42
-msgid ""
-"file '%s' exceeds 40 percent of your PHP memory limit. The limit must be "
-"increased to back up this file."
+#: Classes/class-wp-backup-database.php:60
+msgid "Error creating sql dump file."
 msgstr ""
 
-#: Classes/class-wp-backup-output.php:60
-msgid "Could not upload '%s' due to the following error: %s"
-msgstr ""
-
-#: Classes/class-wp-backup.php:53
-msgid "Backing up WordPress path at (%s)"
-msgstr ""
-
-#: Classes/class-wp-backup.php:95
-msgid "Error while accessing database."
-msgstr ""
-
-#: Classes/class-wp-backup.php:105
+#: Classes/class-wp-backup-database.php:65
 msgid ""
 "A database backup cannot be created because WordPress does not have write "
 "access to '%s', please ensure this directory has write access."
 msgstr ""
 
-#: Classes/class-wp-backup.php:113
-msgid "Error creating sql dump file."
+#: Classes/class-wp-backup-database.php:90
+msgid "Error while accessing database."
 msgstr ""
 
-#: Classes/class-wp-backup.php:177
-msgid "Error closing sql dump file."
-msgstr ""
-
-#: Classes/class-wp-backup.php:192
+#: Classes/class-wp-backup-database.php:134
 msgid "Error writing to sql dump file."
 msgstr ""
 
-#: Classes/class-wp-backup.php:216
+#: Classes/class-wp-backup-database.php:139
+msgid "Error closing sql dump file."
+msgstr ""
+
+#: Classes/class-wp-backup-extension-manager.php:63
+msgid "There was an error getting the list of premium extensions"
+msgstr ""
+
+#: Classes/class-wp-backup-extension-manager.php:92
+msgid "There was an error downloading your premium extension"
+msgstr ""
+
+#: Classes/class-wp-backup-extension-manager.php:102
+msgid "There was an error installing your premium extension"
+msgstr ""
+
+#: Classes/class-wp-backup-output.php:48
+msgid ""
+"The backup is having trouble uploading files to Dropbox, it has failed %s "
+"times and is aborting the backup."
+msgstr ""
+
+#: Classes/class-wp-backup-output.php:53
+msgid ""
+"file '%s' exceeds 40 percent of your PHP memory limit. The limit must be "
+"increased to back up this file."
+msgstr ""
+
+#: Classes/class-wp-backup-output.php:70
+msgid "There was an error uploading '%s' to Dropbox"
+msgstr ""
+
+#: Classes/class-wp-backup.php:34
+msgid "Backing up WordPress path at (%s)"
+msgstr ""
+
+#: Classes/class-wp-backup.php:83
 msgid "Your Dropbox account is not authorized yet."
 msgstr ""
 
-#: Classes/class-wp-backup.php:226
-msgid "Creating SQL backup"
-msgstr ""
-
-#: Classes/class-wp-backup.php:245
+#: Classes/class-wp-backup.php:107
 msgid "The plugin is no longer authorized with Dropbox."
 msgstr ""
 
-#: Classes/class-wp-backup.php:261
+#: Classes/class-wp-backup.php:123
 msgid "Backup stopped by user."
 msgstr ""
 
-#: Classes/class-wp-backup.php:279
+#: Classes/class-wp-backup.php:136
+msgid ""
+"WordPress does not have write access to '%s'. Please grant it write "
+"privileges before using this plugin."
+msgstr ""
+
+#: Classes/class-wp-backup.php:153
 msgid ""
 "A database backup cannot be created because WordPress does not have write "
 "access to '%s', please create the folder '%s' manually."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:61
-#: Views/wp-backup-to-dropbox-options.php:171
-#: Views/wp-backup-to-dropbox-premium.php:76
+#: Views/wp-backup-to-dropbox-monitor.php:62
+#: Views/wp-backup-to-dropbox-options.php:185
+#: Views/wp-backup-to-dropbox-premium.php:83
 msgid "WordPress Backup to Dropbox"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:62
-#: Views/wp-backup-to-dropbox-options.php:172
-#: Views/wp-backup-to-dropbox-premium.php:77
+#: Views/wp-backup-to-dropbox-monitor.php:63
+#: Views/wp-backup-to-dropbox-options.php:186
+#: Views/wp-backup-to-dropbox-premium.php:84
 msgid "Version %s"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:63
+#: Views/wp-backup-to-dropbox-monitor.php:64
 msgid "Backup Progress"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:67
+#: Views/wp-backup-to-dropbox-monitor.php:68
 msgid ""
 "Your backup has been scheduled and is waiting for WordPress to start it. "
 "This could take a few minutes, so now is a good time to go and grab a cup of "
 "coffee."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:69
-msgid "No backup in progess."
+#: Views/wp-backup-to-dropbox-monitor.php:70
+msgid "No backup in progress."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:74
+#: Views/wp-backup-to-dropbox-monitor.php:75
 msgid "Stop Backup"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-monitor.php:76
+#: Views/wp-backup-to-dropbox-monitor.php:77
 msgid "Start Backup"
 msgstr ""
 
@@ -148,284 +168,310 @@ msgid ""
 "please update to PHP 5.2 or higher."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:92
-#: Views/wp-backup-to-dropbox-options.php:280
-#: Views/wp-backup-to-dropbox-options.php:341
+#: Views/wp-backup-to-dropbox-options.php:89
+#: Views/wp-backup-to-dropbox-options.php:286
+#: Views/wp-backup-to-dropbox-options.php:347
 msgid "Daily"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:179
+#: Views/wp-backup-to-dropbox-options.php:193
 msgid "Dropbox Account Details"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:185
+#: Views/wp-backup-to-dropbox-options.php:199
 msgid "you have"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:187
+#: Views/wp-backup-to-dropbox-options.php:201
 msgid "Gigabyte"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:188
+#: Views/wp-backup-to-dropbox-options.php:202
 msgid "of"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:189
+#: Views/wp-backup-to-dropbox-options.php:203
 msgid "free"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:191
+#: Views/wp-backup-to-dropbox-options.php:205
 msgid "Unlink Account"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:193
+#: Views/wp-backup-to-dropbox-options.php:207
 msgid "Next Scheduled"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:198
+#: Views/wp-backup-to-dropbox-options.php:212
 msgid "Next backup scheduled for %s at %s"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:200
+#: Views/wp-backup-to-dropbox-options.php:214
 msgid ""
 "No backups are scheduled yet. Please select a day, time and frequency below. "
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:202
+#: Views/wp-backup-to-dropbox-options.php:216
 msgid "History"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:213
+#: Views/wp-backup-to-dropbox-options.php:227
 msgid "Backup started on %s at %s"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:216
+#: Views/wp-backup-to-dropbox-options.php:230
 msgid "Backup completed on %s at %s"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:219
+#: Views/wp-backup-to-dropbox-options.php:233
 msgid "Backup warning on %s at %s: %s"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:222
+#: Views/wp-backup-to-dropbox-options.php:236
 msgid "Backup error on %s at %s: %s"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:226
+#: Views/wp-backup-to-dropbox-options.php:240
 msgid "Clear history"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:228
+#: Views/wp-backup-to-dropbox-options.php:242
 msgid "No history"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:231
+#: Views/wp-backup-to-dropbox-options.php:245
 msgid "Settings"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:236
-msgid "Temporarily store your database backup in this folder"
-msgstr ""
-
-#: Views/wp-backup-to-dropbox-options.php:240
-#: Views/wp-backup-to-dropbox-options.php:254
-msgid "Default is"
-msgstr ""
-
-#: Views/wp-backup-to-dropbox-options.php:249
-msgid "Store backup in this folder within Dropbox"
-msgstr ""
-
-#: Views/wp-backup-to-dropbox-options.php:262
-msgid "Day and Time"
-msgstr ""
-
-#: Views/wp-backup-to-dropbox-options.php:266
-msgid "Monday"
+#: Views/wp-backup-to-dropbox-options.php:250
+msgid "Store backup in a subfolder of the wpb2d app folder"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-options.php:268
-msgid "Tuesday"
-msgstr ""
-
-#: Views/wp-backup-to-dropbox-options.php:270
-msgid "Wednesday"
+msgid "Day and Time"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-options.php:272
-msgid "Thursday"
+msgid "Monday"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-options.php:274
-msgid "Friday"
+msgid "Tuesday"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-options.php:276
-msgid "Saturday"
+msgid "Wednesday"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-options.php:278
-msgid "Sunday"
+msgid "Thursday"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:280
+msgid "Friday"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-options.php:282
+msgid "Saturday"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:284
+msgid "Sunday"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:288
 msgid "at"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:333
+#: Views/wp-backup-to-dropbox-options.php:339
 msgid "The day and time the backup to Dropbox is to be performed."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:337
+#: Views/wp-backup-to-dropbox-options.php:343
 msgid "Frequency"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:344
+#: Views/wp-backup-to-dropbox-options.php:350
 msgid "Weekly"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:348
+#: Views/wp-backup-to-dropbox-options.php:354
 msgid "Fortnightly"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:351
+#: Views/wp-backup-to-dropbox-options.php:357
 msgid "Every 4 weeks"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:355
+#: Views/wp-backup-to-dropbox-options.php:361
 msgid "Every 8 weeks"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:359
+#: Views/wp-backup-to-dropbox-options.php:365
 msgid "Every 12 weeks"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:362
+#: Views/wp-backup-to-dropbox-options.php:368
 msgid "How often the backup to Dropbox is to be performed."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:368
+#: Views/wp-backup-to-dropbox-options.php:374
 msgid "Excluded Files and Directories"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:371
+#: Views/wp-backup-to-dropbox-options.php:377
 msgid ""
 "Select the files and directories that you wish to exclude from your backup. "
 "You can expand directories with contents by clicking its name."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:372
+#: Views/wp-backup-to-dropbox-options.php:378
+#: Views/wp-backup-to-dropbox-premium.php:146
 msgid "Please Note:"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:372
+#: Views/wp-backup-to-dropbox-options.php:378
 msgid ""
 "Your SQL dump file will always be backed up regardless of what is selected "
 "below."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:379
+#: Views/wp-backup-to-dropbox-options.php:385
 msgid "Save Changes"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:389
+#: Views/wp-backup-to-dropbox-options.php:395
 msgid "Thank you for installing WordPress Backup to Dropbox!"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:390
+#: Views/wp-backup-to-dropbox-options.php:396
 msgid ""
 "In order to use this plugin you will need to authorized it with your Dropbox "
 "account."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:391
+#: Views/wp-backup-to-dropbox-options.php:397
 msgid ""
 "Please click the authorize button below and follow the instructions inside "
 "the pop up window."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:393
+#: Views/wp-backup-to-dropbox-options.php:399
 msgid ""
 "There was an error authorizing the plugin with your Dropbox account. Please "
 "try again."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:398
+#: Views/wp-backup-to-dropbox-options.php:404
 msgid "Authorize"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:401
+#: Views/wp-backup-to-dropbox-options.php:407
 msgid "Continue"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-options.php:408
-msgid "There was a fatal error loading WordPress Backup to Dropbox"
+#: Views/wp-backup-to-dropbox-options.php:415
+msgid ""
+"There was a fatal error loading WordPress Backup to Dropbox, please reload "
+"the page and try again."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:78 wp-backup-to-dropbox.php:65
+#: Views/wp-backup-to-dropbox-options.php:416
+msgid "If the problem persists please re-install WordPress Backup to Dropbox."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-options.php:417
+msgid "Error message:"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-premium.php:30
+msgid "There was an error with your payment, please contact %s to resolve."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-premium.php:33
+msgid ""
+"You have succesfully purchased the %s premium extension, please install it "
+"below."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-premium.php:85 wp-backup-to-dropbox.php:69
 msgid "Premium Extensions"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:80
+#: Views/wp-backup-to-dropbox-premium.php:88
 msgid ""
 "Welcome to Premium Extensions. Please choose an extension below to enhance "
 "WordPress Backup to Dropbox."
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:81
+#: Views/wp-backup-to-dropbox-premium.php:89
 msgid "Installing a premium extensions is easy:"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:83
+#: Views/wp-backup-to-dropbox-premium.php:92
 msgid "Click Buy Now and pay for your extension using PayPal"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:84
+#: Views/wp-backup-to-dropbox-premium.php:93
 msgid "Click Install & Acitvate to download and install the extension"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:85
+#: Views/wp-backup-to-dropbox-premium.php:94
 msgid ""
 "Thats it, options for your extension will be available in the menu on the "
 "left"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:100
+#: Views/wp-backup-to-dropbox-premium.php:101
+msgid "100% money back guarantee"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-premium.php:118
 msgid "Name"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:101
+#: Views/wp-backup-to-dropbox-premium.php:119
 msgid "Description"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:102
+#: Views/wp-backup-to-dropbox-premium.php:120
 msgid "Price"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:120
+#: Views/wp-backup-to-dropbox-premium.php:138
 msgid "Download & Install"
 msgstr ""
 
-#: Views/wp-backup-to-dropbox-premium.php:120
+#: Views/wp-backup-to-dropbox-premium.php:138
 msgid "Buy Now"
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-premium.php:147
+msgid ""
+"Each extension can only be activated on a single website for one year. If "
+"you manage multiple websites please %s."
+msgstr ""
+
+#: Views/wp-backup-to-dropbox-premium.php:147
+msgid "purchase a subscription"
 msgstr ""
 
 #: Views/wp-backup-to-dropbox-progress.php:35
 msgid "Processed %d files."
 msgstr ""
 
-#: wp-backup-to-dropbox.php:52
+#: wp-backup-to-dropbox.php:57
 msgid "WPB2D"
 msgstr ""
 
-#: wp-backup-to-dropbox.php:55
+#: wp-backup-to-dropbox.php:60
 msgid "Backup Settings"
 msgstr ""
 
-#: wp-backup-to-dropbox.php:59
+#: wp-backup-to-dropbox.php:63
 msgid "Monitor Backup"
 msgstr ""
 
-#: wp-backup-to-dropbox.php:59
+#: wp-backup-to-dropbox.php:63
 msgid "Backup Now"
 msgstr ""
