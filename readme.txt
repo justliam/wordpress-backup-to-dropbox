@@ -10,7 +10,7 @@ Keep your valuable WordPress website, its media and database backed up to Dropbo
 
 == Description ==
 
-[WordPress Backup to Dropbox](http://wpb2d.com) has been created to give you piece of mind that your blog is backed up on a regular basis.
+[WordPress Backup to Dropbox](http://wpb2d.com) has been created to give you peace of mind that your blog is backed up on a regular basis.
 
 Just choose a day, time and how often you wish yor backup to be performed and kick back and wait for your websites files
 and a SQL dump of its database to be dropped in your Dropbox!
