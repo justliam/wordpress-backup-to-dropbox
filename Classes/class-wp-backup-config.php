@@ -249,7 +249,7 @@ class WP_Backup_Config {
 		$log = $this->as_array(get_option('backup-to-dropbox-log'));
 		$log[] = array(
 			'time' => strtotime(current_time('mysql')),
-			'message' => rtrim($msg, '.'),
+			'message' => $msg,
 		);
 		update_option('backup-to-dropbox-log', $log);
 		return $this;
