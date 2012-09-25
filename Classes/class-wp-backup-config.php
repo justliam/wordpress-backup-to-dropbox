@@ -20,14 +20,9 @@
  */
 include_once('class-file-list.php');
 class WP_Backup_Config {
+	const MAX_HISTORY_ITEMS = 20;
+
 	private static $instance;
-
-	const BACKUP_STATUS_STARTED = 0;
-	const BACKUP_STATUS_FINISHED = 1;
-	const BACKUP_STATUS_WARNING = 2;
-	const BACKUP_STATUS_FAILED = 3;
-
-	const MAX_HISTORY_ITEMS = 100;
 
 	public static function construct() {
 		if (!self::$instance)
@@ -41,11 +36,14 @@ class WP_Backup_Config {
 			add_option('backup-to-dropbox-log', array(), null, 'no');
 		}
 
+		if (!is_array(get_option('backup-to-dropbox-history'))) {
+			add_option('backup-to-dropbox-history', array(), null, 'no');
+		}
+
 		$options = get_option('backup-to-dropbox-options');
 		if (!$options) {
 			$options = array(
 				'dropbox_location' => null,
-				'last_backup_time' => false,
 				'in_progress' => false,
 				'store_in_subfolder' => false,
 				'file_count' => 1500,
@@ -229,8 +227,22 @@ class WP_Backup_Config {
 		return $errors;
 	}
 
-	public function set_last_backup_time($time) {
-		$this->set_option('last_backup_time', $time);
+	public function clear_history() {
+		update_option('backup-to-dropbox-history', array());
+	}
+
+	public function get_history() {
+		return $this->as_array(get_option('backup-to-dropbox-history'));
+	}
+
+	public function add_backup_history($time) {
+		$history = $this->get_history();
+		$history[] = $time;
+
+		if (count($history) > self::MAX_HISTORY_ITEMS)
+			array_shift($history);
+
+		update_option('backup-to-dropbox-history', $history);
 		return $this;
 	}
 

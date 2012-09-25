@@ -200,7 +200,6 @@ function backup_to_dropbox_cron_schedules($schedules) {
 
 //Delete unused options from previous versions
 delete_option('backup-to-dropbox-actions');
-delete_option('backup-to-dropbox-history');
 delete_option('backup-to-dropbox-file-list');
 
 //WordPress filters and actions

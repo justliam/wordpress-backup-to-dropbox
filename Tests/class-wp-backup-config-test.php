@@ -44,6 +44,17 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(false, $this->config->get_option('in_progress'));
 	}
 
+	public function testAddBackupHistory() {
+		for ($i = 0; $i < 30; $i++)
+			$this->config->add_backup_history($i);
+
+		$history = $this->config->get_history();
+		$this->assertEquals(20, count($history));
+
+		for ($i = 0; $i < 20; $i++)
+			$this->assertEquals($i + 10, $history[$i]);
+	}
+
 	public function testLogGetLog() {
 		set_current_time('2012-03-12 00:00:00');
 		$this->config->log('Action1');

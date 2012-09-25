@@ -151,9 +151,10 @@ class WP_Backup {
 		}
 
 		$this->config
-			->set_last_backup_time(time())
+			->add_backup_history(time())
 			->set_in_progress(false)
 			->clean_up()
+			->set_option()
 			;
 	}
 
@@ -168,7 +169,7 @@ class WP_Backup {
 		$this->config
 			->log(__('Backup stopped.', 'wpbtd'))
 			->set_in_progress(false)
-			->set_last_backup_time(time())
+			->add_backup_history(time())
 			->clean_up()
 			;
 	}

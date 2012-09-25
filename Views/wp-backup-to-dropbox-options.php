@@ -132,24 +132,10 @@ try {
 	}
 </script>
 <style type="text/css">
-	.backup_error {
-		margin-left: 10px;
-		color: red;
-	}
-
-	.backup_ok {
-		margin-left: 10px;
-		color: green;
-	}
-
-	.backup_warning {
-		margin-left: 10px;
-		color: orange;
-	}
-
 	.history_box {
 		max-height: 140px;
 		overflow-y: scroll;
+		margin: 0 0 0 10px;
 	}
 
 	.message_box {
@@ -217,26 +203,13 @@ try {
 		<?php
 		$backup_history = $config->get_history();
 		if ($backup_history) {
-			echo '<div class="history_box">';
-			foreach ($backup_history as $hist) {
-				list($backup_time, $status, $msg) = $hist;
+			echo '<ol class="history_box">';
+			foreach ($backup_history as $backup_time) {
 				$backup_date = date('Y-m-d', $backup_time);
 				$backup_time_str = date('H:i:s', $backup_time);
-				switch ($status) {
-					case WP_Backup_Config::BACKUP_STATUS_STARTED:
-						echo "<span class='backup_ok'>" . sprintf(__('Backup started on %s at %s', 'wpbtd'), $backup_date, $backup_time_str) . "</span><br />";
-						break;
-					case WP_Backup_Config::BACKUP_STATUS_FINISHED:
-						echo "<span class='backup_ok'>" . sprintf(__('Backup completed on %s at %s', 'wpbtd'), $backup_date, $backup_time_str) . "</span><br />";
-						break;
-					case WP_Backup_Config::BACKUP_STATUS_WARNING:
-						echo "<span class='backup_warning'>" . sprintf(__('Backup warning on %s at %s: %s', 'wpbtd'), $backup_date, $backup_time_str, $msg) . "</span><br />";
-						break;
-					default:
-						echo "<span class='backup_error'>" . sprintf(__('Backup error on %s at %s: %s', 'wpbtd'), $backup_date, $backup_time_str, $msg) . "</span><br />";
-				}
+				echo '<li>' . sprintf(__('Backup completed at %s on %s.'), $backup_time_str, $backup_date) . '</li>';
 			}
-			echo '</div>';
+			echo '</ol>';
 			echo '<input type="submit" id="clear_history" name="clear_history"" class="bump button-secondary" value="' . __('Clear history', 'wpbtd') . '">';
 		} else {
 			echo '<p style="margin-left: 10px;">' . __('No history', 'wpbtd') . '</p>';
