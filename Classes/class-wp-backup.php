@@ -103,7 +103,7 @@ class WP_Backup {
 			}
 
 			$this->output->end();
-			$this->config->log(sprintf(__('A total of %s files where processed.', $total_files)));
+			$this->config->log(sprintf(__('A total of %s files where processed.'), $total_files));
 			$this->config->set_option('file_count', $total_files);
 		}
 	}
