@@ -30,8 +30,6 @@ class File_List {
 	}
 
 	public function __construct() {
-		delete_option('backup-to-dropbox-file-list');
-
 		$file_list = get_option('backup-to-dropbox-excluded-files');
 		if ($file_list === false) {
 			$this->excluded_files = array();
