@@ -172,7 +172,7 @@ function backup_to_dropbox_cron_schedules($schedules) {
 		),
 		'daily' => array(
 			'interval' => 86400,
-			'display' => 'Weekly'
+			'display' => 'Daily'
 		),
 		'weekly' => array(
 			'interval' => 604800,
