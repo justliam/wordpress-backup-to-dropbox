@@ -126,7 +126,7 @@ function execute_drobox_backup() {
 	WP_Backup_Config::construct()
 		->clear_log()
 		->set_in_progress(true)
-		->log(__('Backup started', 'wpbtd'))
+		->log(__('Backup started.', 'wpbtd'))
 		;
 
 	if (defined('WPB2D_TEST_MODE')) {

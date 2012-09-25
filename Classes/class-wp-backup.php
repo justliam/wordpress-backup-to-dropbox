@@ -139,7 +139,7 @@ class WP_Backup {
 			$plugins->remove_file();
 
 			$manager->on_complete();
-			$this->config->log(__('Backup complete', 'wpbtd'));
+			$this->config->log(__('Backup complete.', 'wpbtd'));
 
 		} catch (Exception $e) {
 			if ($e->getMessage() == 'Unauthorized')
