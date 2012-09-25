@@ -34,7 +34,7 @@ class WP_Backup {
 		if (!$this->config->in_progress())
 			return;
 
-		$this->config->log(sprintf(__('Backing up WordPress path at (%s)', 'wpbtd'), $path));
+		$this->config->log(sprintf(__('Backing up WordPress path at (%s).', 'wpbtd'), $path));
 
 		$file_list = new File_List();
 
@@ -68,7 +68,7 @@ class WP_Backup {
 						$uploaded_files = array();
 					} else {
 						$msg = sprintf(
-							__('Approximately %s%% complete and found no files that have changed since the last backup.', 'wpbtd'),
+							__('Approximately %s%% complete.', 'wpbtd'),
 							$percent_done
 						);
 					}
@@ -103,8 +103,8 @@ class WP_Backup {
 			}
 
 			$this->output->end();
-			$this->config->log(sprintf(__('A total of %s files where processed.'), $total_files));
-			$this->config->set_option('file_count', $total_files);
+			$this->config->log(sprintf(__('A total of %s files were processed.'), $processed_file_count));
+			$this->config->set_option('file_count', $processed_file_count);
 		}
 	}
 
@@ -154,7 +154,6 @@ class WP_Backup {
 			->add_backup_history(time())
 			->set_in_progress(false)
 			->clean_up()
-			->set_option()
 			;
 	}
 
