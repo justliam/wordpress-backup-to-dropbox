@@ -31,11 +31,8 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(false, $this->config->get_option('last_backup_time'));
 		$this->assertEquals(false, $this->config->get_option('in_progress'));
 
-		$history = $this->config->get_history();
-		$this->assertEquals($history, array());
-
-		$actions = $this->config->get_actions();
-		$this->assertEquals($actions, array());
+		$log = $this->config->get_log();
+		$this->assertEquals($log, array());
 	}
 
 	public function testConstructDudData() {
@@ -47,59 +44,20 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(false, $this->config->get_option('in_progress'));
 	}
 
-	public function testSetGetClearHistory() {
+	public function testLogGetLog() {
 		set_current_time('2012-03-12 00:00:00');
-		$this->config->log(WP_Backup_Config::BACKUP_STATUS_STARTED, 'One');
-
+		$this->config->log('Action1');
 		set_current_time('2012-03-12 00:00:01');
-		$this->config->log(WP_Backup_Config::BACKUP_STATUS_FINISHED, 'Two');
+		$this->config->log('Action2');
 
-		set_current_time('2012-03-12 00:00:02');
-		$this->config->log(WP_Backup_Config::BACKUP_STATUS_WARNING, 'Three');
+		$log = $this->config->get_log();
 
-		set_current_time('2012-03-12 00:00:03');
-		$this->config->log(WP_Backup_Config::BACKUP_STATUS_FAILED, 'Four');
-
-		$history = $this->config->get_history();
-
-		$this->assertEquals($history[0], array(
-			strtotime('2012-03-12 00:00:00'), WP_Backup_Config::BACKUP_STATUS_STARTED, 'One'
+		$this->assertEquals($log[0], array(
+			'time' => strtotime('2012-03-12 00:00:00'),
+			'message' => 'Action1'
 		));
 
-		$this->assertEquals($history[1], array(
-			strtotime('2012-03-12 00:00:01'), WP_Backup_Config::BACKUP_STATUS_FINISHED, 'Two'
-		));
-
-		$this->assertEquals($history[2], array(
-			strtotime('2012-03-12 00:00:02'), WP_Backup_Config::BACKUP_STATUS_WARNING, 'Three'
-		));
-
-		$this->assertEquals($history[3], array(
-			strtotime('2012-03-12 00:00:03'), WP_Backup_Config::BACKUP_STATUS_FAILED, 'Four'
-		));
-
-		$this->config->clear_history();
-		$this->assertEquals($this->config->get_history(), array());
-	}
-
-	public function testMaxHistory() {
-		for ($i = 0; $i < (WP_Backup_Config::MAX_HISTORY_ITEMS + 10); $i++) {
-			$this->config->log(WP_Backup_Config::BACKUP_STATUS_STARTED, $i);
-		}
-		$history = $this->config->get_history();
-		$this->assertEquals(100, count($history));
-		$this->assertEquals(10, $history[0][2]);
-		$this->assertEquals(109, $history[WP_Backup_Config::MAX_HISTORY_ITEMS - 1][2]);
-	}
-
-	public function testSetGetAction() {
-		set_current_time('2012-03-12 00:00:00');
-		$this->config->set_current_action('Action1');
-		set_current_time('2012-03-12 00:00:01');
-		$this->config->set_current_action('Action2');
-
-		$action = $this->config->get_current_action();
-		$this->assertEquals($action, array(
+		$this->assertEquals($log[1], array(
 			'time' => strtotime('2012-03-12 00:00:01'),
 			'message' => 'Action2'
 		));
@@ -111,7 +69,7 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$files = $this->config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2'));
 
-		$files = $this->config->add_processed_files(array('File1', 'File2', 'File3', 'File4'));
+		$files = $this->config->add_processed_files(array('File3', 'File4'));
 
 		$files = $this->config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2', 'File3', 'File4'));
@@ -217,9 +175,7 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->config->set_schedule('Monday', '00:00:00', 'daily');
 
 		set_current_time('2012-03-12 00:00:00');
-		$this->config->set_current_action('Action1', 'File1');
-
-		$this->assertNotEmpty($this->config->get_actions());
+		$this->config->log('Action1', 'File1');
 
 		$this->config->clean_up();
 

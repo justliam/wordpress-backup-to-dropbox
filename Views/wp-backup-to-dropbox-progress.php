@@ -21,18 +21,14 @@ $config = WP_Backup_Config::construct();
 if (!$config->in_progress())
 	spawn_cron();
 
-$action = $config->get_current_action();
-$file_count = count($config->get_processed_files());
+$log = $config->get_log();
 
-if ($action && $config->in_progress()): ?>
-	<p>
-		<strong><?php echo date('H:i:s', $action['time']) ?>: </strong>
-		<?php echo $action['message']; ?>
-	</p>
-	<?php if ($file_count > 0 ): ?>
-		<p>
-			<strong><?php echo date('H:i:s', strtotime(current_time('mysql'))) ?>: </strong>
-			<?php echo sprintf(__('Processed %d files.', 'wpbtd'), $file_count); ?>
-		</p>
-	<?php endif; ?>
+if (empty($log)): ?>
+	<p><?php _e('You have not run a backup yet. When you do you will see a log of it here.'); ?></p>
+<?php else: ?>
+	<ul>
+		<?php foreach (array_reverse($log) as $logItem ): ?>
+			<li><?php echo date('H:i:s', $logItem['time']) . ' : ' . $logItem['message'] ?></li>
+		<?php endforeach; ?>
+	</ul>
 <?php endif; ?>

@@ -118,16 +118,16 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 			->andReturn(array())
 			->shouldReceive('upload_file')
-			->andThrow(new Exception('Error'))
+			->andThrow(new Exception('<div>Bad Bad Bad</div>'))
 			->once()
 			;
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
-		$history = $this->config->get_history();
+		$log = $this->config->get_log();
 		$this->assertEquals(
-			"There was an error uploading '/Users/mikey/Documents/wpb2d/git/WordPress-Backup-to-Dropbox/Tests/Out/file.txt' to Dropbox",
-			$history[0][2]
+			"Error uploading '/Users/mikey/Documents/wpb2d/git/WordPress-Backup-to-Dropbox/Tests/Out/file.txt' to Dropbox: Bad Bad Bad",
+			$log[0]['message']
 		);
 	}
 
@@ -154,11 +154,11 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/bigFile.txt');
 
-		$history = $this->config->get_history();
-		$this->assertNotEmpty($history);
+		$log = $this->config->get_log();
+		$this->assertNotEmpty($log);
 		$this->assertEquals(
-			"file 'bigFile.txt' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.",
-			$history[0][2]
+			"The file 'bigFile.txt' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.",
+			$log[0]['message']
 		);
 		ini_restore('memory_limit');
 	}

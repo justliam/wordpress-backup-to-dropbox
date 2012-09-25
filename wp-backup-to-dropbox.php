@@ -60,8 +60,7 @@ function backup_to_dropbox_admin_menu() {
 	$text = __('Backup Settings', 'wpbtd');
 	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
 
-	$text = WP_Backup_Config::construct()->is_scheduled() ? __('Monitor Backup', 'wpbtd') : __('Backup Now', 'wpbtd');
-
+	$text = __('Backup Log', 'wpbtd');
 	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
 	WP_Backup_Extension_Manager::construct()->add_menu_items();
@@ -124,9 +123,18 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-	WP_Backup_Config::construct()->log(WP_Backup_Config::BACKUP_STATUS_STARTED);
-	wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
-	wp_schedule_event(time(), 'every_min', 'monitor_dropbox_backup_hook');
+	WP_Backup_Config::construct()
+		->clear_log()
+		->set_in_progress(true)
+		->log(__('Backup started', 'wpbtd'))
+		;
+
+	if (defined('WPB2D_TEST_MODE')) {
+		run_dropbox_backup();
+	} else {
+		wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
+		wp_schedule_event(time(), 'every_min', 'monitor_dropbox_backup_hook');
+	}
 }
 
 /**
@@ -134,11 +142,13 @@ function execute_drobox_backup() {
  */
 function monitor_dropbox_backup() {
 	$config = WP_Backup_Config::construct();
-	$action = $config->get_current_action();
+	$action = array_pop($config->get_log());
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ($action && $config->in_progress() && ($action['time'] < strtotime(current_time('mysql')) - 300 ))
+	if ($action && $config->in_progress() && ($action['time'] < strtotime(current_time('mysql')) - 300)) {
+		$config->log(sprintf(__('There has been no backup activity for %s minutes. Attempting to resume backup.' , 'wpbtd'), 5));
 		wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
+	}
 }
 
 /**

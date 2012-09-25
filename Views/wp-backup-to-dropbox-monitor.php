@@ -33,12 +33,28 @@ if (array_key_exists('stop_backup', $_POST)) {
 ?>
 <script type="text/javascript" language="javascript">
 	function reload() {
-		jQuery.post(ajaxurl, { action:'progress' },  function(data) {
-			if (data.length > 3) {
+		jQuery('.files').hide();
+		jQuery.post(ajaxurl, { action : 'progress' }, function(data) {
+			if (data.length) {
 				jQuery('#progress').html(data);
+				jQuery('.view-files').on('click', function() {
+					$files = jQuery(this).next();
+
+					$files.toggle();
+					$files.find('li').each(function() {
+						$this = jQuery(this);
+						$this.css(
+							'background',
+							'url(<?php echo $uri ?>/JQueryFileTree/images/' + $this.text().slice(-3).replace(/^\.+/,'') + '.png) left top no-repeat'
+						);
+					});
+
+				});
 			}
 		});
-		setTimeout("reload()", 9000);
+		<?php if ($config->in_progress() || isset($started)): ?>
+			setTimeout("reload()", 15000);
+		<?php endif; ?>
 	}
     jQuery(document).ready(function ($) {
 		reload();
@@ -54,6 +70,25 @@ if (array_key_exists('stop_backup', $_POST)) {
 	.backup_warning {
 		color: orange;
     }
+    #progress {
+    	max-height: 400px;
+    	overflow-y: scroll;
+    	margin: 0 0 10px 0;
+    }
+    ul {
+    	margin: 0;
+    }
+    .files {
+    	display: none;
+    	margin-left: 58px;
+    }
+    .files li {
+    	margin: 5px 0;
+    	padding-left: 20px;
+    }
+    .view-files {
+    	text-decoration: none;
+    }
 </style>
 <div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"
@@ -61,17 +96,10 @@ if (array_key_exists('stop_backup', $_POST)) {
 								 alt="WordPress Backup to Dropbox Logo"></div>
 	<h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
 	<p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
-	<h3><?php _e('Backup Progress', 'wpbtd'); ?></h3>
-	<div id="progress">
-		<?php
-		if (isset($started) || $config->is_scheduled())
-			echo '<p>' . __('Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee.', 'wpbtd') . '</p>';
-		else
-			echo '<p>' . __('No backup in progress.', 'wpbtd') . '</p>';
-		?>
-	</div>
+	<h3><?php _e('Backup Log', 'wpbtd'); ?></h3>
+	<div id="progress"></div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
-		<?php if ($config->in_progress() || isset($started) || $config->is_scheduled()): ?>
+		<?php if ($config->in_progress() || isset($started)): ?>
 			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
 		<?php else: ?>
 			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e('Start Backup', 'wpbtd'); ?>">

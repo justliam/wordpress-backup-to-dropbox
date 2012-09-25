@@ -126,11 +126,11 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 		$this->backup->execute();
 
-		$history = $this->config->get_history();
-		$this->assertNotEmpty($history);
+		$log = $this->config->get_log();
+		$this->assertNotEmpty($log);
 		$this->assertEquals(
 			"Your Dropbox account is not authorized yet.",
-			$history[0][2]
+			$log[0]['message']
 		);
 	}
 
@@ -147,11 +147,11 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 		$this->assertFalse($this->config->in_progress());
 		$this->assertEquals(time(), $this->config->get_option('last_backup_time'));
 
-		$history = $this->config->get_history();
-		$this->assertNotEmpty($history);
+		$log = $this->config->get_log();
+		$this->assertNotEmpty($log);
 		$this->assertEquals(
-			"Backup stopped by user.",
-			$history[0][2]
+			"Backup stopped.",
+			$log[0]['message']
 		);
 
 		$this->assertEmpty($this->config->get_processed_files());
