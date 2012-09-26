@@ -43,9 +43,9 @@ class WP_Backup {
 
 		$processed_files = $this->config->get_processed_files();
 		$current_processed_files = $uploaded_files = array();
-		$processed_file_count = 0;
 		$next_check = time() + 5;
-		$total_files = $this->config->get_option('file_count');
+		$total_files = $this->config->get_option('total_file_count');
+		$processed_file_count = $this->config->get_option('processed_file_count');
 
 		if (file_exists($path)) {
 			$source = realpath($path);
@@ -107,7 +107,7 @@ class WP_Backup {
 
 			$this->output->end();
 			$this->config->log(sprintf(__('A total of %s files were processed.'), $processed_file_count));
-			$this->config->set_option('file_count', $processed_file_count);
+			$this->config->set_option('total_file_count', $processed_file_count);
 		}
 	}
 

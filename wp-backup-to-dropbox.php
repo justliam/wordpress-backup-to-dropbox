@@ -123,11 +123,14 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-	WP_Backup_Config::construct()
+	$config = WP_Backup_Config::construct();
+	$config
 		->clear_log()
 		->log(__('Backup started.', 'wpbtd'))
-		->set_option('in_progress', true)
 		;
+
+	$config->set_option('processed_file_count', 0);
+	$config->set_option('in_progress', true);
 
 	if (defined('WPB2D_TEST_MODE')) {
 		run_dropbox_backup();
