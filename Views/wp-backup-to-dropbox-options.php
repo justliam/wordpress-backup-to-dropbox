@@ -32,7 +32,7 @@ try {
 	$config = WP_Backup_Config::construct();
 	$backup = new WP_Backup();
 
-	$disable_backup_now = $config->in_progress();
+	$disable_backup_now = $config->get_option('in_progress');
 
 	//We have a form submit so update the schedule and options
 	if (array_key_exists('save_changes', $_POST)) {

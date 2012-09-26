@@ -52,7 +52,7 @@ if (array_key_exists('stop_backup', $_POST)) {
 				});
 			}
 		});
-		<?php if ($config->in_progress() || isset($started)): ?>
+		<?php if ($config->get_option('in_progress') || isset($started)): ?>
 			setTimeout("reload()", 15000);
 		<?php endif; ?>
 	}
@@ -99,7 +99,7 @@ if (array_key_exists('stop_backup', $_POST)) {
 	<h3><?php _e('Backup Log', 'wpbtd'); ?></h3>
 	<div id="progress"></div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
-		<?php if ($config->in_progress() || isset($started)): ?>
+		<?php if ($config->get_option('in_progress') || isset($started)): ?>
 			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
 		<?php else: ?>
 			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e('Start Backup', 'wpbtd'); ?>">

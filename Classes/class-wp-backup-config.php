@@ -18,17 +18,11 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-include_once('class-file-list.php');
 class WP_Backup_Config {
 	const MAX_HISTORY_ITEMS = 20;
 
-	private static $instance;
-
 	public static function construct() {
-		if (!self::$instance)
-			self::$instance = new self();
-
-		return self::$instance;
+		return new self();
 	}
 
 	public function __construct() {
@@ -137,17 +131,8 @@ class WP_Backup_Config {
 		return (int)rtrim(ini_get('memory_limit'), 'M');
 	}
 
-	public function in_progress() {
-		return $this->get_option('in_progress');
-	}
-
 	public function is_scheduled() {
 		return wp_get_schedule('execute_instant_drobox_backup') !== false;
-	}
-
-	public function set_in_progress($bool) {
-		$this->set_option('in_progress', $bool);
-		return $this;
 	}
 
 	public function set_schedule($day, $time, $frequency) {
@@ -235,9 +220,9 @@ class WP_Backup_Config {
 		return $this->as_array(get_option('backup-to-dropbox-history'));
 	}
 
-	public function add_backup_history($time) {
+	public function log_finished_time() {
 		$history = $this->get_history();
-		$history[] = $time;
+		$history[] = strtotime(current_time('mysql'));
 
 		if (count($history) > self::MAX_HISTORY_ITEMS)
 			array_shift($history);
@@ -246,10 +231,14 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function clean_up() {
+	public function complete() {
 		wp_clear_scheduled_hook('monitor_dropbox_backup_hook');
 		wp_clear_scheduled_hook('run_dropbox_backup_hook');
 		update_option('backup-to-dropbox-processed-files', array());
+
+		$this->set_option('in_progress', false);
+		$this->set_option('is_running', false);
+		$this->log_finished_time();
 	}
 
 	public function clear_log() {

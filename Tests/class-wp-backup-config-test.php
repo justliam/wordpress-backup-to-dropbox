@@ -87,13 +87,13 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testInProgess() {
-		$this->assertFalse($this->config->in_progress());
+		$this->assertFalse($this->config->get_option('in_progress'));
 
 		$this->config->set_in_progress(true);
-		$this->assertTrue($this->config->in_progress());
+		$this->assertTrue($this->config->get_option('in_progress'));
 
 		$this->config->set_in_progress(false);
-		$this->assertFalse($this->config->in_progress());
+		$this->assertFalse($this->config->get_option('in_progress'));
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasPast() {

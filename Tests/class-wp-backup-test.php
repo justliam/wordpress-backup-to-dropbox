@@ -144,7 +144,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 		$this->backup->stop();
 
-		$this->assertFalse($this->config->in_progress());
+		$this->assertFalse($this->config->get_option('in_progress'));
 		$this->assertEquals(time(), $this->config->get_option('last_backup_time'));
 
 		$log = $this->config->get_log();

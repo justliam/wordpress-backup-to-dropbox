@@ -18,11 +18,14 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-include_once('class-file-list.php');
 class WP_Backup {
 	private $dropbox;
 	private $config;
 	private $output;
+
+	public static function construct() {
+		return new self();
+	}
 
 	public function __construct($dropbox = null, $output = null) {
 		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
@@ -31,7 +34,7 @@ class WP_Backup {
 	}
 
 	public function backup_path($path) {
-		if (!$this->config->in_progress())
+		if (!$this->config->get_option('in_progress'))
 			return;
 
 		$this->config->log(sprintf(__('Backing up WordPress path at (%s).', 'wpbtd'), $path));
@@ -51,7 +54,7 @@ class WP_Backup {
 				$file = $file_info->getPathname();
 
 				if (time() > $next_check) {
-					if (!$this->config->in_progress())
+					if (!$this->config->get_option('in_progress'))
 						return;
 
 					$percent_done = round(($processed_file_count / $total_files) * 100, 0);
@@ -150,11 +153,7 @@ class WP_Backup {
 			$manager->on_failure();
 		}
 
-		$this->config
-			->add_backup_history(time())
-			->set_in_progress(false)
-			->clean_up()
-			;
+		$this->config->complete();
 	}
 
 	public function backup_now() {
@@ -167,9 +166,7 @@ class WP_Backup {
 	public function stop() {
 		$this->config
 			->log(__('Backup stopped.', 'wpbtd'))
-			->set_in_progress(false)
-			->add_backup_history(time())
-			->clean_up()
+			->complete()
 			;
 	}
 

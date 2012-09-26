@@ -18,7 +18,7 @@
  */
 $config = WP_Backup_Config::construct();
 
-if (!$config->in_progress())
+if (!$config->get_option('in_progress'))
 	spawn_cron();
 
 $log = $config->get_log();

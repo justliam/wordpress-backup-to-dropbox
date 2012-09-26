@@ -18,10 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-
 class Dropbox_Facade {
-	private static $instance;
-
 	const RETRY_COUNT = 5;
 
 	const CONSUMER_KEY = 'u1i8xniul59ggxs';
@@ -34,10 +31,7 @@ class Dropbox_Facade {
 	private $directory_cache = array();
 
 	public static function construct() {
-		if (!self::$instance)
-			self::$instance = new self();
-
-		return self::$instance;
+		return new self();
 	}
 
 	public function __construct() {

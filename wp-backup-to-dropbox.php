@@ -125,8 +125,8 @@ function backup_to_dropbox_progress() {
 function execute_drobox_backup() {
 	WP_Backup_Config::construct()
 		->clear_log()
-		->set_in_progress(true)
 		->log(__('Backup started.', 'wpbtd'))
+		->set_option('in_progress', true)
 		;
 
 	if (defined('WPB2D_TEST_MODE')) {
@@ -145,8 +145,12 @@ function monitor_dropbox_backup() {
 	$action = array_pop($config->get_log());
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ($action && $config->in_progress() && ($action['time'] < strtotime(current_time('mysql')) - 300)) {
-		$config->log(sprintf(__('There has been no backup activity for %s minutes. Attempting to resume backup.' , 'wpbtd'), 5));
+	if ($action && $config->get_option('in_progress') && ($action['time'] < strtotime(current_time('mysql')) - 300)) {
+		$config
+			->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5))
+			->set_option('is_running', false)
+			;
+
 		wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
 	}
 }
@@ -155,8 +159,11 @@ function monitor_dropbox_backup() {
  * @return void
  */
 function run_dropbox_backup() {
-	$backup = new WP_Backup();
-	$backup->execute();
+	$options = WP_Backup_Config::construct();
+	if (!$options->get_option('is_running')) {
+		$options->set_option('is_running', true);
+		WP_Backup::construct()->execute();
+	}
 }
 
 /**
