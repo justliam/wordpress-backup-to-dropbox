@@ -90,7 +90,7 @@ table {
 		</p>
 		<ol class="instructions">
 			<li><?php _e('Click Buy Now and pay for your extension using PayPal', 'wpbtd'); ?></li>
-			<li><?php _e('Click Install & Acitvate to download and install the extension', 'wpbtd'); ?></li>
+			<li><?php _e('Click Download & Install to download and install the extension', 'wpbtd'); ?></li>
 			<li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
 		</ol>
 		<a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
