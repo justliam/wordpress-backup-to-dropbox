@@ -129,7 +129,6 @@ function execute_drobox_backup() {
 		->log(__('Backup started.', 'wpbtd'))
 		;
 
-	$config->set_option('processed_file_count', 0);
 	$config->set_option('in_progress', true);
 
 	if (defined('WPB2D_TEST_MODE')) {

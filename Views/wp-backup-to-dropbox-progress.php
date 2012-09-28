@@ -27,8 +27,21 @@ if (empty($log)): ?>
 	<p><?php _e('You have not run a backup yet. When you do you will see a log of it here.'); ?></p>
 <?php else: ?>
 	<ul>
-		<?php foreach (array_reverse($log) as $logItem ): ?>
-			<li><?php echo date('H:i:s', $logItem['time']) . ' : ' . $logItem['message'] ?></li>
+		<?php foreach (array_reverse($log) as $log_item ): ?>
+			<li>
+			<?php
+				echo date('H:i:s', $log_item['time']) . ' : ' . $log_item['message'];
+				$files = json_decode($log_item['files'], true);
+			?>
+			<?php if (!empty($files)): ?>
+				<a class="view-files" href="#"><?php _e('View files', 'wpbtd') ?>&raquo;</a>
+				<ul class="files">
+					<?php foreach ($files as $file ): ?>
+						<li><?php echo $file ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+			</li>
 		<?php endforeach; ?>
 	</ul>
 <?php endif; ?>

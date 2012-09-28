@@ -40,7 +40,7 @@ class WP_Backup_Config {
 				'dropbox_location' => null,
 				'in_progress' => false,
 				'store_in_subfolder' => false,
-				'file_count' => 1500,
+				'total_file_count' => 1500,
 			);
 			add_option('backup-to-dropbox-options', $options, null, 'no');
 		}
@@ -246,11 +246,12 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function log($msg) {
+	public function log($msg, $files = null) {
 		$log = $this->as_array(get_option('backup-to-dropbox-log'));
 		$log[] = array(
 			'time' => strtotime(current_time('mysql')),
 			'message' => $msg,
+			'files' => json_encode($files)
 		);
 		update_option('backup-to-dropbox-log', $log);
 		return $this;

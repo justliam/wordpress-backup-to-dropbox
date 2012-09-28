@@ -43,9 +43,10 @@ class WP_Backup {
 
 		$processed_files = $this->config->get_processed_files();
 		$current_processed_files = $uploaded_files = array();
+
 		$next_check = time() + 5;
 		$total_files = $this->config->get_option('total_file_count');
-		$processed_file_count = $this->config->get_option('processed_file_count');
+		$processed_file_count = count($processed_files);
 
 		if (file_exists($path)) {
 			$source = realpath($path);
@@ -58,30 +59,14 @@ class WP_Backup {
 						return;
 
 					$percent_done = round(($processed_file_count / $total_files) * 100, 0);
-					if (count($uploaded_files)) {
-						$msg = sprintf(
-							__('Approximately %s%% complete with %s more files uploaded. %s', 'wpbtd'),
-							$percent_done,
-							count($uploaded_files),
-							'<a class="view-files" href="#">' . __('View files', 'wpbtd') . ' &raquo;</a>' .
-							'<ul class="files">' .
-								'<li>' . implode('</li><li>', $uploaded_files) .'</li>' . '
-							</ul>'
-						);
-						$uploaded_files = array();
-					} else {
-						$msg = sprintf(
-							__('Approximately %s%% complete.', 'wpbtd'),
-							$percent_done
-						);
-					}
 
 					$this->config
 						->add_processed_files($current_processed_files)
-						->log($msg)
+						->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files)
 						;
 
 					$next_check = time() + 5;
+					$current_processed_files = array();
 				}
 
 				if ($file_list->is_excluded($file))
@@ -100,7 +85,7 @@ class WP_Backup {
 					if ($this->output->out($source, $file))
 						$uploaded_files[] = str_replace($source . DIRECTORY_SEPARATOR, '', $file);
 
-					$processed_files[] = $file;
+					$current_processed_files[] = $file;
 					$processed_file_count++;
 				}
 			}
