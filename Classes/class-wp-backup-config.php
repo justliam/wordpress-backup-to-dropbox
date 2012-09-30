@@ -234,6 +234,8 @@ class WP_Backup_Config {
 	public function complete() {
 		wp_clear_scheduled_hook('monitor_dropbox_backup_hook');
 		wp_clear_scheduled_hook('run_dropbox_backup_hook');
+		wp_clear_scheduled_hook('execute_instant_drobox_backup');
+
 		update_option('backup-to-dropbox-processed-files', array());
 
 		$this->set_option('in_progress', false);
