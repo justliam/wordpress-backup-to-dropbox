@@ -222,7 +222,7 @@ class WP_Backup_Config {
 
 	public function log_finished_time() {
 		$history = $this->get_history();
-		$history[] = strtotime(current_time('mysql'));
+		$history[] = time();
 
 		if (count($history) > self::MAX_HISTORY_ITEMS)
 			array_shift($history);
