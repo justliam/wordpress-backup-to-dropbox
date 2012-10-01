@@ -66,7 +66,7 @@ class WP_Backup {
 						;
 
 					$next_check = time() + 5;
-					$current_processed_files = array();
+					$uploaded_files = $current_processed_files = array();
 				}
 
 				if ($file_list->is_excluded($file))
@@ -82,8 +82,12 @@ class WP_Backup {
 					if (dirname($file) == $this->config->get_backup_dir() && substr(basename($file), -4, 4) != '.sql')
 						continue;
 
-					if ($this->output->out($source, $file))
-						$uploaded_files[] = str_replace($source . DIRECTORY_SEPARATOR, '', $file);
+					if ($this->output->out($source, $file)) {
+						$uploaded_files[] = array(
+							'file' => str_replace($source . DIRECTORY_SEPARATOR, '', $file),
+							'mtime' => filemtime($file),
+						);
+					}
 
 					$current_processed_files[] = $file;
 					$processed_file_count++;

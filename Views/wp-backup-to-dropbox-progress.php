@@ -34,10 +34,10 @@ if (empty($log)): ?>
 				$files = json_decode($log_item['files'], true);
 			?>
 			<?php if (!empty($files)): ?>
-				<a class="view-files" href="#"><?php _e('View files', 'wpbtd') ?>&raquo;</a>
+				<a class="view-files" href="#"><?php _e('View uploaded files', 'wpbtd') ?>&raquo;</a>
 				<ul class="files">
-					<?php foreach ($files as $file ): ?>
-						<li><?php echo $file ?></li>
+					<?php foreach ($files as $file): ?>
+						<li title="<?php echo sprintf(__('Last modified: %s'), date('F j, Y, H:i:s', $file['mtime'])) ?>"><?php echo $file['file'] ?></li>
 					<?php endforeach; ?>
 				</ul>
 			<?php endif; ?>
