@@ -91,33 +91,33 @@ if (array_key_exists('stop_backup', $_POST)) {
 	}
 
 	.loading {
-		margin-top: 10px;
+		padding: 5px;
 		clear: both;
 	}
 
 	#circleG {
-		width: 149.33333333333334px;
+		width: 150px;
 	}
 
 	.circleG {
 		background-color: #FFFFFF;
 		float: left;
-		height: 20px;
-		margin-left: 11px;
-		width: 20px;
+		height: 15px;
+		margin-left: 8px;
+		width: 15px;
 		-webkit-animation-name: bounce_circleG;
-		-webkit-border-radius: 13px;
+		-webkit-border-radius: 10px;
 		-webkit-animation-duration: 1.9500000000000002s;
 		-webkit-animation-iteration-count: infinite;
 		-webkit-animation-direction: linear;
 		-moz-animation-name: bounce_circleG;
-		-moz-border-radius: 13px;
+		-moz-border-radius: 10px;
 		-moz-animation-duration: 1.9500000000000002s;
 		-moz-animation-iteration-count: infinite;
 		-moz-animation-direction: linear;
 		opacity: 0.3;
 		-o-animation-name: bounce_circleG;
-		border-radius: 13px;
+		border-radius: 10px;
 		-o-animation-duration: 1.9500000000000002s;
 		-o-animation-iteration-count: infinite;
 		-o-animation-direction: linear;
