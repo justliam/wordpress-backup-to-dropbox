@@ -18,15 +18,17 @@
  */
 $prefix = isset($prefix) ? $prefix : '';
 require_once 'Mockery/Loader.php';
-require_once $prefix . '../Classes/class-wp-backup-extension-manager.php';
-require_once $prefix . '../Classes/class-wp-backup-extension.php';
-require_once $prefix . '../Classes/class-wp-backup-output.php';
-require_once $prefix . '../Classes/class-wp-backup-config.php';
-require_once $prefix . '../Classes/class-wp-backup-database.php';
-require_once $prefix . '../Classes/class-wp-backup-database-core.php';
-require_once $prefix . '../Classes/class-wp-backup-database-plugins.php';
-require_once $prefix . '../Classes/class-dropbox-facade.php';
-require_once $prefix . '../Dropbox_API/src/Dropbox/autoload.php';
+require_once($prefix . '../Dropbox_API/src/Dropbox/autoload.php');
+require_once($prefix . '../Classes/class-file-list.php');
+require_once($prefix . '../Classes/class-dropbox-facade.php');
+require_once($prefix . '../Classes/class-wp-backup-config.php');
+require_once($prefix . '../Classes/class-wp-backup.php');
+require_once($prefix . '../Classes/class-wp-backup-database.php');
+require_once($prefix . '../Classes/class-wp-backup-database-core.php');
+require_once($prefix . '../Classes/class-wp-backup-database-plugins.php');
+require_once($prefix . '../Classes/class-wp-backup-output.php');
+require_once($prefix . '../Classes/class-wp-backup-extension.php');
+require_once($prefix . '../Classes/class-wp-backup-extension-manager.php');
 
 set_include_path(dirname(dirname(__FILE__)) . '/PEAR_Includes' . PATH_SEPARATOR . get_include_path());
 
@@ -35,7 +37,7 @@ $loader->register();
 
 define('ARRAY_A', true);
 define('ARRAY_N', true);
-define('BACKUP_TO_DROPBOX_VERSION', 'UnitTest');
+define('BACKUP_TO_DROPBOX_VERSION', 99);
 define('ABSPATH', dirname(dirname(__FILE__)));
 define('WP_CONTENT_DIR', ABSPATH);
 define('DB_NAME', 'TestDB');

@@ -44,7 +44,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		unlink(__DIR__ . '/Out/file.txt');
-		$this->config->clean_up();
+		$this->config->complete();
 		Mockery::close();
 	}
 
@@ -86,6 +86,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testOutFileInDropboxAndNotUpdated() {
+		$this->config->complete();
 		$this->config->set_option('last_backup_time', filemtime(__DIR__ . '/Out/file.txt') + 1);
 
 		$this

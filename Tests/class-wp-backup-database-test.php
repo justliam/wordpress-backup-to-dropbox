@@ -192,7 +192,7 @@ EOS;
 	{
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
--- Version UnitTest
+-- Version 99
 -- http://wpb2d.com
 -- Generation Time: March 12, 2012 at 00:00
 
@@ -276,7 +276,7 @@ EOS;
 	{
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
--- Version UnitTest
+-- Version 99
 -- http://wpb2d.com
 -- Generation Time: March 12, 2012 at 00:00
 

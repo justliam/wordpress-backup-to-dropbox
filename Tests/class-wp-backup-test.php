@@ -44,11 +44,11 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testBackupPath() {
-		$this->config->set_in_progress(false);
+		$this->config->set_option('in_progress', false);
 
 		$this->backup->backup_path(__DIR__, 'DropboxLocation');
 
-		$this->config->set_in_progress(true);
+		$this->config->set_option('in_progress', true);
 
 		$this
 			->output
@@ -78,7 +78,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 	public function testBackupPathWithExcludedFile() {
 		File_List::construct()->set_excluded(__DIR__ . '/Out');
-		$this->config->set_in_progress(true);
+		$this->config->set_option('in_progress', true);
 
 		$this
 			->output
@@ -94,8 +94,8 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testBackupPathWithProcessedFile() {
-		$this->config->clean_up();
-		$this->config->set_in_progress(true);
+		$this->config->complete();
+		$this->config->set_option('in_progress', true);
 		$this->config->add_processed_files(array(__FILE__, __DIR__ . '/class-file-list-test.php'));
 
 		$this
@@ -140,12 +140,12 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testStop() {
-		$this->config->set_in_progress(true);
+		$this->config->set_option('in_progress', false);
 
 		$this->backup->stop();
 
 		$this->assertFalse($this->config->get_option('in_progress'));
-		$this->assertEquals(time(), $this->config->get_option('last_backup_time'));
+		$this->assertEquals(time(), array_pop($this->config->get_history()));
 
 		$log = $this->config->get_log();
 		$this->assertNotEmpty($log);

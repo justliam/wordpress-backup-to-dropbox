@@ -45,32 +45,34 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testAddBackupHistory() {
-		for ($i = 0; $i < 30; $i++)
-			$this->config->add_backup_history($i);
+		for ($i = 0; $i < 30; $i++) {
+			set_current_time('2012-03-12 00:00:' . $i);
+			$this->config->log_finished_time();
+		}
 
 		$history = $this->config->get_history();
 		$this->assertEquals(20, count($history));
-
-		for ($i = 0; $i < 20; $i++)
-			$this->assertEquals($i + 10, $history[$i]);
 	}
 
 	public function testLogGetLog() {
 		set_current_time('2012-03-12 00:00:00');
-		$this->config->log('Action1');
+		$this->config->log('a', array('file1', 'file2'));
+
 		set_current_time('2012-03-12 00:00:01');
-		$this->config->log('Action2');
+		$this->config->log('b');
 
 		$log = $this->config->get_log();
 
 		$this->assertEquals($log[0], array(
 			'time' => strtotime('2012-03-12 00:00:00'),
-			'message' => 'Action1'
+			'message' => 'a',
+			'files' => '["file1","file2"]',
 		));
 
 		$this->assertEquals($log[1], array(
 			'time' => strtotime('2012-03-12 00:00:01'),
-			'message' => 'Action2'
+			'message' => 'b',
+			'files' => 'null',
 		));
 	}
 
@@ -84,16 +86,6 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 		$files = $this->config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2', 'File3', 'File4'));
-	}
-
-	public function testInProgess() {
-		$this->assertFalse($this->config->get_option('in_progress'));
-
-		$this->config->set_in_progress(true);
-		$this->assertTrue($this->config->get_option('in_progress'));
-
-		$this->config->set_in_progress(false);
-		$this->assertFalse($this->config->get_option('in_progress'));
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasPast() {
@@ -182,13 +174,13 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertTrue(isset($options['in_progress']));
 	}
 
-	public function testCleanUp() {
+	public function testComplete() {
 		$this->config->set_schedule('Monday', '00:00:00', 'daily');
 
 		set_current_time('2012-03-12 00:00:00');
 		$this->config->log('Action1', 'File1');
 
-		$this->config->clean_up();
+		$this->config->complete();
 
 		$this->assertEmpty($this->config->get_actions());
 		$this->assertFalse(wp_next_scheduled('monitor_dropbox_backup_hook'));
