@@ -205,8 +205,13 @@ try {
 		if ($backup_history) {
 			echo '<ol class="history_box">';
 			foreach ($backup_history as $backup_time) {
-				$backup_date = date('Y-m-d', $backup_time);
-				$backup_time_str = date('H:i:s', $backup_time);
+
+				$blog_time = strtotime(date('Y-m-d H', strtotime(current_time('mysql'))) . ':00:00');
+				$blog_time += $backup_time - strtotime(date('Y-m-d H') . ':00:00');
+
+				$backup_date = date('Y-m-d', $blog_time);
+				$backup_time_str = date('H:i:s', $blog_time);
+
 				echo '<li>' . sprintf(__('Backup completed at %s on %s.'), $backup_time_str, $backup_date) . '</li>';
 			}
 			echo '</ol>';
