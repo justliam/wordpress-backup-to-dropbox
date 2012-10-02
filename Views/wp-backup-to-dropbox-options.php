@@ -201,7 +201,7 @@ try {
 			<?php } ?>
 		<h3><?php _e('History', 'wpbtd'); ?></h3>
 		<?php
-		$backup_history = $config->get_history();
+		$backup_history = array_reverse($config->get_history());
 		if ($backup_history) {
 			echo '<ol class="history_box">';
 			foreach ($backup_history as $backup_time) {
