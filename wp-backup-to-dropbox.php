@@ -126,7 +126,7 @@ function execute_drobox_backup() {
 	$config = WP_Backup_Config::construct();
 	$config
 		->clear_log()
-		->log(__('Backup started.', 'wpbtd'))
+		->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))))
 		;
 
 	$config->set_option('in_progress', true);

@@ -209,10 +209,10 @@ try {
 				$blog_time = strtotime(date('Y-m-d H', strtotime(current_time('mysql'))) . ':00:00');
 				$blog_time += $backup_time - strtotime(date('Y-m-d H') . ':00:00');
 
-				$backup_date = date('Y-m-d', $blog_time);
+				$backup_date = date('l F j, Y', $blog_time);
 				$backup_time_str = date('H:i:s', $blog_time);
 
-				echo '<li>' . sprintf(__('Backup completed at %s on %s.'), $backup_time_str, $backup_date) . '</li>';
+				echo '<li>' . sprintf(__('Backup completed on %s at %s.'), $backup_date, $backup_time_str) . '</li>';
 			}
 			echo '</ol>';
 			echo '<input type="submit" id="clear_history" name="clear_history"" class="bump button-secondary" value="' . __('Clear history', 'wpbtd') . '">';
