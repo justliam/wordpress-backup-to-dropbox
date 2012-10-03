@@ -248,12 +248,17 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function log($msg, $files = null) {
+	public function log_error($msg) {
+		return $this->log($msg, null, true);
+	}
+
+	public function log($msg, $files = null, $error = false) {
 		$log = $this->as_array(get_option('backup-to-dropbox-log'));
 		$log[] = array(
 			'time' => strtotime(current_time('mysql')),
 			'message' => $msg,
-			'files' => json_encode($files)
+			'files' => json_encode($files),
+			'error' => $error,
 		);
 		update_option('backup-to-dropbox-log', $log);
 		return $this;

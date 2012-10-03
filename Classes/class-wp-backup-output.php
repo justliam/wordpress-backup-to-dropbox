@@ -49,7 +49,7 @@ class WP_Backup_Output {
 		}
 
 		if (filesize($file) > $this->max_file_size) {
-			$this->config->log(sprintf(__("The file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd'), basename($file)));
+			$this->config->log_error(sprintf(__("The file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd'), basename($file)));
 			return;
 		}
 
@@ -66,7 +66,7 @@ class WP_Backup_Output {
 				return $this->dropbox->upload_file($dropbox_path, $file);
 
 		} catch (Exception $e) {
-			$this->config->log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
+			$this->config->log_error(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
 			$this->error_count++;
 		}
 	}

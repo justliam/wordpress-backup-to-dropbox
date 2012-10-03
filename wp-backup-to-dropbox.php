@@ -149,7 +149,7 @@ function monitor_dropbox_backup() {
 	//5 mins to allow for socket timeouts and long uploads
 	if ($action && $config->get_option('in_progress') && ($action['time'] < strtotime(current_time('mysql')) - 300)) {
 		$config
-			->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5))
+			->log_error(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5))
 			->set_option('is_running', false)
 			;
 
