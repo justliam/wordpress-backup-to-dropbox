@@ -206,6 +206,9 @@ try {
 			echo '<ol class="history_box">';
 			foreach ($backup_history as $backup_time) {
 
+				if (is_array($backup_time))
+					continue;
+
 				$blog_time = strtotime(date('Y-m-d H', strtotime(current_time('mysql'))) . ':00:00');
 				$blog_time += $backup_time - strtotime(date('Y-m-d H') . ':00:00');
 
