@@ -141,7 +141,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 = 1.3 =
 * Overhauled logging of a backup to get more visibility of what is happening during a backup.
-* More info here => http://www.mikeyd.com.au/2012/10/02/wordpress-backup-to-dropbox-1-3
+* More info here => http://www.mikeyd.com.au/2012/10/04/wordpress-backup-to-dropbox-1-3/
 
 = 1.2.2 =
 * Removed zipping of the SQL dump due to random PHP memory leaks... intersingly the Zip extension does not share the same issue. Ah PHP you keep me on my toes!
@@ -177,4 +177,4 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Upgrade Notice ==
 
-* Better logging! :-) More info here => http://www.mikeyd.com.au/2012/10/02/wordpress-backup-to-dropbox-1-3
+* Better logging! :-) More info here => http://www.mikeyd.com.au/2012/10/04/wordpress-backup-to-dropbox-1-3/
