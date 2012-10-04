@@ -134,8 +134,9 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Screenshots ==
 
-1. WordPress Backup to Dropbox options
-2. WordPress Backup to Dropbox monitor
+1. The Settings: Choose the date, time, frequency and what files or directories you wan't to exclude.
+2. The Log: Know what you backup is doing.
+3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
 
