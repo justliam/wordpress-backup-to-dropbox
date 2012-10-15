@@ -123,6 +123,8 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
+	@umask(0000);
+
 	$config = WP_Backup_Config::construct();
 	$config
 		->clear_log()
