@@ -118,7 +118,7 @@ function get_site_url() {
 }
 
 function get_bloginfo($key) {
-	return 'Test blog';
+	return "Mikey's blog";
 }
 
 function get_option($key) {
