@@ -98,7 +98,9 @@ class WP_Backup {
 
 			$this->output->end();
 			$this->config->log(sprintf(__('A total of %s files were processed.'), $processed_file_count));
-			$this->config->set_option('total_file_count', $processed_file_count);
+
+			if ($processed_file_count > 800) //I doub't very much a wp installation can get smaller then this
+				$this->config->set_option('total_file_count', $processed_file_count);
 		}
 	}
 
