@@ -130,7 +130,7 @@ abstract class WP_Backup_Database {
 	}
 
 	protected function write_to_file($out) {
-		if (!fwrite($this->handle, $out))
+		if (fwrite($this->handle, $out) === false)
 			throw new Exception(__('Error writing to sql dump file.', 'wpbtd'));
 	}
 
