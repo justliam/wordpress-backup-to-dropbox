@@ -18,7 +18,11 @@
  */
 $prefix = isset($prefix) ? $prefix : '';
 require_once 'Mockery/Loader.php';
-require_once($prefix . '../Dropbox_API/src/Dropbox/autoload.php');
+
+require_once($prefix . '../Dropbox/Dropbox/API.php');
+require_once($prefix . '../Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
+require_once($prefix . '../Dropbox/Dropbox/OAuth/Consumer/Curl.php');
+
 require_once($prefix . '../Classes/class-file-list.php');
 require_once($prefix . '../Classes/class-dropbox-facade.php');
 require_once($prefix . '../Classes/class-wp-backup-config.php');

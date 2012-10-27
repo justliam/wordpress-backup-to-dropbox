@@ -62,22 +62,6 @@ class WP_Backup_Config {
 		return array();
 	}
 
-	public function get_max_file_size() {
-		$memory_limit_string = ini_get('memory_limit');
-		$memory_limit = (preg_replace('/\D/', '', $memory_limit_string) * 1048576);
-
-		$suhosin_memory_limit_string = ini_get('suhosin.memory_limit');
-		$suhosin_memory_limit = (preg_replace('/\D/', '', $suhosin_memory_limit_string) * 1048576);
-
-		if ($suhosin_memory_limit && $suhosin_memory_limit < $memory_limit) {
-			$memory_limit = $suhosin_memory_limit;
-		}
-
-		$memory_limit /= 2.5;
-
-		return $memory_limit < Dropbox_Facade::MAX_UPLOAD_SIZE ? $memory_limit : Dropbox_Facade::MAX_UPLOAD_SIZE;
-	}
-
 	public static function get_backup_dir() {
 		return WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'backups';
 	}

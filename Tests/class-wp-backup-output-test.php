@@ -133,34 +133,35 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testOutFileUploadFileTooLarge() {
+
 		if (!file_exists(__DIR__ . '/Out/bigFile.txt')) {
 			$fh = fopen(__DIR__ . '/Out/bigFile.txt', 'w');
-			for ($i = 0; $i < 3461120; $i++)
-				fwrite($fh, "a");
+	        for ($i = 0; $i < (WP_Backup_Output::CHUNKED_UPLOAD_THREASHOLD / 100); $i++) {
+	            fwrite($fh, "..................................................");
+	            fwrite($fh, "..................................................");
+	        }
 			fclose($fh);
 		}
 
-		ini_set('memory_limit', '8M');
 		$this->out = new WP_Backup_Output($this->dropbox, $this->config);
 
 		$this
 			->dropbox
 
 			->shouldReceive('get_directory_contents')
-			->never()
+			->andReturn(array())
+			->once()
 
 			->shouldReceive('upload_file')
 			->never()
+
+			->shouldReceive('chunk_upload_file')
+			->once()
 			;
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/bigFile.txt');
 
 		$log = $this->config->get_log();
-		$this->assertNotEmpty($log);
-		$this->assertEquals(
-			"The file 'bigFile.txt' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.",
-			$log[0]['message']
-		);
-		ini_restore('memory_limit');
+		$this->assertEmpty($log);
 	}
 }

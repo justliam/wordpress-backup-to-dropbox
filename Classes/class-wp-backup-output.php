@@ -21,12 +21,12 @@
 class WP_Backup_Output {
 
 	const MAX_ERRORS = 10;
+	const CHUNKED_UPLOAD_THREASHOLD = 10485760; //10 MB
 
 	private $dropbox;
 	private $config;
 	private $last_backup_time;
 	private $dropbox_location;
-	private $max_file_size;
 	private $error_count;
 
 	public function __construct($dropbox = false, $config = false) {
@@ -38,19 +38,12 @@ class WP_Backup_Output {
 		$this->dropbox_location = null;
 		if ($this->config->get_option('store_in_subfolder'))
 			$this->dropbox_location = $this->config->get_option('dropbox_location');
-
-		$this->max_file_size = $this->config->get_max_file_size();
 	}
 
 	public function out($source, $file) {
 
 		if ($this->error_count > self::MAX_ERRORS) {
 			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.'), self::MAX_ERRORS));
-		}
-
-		if (filesize($file) > $this->max_file_size) {
-			$this->config->log_error(sprintf(__("The file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file.", 'wpbtd'), basename($file)));
-			return;
 		}
 
 		$dropbox_path = $this->dropbox_location . DIRECTORY_SEPARATOR . str_replace($source . DIRECTORY_SEPARATOR, '', $file);
@@ -60,10 +53,13 @@ class WP_Backup_Output {
 		}
 
 		try {
-
 			$directory_contents = $this->dropbox->get_directory_contents(dirname($dropbox_path));
-			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time)
-				return $this->dropbox->upload_file($dropbox_path, $file);
+			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time) {
+				if (filesize($file) > self::CHUNKED_UPLOAD_THREASHOLD)
+					return $this->dropbox->chunk_upload_file($dropbox_path, $file);
+				else
+					return $this->dropbox->upload_file($dropbox_path, $file);
+			}
 
 		} catch (Exception $e) {
 			$this->config->log_error(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
