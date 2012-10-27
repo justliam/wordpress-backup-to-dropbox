@@ -1,3 +1,6 @@
 [submodule "Extensions"]
 	path = Extensions
 	url = git@bitbucket.org:michaeldewildt/premiumextensions.git
+[submodule "Dropbox"]
+	path = Dropbox
+	url = https://github.com/michaeldewildt/Dropbox.git
