@@ -119,6 +119,8 @@ class WP_Backup {
 				return;
 			}
 
+			$this->dropbox->create_directory($this->config->get_option('dropbox_location'));
+
 			$core = new WP_Backup_Database_Core();
 			$core->execute();
 

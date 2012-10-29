@@ -173,15 +173,15 @@ try {
 	<?php
 		if ($dropbox->is_authorized()) {
 		$account_info = $dropbox->get_account_info();
-		$used = round(($account_info['quota_info']['quota'] - ($account_info['quota_info']['normal'] + $account_info['quota_info']['shared'])) / 1073741824, 1);
-		$quota = round($account_info['quota_info']['quota'] / 1073741824, 1);
+		$used = round(($account_info->quota_info->quota - ($account_info->quota_info->normal + $account_info->quota_info->shared)) / 1073741824, 1);
+		$quota = round($account_info->quota_info->quota / 1073741824, 1);
 		?>
 	<h3><?php _e('Dropbox Account Details', 'wpbtd'); ?></h3>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options"
 		  action="admin.php?page=backup-to-dropbox" method="post">
 	<p class="bump">
 		<?php echo
-				$account_info['display_name'] . ', ' .
+				$account_info->display_name . ', ' .
 				__('you have', 'wpbtd') . ' ' .
 				$used .
 				'<acronym title="' . __('Gigabyte', 'wpbtd') . '">GB</acronym> ' .
