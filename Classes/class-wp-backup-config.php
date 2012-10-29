@@ -110,7 +110,7 @@ class WP_Backup_Config {
 
 	public function set_memory_limit() {
 		if (function_exists('memory_get_usage'))
-			@ini_set('memory_limit', BACKUP_TO_DROPBOX_MEMORY_LIMIT .'M');
+			@ini_set('memory_limit', -1);
 
 		return (int)rtrim(ini_get('memory_limit'), 'M');
 	}

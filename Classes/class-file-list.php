@@ -41,7 +41,7 @@ class File_List {
 
 	public function test_memory() {
 		$limit = WP_Backup_Config::construct()->set_memory_limit();
-		if ($limit < 64)
+		if ($limit > 0 && $limit < 64)
 			throw new Exception(sprintf(__('Memory limit could not be set and your settings are too low to use this widget, please increase your PHP memory_limit to at least %sM (%sM is recommended).'), 64, 150));
 	}
 
