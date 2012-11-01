@@ -43,24 +43,29 @@ class Dropbox_Facade {
 		$this->tokens = get_option('backup-to-dropbox-tokens');
 
 		if (!$this->tokens) {
-			$this->tokens = array('access' => false, 'request' => false);
+			$this->tokens = array('access' => false, 'request' => $this->oauth->getRequestToken());
 			add_option('backup-to-dropbox-tokens', $this->tokens, null, 'no');
-		} else if ($this->tokens['request'] != false) {
-			//If we have not got an access token then we need to grab one
-			if ($this->tokens['access'] == false) {
-				try {
-					$this->oauth->setToken($this->tokens['request']);
-					$this->tokens['access'] = $this->oauth->getAccessToken();
-					$this->save_tokens();
-				} catch (Exception $e) {
-					//Authorization failed so we are still pending
-					$this->tokens['access'] = false;
-				}
-			} else {
-				$this->oauth->setToken($this->tokens['access']);
-			}
-			$this->dropbox = new API($this->oauth);
+			$this->oauth->setToken($this->tokens['request']);
 		}
+
+		if ($this->tokens['access']) {
+			$this->oauth->setToken($this->tokens['access']);
+		} else if ($this->tokens['request']) {
+			$this->oauth->setToken($this->tokens['request']);
+			//If we have not got an access token then we need to grab one
+			try {
+				$this->tokens['access'] = $this->oauth->getAccessToken();
+				$this->oauth->setToken($this->tokens['access']);
+			} catch (Exception $e) {
+				//Authorization failed so we are still pending
+				$this->oauth->setToken(null);
+				$this->tokens['request'] = $this->oauth->getRequestToken();
+				$this->oauth->setToken($this->tokens['request']);
+			}
+			$this->save_tokens();
+		}
+
+		$this->dropbox = new API($this->oauth);
 	}
 
 	public function is_authorized() {
@@ -68,17 +73,11 @@ class Dropbox_Facade {
 			$this->get_account_info();
 			return true;
 		} catch (Exception $e) {
-			$this->tokens = null;
 			return false;
 		}
 	}
 
 	public function get_authorize_url() {
-		$this->tokens['request'] = $this->oauth->getRequestToken();
-		$this->save_tokens();
-
-		$this->oauth->setToken($this->tokens['request']);
-
 		return $this->oauth->getAuthoriseUrl();
 	}
 
@@ -132,7 +131,9 @@ class Dropbox_Facade {
 	}
 
 	public function unlink_account() {
-		delete_option('backup-to-dropbox-tokens');
-		$this->tokens = null;
+		$this->tokens['access'] = false;
+		$this->tokens['request'] = $this->oauth->getRequestToken();
+		$this->save_tokens();
+		$this->oauth->setToken($this->tokens['request']);
 	}
 }
