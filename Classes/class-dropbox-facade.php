@@ -24,13 +24,18 @@ class Dropbox_Facade {
 	const CONSUMER_SECRET = '0ssom5yd1ybebhy';
 	const CHUNKED_UPLOAD_THREASHOLD = 10485760; //10 MB
 
+	private static $instance = null;
+
 	private $dropbox = null;
 	private $tokens = null;
 	private $account_info_cache = null;
 	private $directory_cache = array();
 
 	public static function construct() {
-		return new self();
+		if (!self::$instance)
+			self::$instance = new self();
+
+		return self::$instance;
 	}
 
 	public function __construct() {
