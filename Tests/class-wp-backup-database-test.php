@@ -37,7 +37,6 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 		reset_globals();
 		set_current_time('2012-03-12 00:00:00');
 		$this->config = WP_Backup_Config::construct();
-		$this->config->set_option('dump_location', 'Out');
 		if (!file_exists($this->config->get_backup_dir()))
 			mkdir($this->config->get_backup_dir());
 	}

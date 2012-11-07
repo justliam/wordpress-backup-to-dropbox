@@ -56,37 +56,32 @@ class WP_Backup_Config {
 		}
 	}
 
-	private function as_array($val) {
-		if (is_array($val))
-			return $val;
-		return array();
-	}
-
 	public static function get_backup_dir() {
 		return WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'backups';
 	}
 
 	public function set_option($option, $value) {
-		$options = $this->as_array(get_option('backup-to-dropbox-options'));
+		$options = get_option('backup-to-dropbox-options');
 		$options[$option] = $value;
-		return $this->set_options($options);
+		update_option('backup-to-dropbox-options', $options);
+		return $this;
 	}
 
 	public function get_option($option) {
-		$options = $this->as_array(get_option('backup-to-dropbox-options'));
+		$options = get_option('backup-to-dropbox-options');
 		return isset($options[$option]) ? $options[$option] : false;
 	}
 
 	public function get_log() {
-		return $this->as_array(get_option('backup-to-dropbox-log'));
+		return get_option('backup-to-dropbox-log');
 	}
 
 	public function get_actions() {
-		return $this->as_array(get_option('backup-to-dropbox-actions'));
+		return get_option('backup-to-dropbox-actions');
 	}
 
 	public function get_processed_files() {
-		return $this->as_array(get_option('backup-to-dropbox-processed-files'));
+		return get_option('backup-to-dropbox-processed-files');
 	}
 
 	public function add_processed_files($new_files) {
@@ -165,43 +160,12 @@ class WP_Backup_Config {
 		return $schedule;
 	}
 
-	public function set_options($options) {
-		static $regex = '/[^A-Za-z0-9-_.@]/';
-		$errors = array();
-		$error_msg = __('The sub directory must only contain alphanumeric characters.', 'wpbtd');
-
-		foreach ($options as $key => $value) {
-			preg_match($regex, $value, $matches);
-			if (!empty($matches)) {
-				$errors[$key] = array(
-					'original' => $value,
-					'message' => $error_msg
-				);
-			}
-		}
-
-		if (empty($errors)) {
-			$newOptions = array();
-			foreach ($options as $key => $value)
-				$newOptions[$key] = $value;
-
-			$options = $this->as_array(get_option('backup-to-dropbox-options'));
-			foreach ($newOptions as $key => $value) {
-				$options[$key] = $newOptions[$key];
-			}
-
-			update_option('backup-to-dropbox-options', $options);
-		}
-
-		return $errors;
-	}
-
 	public function clear_history() {
 		update_option('backup-to-dropbox-history', array());
 	}
 
 	public function get_history() {
-		return $this->as_array(get_option('backup-to-dropbox-history'));
+		return get_option('backup-to-dropbox-history');
 	}
 
 	public function log_finished_time() {
@@ -237,7 +201,7 @@ class WP_Backup_Config {
 	}
 
 	public function log($msg, $files = null, $error = false) {
-		$log = $this->as_array(get_option('backup-to-dropbox-log'));
+		$log = get_option('backup-to-dropbox-log');
 		$log[] = array(
 			'time' => strtotime(current_time('mysql')),
 			'message' => $msg,

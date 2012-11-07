@@ -37,13 +37,17 @@ try {
 	//We have a form submit so update the schedule and options
 	if (array_key_exists('save_changes', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
-		$config->set_schedule($_POST['day'], $_POST['time'], $_POST['frequency']);
-		$options = array(
-			'store_in_subfolder' => $_POST['store_in_subfolder'] == "on",
-			'dump_location' => $_POST['dump_location'],
-			'dropbox_location' => $_POST['dropbox_location'],
-		);
-		$validation_errors = $config->set_options($options);
+
+		if (preg_match('/[^A-Za-z0-9-_.]/', $_POST['dropbox_location'])) {
+			$error_msg = __('The sub directory must only contain alphanumeric characters.', 'wpbtd');
+			$dropbox_location = $_POST['dropbox_location'];
+			$store_in_subfolder = true;
+		} else {
+			$config
+				->set_schedule($_POST['day'], $_POST['time'], $_POST['frequency'])
+				->set_option('store_in_subfolder', $_POST['store_in_subfolder'] == "on")
+				->set_option('dropbox_location', $_POST['dropbox_location']);
+		}
 	} else if (array_key_exists('unlink', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
 		$dropbox->unlink_account();
@@ -58,22 +62,14 @@ try {
 		$frequency = 'weekly';
 	}
 
-	$dump_location = $config->get_option('dump_location');
-	$dropbox_location = $config->get_option('dropbox_location');
-	$store_in_subfolder = $config->get_option('store_in_subfolder');
-
-	$backup->create_dump_dir();
-	$backup->create_silence_file();
-
-	if (!empty($validation_errors)) {
-		$dump_location = array_key_exists('dump_location', $validation_errors)
-				? $validation_errors['dump_location']['original'] : $dump_location;
-
-		if (array_key_exists('dropbox_location', $validation_errors)) {
-			$dropbox_location = $validation_errors['dropbox_location']['original'];
-			$store_in_subfolder = true;
-		}
+	if (!isset($error_msg)) {
+		$dropbox_location = $config->get_option('dropbox_location');
+		$store_in_subfolder = $config->get_option('store_in_subfolder');
 	}
+
+	$backup
+		->create_dump_dir()
+		->create_silence_file();
 
 	$time = date('H:i', $unixtime);
 	$day = date('D', $unixtime);
@@ -237,9 +233,9 @@ try {
 				<span class="dropbox_location">
 					<input name="dropbox_location" type="text" id="dropbox_location"
 						   value="<?php echo $dropbox_location; ?>" class="regular-text code">
-					<?php if ($validation_errors && array_key_exists('dropbox_location', $validation_errors)) { ?>
+					<?php if (isset($error_msg)) { ?>
 					<br/><span class="description"
-							   style="color: red"><?php echo $validation_errors['dropbox_location']['message'] ?></span>
+							   style="color: red"><?php echo $error_msg ?></span>
 					<?php } ?>
 				</span>
 			</td>

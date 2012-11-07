@@ -144,38 +144,6 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(strtotime(date('Y-m-d H:00:00', strtotime('+1 hours'))), $schedule);
 	}
 
-	public function testSetGetOptions() {
-		//Test bad paths
-		$bad_chars = array('!', '#', '$', '%', '^', '&', '*', '(', ')', '+', '=', '{', '}', ']', '[', ':', ';', '"', '\'', '<', '>', '?', ',', '~', '`', '|', '\\');
-		foreach ($bad_chars as $bad_char) {
-			$error_msg = 'The sub directory must only contain alphanumeric characters.';
-
-			$options['dump_location'] = $bad_char;
-			$options['dropbox_location'] = $bad_char;
-			$options['in_progress'] = false;
-			$options['last_backup_time'] = false;
-
-			$errors = $this->config->set_options($options);
-			$this->assertNotEmpty($errors);
-			$this->assertEquals($bad_char, $errors['dump_location']['original']);
-			$this->assertEquals($error_msg, $errors['dump_location']['message']);
-			$this->assertEquals($bad_char, $errors['dropbox_location']['original']);
-			$this->assertEquals($error_msg, $errors['dump_location']['message']);
-		}
-
-		//The there where errors so the data should remain as it was set in the unit test setup
-
-		//Test good paths
-		$options['dump_location'] = 'subdir';
-		$options['dropbox_location'] = 'WordPressBackup';
-		$errors = $this->config->set_options($options);
-
-		$this->assertEmpty($errors, var_export($errors, true));
-
-		$this->assertTrue(isset($options['last_backup_time']));
-		$this->assertTrue(isset($options['in_progress']));
-	}
-
 	public function testComplete() {
 		$this->config->set_schedule('Monday', '00:00:00', 'daily');
 

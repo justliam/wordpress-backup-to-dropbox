@@ -180,6 +180,7 @@ class WP_Backup {
 			fwrite($fh, "<?php\n// Silence is golden.\n");
 			fclose($fh);
 		}
+		return $this;
 	}
 
 	public function create_dump_dir() {
@@ -195,6 +196,6 @@ class WP_Backup {
 				);
 			}
 		}
-		return $dump_dir;
+		return $this;
 	}
 }
