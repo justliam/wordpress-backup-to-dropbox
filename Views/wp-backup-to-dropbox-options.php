@@ -322,7 +322,14 @@ try {
 			<strong><?php _e('Please Note:', 'wpbtd'); ?></strong>&nbsp;<?php _e('Your SQL dump file will always be backed up regardless of what is selected below.', 'wpbtd'); ?>
 		</span>
 	</p>
-	<div id="file_tree"></div>
+	<div id="file_tree">
+		<div id="circleG" class="start">
+			<div id="circleG_1" class="circleG"></div>
+			<div id="circleG_2" class="circleG"></div>
+			<div id="circleG_3" class="circleG"></div>
+		</div>
+		<div class="loading start"><?php _e('Loading...') ?></div>
+	</div>
 	<a href="#" id="toggle-all">toggle all</a>
 	<!--<![endif]-->
 	<p class="submit">
