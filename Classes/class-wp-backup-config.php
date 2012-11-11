@@ -40,7 +40,7 @@ class WP_Backup_Config {
 				'dropbox_location' => null,
 				'in_progress' => false,
 				'store_in_subfolder' => false,
-				'total_file_count' => 1500,
+				'total_file_count' => 0,
 			);
 			add_option('backup-to-dropbox-options', $options, null, 'no');
 		}
