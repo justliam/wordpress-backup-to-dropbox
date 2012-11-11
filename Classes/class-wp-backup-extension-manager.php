@@ -80,6 +80,7 @@ class WP_Backup_Extension_Manager {
 			'key' => $this->key,
 			'name' => $name,
 			'site' => get_site_url(),
+			'version' => BACKUP_TO_DROPBOX_VERSION,
 		);
 
 		$download_file = download_url("{$this->get_url()}/download?" . http_build_query($params));
