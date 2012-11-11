@@ -197,7 +197,7 @@ try {
 				<input name="store_in_subfolder" type="checkbox" id="store_in_subfolder"
 					   <?php echo $store_in_subfolder ? 'checked="checked"' : ''; ?> >
 
-				<span class="dropbox_location">
+				<span class="dropbox_location <?php if (!$store_in_subfolder) echo 'hide' ?>">
 					<input name="dropbox_location" type="text" id="dropbox_location"
 						   value="<?php echo $dropbox_location; ?>" class="regular-text code">
 					<?php if (isset($error_msg)) { ?>

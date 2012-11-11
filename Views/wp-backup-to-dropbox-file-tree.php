@@ -91,5 +91,5 @@ try {
 			$file_list->set_included($_POST['path']);
 	}
 } catch (Exception $e) {
-	echo '<p class="backup_error">' . $e->getMessage() . '</p>';
+	echo '<p class="error">' . $e->getMessage() . '</p>';
 }
