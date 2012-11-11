@@ -39,12 +39,6 @@ class File_List {
 		}
 	}
 
-	public function test_memory() {
-		$limit = WP_Backup_Config::construct()->set_memory_limit();
-		if ($limit > 0 && $limit < 64)
-			throw new Exception(sprintf(__('Memory limit could not be set and your settings are too low to use this widget, please increase your PHP memory_limit to at least %sM (%sM is recommended).'), 64, 150));
-	}
-
 	public function set_included($path) {
 		if (is_dir($path))
 			$this->include_dir(rtrim($path,'/'));
@@ -111,6 +105,7 @@ class File_List {
 	private function is_partial_dir($dir) {
 		if (is_dir($dir) && is_readable($dir)) {
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
+			$files->setMaxDepth(10);
 			foreach ($files as $file) {
 				if ($file == $dir)
 					continue;

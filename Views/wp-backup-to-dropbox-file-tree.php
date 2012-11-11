@@ -21,9 +21,14 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
+
+WP_Backup_Config::construct()
+	->set_time_limit()
+	->set_memory_limit()
+	;
+
 try {
 	$file_list = new File_List();
-	$file_list->test_memory();
 
 	if (isset($_POST['dir'])) {
 		$_POST['dir'] = urldecode($_POST['dir']);

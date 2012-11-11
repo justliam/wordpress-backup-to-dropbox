@@ -154,7 +154,7 @@ Bugfixes
 * Fixed some minor issues in the OAuth flow.
 * Fixed an issue where options will not update due to validation of an option from an older version. This affected starting and stoping of backups, updating email adresses and other options in certain circumstances..
 * Fixed up the backup time estimation so it cannot be set to zero or an imposibly low number.
-
+* Fixed memory limit issues in the file list by adding a max depth of 10
 
 = 1.3 =
 * Overhauled logging of a backup to get more visibility of what is happening during a backup.
