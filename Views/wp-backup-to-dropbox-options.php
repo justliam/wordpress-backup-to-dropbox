@@ -127,39 +127,6 @@ try {
 		document.getElementById('authorize').style.visibility = 'hidden';
 	}
 </script>
-<style type="text/css">
-	.history_box {
-		max-height: 140px;
-		overflow-y: scroll;
-		margin: 0 0 0 10px;
-	}
-
-	.message_box {
-		font-weight: bold;
-		color: green;
-	}
-
-	#file_tree {
-		margin-left: 10px;
-		width: 400px;
-		max-height: 200px;
-		overflow-y: scroll;
-	}
-
-	#toggle-all {
-		margin-left: 348px;
-	}
-
-	.bump {
-		margin: 10px 0 0 10px;
-	}
-
-	<?php if (!$store_in_subfolder): ?>
-	.dropbox_location {
-		display: none;
-	}
-	<?php endif; ?>
-</style>
 	<div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"
 							 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"

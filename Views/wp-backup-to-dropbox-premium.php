@@ -45,38 +45,7 @@ try {
 }
 
 ?>
-<style>
-th {
-	text-align: left;
-	border-top: 1px solid #DEDEDE;
-}
-
-td, th {
-	border-right: 1px solid #DEDEDE;
-	border-bottom: 1px solid #DEDEDE;
-	padding: 10px;
-}
-
-table {
-	border-left: 1px solid #DEDEDE;
-}
-
-.error {
-	color: red;
-}
-
-.success {
-	color: green;
-}
-.paypal, .instructions {
-	float: left;
-	margin-right: 20px;
-}
-.errors {
-	clear: both;
-}
-</style>
-<div class="wrap">
+<div class="wrap premium">
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
 								 alt="WordPress Backup to Dropbox Logo"></div>
