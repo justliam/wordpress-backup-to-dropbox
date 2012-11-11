@@ -110,8 +110,9 @@ The backup is executed using WordPress' scheduling system that, unlike a cron jo
 blog is accessed after the scheduled time.
 
 = Where is my database SQL dump located? =
-The database is backed up into a file named '[database name]-backup.sql'. It will be will be found at the path 'wp-content/backups' within
-the App folder of your Dropbox.
+The database is backed up into two files named '[database name]-backup-core.sql' that contains all the core WordPress tables and data,
+and '[database name]-backup-plugins.sql' that cotains tables and data related to your plugins.
+These files will be will be found at the path 'wp-content/backups' within the App folder of your Dropbox.
 
 = Wow! My second backup was heaps faster. Why is that? =
 In order to save time and bandwidth the plugin only uploads files that have changed since the last backup. The only exception
@@ -139,6 +140,21 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.4 =
+
+New features and updates
+* Implemented a brand new Dropbox API library that utilises chunked uploads for large files.
+* Updated the Dutch translations.
+* Addded the umsak funciton to attempt to run the backup under elevated privleges.
+* Set the memory limit to -1 (unlimited) for servers that allow it, the backup will still only use what it needs.
+* Added unknown to the backup estimation instead of the initial estimate to avoid confusion.
+
+Bugfixes
+* Fixed some minor issues in the OAuth flow.
+* Fixed an issue where options will not update due to validation of an option from an older version. This affected starting and stoping of backups, updating email adresses and other options in certain circumstances..
+* Fixed up the backup time estimation so it cannot be set to zero or an imposibly low number.
+
 
 = 1.3 =
 * Overhauled logging of a backup to get more visibility of what is happening during a backup.
