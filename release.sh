@@ -6,6 +6,7 @@ cp *.txt $TRUNK
 cp *.png $TRUNK
 cp *.php $TRUNK
 cp *.js $TRUNK
+cp *.css $TRUNK
 cp -r Languages $TRUNK
 cp -r JQueryFileTree $TRUNK
 cp -r Dropbox/Dropbox $TRUNK/Dropbox/
