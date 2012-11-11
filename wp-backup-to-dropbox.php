@@ -41,12 +41,6 @@ require_once('Classes/class-wp-backup-output.php');
 require_once('Classes/class-wp-backup-extension.php');
 require_once('Classes/class-wp-backup-extension-manager.php');
 
-//We need to set the PEAR_Includes folder in the path
-if (USE_BUNDLED_PEAR)
-	set_include_path(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'PEAR_Includes' . PATH_SEPARATOR . get_include_path());
-else
-	set_include_path(get_include_path() . PATH_SEPARATOR . dirname(__FILE__) . DIRECTORY_SEPARATOR . 'PEAR_Includes');
-
 WP_Backup_Extension_Manager::construct()->init();
 
 /**
