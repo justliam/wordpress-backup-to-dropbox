@@ -149,6 +149,11 @@ class WP_Backup {
 		}
 
 		$this->config->complete();
+
+		$this->config->log(sprintf(
+			__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
+			(memory_get_usage(true) / 1048576)
+		));
 	}
 
 	public function backup_now() {
