@@ -35,7 +35,7 @@ try {
 	$disable_backup_now = $config->get_option('in_progress');
 
 	//We have a form submit so update the schedule and options
-	if (array_key_exists('save_changes', $_POST)) {
+	if (array_key_exists('wpb2d_save_changes', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
 
 		if (preg_match('/[^A-Za-z0-9-_.]/', $_POST['dropbox_location'])) {
@@ -333,7 +333,7 @@ try {
 	<a href="#" id="toggle-all">toggle all</a>
 	<!--<![endif]-->
 	<p class="submit">
-		<input type="submit" id="save_changes" name="save_changes" class="button-primary" value="<?php _e('Save Changes', 'wpbtd'); ?>">
+		<input type="submit" id="wpb2d_save_changes" name="wpb2d_save_changes" class="button-primary" value="<?php _e('Save Changes', 'wpbtd'); ?>">
 	</p>
 		<?php wp_nonce_field('backup_to_dropbox_options_save'); ?>
 	</form>
