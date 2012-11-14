@@ -146,15 +146,17 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 New features and updates
 * Implemented a brand new Dropbox API library that utilises chunked uploads for large files.
 * Updated the Dutch translations.
-* Addded the umsak funciton to attempt to run the backup under elevated privleges.
+* Addded the umsak funciton to attempt to run the backup under elevated privileges.
 * Set the memory limit to -1 (unlimited) for servers that allow it, the backup will still only use what it needs.
-* Added unknown to the backup estimation instead of the initial estimate to avoid confusion.
+* Added 'unknown%' to the backup estimation instead of the initial estimate to avoid confusion.
+* Added a safe mode warning to the settings page so that users can diagnose fix issues related to PHP memory and time limits
 
 Bugfixes
 * Fixed some minor issues in the OAuth flow.
 * Fixed an issue where options will not update due to validation of an option from an older version. This affected starting and stoping of backups, updating email adresses and other options in certain circumstances..
-* Fixed up the backup time estimation so it cannot be set to zero or an imposibly low number.
-* Fixed memory limit issues in the file list by adding a max depth of 10
+* Fixed up the backup time estimation so it cannot be set to zero or an impossibly low number.
+* Fixed memory limit issues in the file list by adding a max directory depth of 10
+* Prefixed save actions with wpb2d to avoid clashes with other plugins
 
 = 1.3 =
 * Overhauled logging of a backup to get more visibility of what is happening during a backup.
