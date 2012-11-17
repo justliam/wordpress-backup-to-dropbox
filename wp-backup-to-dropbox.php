@@ -46,6 +46,9 @@ WP_Backup_Extension_Manager::construct()->init();
  * @return void
  */
 function backup_to_dropbox_admin_menu() {
+	//Register stylesheet
+	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
+
 	wp_enqueue_style('wpb2d-style');
 
 	$imgUrl = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
@@ -204,9 +207,6 @@ function backup_to_dropbox_cron_schedules($schedules) {
 	);
 	return array_merge($schedules, $new_schedules);
 }
-
-//Register stylesheet
-wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
 
 //Delete unused options from previous versions
 delete_option('backup-to-dropbox-actions');
