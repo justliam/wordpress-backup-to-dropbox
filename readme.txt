@@ -106,8 +106,12 @@ Your server settings (.htaccess file) might be blocking wp-cron which is require
 
 = Why doesn't my backup execute at the exact time I set? =
 
-The backup is executed using WordPress' scheduling system that, unlike a cron job, kicks of tasks the next time your
-blog is accessed after the scheduled time.
+This could be because your blog's timezone is not set. By defauly it is set to UTC+0, so if you set your backup to start at midnight it will
+be kicked off at 4pm (PST) in LA. You can change your blogs timezone in WordPress' General Settings.
+
+If your timezone is correct then WordPress' scheduling system could be the problem. Unlike a cron job, kicks of tasks the next time your
+blog is accessed after the scheduled time. If you are using a caching solution then the plugin may be blocking calls to wp-cron.php, if so
+you will need to whitelist this file in the plugin settings.
 
 = Where is my database SQL dump located? =
 The database is backed up into two files named '[database name]-backup-core.sql' that contains all the core WordPress tables and data,
