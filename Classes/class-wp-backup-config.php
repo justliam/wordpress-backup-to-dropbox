@@ -67,7 +67,10 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function get_option($option) {
+	public function get_option($option, $no_cache = false) {
+		if ($no_cache)
+			wp_cache_flush();
+
 		$options = get_option('backup-to-dropbox-options');
 		return isset($options[$option]) ? $options[$option] : false;
 	}
