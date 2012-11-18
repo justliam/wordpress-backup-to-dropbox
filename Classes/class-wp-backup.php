@@ -148,12 +148,14 @@ class WP_Backup {
 			$manager->on_failure();
 		}
 
-		$this->config->complete();
-
-		$this->config->log(sprintf(
-			__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
-			(memory_get_usage(true) / 1048576)
-		));
+		$this->config
+			->complete()
+			->log_finished_time()
+			->log(sprintf(
+				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
+				(memory_get_usage(true) / 1048576)
+			))
+			;
 	}
 
 	public function backup_now() {
@@ -164,10 +166,7 @@ class WP_Backup {
 	}
 
 	public function stop() {
-		$this->config
-			->log(__('Backup stopped.', 'wpbtd'))
-			->complete()
-			;
+		$this->config->complete();
 	}
 
 	public function create_silence_file() {
