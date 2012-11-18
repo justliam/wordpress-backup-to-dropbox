@@ -55,8 +55,11 @@ class WP_Backup {
 				$file = $file_info->getPathname();
 
 				if (time() > $next_check) {
-					if (!$this->config->get_option('in_progress'))
-						return;
+					if (!$this->config->get_option('in_progress', true)) {
+						$msg = __('Backup stopped by user.', 'wpbtd');
+						$this->config->log($msg);
+						die($msg);
+					}
 
 					$percent_done = __('unknown', 'wpbtd');
 					if ($total_files > 0)
