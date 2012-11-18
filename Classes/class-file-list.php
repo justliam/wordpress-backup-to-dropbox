@@ -20,7 +20,12 @@
  */
 class File_List {
 
-	private static $ignored_files = array('.DS_Store', 'Thumbs.db', 'desktop.ini');
+	private static $ignored_files = array(
+		'.DS_Store', 'Thumbs.db', 'desktop.ini',
+		'.git', '.gitignore', '.gitmodules',
+		'.svn',
+		'.sass-cache',
+		);
 	private $excluded_files;
 	private $excluded_dirs;
 
