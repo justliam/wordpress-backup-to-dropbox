@@ -102,7 +102,7 @@ class WP_Backup_Config {
 		if (function_exists('memory_get_usage'))
 			@ini_set('memory_limit', -1);
 
-		return (int)rtrim(ini_get('memory_limit'), 'M');
+		return $this;
 	}
 
 	public function is_scheduled() {
@@ -183,7 +183,7 @@ class WP_Backup_Config {
 
 		$this->set_option('in_progress', false);
 		$this->set_option('is_running', false);
-		$this->log_finished_time();
+		return $this;
 	}
 
 	public function clear_log() {
