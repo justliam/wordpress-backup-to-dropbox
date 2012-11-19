@@ -45,6 +45,10 @@ try {
 							continue;
 						}
 
+						if ($file_list->in_ignore_list($file)) {
+							continue;
+						}
+
 						$full_path = htmlentities($_POST['dir'] . $file) . "/";
 						$file = htmlentities($file);
 						$class = $file_list->get_checkbox_class($full_path);
