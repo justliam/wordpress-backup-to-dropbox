@@ -20,6 +20,7 @@
  */
 abstract class WP_Backup_Database {
 	const SELECT_QUERY_LIMIT = 10;
+	const WAIT_TIMEOUT = 600; //10 minutes
 
 	private $handle;
 	private $type;
@@ -35,12 +36,18 @@ abstract class WP_Backup_Database {
 		$this->type = $type;
 		$this->database = $wpdb;
 		$this->config = WP_Backup_Config::construct();
+
+		$this->set_wait_timeout();
 	}
 
 	public function remove_file() {
 		$sql_file_name = $this->get_file();
 		if (file_exists($sql_file_name))
 			unlink($sql_file_name);
+	}
+
+	private function set_wait_timeout() {
+		$this->database->query("SET SESSION wait_timeout=" . self::WAIT_TIMEOUT);
 	}
 
 	private function get_file() {
