@@ -11,13 +11,21 @@
 
 #file_tree {
 	margin-left: 10px;
+	padding: 5px 0 5px 10px;
 	width: 400px;
 	max-height: 200px;
+	border: 1px solid #dfdfdf;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
 	overflow-y: scroll;
 }
 
-#toggle-all {
-	margin-left: 348px;
+#togglers {
+	width: 400px;
+	margin: 10px 5px 0 10px;
+	padding: 0 0 0 7px;
+	text-align: right;
 }
 
 .bump {
