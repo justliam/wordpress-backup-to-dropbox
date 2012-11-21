@@ -154,13 +154,17 @@ New features and updates
 * Set the memory limit to -1 (unlimited) for servers that allow it, the backup will still only use what it needs.
 * Added 'unknown%' to the backup estimation instead of the initial estimate to avoid confusion.
 * Added a safe mode warning to the settings page so that users can diagnose fix issues related to PHP memory and time limits
+* Set the mysql wait time out at the start of a backup
+* The file exclude widget has been updated to toggle excluded files better thanks to [Joe Maller](http://github.com/joemaller).
+In addition ticks have been replaced with crosses to better portray its an exclude function.
 
 Bugfixes
 * Fixed some minor issues in the OAuth flow.
-* Fixed an issue where options will not update due to validation of an option from an older version. This affected starting and stoping of backups, updating email adresses and other options in certain circumstances..
+* Fixed an issue where options will not update due to validation of an option from an older version. This affected starting and stoping of backups, updating email adresses and other options in certain circumstances.
 * Fixed up the backup time estimation so it cannot be set to zero or an impossibly low number.
 * Fixed memory limit issues in the file list by adding a max directory depth of 10
 * Prefixed save actions with wpb2d to avoid clashes with other plugins
+* Fixed an issue where WP option cache was interferring with stopping backups
 
 = 1.3 =
 * Overhauled logging of a backup to get more visibility of what is happening during a backup.
