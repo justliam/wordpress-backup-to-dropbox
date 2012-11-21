@@ -20,12 +20,13 @@
  */
 class File_List {
 
-	private static $ignored_files = array(
+	private static $ignored_patterns = array(
 		'.DS_Store', 'Thumbs.db', 'desktop.ini',
 		'.git', '.gitignore', '.gitmodules',
 		'.svn',
 		'.sass-cache',
-		);
+	);
+
 	private $excluded_files;
 	private $excluded_dirs;
 
@@ -61,6 +62,9 @@ class File_List {
 	}
 
 	public function is_excluded($path) {
+		if ($this->in_ignore_list($path))
+			return true;
+
 		if (is_dir($path))
 			return $this->is_excluded_dir($path);
 		else
@@ -140,6 +144,9 @@ class File_List {
 	}
 
 	public static function in_ignore_list($file) {
-		return in_array($file, self::$ignored_files);
+		foreach (self::$ignored_patterns as $pattern) {
+			if (preg_match('/' . preg_quote($pattern) . '/', $file))
+				return true;
+		}
 	}
 }
