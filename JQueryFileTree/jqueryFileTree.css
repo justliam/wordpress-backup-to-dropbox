@@ -37,11 +37,11 @@ UL.jqueryFileTree A.checkbox {
 }
 
 UL.jqueryFileTree A.checked {
-    background-position: 0 -13px;
+    background-position: 0 -12px;
 }
 
 UL.jqueryFileTree A.partial {
-    background-position: 0 -26px;
+    background-position: 0 -24px;
 }
 
 /* Core Styles */
