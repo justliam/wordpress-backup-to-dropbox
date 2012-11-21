@@ -100,10 +100,21 @@ try {
 			multiFolder: false
 		});
 
-		$('#toggle-all').click(function (e) {
-			$('.checkbox').click();
-			e.preventDefault();
-		});
+		$('#togglers .button').click(function() {
+			switch ($(this).attr('rel')) {
+			case "all":
+				// clicking an unchecked, expanded directory triggers a collapse which is confusing
+				// skip expanded directories when checking everything (they'll auto-check themselves)
+				$('#file_tree .checkbox').not('.checked, .partial, .directory.expanded>.checkbox').click();
+				break;
+			case "none":
+				$('#file_tree .checkbox.checked').click();
+				break;
+			case "invert":
+				$('#file_tree .checkbox').not('.partial, .directory.expanded>.checkbox').click();
+				break;
+			}
+		})
 
 		$('#store_in_subfolder').click(function (e) {
 			if ($('#store_in_subfolder').is(':checked')) {
@@ -349,7 +360,11 @@ try {
 		</div>
 		<div class="loading start"><?php _e('Loading...') ?></div>
 	</div>
-	<a href="#" id="toggle-all">toggle all</a>
+	<div id="togglers"><?php _e("Exclude:", 'wpbtd'); ?>
+		<span class="button" rel="all" href="#"><?php _e("All", 'wpbtd'); ?></span>
+		<span class="button" rel="none" href="#"><?php _e("None", 'wpbtd'); ?></span>
+		<span class="button" rel="invert" href="#"><?php _e("Inverse", 'wpbtd'); ?></span>
+	</div>
 	<!--<![endif]-->
 	<p class="submit">
 		<input type="submit" id="wpb2d_save_changes" name="wpb2d_save_changes" class="button-primary" value="<?php _e('Save Changes', 'wpbtd'); ?>">
