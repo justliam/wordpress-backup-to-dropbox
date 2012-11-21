@@ -78,8 +78,6 @@ class WP_Backup {
 					continue;
 
 				if (is_file($file)) {
-					if (File_List::in_ignore_list(basename($file)))
-						continue;
 
 					if (in_array($file, $processed_files))
 						continue;
