@@ -58,6 +58,9 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 	public function testExecuteCore() {
 		$wpdb = Mockery::mock('wpdb')
 
+			->shouldReceive('query')
+			->once()
+
 			->shouldReceive('tables')
 			->andReturn(
 				array(
@@ -111,6 +114,9 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 	public function testExecutePlugins() {
 		$wpdb = Mockery::mock('wpdb')
+
+			->shouldReceive('query')
+			->once()
 
 			->shouldReceive('tables')
 			->andReturn(

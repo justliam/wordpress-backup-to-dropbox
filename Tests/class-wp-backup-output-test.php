@@ -59,7 +59,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			->once()
 
 			->shouldReceive('upload_file')
-			->with('DropboxLocation/Out/file.txt', __DIR__ . '/Out/file.txt')
+			->with('DropboxLocation/Out', __DIR__ . '/Out/file.txt')
 			->once()
 			;
 
@@ -78,7 +78,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			->once()
 
 			->shouldReceive('upload_file')
-			->with('DropboxLocation/Out/file.txt', __DIR__ . '/Out/file.txt')
+			->with('DropboxLocation/Out', __DIR__ . '/Out/file.txt')
 			->once()
 			;
 
@@ -125,9 +125,10 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
+		$dir = __DIR__;
 		$log = $this->config->get_log();
 		$this->assertEquals(
-			"Error uploading '/Users/mikey/Documents/wpb2d/git/WordPress-Backup-to-Dropbox/Tests/Out/file.txt' to Dropbox: Bad Bad Bad",
+			"Error uploading '$dir/Out/file.txt' to Dropbox: Bad Bad Bad",
 			$log[0]['message']
 		);
 	}
