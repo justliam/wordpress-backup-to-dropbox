@@ -31,8 +31,7 @@ class WP_Backup_Output {
 	public function __construct($dropbox = false, $config = false) {
 		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
 		$this->config = $config ? $config : WP_Backup_Config::construct();
-
-		$this->last_backup_time = array_pop($this->config->get_history());
+		$this->last_backup_time = $this->config->get_option('last_backup_time');
 
 		$this->dropbox_location = null;
 		if ($this->config->get_option('store_in_subfolder'))
