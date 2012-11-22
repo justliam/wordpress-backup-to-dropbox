@@ -5,3 +5,4 @@ Extensions
 Tests/Out
 /vendor
 composer.lock
+composer.phar
