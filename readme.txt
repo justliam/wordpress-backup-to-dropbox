@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.4.2
+Tested up to: 3.5
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -157,7 +157,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 New features and updates
 * Implemented a brand new Dropbox API library that utilises chunked uploads for large files.
 * Updated the Dutch translations.
-* Addded the umsak funciton to attempt to run the backup under elevated privileges.
+* Added the umsak funciton to attempt to run the backup under elevated privileges.
 * Set the memory limit to -1 (unlimited) for servers that allow it, the backup will still only use what it needs.
 * Added 'unknown%' to the backup estimation instead of the initial estimate to avoid confusion.
 * Added a safe mode warning to the settings page so that users can diagnose fix issues related to PHP memory and time limits
