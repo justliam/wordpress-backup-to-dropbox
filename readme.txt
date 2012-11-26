@@ -102,7 +102,14 @@ By default your backup is located in 'Applications/wpb2d'. You can move the 'wpb
 
 = Nothing seems to happen when backing up, whats up? =
 
-Your server settings (.htaccess file) might be blocking wp-cron which is required to start the backup process. Please refer to the following thread for information on to solve the issue - http://wordpress.org/support/topic/plugin-wordpress-backup-to-dropbox-nothing-seems-to-happen-when-backing-up
+Your server settings (.htaccess file) might be blocking wp-cron which is required to start the backup process. You will need to add the following to a .htaccess file in your WordPress root directory:
+
+<Files "wp-cron.php">
+Allow from All
+Satisfy Any
+</Files>
+
+For information please refer to this thread - http://wordpress.org/support/topic/plugin-wordpress-backup-to-dropbox-nothing-seems-to-happen-when-backing-up
 
 = Why doesn't my backup execute at the exact time I set? =
 
