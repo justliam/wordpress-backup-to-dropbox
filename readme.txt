@@ -35,7 +35,7 @@ Once installed, the authorization process is easy -
 
 = Minimum Requirements =
 
-1. PHP 5.2 or higher
+1. PHP 5.2 or higher with [cURL support](http://www.php.net/manual/en/curl.installation.php)
 
 2. [A Dropbox account](https://www.dropbox.com/referrals/NTM1NTcwNjc5)
 
@@ -152,9 +152,11 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.4.1 =
+* Fixed exclude widget chekbox css position
+
 = 1.4 =
 
-New features and updates
 * Implemented a brand new Dropbox API library that utilises chunked uploads for large files.
 * Updated the Dutch translations.
 * Added the umsak funciton to attempt to run the backup under elevated privileges.
@@ -162,10 +164,7 @@ New features and updates
 * Added 'unknown%' to the backup estimation instead of the initial estimate to avoid confusion.
 * Added a safe mode warning to the settings page so that users can diagnose fix issues related to PHP memory and time limits
 * Set the mysql wait time out at the start of a backup
-* The file exclude widget has been updated to toggle excluded files better thanks to [Joe Maller](http://github.com/joemaller).
-In addition ticks have been replaced with crosses to better portray its an exclude function.
-
-Bugfixes
+* The file exclude widget has been updated to toggle excluded files better thanks to [Joe Maller](http://github.com/joemaller). In addition ticks have been replaced with crosses to better portray its an exclude function.
 * Fixed some minor issues in the OAuth flow.
 * Fixed an issue where options will not update due to validation of an option from an older version. This affected starting and stoping of backups, updating email adresses and other options in certain circumstances.
 * Fixed up the backup time estimation so it cannot be set to zero or an impossibly low number.
