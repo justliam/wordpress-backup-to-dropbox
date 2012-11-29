@@ -154,6 +154,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 = 1.4.1 =
 * Fixed exclude widget chekbox css position
+* Fixed issue where all files where being uploaded in subsiquent backups
 
 = 1.4 =
 
