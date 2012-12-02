@@ -155,6 +155,9 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 = 1.4.1 =
 * Fixed exclude widget chekbox css position
 * Fixed issue where all files where being uploaded in subsiquent backups
+* Fixed cannot access empty property fatal error
+* Moved the safe mode warning out of the settings page to the backup log
+* The backup log now logs to a file in 'wp-content/backups'
 
 = 1.4 =
 
@@ -211,4 +214,4 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Upgrade Notice ==
 
-* Better logging! :-) More info here => http://www.mikeyd.com.au/2012/10/04/wordpress-backup-to-dropbox-1-3/
+* After every update make sure that you check that your settings are still correct and run a test backup.
