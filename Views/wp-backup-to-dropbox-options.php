@@ -145,26 +145,6 @@ try {
 <h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
 <p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
 	<?php if ($dropbox->is_authorized()) {
-
-		if (ini_get('safe_mode') && ini_get('max_execution_time') != 0): ?>
-			<p>
-				<h3><?php _e('Safe Mode Warning') ?></h3>
-				<p><?php echo sprintf(
-					__("%sSafe mode%s is enabled on your server so the PHP time and memory limits cannot be set by the backup process.
-					Your time limit is %s seconds and your memory limit is %s, so if your backup fails it's highly probable that
-					these settings are too low. Each host has different methods available to increase these settings and a quick Google search should
-					yield some information. If not, please contact your host or search the plugins %sforum%s for help.
-					If you cannot find an answer, please feel free to post a new topic for the community to respond to.", 'wpbtd'),
-					'<a href="http://php.net/manual/en/features.safe-mode.php">',
-					'</a>',
-					ini_get('max_execution_time'),
-					ini_get('memory_limit'),
-					'<a href="http://wordpress.org/support/plugin/wordpress-backup-to-dropbox">',
-					'</a>');
-				?>
-			</p>
-		<?php endif;
-
 		$account_info = $dropbox->get_account_info();
 		$used = round(($account_info->quota_info->quota - ($account_info->quota_info->normal + $account_info->quota_info->shared)) / 1073741824, 1);
 		$quota = round($account_info->quota_info->quota / 1073741824, 1);

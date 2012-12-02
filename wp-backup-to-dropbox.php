@@ -130,6 +130,18 @@ function execute_drobox_backup() {
 		->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))))
 		;
 
+	if (ini_get('safe_mode')) {
+		$config->log(sprintf(
+			__("%sSafe mode%s is enabled on your server so the PHP time and memory limits cannot be set by the backup process.
+			Your time limit is %s seconds and your memory limit is %s, so if your backup fails it's highly probable that
+			these settings are too low.", 'wpbtd'),
+			'<a href="http://php.net/manual/en/features.safe-mode.php">',
+			'</a>',
+			ini_get('max_execution_time'),
+			ini_get('memory_limit')
+		));
+	}
+
 	$config->set_option('in_progress', true);
 
 	if (defined('WPB2D_TEST_MODE')) {
