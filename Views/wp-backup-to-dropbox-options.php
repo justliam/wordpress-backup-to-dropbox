@@ -67,10 +67,6 @@ try {
 		$store_in_subfolder = $config->get_option('store_in_subfolder');
 	}
 
-	$backup
-		->create_dump_dir()
-		->create_silence_file();
-
 	$time = date('H:i', $unixtime);
 	$day = date('D', $unixtime);
 	?>
