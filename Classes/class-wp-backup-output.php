@@ -58,14 +58,14 @@ class WP_Backup_Output {
 		try {
 			$directory_contents = $this->dropbox->get_directory_contents($dropbox_path);
 			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time) {
-				if (filesize($file) > Dropbox_Facade::CHUNKED_UPLOAD_THREASHOLD)
+				if (filesize($file) > CHUNKED_UPLOAD_THREASHOLD)
 					return $this->dropbox->chunk_upload_file($dropbox_path, $file);
 				else
 					return $this->dropbox->upload_file($dropbox_path, $file);
 			}
 
 		} catch (Exception $e) {
-			$this->config->log_error(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
+			WP_Backup_Logger::log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
 			$this->error_count++;
 		}
 	}
