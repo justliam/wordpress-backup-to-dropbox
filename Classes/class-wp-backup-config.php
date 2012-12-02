@@ -183,27 +183,9 @@ class WP_Backup_Config {
 
 		$this->set_option('in_progress', false);
 		$this->set_option('is_running', false);
-		return $this;
-	}
 
-	public function clear_log() {
-		update_option('backup-to-dropbox-log', array());
-		return $this;
-	}
+		WP_Backup_Logger::delete_log();
 
-	public function log_error($msg) {
-		return $this->log($msg, null, true);
-	}
-
-	public function log($msg, $files = null, $error = false) {
-		$log = get_option('backup-to-dropbox-log');
-		$log[] = array(
-			'time' => strtotime(current_time('mysql')),
-			'message' => $msg,
-			'files' => json_encode($files),
-			'error' => $error,
-		);
-		update_option('backup-to-dropbox-log', $log);
 		return $this;
 	}
 }

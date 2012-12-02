@@ -54,30 +54,6 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(20, count($history));
 	}
 
-	public function testLogGetLog() {
-		set_current_time('2012-03-12 00:00:00');
-		$this->config->log('a', array('file1', 'file2'));
-
-		set_current_time('2012-03-12 00:00:01');
-		$this->config->log_error('b');
-
-		$log = $this->config->get_log();
-
-		$this->assertEquals($log[0], array(
-			'time' => strtotime('2012-03-12 00:00:00'),
-			'message' => 'a',
-			'files' => '["file1","file2"]',
-			'error' => false,
-		));
-
-		$this->assertEquals($log[1], array(
-			'time' => strtotime('2012-03-12 00:00:01'),
-			'message' => 'b',
-			'files' => 'null',
-			'error' => true,
-		));
-	}
-
 	public function testGetUploadedFiles() {
 		$files = $this->config->add_processed_files(array('File1', 'File2'));
 

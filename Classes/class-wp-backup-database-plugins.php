@@ -25,7 +25,7 @@ class WP_Backup_Database_Plugins extends WP_Backup_Database {
 		if ($this->exists())
 			return false;
 
-		$this->config->log(__('Creating SQL backup of your WordPress plugins.', 'wpbtd'));
+		WP_Backup_Logger::log(__('Creating SQL backup of your WordPress plugins.', 'wpbtd'));
 
 		$this->write_db_dump_header();
 

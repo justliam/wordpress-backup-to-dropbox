@@ -38,6 +38,7 @@ require_once('Classes/class-wp-backup-database-plugins.php');
 require_once('Classes/class-wp-backup-output.php');
 require_once('Classes/class-wp-backup-extension.php');
 require_once('Classes/class-wp-backup-extension-manager.php');
+require_once('Classes/class-wp-backup-logger.php');
 
 WP_Backup_Extension_Manager::construct()->init();
 
@@ -124,17 +125,12 @@ function backup_to_dropbox_progress() {
 function execute_drobox_backup() {
 	@umask(0000);
 
-	$config = WP_Backup_Config::construct();
-	$config
-		->clear_log()
-		->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))))
-		;
+	WP_Backup_Logger::delete_log();
+	WP_Backup_Logger::log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
 
 	if (ini_get('safe_mode')) {
-		$config->log(sprintf(
-			__("%sSafe mode%s is enabled on your server so the PHP time and memory limits cannot be set by the backup process.
-			Your time limit is %s seconds and your memory limit is %s, so if your backup fails it's highly probable that
-			these settings are too low.", 'wpbtd'),
+		WP_Backup_Logger::log(sprintf(
+			__("%sSafe mode%s is enabled on your server so the PHP time and memory limits cannot be set by the backup process. Your time limit is %s seconds and your memory limit is %s, so if your backup fails it's highly probable that these settings are too low.", 'wpbtd'),
 			'<a href="http://php.net/manual/en/features.safe-mode.php">',
 			'</a>',
 			ini_get('max_execution_time'),
@@ -142,7 +138,7 @@ function execute_drobox_backup() {
 		));
 	}
 
-	$config->set_option('in_progress', true);
+	WP_Backup_Config::construct()->set_option('in_progress', true);
 
 	if (defined('WPB2D_TEST_MODE')) {
 		run_dropbox_backup();
@@ -161,10 +157,8 @@ function monitor_dropbox_backup() {
 
 	//5 mins to allow for socket timeouts and long uploads
 	if ($action && $config->get_option('in_progress') && ($action['time'] < strtotime(current_time('mysql')) - 300)) {
-		$config
-			->log_error(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5))
-			->set_option('is_running', false)
-			;
+		WP_Backup_Logger::log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
+		$config->set_option('is_running', false);
 
 		wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
 	}
@@ -223,6 +217,7 @@ function backup_to_dropbox_cron_schedules($schedules) {
 //Delete unused options from previous versions
 delete_option('backup-to-dropbox-actions');
 delete_option('backup-to-dropbox-file-list');
+delete_option('backup-to-dropbox-log');
 
 //WordPress filters and actions
 add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');

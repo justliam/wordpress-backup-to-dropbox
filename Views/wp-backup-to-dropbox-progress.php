@@ -21,17 +21,20 @@ $config = WP_Backup_Config::construct();
 if (!$config->get_option('in_progress'))
 	spawn_cron();
 
-$log = $config->get_log();
+$log = WP_Backup_Logger::get_log();
 
 if (empty($log)): ?>
 	<p><?php _e('You have not run a backup yet. When you do you will see a log of it here.'); ?></p>
 <?php else: ?>
 	<ul>
-		<?php foreach (array_reverse($log) as $log_item ): ?>
+		<?php foreach (array_reverse($log) as $log_item): ?>
 			<li>
 			<?php
-				echo date('H:i:s', $log_item['time']) . ' : ' . $log_item['message'];
-				$files = json_decode($log_item['files'], true);
+				if (preg_match('/^Uploaded Files:/', $log_item)) {
+					$files = json_decode(preg_replace('/^Uploaded Files:/', '', $log_item), true);
+					continue;
+				}
+				echo $log_item;
 			?>
 			<?php if (!empty($files)): ?>
 				<a class="view-files" href="#"><?php _e('View uploaded files', 'wpbtd') ?>&raquo;</a>
@@ -40,7 +43,7 @@ if (empty($log)): ?>
 						<li title="<?php echo sprintf(__('Last modified: %s'), date('F j, Y, H:i:s', $file['mtime'])) ?>"><?php echo $file['file'] ?></li>
 					<?php endforeach; ?>
 				</ul>
-			<?php endif; ?>
+			<?php $files = null; endif; ?>
 			</li>
 		<?php endforeach; ?>
 	</ul>
