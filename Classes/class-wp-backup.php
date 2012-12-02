@@ -146,16 +146,16 @@ class WP_Backup {
 			$manager->on_failure();
 		}
 
+		WP_Backup_Logger::log(sprintf(
+				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
+				(memory_get_usage(true) / 1048576)
+			));
+
 		$this->config
 			->complete()
 			->log_finished_time()
 			;
 
-		WP_Backup_Logger::log(sprintf(
-				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
-				(memory_get_usage(true) / 1048576)
-			))
-			;
 	}
 
 	public function backup_now() {
