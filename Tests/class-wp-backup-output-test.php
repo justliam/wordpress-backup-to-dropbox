@@ -43,7 +43,9 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function tearDown() {
-		unlink(__DIR__ . '/Out/file.txt');
+		@unlink(__DIR__ . '/Out/file.txt');
+		@unlink(__DIR__ . '/Out/bigFile.txt');
+
 		$this->config->complete();
 		Mockery::close();
 	}
@@ -87,7 +89,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 
 	public function testOutFileInDropboxAndNotUpdated() {
 		$this->config->complete();
-		$this->config->set_option('last_backup_time', filemtime(__DIR__ . '/Out/file.txt') + 1);
+		$this->config->log_finished_time();
 
 		$this
 			->dropbox
@@ -126,18 +128,20 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 		$this->out->out(__DIR__, __DIR__ . '/Out/file.txt');
 
 		$dir = __DIR__;
-		$log = $this->config->get_log();
+		$time = date('H:i:s', strtotime(current_time('mysql')));
+
+		$log = WP_Backup_Logger::get_log();
 		$this->assertEquals(
-			"Error uploading '$dir/Out/file.txt' to Dropbox: Bad Bad Bad",
-			$log[0]['message']
+			"$time: Error uploading '$dir/Out/file.txt' to Dropbox: Bad Bad Bad",
+			$log[0]
 		);
 	}
 
 	public function testOutFileUploadFileTooLarge() {
 
-		if (!file_exists(__DIR__ . '/Out/bigFile.txt')) {
+		if (!file_exists(__DIR__ . '/Out/bigFile.txt') || filesize(__DIR__ . '/Out/bigFile.txt') < CHUNKED_UPLOAD_THREASHOLD) {
 			$fh = fopen(__DIR__ . '/Out/bigFile.txt', 'w');
-	        for ($i = 0; $i < (WP_Backup_Output::CHUNKED_UPLOAD_THREASHOLD / 100); $i++) {
+	        for ($i = 0; $i < (CHUNKED_UPLOAD_THREASHOLD / 100); $i++) {
 	            fwrite($fh, "..................................................");
 	            fwrite($fh, "..................................................");
 	        }
@@ -161,8 +165,5 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase {
 			;
 
 		$this->out->out(__DIR__, __DIR__ . '/Out/bigFile.txt');
-
-		$log = $this->config->get_log();
-		$this->assertEmpty($log);
 	}
 }

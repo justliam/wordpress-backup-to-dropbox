@@ -25,11 +25,13 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		reset_globals();
 		$this->mgr = WP_Backup_Extension_Manager::construct();
+		WP_Backup::create_dump_dir();
 	}
 
 	public function tearDown() {
-		if (file_exists(EXTENSIONS_DIR . 'extension.php'))
-			unlink(EXTENSIONS_DIR . 'extension.php');
+		@unlink(EXTENSIONS_DIR . 'extension.php');
+		unlink(WP_Backup_Config::get_backup_dir() . '/index.php');
+		rmdir(WP_Backup_Config::get_backup_dir());
 	}
 
 	public function testConstruct() {

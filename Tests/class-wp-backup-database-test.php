@@ -30,6 +30,8 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		Mockery::close();
+		WP_Backup_Logger::delete_log();
+		unlink($this->config->get_backup_dir() . '/index.php');
 		rmdir($this->config->get_backup_dir());
 	}
 

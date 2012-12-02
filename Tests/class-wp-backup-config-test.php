@@ -30,9 +30,6 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	public function testConstruct() {
 		$this->assertEquals(false, $this->config->get_option('last_backup_time'));
 		$this->assertEquals(false, $this->config->get_option('in_progress'));
-
-		$log = $this->config->get_log();
-		$this->assertEquals($log, array());
 	}
 
 	public function testConstructDudData() {
@@ -124,7 +121,6 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->config->set_schedule('Monday', '00:00:00', 'daily');
 
 		set_current_time('2012-03-12 00:00:00');
-		$this->config->log('Action1', 'File1');
 
 		$this->config->complete();
 

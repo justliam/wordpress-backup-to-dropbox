@@ -29,13 +29,15 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		Mockery::close();
-		$dir = $this->config->get_backup_dir();
-		if (file_exists($dir))
-			rmdir($dir);
+
+		@unlink(WP_Backup_Logger::get_log_file());
+		unlink(WP_Backup_Config::get_backup_dir() . '/index.php');
+		rmdir(WP_Backup_Config::get_backup_dir());
 	}
 
 	public function setUp() {
 		reset_globals();
+		WP_Backup::create_dump_dir();
 		set_current_time('2012-03-12 00:00:00');
 		$this->config = WP_Backup_Config::construct();
 		$this->output = Mockery::mock('WP_Backup_Output');
@@ -56,11 +58,11 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			->with(
 				__DIR__,
 				Mockery::anyOf(
-					__DIR__ . '/Out/bigFile.txt',
 					__DIR__ . '/class-file-list-test.php',
 					__DIR__ . '/class-wp-backup-config-test.php',
 					__DIR__ . '/class-wp-backup-database-test.php',
 					__DIR__ . '/class-wp-backup-extension-manager-test.php',
+					__DIR__ . '/class-wp-backup-logger-test.php',
 					__DIR__ . '/class-wp-backup-output-test.php',
 					__DIR__ . '/class-wp-backup-test.php',
 					__DIR__ . '/mock-wp-functions.php',
@@ -84,7 +86,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 			->output
 			->shouldReceive('out')
 			->with(__DIR__,	Mockery::not(__DIR__ . '/Out/bigFile.txt'))
-			->times(8)
+			->times(9)
 
 			->shouldReceive('end')
 			->once()
@@ -126,11 +128,11 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase {
 
 		$this->backup->execute();
 
-		$log = $this->config->get_log();
+		$log = WP_Backup_Logger::get_log();
 		$this->assertNotEmpty($log);
 		$this->assertEquals(
-			"Your Dropbox account is not authorized yet.",
-			$log[0]['message']
+			"00:00:00: Your Dropbox account is not authorized yet.",
+			$log[0]
 		);
 	}
 
