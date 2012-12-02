@@ -46,6 +46,8 @@ class WP_Backup_Logger {
 	}
 
 	private static function get_log_file_handle() {
+		WP_Backup::create_dump_dir();
+
 		$fh = @fopen(self::get_log_file(), 'a');
 		if ($fh === false)
 			throw new Exception('Error opening log file.');

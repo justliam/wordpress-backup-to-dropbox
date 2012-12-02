@@ -171,8 +171,8 @@ class WP_Backup {
 		$this->config->complete();
 	}
 
-	public function create_silence_file() {
-		$silence = $this->config->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
+	private static function create_silence_file() {
+		$silence = WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
 		if (!file_exists($silence)) {
 			$fh = @fopen($silence, 'w');
 			if (!$fh) {
@@ -186,11 +186,10 @@ class WP_Backup {
 			fwrite($fh, "<?php\n// Silence is golden.\n");
 			fclose($fh);
 		}
-		return $this;
 	}
 
-	public function create_dump_dir() {
-		$dump_dir = $this->config->get_backup_dir();
+	public static function create_dump_dir() {
+		$dump_dir = WP_Backup_Config::get_backup_dir();
 		if (!file_exists($dump_dir)) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
 			if (!@mkdir($dump_dir)) {
@@ -202,6 +201,6 @@ class WP_Backup {
 				);
 			}
 		}
-		return $this;
+		self::create_silence_file();
 	}
 }

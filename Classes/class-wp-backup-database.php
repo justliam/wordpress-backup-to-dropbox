@@ -33,6 +33,8 @@ abstract class WP_Backup_Database {
 	public function __construct($type, $wpdb = null) {
 		if (!$wpdb) global $wpdb;
 
+		WP_Backup::create_dump_dir();
+
 		$this->type = $type;
 		$this->database = $wpdb;
 		$this->config = WP_Backup_Config::construct();
