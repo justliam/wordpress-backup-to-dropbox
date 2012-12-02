@@ -41,10 +41,19 @@ class Dropbox_Facade {
         $this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 		$this->tokens = get_option('backup-to-dropbox-tokens');
 
+		//Convert array to stdClass for the new API
+		if (is_array($this->tokens['access'])) {
+			$accessToken = new stdClass;
+			$accessToken->oauth_token = $this->tokens['access']["token"];
+			$accessToken->oauth_token_secret = $this->tokens['access']["token_secret"];
+			$this->tokens['access'] = $accessToken;
+		}
+
 		try {
 			$this->init();
 		} catch (Exception $e) {
 			$this->unlink_account();
+			$this->init();
 		}
 	}
 
@@ -140,6 +149,5 @@ class Dropbox_Facade {
 	public function unlink_account() {
 		$this->tokens = false;
 		delete_option('backup-to-dropbox-tokens');
-		$this->init();
 	}
 }
