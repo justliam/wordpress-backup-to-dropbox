@@ -41,7 +41,7 @@ class WP_Backup_Logger {
 		@unlink(self::get_log_file());
 	}
 
-	private static function get_log_file() {
+	public static function get_log_file() {
 		return WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . sprintf(self::LOGFILE, date('Y-m-d', strtotime(current_time('mysql'))));
 	}
 
