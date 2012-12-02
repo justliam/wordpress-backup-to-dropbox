@@ -75,10 +75,6 @@ class WP_Backup_Config {
 		return isset($options[$option]) ? $options[$option] : false;
 	}
 
-	public function get_log() {
-		return get_option('backup-to-dropbox-log');
-	}
-
 	public function get_actions() {
 		return get_option('backup-to-dropbox-actions');
 	}
