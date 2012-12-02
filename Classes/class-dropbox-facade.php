@@ -120,8 +120,9 @@ class Dropbox_Facade {
 	}
 
 	public function get_directory_contents($path) {
-		if (!array_key_exists($path, $this->directory_cache)) {
+		if (!isset($this->directory_cache[$path])) {
 			try {
+				$this->directory_cache[$path] = array();
 				$response = $this->dropbox->metaData($path);
 
 				foreach ($response['body']->contents as $val) {
@@ -131,7 +132,6 @@ class Dropbox_Facade {
 				}
 			} catch (Exception $e) {
 				$this->create_directory($path);
-				$this->directory_cache[$path] = array();
 			}
 		}
 		return $this->directory_cache[$path];
