@@ -22,7 +22,6 @@ class Dropbox_Facade {
 
 	const CONSUMER_KEY = 'u1i8xniul59ggxs';
 	const CONSUMER_SECRET = '0ssom5yd1ybebhy';
-	const CHUNKED_UPLOAD_THREASHOLD = 10485760; //10 MB
 
 	private static $instance = null;
 
