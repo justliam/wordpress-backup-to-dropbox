@@ -34,7 +34,7 @@ class WP_Backup_Logger {
 	public static function get_log() {
 		$file = self::get_log_file();
 		if (file_exists($file))
-			return explode("\n", file_get_contents($file));
+			return explode("\n", trim(file_get_contents($file)));
 	}
 
 	public static function delete_log() {
