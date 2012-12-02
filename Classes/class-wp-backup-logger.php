@@ -20,7 +20,7 @@ class WP_Backup_Logger {
 
 	const LOGFILE = 'wpb2d-backup-log-%s.txt';
 
-	public static function log($msg, $files = null, $error = false) {
+	public static function log($msg, $files = null) {
 		$fh = self::get_log_file_handle();
 		$log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
