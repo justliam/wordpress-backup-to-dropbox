@@ -134,8 +134,21 @@ class WP_Backup {
 			$core->remove_file();
 			$plugins->remove_file();
 
-			$manager->on_complete();
 			WP_Backup_Logger::log(__('Backup complete.', 'wpbtd'));
+			WP_Backup_Logger::log(sprintf(
+				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
+				(memory_get_usage(true) / 1048576)
+			));
+
+			//Process the log file
+			$this->output->out(ABSPATH, WP_Backup_Logger::get_file());
+
+			$manager->on_complete();
+
+			$this->config
+				->complete()
+				->log_finished_time()
+				;
 
 		} catch (Exception $e) {
 			if ($e->getMessage() == 'Unauthorized')
@@ -145,17 +158,6 @@ class WP_Backup {
 
 			$manager->on_failure();
 		}
-
-		WP_Backup_Logger::log(sprintf(
-				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
-				(memory_get_usage(true) / 1048576)
-			));
-
-		$this->config
-			->complete()
-			->log_finished_time()
-			;
-
 	}
 
 	public function backup_now() {
