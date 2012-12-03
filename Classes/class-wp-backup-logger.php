@@ -18,7 +18,7 @@
  */
 class WP_Backup_Logger {
 
-	const LOGFILE = 'wpb2d-backup-log-%s.txt';
+	const LOGFILE = 'wpb2d-backup-log.txt';
 
 	public static function log($msg, $files = null) {
 		$fh = self::get_log_file_handle();
@@ -42,7 +42,7 @@ class WP_Backup_Logger {
 	}
 
 	public static function get_log_file() {
-		return WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . sprintf(self::LOGFILE, date('Y-m-d', strtotime(current_time('mysql'))));
+		return WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 	}
 
 	private static function get_log_file_handle() {
