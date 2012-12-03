@@ -180,8 +180,6 @@ class WP_Backup_Config {
 		$this->set_option('in_progress', false);
 		$this->set_option('is_running', false);
 
-		WP_Backup_Logger::delete_log();
-
 		return $this;
 	}
 }
