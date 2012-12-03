@@ -52,7 +52,7 @@ abstract class WP_Backup_Database {
 		$this->database->query("SET SESSION wait_timeout=" . self::WAIT_TIMEOUT);
 	}
 
-	private function get_file() {
+	public function get_file() {
 		if (!$this->type)
 			throw new Exception();
 
