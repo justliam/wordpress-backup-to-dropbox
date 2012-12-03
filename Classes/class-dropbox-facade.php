@@ -42,7 +42,7 @@ class Dropbox_Facade {
 		$this->tokens = get_option('backup-to-dropbox-tokens');
 
 		//Convert array to stdClass for the new API
-		if (is_array($this->tokens['access'])) {
+		if ($this->tokens && is_array($this->tokens['access'])) {
 			$accessToken = new stdClass;
 			$accessToken->oauth_token = $this->tokens['access']["token"];
 			$accessToken->oauth_token_secret = $this->tokens['access']["token_secret"];
@@ -62,9 +62,7 @@ class Dropbox_Facade {
 			$this->tokens = array('access' => false, 'request' => $this->oauth->getRequestToken());
 			add_option('backup-to-dropbox-tokens', $this->tokens, null, 'no');
 			$this->oauth->setToken($this->tokens['request']);
-		}
-
-		if ($this->tokens['access']) {
+		} else if ($this->tokens['access']) {
 			$this->oauth->setToken($this->tokens['access']);
 		} else if ($this->tokens['request']) {
 			$this->oauth->setToken($this->tokens['request']);
