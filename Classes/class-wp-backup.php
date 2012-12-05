@@ -141,7 +141,7 @@ class WP_Backup {
 			));
 
 			//Process the log file
-			$this->output->out(ABSPATH, WP_Backup_Logger::get_file());
+			$this->output->out(ABSPATH, WP_Backup_Logger::get_log_file());
 
 			$manager->on_complete();
 
