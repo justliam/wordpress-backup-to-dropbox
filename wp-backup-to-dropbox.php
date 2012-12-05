@@ -163,10 +163,10 @@ function execute_drobox_backup() {
  */
 function monitor_dropbox_backup() {
 	$config = WP_Backup_Config::construct();
-	$action = array_pop($config->get_log());
+	$mtime = filemtime(WP_Backup_Logger::get_log_file());
 
 	//5 mins to allow for socket timeouts and long uploads
-	if ($action && $config->get_option('in_progress') && ($action['time'] < strtotime(current_time('mysql')) - 300)) {
+	if ($config->get_option('in_progress') && ($mtime < time() - 300)) {
 		WP_Backup_Logger::log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
 		$config->set_option('is_running', false);
 
