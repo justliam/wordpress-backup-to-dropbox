@@ -117,6 +117,22 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(strtotime(date('Y-m-d H:00:00', strtotime('+1 hours'))), $schedule);
 	}
 
+	public function testGetDropboxLocation() {
+		$dropbox_path = $this->config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
+		$this->assertEquals('Out', $dropbox_path);
+
+		$this->config
+			->set_option('dropbox_location', 'MyDropboxRoot')
+			->set_option('store_in_subfolder', true)
+			;
+
+		$dropbox_path = $this->config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
+		$this->assertEquals('MyDropboxRoot/Out', $dropbox_path);
+
+		$dropbox_path = $this->config->get_dropbox_path(__DIR__ . DIRECTORY_SEPARATOR, __DIR__ . '/Out/file.txt');
+		$this->assertEquals('MyDropboxRoot/Out', $dropbox_path);
+	}
+
 	public function testComplete() {
 		$this->config->set_schedule('Monday', '00:00:00', 'daily');
 

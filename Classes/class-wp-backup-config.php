@@ -159,6 +159,16 @@ class WP_Backup_Config {
 		return get_option('backup-to-dropbox-history');
 	}
 
+	public function get_dropbox_path($source, $file) {
+		$dropbox_location = null;
+		if ($this->get_option('store_in_subfolder'))
+			$dropbox_location = $this->get_option('dropbox_location');
+
+		$source = rtrim($source, DIRECTORY_SEPARATOR);
+
+		return ltrim(dirname(str_replace($source, $dropbox_location, $file)), DIRECTORY_SEPARATOR);
+	}
+
 	public function log_finished_time() {
 		$history = $this->get_history();
 		$history[] = time();

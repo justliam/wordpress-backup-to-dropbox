@@ -25,18 +25,12 @@ class WP_Backup_Output {
 	private $dropbox;
 	private $config;
 	private $last_backup_time;
-	private $dropbox_location;
 	private $error_count;
 
 	public function __construct($dropbox = false, $config = false) {
 		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
 		$this->config = $config ? $config : WP_Backup_Config::construct();
-
 		$this->last_backup_time = array_pop($this->config->get_history());
-
-		$this->dropbox_location = null;
-		if ($this->config->get_option('store_in_subfolder'))
-			$this->dropbox_location = $this->config->get_option('dropbox_location');
 	}
 
 	public function out($source, $file) {
@@ -45,15 +39,7 @@ class WP_Backup_Output {
 			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.'), self::MAX_ERRORS));
 		}
 
-		$dropbox_path = $this->dropbox_location;
-		$dir = dirname(str_replace($source . DIRECTORY_SEPARATOR, '', $file));
-		if ($dir != '.')
-			$dropbox_path .= DIRECTORY_SEPARATOR . $dir;
-
-		if (PHP_OS == 'WINNT') {
-			//The dropbox api requires a forward slash as the directory separator
-			$dropbox_path = str_replace(DIRECTORY_SEPARATOR, '/', $dropbox_path);
-		}
+		$dropbox_path = $this->config->get_dropbox_path($source, $file);
 
 		try {
 			$directory_contents = $this->dropbox->get_directory_contents($dropbox_path);
