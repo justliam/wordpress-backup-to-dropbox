@@ -33,13 +33,13 @@ class WP_Backup_Output {
 		$this->last_backup_time = array_pop($this->config->get_history());
 	}
 
-	public function out($source, $file) {
+	public function out($source, $file, $root = false) {
 
 		if ($this->error_count > self::MAX_ERRORS) {
 			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.'), self::MAX_ERRORS));
 		}
 
-		$dropbox_path = $this->config->get_dropbox_path($source, $file);
+		$dropbox_path = $this->config->get_dropbox_path($source, $file, $root);
 
 		try {
 			$directory_contents = $this->dropbox->get_directory_contents($dropbox_path);

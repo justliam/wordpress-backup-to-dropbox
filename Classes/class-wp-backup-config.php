@@ -159,10 +159,13 @@ class WP_Backup_Config {
 		return get_option('backup-to-dropbox-history');
 	}
 
-	public function get_dropbox_path($source, $file) {
+	public function get_dropbox_path($source, $file, $root = false) {
 		$dropbox_location = null;
 		if ($this->get_option('store_in_subfolder'))
 			$dropbox_location = $this->get_option('dropbox_location');
+
+		if ($root)
+			return $dropbox_location;
 
 		$source = rtrim($source, DIRECTORY_SEPARATOR);
 
