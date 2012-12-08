@@ -146,6 +146,12 @@ class Dropbox_Facade {
 
 	public function unlink_account() {
 		$this->tokens = false;
+
+		$token = new stdClass;
+		$token->oauth_token = false;
+		$token->oauth_token_secret = false;
+
+		$this->oauth->setToken($token);
 		delete_option('backup-to-dropbox-tokens');
 	}
 }
