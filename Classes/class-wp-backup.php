@@ -134,6 +134,8 @@ class WP_Backup {
 			$core->remove_file();
 			$plugins->remove_file();
 
+			$manager->on_complete();
+
 			WP_Backup_Logger::log(__('Backup complete.', 'wpbtd'));
 			WP_Backup_Logger::log(sprintf(
 				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
@@ -141,12 +143,15 @@ class WP_Backup {
 			));
 
 			//Process the log file using the default backup output
-			if (get_class($this->output) != 'WP_Backup_Output')
+			$root = false;
+			if (get_class($this->output) != 'WP_Backup_Output') {
 				$this->output = new WP_Backup_Output();
+				$root = true;
+			}
 
-			$this->output->out(ABSPATH, WP_Backup_Logger::get_log_file());
-
-			$manager->on_complete();
+			$log_file = WP_Backup_Logger::get_log_file();
+			WP_Backup_Logger::log(sprintf(__('Uploading %s.'), $log_file));
+			$this->output->out(ABSPATH, $log_file, $root);
 
 			$this->config
 				->complete()
