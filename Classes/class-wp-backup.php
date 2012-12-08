@@ -140,7 +140,10 @@ class WP_Backup {
 				(memory_get_usage(true) / 1048576)
 			));
 
-			//Process the log file
+			//Process the log file using the default backup output
+			if (get_class($this->output) != 'WP_Backup_Output')
+				$this->output = new WP_Backup_Output();
+
 			$this->output->out(ABSPATH, WP_Backup_Logger::get_log_file());
 
 			$manager->on_complete();
