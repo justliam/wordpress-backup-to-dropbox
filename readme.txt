@@ -159,6 +159,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 * Moved the safe mode warning out of the settings page to the backup log
 * The backup log now logs to a file in 'wp-content/backups' that is uploaded to Dropbox at the end of a backup
 * Allow for multiple emails in the email extension
+* Allow for sub folders in the store in subfolder setting
 
 = 1.4 =
 

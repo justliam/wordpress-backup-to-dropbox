@@ -38,7 +38,7 @@ try {
 	if (array_key_exists('wpb2d_save_changes', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
 
-		if (preg_match('/[^A-Za-z0-9-_.]/', $_POST['dropbox_location'])) {
+		if (preg_match('/[^A-Za-z0-9-_.\/]/', $_POST['dropbox_location'])) {
 			$error_msg = __('The sub directory must only contain alphanumeric characters.', 'wpbtd');
 			$dropbox_location = $_POST['dropbox_location'];
 			$store_in_subfolder = true;
