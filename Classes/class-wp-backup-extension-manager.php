@@ -17,7 +17,10 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 class WP_Backup_Extension_Manager {
-	private $key = 'c7d97d59e0af29b2b2aa3ca17c695f96';
+	private
+		$key = 'c7d97d59e0af29b2b2aa3ca17c695f96',
+		$objectCache
+		;
 
 	public static function construct() {
 		return new self();
@@ -102,11 +105,14 @@ class WP_Backup_Extension_Manager {
 
 		unlink($download_file);
 
+		$this->activate($name, $file);
+	}
+
+	public function activate($name, $file) {
 		$extensions = get_option('backup-to-dropbox-premium-extensions');
 		$extensions[$name] = $file;
 		update_option('backup-to-dropbox-premium-extensions', $extensions);
 	}
-
 
 	public function init() {
 		$installed = $this->get_installed();
@@ -160,7 +166,12 @@ class WP_Backup_Extension_Manager {
 
 	private function get_instance($name) {
 		$class = str_replace(' ', '_', ucwords($name));
-		if (class_exists($class))
-			return new $class();
+
+		if (!isset($this->objectCache[$class])) {
+			if (class_exists($class))
+				 $this->objectCache[$class] = new $class();
+		}
+
+		return $this->objectCache[$class];
 	}
 }
