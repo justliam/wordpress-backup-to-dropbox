@@ -157,7 +157,8 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 * Fixed issue where all files where being uploaded in subsiquent backups
 * Fixed cannot access empty property fatal error
 * Moved the safe mode warning out of the settings page to the backup log
-* The backup log now logs to a file in 'wp-content/backups'
+* The backup log now logs to a file in 'wp-content/backups' that is uploaded to Dropbox at the end of a backup
+* Allow for multiple emails in the email extension
 
 = 1.4 =
 
