@@ -22,6 +22,8 @@ if (!defined('ABSPATH') && !defined('WP_UNINSTALL_PLUGIN')) {
 	exit();
 }
 
+require_once('Classes/class-wp-backup-logger.php');
+
 delete_option('backup-to-dropbox-tokens');
 delete_option('backup-to-dropbox-options');
 delete_option('backup-to-dropbox-history');
