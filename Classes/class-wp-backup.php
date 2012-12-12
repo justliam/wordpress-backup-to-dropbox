@@ -33,7 +33,7 @@ class WP_Backup {
 		$this->config = WP_Backup_Config::construct();
 	}
 
-	public function backup_path($path) {
+	public function backup_path($path, $always_include) {
 		if (!$this->config->get_option('in_progress'))
 			return;
 
@@ -73,7 +73,7 @@ class WP_Backup {
 					$uploaded_files = $current_processed_files = array();
 				}
 
-				if ($file_list->is_excluded($file))
+				if (!in_array($file, $always_include) && $file_list->is_excluded($file))
 					continue;
 
 				if (is_file($file)) {
@@ -81,7 +81,7 @@ class WP_Backup {
 					if (in_array($file, $processed_files))
 						continue;
 
-					if (dirname($file) == $this->config->get_backup_dir() && substr(basename($file), -4, 4) != '.sql')
+					if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include))
 						continue;
 
 					if ($this->output->out($source, $file)) {
@@ -127,9 +127,10 @@ class WP_Backup {
 
 			$manager->on_start();
 
-			$this->backup_path(ABSPATH);
-			if (dirname (WP_CONTENT_DIR) . '/' != ABSPATH)
-				$this->backup_path(WP_CONTENT_DIR);
+			$this->backup_path(ABSPATH, array(
+				$core->get_file(),
+				$plugins->get_file()
+			));
 
 			$core->remove_file();
 			$plugins->remove_file();
