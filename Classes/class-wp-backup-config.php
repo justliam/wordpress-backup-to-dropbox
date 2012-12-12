@@ -85,6 +85,9 @@ class WP_Backup_Config {
 
 	public function add_processed_files($new_files) {
 		$files = $this->get_processed_files();
+		if (!is_array($files))
+			$files = array();
+
 		update_option('backup-to-dropbox-processed-files', array_merge($files, $new_files));
 		return $this;
 	}
