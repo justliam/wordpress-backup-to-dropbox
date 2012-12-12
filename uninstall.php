@@ -22,8 +22,6 @@ if (!defined('ABSPATH') && !defined('WP_UNINSTALL_PLUGIN')) {
 	exit();
 }
 
-require_once('Classes/class-wp-backup-logger.php');
-
 delete_option('backup-to-dropbox-tokens');
 delete_option('backup-to-dropbox-options');
 delete_option('backup-to-dropbox-history');
@@ -47,5 +45,3 @@ remove_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
 remove_action('admin_menu', 'backup_to_dropbox_admin_menu');
 remove_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
 remove_action('wp_ajax_progress', 'backup_to_dropbox_progress');
-
-WP_Backup_Logger::delete_log();
