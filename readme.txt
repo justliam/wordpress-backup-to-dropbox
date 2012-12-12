@@ -152,6 +152,11 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.4.2 =
+* Fixed the uninstaller
+* Fixed issue where files over 10mb where not being uploaded in their correct directories
+* FIxed a fatal error on a corrupt processed files list
+
 = 1.4.1 =
 * Fixed exclude widget checkbox css position
 * Fixed issue where all files where being uploaded in subsequent backups
