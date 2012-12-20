@@ -129,15 +129,6 @@ function execute_drobox_backup() {
 	WP_Backup_Logger::delete_log();
 	WP_Backup_Logger::log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
 
-	if (!extension_loaded('curl')) {
-		WP_Backup_Logger::log(sprintf(
-			__('Fatal Error: The cURL extension is not loaded. %sPlease ensure its installed and activated.%s', 'wpbtd'),
-			'<a href="http://php.net/manual/en/curl.installation.php">',
-			'</a>'
-		));
-		die();
-	}
-
 	if (ini_get('safe_mode')) {
 		$time = ini_get('max_execution_time');
 		WP_Backup_Logger::log(sprintf(

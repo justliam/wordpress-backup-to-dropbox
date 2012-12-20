@@ -373,10 +373,12 @@ try {
 	}
 } catch (Exception $e) {
 	echo '<h3>Error</h3>';
-	echo '<p>' . __('There was a fatal error loading WordPress Backup to Dropbox, please reload the page and try again.', 'wpbtd') . '</h3>';
+	echo '<p>' . __('There was a fatal error loading WordPress Backup to Dropbox. Please fix the problems listed and reload the page.', 'wpbtd') . '</h3>';
 	echo '<p>' . __('If the problem persists please re-install WordPress Backup to Dropbox.', 'wpbtd') . '</h3>';
 	echo '<p><strong>' . __('Error message:') . '</strong> ' . $e->getMessage() . '</p>';
-	$dropbox->unlink_account();
+
+	if ($dropbox)
+		$dropbox->unlink_account();
 }
 ?>
 </div>

@@ -38,6 +38,15 @@ class Dropbox_Facade {
 	}
 
 	public function __construct() {
+
+		if (!extension_loaded('curl')) {
+			throw new Exception(sprintf(
+				__('The cURL extension is not loaded. %sPlease ensure its installed and activated.%s', 'wpbtd'),
+				'<a href="http://php.net/manual/en/curl.installation.php">',
+				'</a>'
+			));
+		}
+
         $this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 		$this->tokens = get_option('backup-to-dropbox-tokens');
 
