@@ -5,15 +5,14 @@ msgstr ""
 "Project-Id-Version: WordPress Backup to Dropbox 0.9.2\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-01-04 18:25+0100\n"
-"PO-Revision-Date: 2012-01-04 19:01+0100\n"
-"Last-Translator: Yassine Hanini <cyberscorp@gmail.com>\n"
+"PO-Revision-Date: 2012-10-24 23:45+0100\n"
+"Last-Translator: Alain THOMAS <palmipode@gmail.com>\n"
 "Language-Team: Yassine Hanini <cyberscorp@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-Language: French\n"
-"X-Poedit-Country: France\n"
 "X-Poedit-SourceCharset: utf-8\n"
+"Language: fr_FR\n"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-dropbox-facade.php:119
 msgid "backup file does not exist."
@@ -25,13 +24,21 @@ msgid "Error while uploading %s to Dropbox. HTTP Status: %s"
 msgstr "Erreur lors du téléchargement de %s sur Dropbox. HTTP Status:%s"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:135
-msgid "Backup did not complete because the maximum script execution time was reached."
-msgstr "La sauvegarde n'a pas été terminé car le temps maximal d'exécution de script a été atteint."
+msgid ""
+"Backup did not complete because the maximum script execution time was "
+"reached."
+msgstr ""
+"La sauvegarde n'a pas été terminé car le temps maximal d'exécution de script "
+"a été atteint."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:152
 #, php-format
-msgid "file '%s' exceeds 40 percent of your PHP memory limit. The limit must be increased to back up this file."
-msgstr "fichier '%s' dépasse les 40 pourcent de la limite de mémoire PHP. La limite doit être augmenté pour sauvegarder ce fichier."
+msgid ""
+"file '%s' exceeds 40 percent of your PHP memory limit. The limit must be "
+"increased to back up this file."
+msgstr ""
+"fichier '%s' dépasse les 40 pourcent de la limite de mémoire PHP. La limite "
+"doit être augmenté pour sauvegarder ce fichier."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:165
 msgid "Uploading"
@@ -53,8 +60,13 @@ msgstr "Erreur d'accès à la base de données."
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:197
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:482
 #, php-format
-msgid "A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually."
-msgstr "La sauvegarde de la base de données ne peut pas être créé car WordPress ne dispose pas d'accès en écriture à '%s', Veuillez créer '%s' dans le dossier manuellement."
+msgid ""
+"A database backup cannot be created because WordPress does not have write "
+"access to '%s', please create the folder '%s' manually."
+msgstr ""
+"La sauvegarde de la base de données ne peut pas être créé car WordPress ne "
+"dispose pas d'accès en écriture à '%s', Veuillez créer '%s' dans le dossier "
+"manuellement."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:205
 msgid "Error creating sql dump file."
@@ -69,8 +81,12 @@ msgid "Error writing to sql dump file."
 msgstr "Erreur d'écriture sur le fichier de sauvegarde SQL."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:353
-msgid "Invalid directory path. Path must only contain alphanumeric characters and the forward slash ('/') to separate directories."
-msgstr "Chemin du répertoire invalide. Le chemin doit contenir que des caractères alphanumériques et le slash ('/') pour séparer les répertoires."
+msgid ""
+"Invalid directory path. Path must only contain alphanumeric characters and "
+"the forward slash ('/') to separate directories."
+msgstr ""
+"Chemin du répertoire invalide. Le chemin doit contenir que des caractères "
+"alphanumériques et le slash ('/') pour séparer les répertoires."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:433
 msgid "Your Dropbox account is not authorized yet."
@@ -86,12 +102,20 @@ msgstr "Sauvegarde arrêtée par l'utilisateur."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:507
 #, php-format
-msgid "A database backup cannot be created because the local dump directory ('%s') is not writable."
-msgstr "La sauvegarde de la base de données ne peut pas être créé car le répertoire de sauvegarde locale ('%s') n'est pas en mode écriture."
+msgid ""
+"A database backup cannot be created because the local dump directory ('%s') "
+"is not writable."
+msgstr ""
+"La sauvegarde de la base de données ne peut pas être créé car le répertoire "
+"de sauvegarde locale ('%s') n'est pas en mode écriture."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:526
-msgid "This php installation is running in safe mode so the time limit cannot be set."
-msgstr "Cette installation de PHP est exécuté en mode sécurisé (safe mode) de sorte que le délai ne peut pas être réglé."
+msgid ""
+"This php installation is running in safe mode so the time limit cannot be "
+"set."
+msgstr ""
+"Cette installation de PHP est exécuté en mode sécurisé (safe mode) de sorte "
+"que le délai ne peut pas être réglé."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/class-wp-backup.php:527
 #, php-format
@@ -118,8 +142,14 @@ msgid "Backup Progress"
 msgstr "Sauvegarde en cours"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-monitor.php:68
-msgid "Your backup has been scheduled and is waiting for WordPress to start it. This could take a few minutes, so now is a good time to go and grab a cup of coffee."
-msgstr "Votre sauvegarde a été prévue et est en attente de démarrage par Wordpress. Cela pourrait prendre quelques minutes, alors c'est le bon moment pour aller prendre une tasse de café."
+msgid ""
+"Your backup has been scheduled and is waiting for WordPress to start it. "
+"This could take a few minutes, so now is a good time to go and grab a cup of "
+"coffee."
+msgstr ""
+"Votre sauvegarde a été prévue et est en attente de démarrage par Wordpress. "
+"Cela pourrait prendre quelques minutes, alors c'est le bon moment pour aller "
+"prendre une tasse de café."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-monitor.php:70
 msgid "No backup in progess."
@@ -144,8 +174,13 @@ msgstr "Retour aux paramètres"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:24
 #, php-format
-msgid "Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher."
-msgstr "Votre version PHP (%s) est un peu trop ancienne. Pour que ce plugin fonctionne correctement, veuillez mettre à jour à la version PHP 5.2 ou supérieur."
+msgid ""
+"Your PHP version (%s) is too old for this plugin to function correctly "
+"please update to PHP 5.2 or higher."
+msgstr ""
+"Votre version PHP (%s) est un peu trop ancienne. Pour que ce plugin "
+"fonctionne correctement, veuillez mettre à jour à la version PHP 5.2 ou "
+"supérieur."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:88
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:276
@@ -187,8 +222,11 @@ msgid "Next backup scheduled for %s at %s"
 msgstr "Prochaine sauvegarde prévue pour %s à %s"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:196
-msgid "No backups are scheduled yet. Please select a day, time and frequency below. "
-msgstr "Pas de sauvegardes programmées à ce jour. Veuillez sélectionner un jour, l'heure et la fréquence ci-dessous."
+msgid ""
+"No backups are scheduled yet. Please select a day, time and frequency below. "
+msgstr ""
+"Pas de sauvegardes programmées à ce jour. Veuillez sélectionner un jour, "
+"l'heure et la fréquence ci-dessous."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:198
 msgid "History"
@@ -277,7 +315,8 @@ msgstr "à"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:329
 msgid "The day and time the backup to Dropbox is to be performed."
-msgstr "Le jour et l'heure de la sauvegarde doit être effectuée sur votre Dropbox."
+msgstr ""
+"Le jour et l'heure de la sauvegarde doit être effectuée sur votre Dropbox."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:333
 msgid "Frequency"
@@ -312,16 +351,25 @@ msgid "Excluded Files and Directories"
 msgstr "Fichiers et répertoires exclus"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:367
-msgid "Select the files and directories that you wish to exclude from your backup. You can expand directories with contents by clicking its name."
-msgstr "Sélectionnez les fichiers et répertoires que vous souhaitez exclure de votre sauvegarde. Vous pouvez étendre les répertoires avec des contenus en cliquant sur son nom."
+msgid ""
+"Select the files and directories that you wish to exclude from your backup. "
+"You can expand directories with contents by clicking its name."
+msgstr ""
+"Sélectionnez les fichiers et répertoires que vous souhaitez exclure de votre "
+"sauvegarde. Vous pouvez étendre les répertoires avec des contenus en "
+"cliquant sur son nom."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:368
 msgid "Please Note:"
 msgstr "Veuillez noter:"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:368
-msgid "Your SQL dump file will always be backed up regardless of what is selected below."
-msgstr "Votre fichier de sauvegarde SQL sera toujours sauvegardés indépendamment de ce qui est sélectionné ci-dessous."
+msgid ""
+"Your SQL dump file will always be backed up regardless of what is selected "
+"below."
+msgstr ""
+"Votre fichier de sauvegarde SQL sera toujours sauvegardés indépendamment de "
+"ce qui est sélectionné ci-dessous."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:377
 msgid "Save Changes"
@@ -332,7 +380,6 @@ msgid "Monitor current backup"
 msgstr "Surveillance de la sauvegarde courante"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:378
-#, fuzzy
 msgid "Backup now"
 msgstr "Sauvegarder maintenant"
 
@@ -341,16 +388,28 @@ msgid "Thank you for installing WordPress Backup to Dropbox!"
 msgstr "Merci d'avoir installer WordPress Backup to Dropbox!"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:389
-msgid "In order to use this plugin you will need to authorized it with your Dropbox account."
-msgstr "Pour utiliser ce plugin, vous devez l'autoriser à s'associer avec votre compte Dropbox."
+msgid ""
+"In order to use this plugin you will need to authorized it with your Dropbox "
+"account."
+msgstr ""
+"Pour utiliser ce plugin, vous devez l'autoriser à s'associer avec votre "
+"compte Dropbox."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:390
-msgid "Please click the authorize button below and follow the instructions inside the pop up window."
-msgstr "Veuillez cliquer sur le bouton \"Autoriser\" ci-dessous et suivez les instructions dans la fenêtre pop-up."
+msgid ""
+"Please click the authorize button below and follow the instructions inside "
+"the pop up window."
+msgstr ""
+"Veuillez cliquer sur le bouton \"Autoriser\" ci-dessous et suivez les "
+"instructions dans la fenêtre pop-up."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:392
-msgid "There was an error authorizing the plugin with your Dropbox account. Please try again."
-msgstr "Il y avait une erreur lors de l'association du plugin avec votre compte Dropbox. Essayez de nouveau."
+msgid ""
+"There was an error authorizing the plugin with your Dropbox account. Please "
+"try again."
+msgstr ""
+"Il y avait une erreur lors de l'association du plugin avec votre compte "
+"Dropbox. Essayez de nouveau."
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:397
 msgid "Authorize"
@@ -362,11 +421,14 @@ msgstr "Continuer"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox-options.php:407
 msgid "There was a fatal error loading WordPress Backup to Dropbox"
-msgstr "Il y avait une erreur fatale lors du chargement de WordPress Backup to Dropbox"
+msgstr ""
+"Il y avait une erreur fatale lors du chargement de WordPress Backup to "
+"Dropbox"
 
 #: C:\wamp\www\wordpress\wp-content\plugins\wordpress-backup-to-dropbox/wp-backup-to-dropbox.php:89
 msgid "The backup process appears to have gone away. Resuming backup."
-msgstr "Le processus de sauvegarde semble avoir été arrêté. Reprise de sauvegarde."
+msgstr ""
+"Le processus de sauvegarde semble avoir été arrêté. Reprise de sauvegarde."
 
 #~ msgid ""
 #~ "WP Cron is disabled and is required by WordPress Backup to Dropbox. "
