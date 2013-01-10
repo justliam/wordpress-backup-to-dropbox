@@ -81,7 +81,7 @@ class Dropbox_Facade {
 				$this->oauth->setToken($this->tokens['access']);
 			} catch (Exception $e) {
 				//Authorization failed so we are still pending
-				$this->oauth->setToken(null);
+				$this->oauth->resetToken();
 				$this->tokens['request'] = $this->oauth->getRequestToken();
 				$this->oauth->setToken($this->tokens['request']);
 			}
@@ -156,11 +156,9 @@ class Dropbox_Facade {
 	public function unlink_account() {
 		$this->tokens = false;
 
-		$token = new stdClass;
-		$token->oauth_token = false;
-		$token->oauth_token_secret = false;
-
-		$this->oauth->setToken($token);
+		$this->oauth->resetToken();
 		delete_option('backup-to-dropbox-tokens');
+
+		$this->init();
 	}
 }
