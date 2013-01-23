@@ -62,8 +62,11 @@ class WP_Backup {
 					}
 
 					$percent_done = __('unknown', 'wpbtd');
-					if ($total_files > 0)
+					if ($total_files > 0) {
 						$percent_done = round(($processed_file_count / $total_files) * 100, 0);
+						if ($percent_done > 99)
+							$percent_done = 99;
+					}
 
 					$this->config->add_processed_files($current_processed_files);
 
