@@ -191,7 +191,7 @@ class WP_Backup {
 				throw new Exception(
 					sprintf(
 						__("WordPress does not have write access to '%s'. Please grant it write privileges before using this plugin."),
-						$this->config->get_backup_dir()
+						WP_Backup_Config::get_backup_dir()
 					)
 				);
 			}

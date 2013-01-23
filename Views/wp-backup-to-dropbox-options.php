@@ -32,6 +32,8 @@ try {
 	$config = WP_Backup_Config::construct();
 	$backup = new WP_Backup();
 
+	$backup->create_dump_dir();
+
 	$disable_backup_now = $config->get_option('in_progress');
 
 	//We have a form submit so update the schedule and options
