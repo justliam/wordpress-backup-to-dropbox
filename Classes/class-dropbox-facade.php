@@ -60,6 +60,9 @@ class Dropbox_Facade {
 
 		try {
 			$this->init();
+			if (!$this->is_authorized());
+				throw new Exception;
+
 		} catch (Exception $e) {
 			$this->unlink_account();
 			$this->init();
