@@ -24,7 +24,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 define('BACKUP_TO_DROPBOX_VERSION', '1.4.3');
 define('EXTENSIONS_DIR', implode(array(WP_CONTENT_DIR, 'plugins', 'wordpress-backup-to-dropbox', 'Extensions'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
-define('MINUMUM_PHP_VERSION', 502016); //5.2.16
+define('MINUMUM_PHP_VERSION', 50216); //5.2.16
 
 if (!defined('PHP_VERSION_ID')) {
     $version = explode('.', PHP_VERSION);

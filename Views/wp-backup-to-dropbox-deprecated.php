@@ -18,6 +18,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
+$v = phpversion();
+if ($pos = strpos($v, '-'))
+	$v = substr($v, 0, $pos);
 ?>
 <div class="wrap">
 	<div class="icon32"><img width="36px" height="36px"	 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png" alt="Wordpress Backup to Dropbox Logo"></div>
@@ -34,7 +37,7 @@
 			Although this version works 100%%, and has the same premium extensions, it will only be supported with bug fix releases.</p>
 			<p>Cheers,<br />Mikey</p>
 			',
-			substr(phpversion(),0,strpos(phpversion(), '-')),
+			$v,
 			'http://www.php.net/archive/2010.php#id2010-12-16-1',
 			'http://downloads.wordpress.org/plugin/wordpress-backup-to-dropbox.1.3.zip'
 		), 'wpbtd'); ?>
