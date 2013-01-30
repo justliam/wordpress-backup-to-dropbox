@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.5
+Tested up to: 3.5.1
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -35,9 +35,11 @@ Once installed, the authorization process is easy -
 
 = Minimum Requirements =
 
-1. PHP 5.2 or higher with [cURL support](http://www.php.net/manual/en/curl.installation.php)
+1. PHP 5.3.1 or higher with [cURL support](http://www.php.net/manual/en/curl.installation.php)
 
 2. [A Dropbox account](https://www.dropbox.com/referrals/NTM1NTcwNjc5)
+
+Note: Version 1.3 of the plugin supports PHP 5.2 and can be [downloaded here.](http://downloads.wordpress.org/plugin/wordpress-backup-to-dropbox.1.3.zip)
 
 = Errors and Warnings =
 
@@ -63,10 +65,6 @@ Premium extensions can be purchased securely using [PayPal](http://www.paypal.co
 = More Information =
 
 For news and updates please visit my blog - http://www.mikeyd.com.au/category/wordpress-backup-to-dropbox/
-
-= Issues =
-
-If you notice any bugs or want to request a feature please do so on GitHub - http://github.com/michaeldewildt/WordPress-Backup-to-Dropbox/issues
 
 = Translators =
 
@@ -151,6 +149,13 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.4.3 =
+* Fixed issue where autorise link was invalid
+* Fixed session has time out issue
+* Added error message for users who's server has not connection to the internet
+* Added depricated page for people using PHP 5.2
+* Added priority support premium extension
 
 = 1.4.2 =
 * Fixed the uninstaller
