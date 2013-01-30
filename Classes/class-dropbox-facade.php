@@ -27,6 +27,7 @@ class Dropbox_Facade {
 
 	private $dropbox = null;
 	private $tokens = null;
+	private $oauth = null;
 	private $account_info_cache = null;
 	private $directory_cache = array();
 
@@ -56,36 +57,56 @@ class Dropbox_Facade {
 			$accessToken->oauth_token = $this->tokens['access']["token"];
 			$accessToken->oauth_token_secret = $this->tokens['access']["token_secret"];
 			$this->tokens['access'] = $accessToken;
+			$this->tokens['state'] = 'access';
 		}
 
 		try {
 			$this->init();
-			if (!$this->is_authorized());
+
+			//If we are in the access state and are still not authorized then unlink and re init
+			if ($this->tokens['state'] == 'access' && !$this->is_authorized())
 				throw new Exception;
 
 		} catch (Exception $e) {
 			$this->unlink_account();
 			$this->init();
+
 		}
 	}
 
 	private function init() {
+
+		//If we have not tokens then lets setup a new request
 		if (!$this->tokens) {
-			$this->tokens = array('access' => false, 'request' => $this->oauth->getRequestToken());
+			$this->tokens = array(
+				'access' => false,
+				'request' => $this->oauth->getRequestToken(),
+				'state' => 'request',
+			);
 			add_option('backup-to-dropbox-tokens', $this->tokens, null, 'no');
 			$this->oauth->setToken($this->tokens['request']);
-		} else if ($this->tokens['access']) {
+		}
+
+		//If there is no state then assume we have access
+		if (!isset($this->tokens['state']))
+			$this->tokens['state'] = 'access';
+
+		//Consume the set tokens
+		if ($this->tokens['state'] == 'access') {
 			$this->oauth->setToken($this->tokens['access']);
-		} else if ($this->tokens['request']) {
+		} else if ($this->tokens['state'] == 'request') {
 			$this->oauth->setToken($this->tokens['request']);
 			//If we have not got an access token then we need to grab one
 			try {
 				$this->tokens['access'] = $this->oauth->getAccessToken();
+				$this->tokens['state'] = 'access';
 				$this->oauth->setToken($this->tokens['access']);
 			} catch (Exception $e) {
 				//Authorization failed so we are still pending
 				$this->oauth->resetToken();
 				$this->tokens['request'] = $this->oauth->getRequestToken();
+				$this->tokens['state'] = 'request';
+
 				$this->oauth->setToken($this->tokens['request']);
 			}
 			$this->save_tokens();
