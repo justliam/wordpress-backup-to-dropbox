@@ -35,11 +35,11 @@ Once installed, the authorization process is easy -
 
 = Minimum Requirements =
 
-1. PHP 5.3.1 or higher with [cURL support](http://www.php.net/manual/en/curl.installation.php)
+1. PHP 5.2.16 or higher with [cURL support](http://www.php.net/manual/en/curl.installation.php)
 
 2. [A Dropbox account](https://www.dropbox.com/referrals/NTM1NTcwNjc5)
 
-Note: Version 1.3 of the plugin supports PHP 5.2 and can be [downloaded here.](http://downloads.wordpress.org/plugin/wordpress-backup-to-dropbox.1.3.zip)
+Note: Version 1.3 of the plugin supports PHP < 5.2.16 and can be [downloaded here.](http://downloads.wordpress.org/plugin/wordpress-backup-to-dropbox.1.3.zip)
 
 = Errors and Warnings =
 
