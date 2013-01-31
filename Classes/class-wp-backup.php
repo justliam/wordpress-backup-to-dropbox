@@ -169,6 +169,7 @@ class WP_Backup {
 				WP_Backup_Logger::log("A fatal error occured: " . $e->getMessage());
 
 			$manager->on_failure();
+			$this->stop();
 		}
 	}
 
