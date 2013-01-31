@@ -154,7 +154,7 @@ function execute_drobox_backup() {
 			__("%sSafe mode%s is enabled on your server so the PHP time and memory limits cannot be set by the backup process. Your time limit is %s and your memory limit is %s, so if your backup fails it's highly probable that these settings are too low.", 'wpbtd'),
 			'<a href="http://php.net/manual/en/features.safe-mode.php">',
 			'</a>',
-			$time ? $time . __('seconds', 'wpbtd') : __('unlimited', 'wpbtd'),
+			$time ? $time . ' ' . __('seconds', 'wpbtd') : __('unlimited', 'wpbtd'),
 			ini_get('memory_limit')
 		));
 	}
