@@ -154,7 +154,7 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 * Fixed issue where autorise link was invalid
 * Fixed session has time out issue
 * Added error message for users who's server has not connection to the internet
-* Added depricated page for people using PHP 5.2
+* Added depricated page for people using PHP < 5.2.16
 * Added priority support premium extension
 
 = 1.4.2 =
