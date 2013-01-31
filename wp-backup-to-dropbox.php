@@ -148,14 +148,18 @@ function execute_drobox_backup() {
 	WP_Backup_Logger::delete_log();
 	WP_Backup_Logger::log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
 
+	$time = ini_get('max_execution_time');
+	WP_Backup_Logger::log(sprintf(
+		__('Your time limit is %s and your memory limit is %s'),
+		$time ? $time . ' ' . __('seconds', 'wpbtd') : __('unlimited', 'wpbtd'),
+		ini_get('memory_limit')
+	));
+
 	if (ini_get('safe_mode')) {
-		$time = ini_get('max_execution_time');
 		WP_Backup_Logger::log(sprintf(
-			__("%sSafe mode%s is enabled on your server so the PHP time and memory limits cannot be set by the backup process. Your time limit is %s and your memory limit is %s, so if your backup fails it's highly probable that these settings are too low.", 'wpbtd'),
+			__("%sSafe mode%s is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'),
 			'<a href="http://php.net/manual/en/features.safe-mode.php">',
-			'</a>',
-			$time ? $time . ' ' . __('seconds', 'wpbtd') : __('unlimited', 'wpbtd'),
-			ini_get('memory_limit')
+			'</a>'
 		));
 	}
 
