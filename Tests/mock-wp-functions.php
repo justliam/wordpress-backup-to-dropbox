@@ -47,6 +47,7 @@ define('DB_NAME', 'TestDB');
 define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/Extensions/');
 define('BACKUP_TO_DROPBOX_MEMORY_LIMIT', 150);
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
+define('WP_MAX_MEMORY_LIMIT', '256M');
 
 date_default_timezone_set('Australia/NSW');
 
