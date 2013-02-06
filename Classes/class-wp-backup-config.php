@@ -94,13 +94,18 @@ class WP_Backup_Config {
 
 	public function set_time_limit() {
 		@set_time_limit(0);
+
+		if (ini_get('max_execution_time') != 0)
+			@set_time_limit(300); //5 mins
+
+		if (ini_get('max_execution_time') != 300)
+			@set_time_limit(120); //2 mins
+
 		return $this;
 	}
 
 	public function set_memory_limit() {
-		if (function_exists('memory_get_usage'))
-			@ini_set('memory_limit', -1);
-
+		@ini_set('memory_limit', WP_MAX_MEMORY_LIMIT);
 		return $this;
 	}
 
