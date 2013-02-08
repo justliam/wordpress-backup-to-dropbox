@@ -34,13 +34,13 @@ if (empty($log)): ?>
 					$files = json_decode(preg_replace('/^Uploaded Files:/', '', $log_item), true);
 					continue;
 				}
-				echo $log_item;
+				echo esc_attr($log_item);
 			?>
 			<?php if (!empty($files)): ?>
 				<a class="view-files" href="#"><?php _e('View uploaded files', 'wpbtd') ?>&raquo;</a>
 				<ul class="files">
 					<?php foreach ($files as $file): ?>
-						<li title="<?php echo sprintf(__('Last modified: %s'), date('F j, Y, H:i:s', $file['mtime'])) ?>"><?php echo $file['file'] ?></li>
+						<li title="<?php echo sprintf(__('Last modified: %s'), date('F j, Y, H:i:s', $file['mtime'])) ?>"><?php echo esc_attr($file['file']) ?></li>
 					<?php endforeach; ?>
 				</ul>
 			<?php $files = null; endif; ?>
