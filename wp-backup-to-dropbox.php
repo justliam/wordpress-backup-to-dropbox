@@ -155,13 +155,8 @@ function execute_drobox_backup() {
 		ini_get('memory_limit')
 	));
 
-	if (ini_get('safe_mode')) {
-		WP_Backup_Logger::log(sprintf(
-			__("%sSafe mode%s is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'),
-			'<a href="http://php.net/manual/en/features.safe-mode.php">',
-			'</a>'
-		));
-	}
+	if (ini_get('safe_mode'))
+		WP_Backup_Logger::log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
 
 	WP_Backup_Config::construct()->set_option('in_progress', true);
 
