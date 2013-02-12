@@ -150,6 +150,13 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
+= 1.4.4 =
+* Attempt to set the memory limit WP_MAX_MEMORY_LIMIT and have a better go at setting the time limit
+* Added .dropbox to the ignored files list as Dropbox does not accept it
+* Added retry logic for normal uploads that receive errors
+* Updated the Dropbox API lib that includes retries for chunked uploads
+* Fixed a minor potential XSS issue when viewing the backup log, thanks Mahadev Subedi (@blinkms) for the heads up
+
 = 1.4.3 =
 * Fixed issue where autorise link was invalid
 * Fixed session has time out issue
