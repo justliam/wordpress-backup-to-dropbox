@@ -151,6 +151,10 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 == Changelog ==
 
 = 1.4.3 =
+* Fixed an issue where windows servers where uploading with incorrect slashes
+* Added support for multi site`
+
+= 1.4.3 =
 * Fixed issue where autorise link was invalid
 * Fixed session has time out issue
 * Added error message for users who's server has not connection to the internet
