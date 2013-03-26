@@ -242,7 +242,7 @@ function backup_to_dropbox_cron_schedules($schedules) {
 function get_blog_root_dir() {
 	$home = get_option('home');
 	$site_url = get_option('siteurl');
-	if ($home != $siteurl);
+	if ($siteurl != null && $home != $siteurl)
 		return preg_replace(str_replace($home, '', $site_url) . '\/$/', "", ABSPATH);
 
 	return ABSPATH;
