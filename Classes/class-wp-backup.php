@@ -46,6 +46,9 @@ class WP_Backup {
 
 		$next_check = time() + 5;
 		$total_files = $this->config->get_option('total_file_count');
+		if ($total_files < 1000) //I doub't very much a wp installation can get smaller then this
+			$total_files = 1000;
+
 		$processed_file_count = count($processed_files);
 
 		if (file_exists($path)) {
@@ -61,12 +64,9 @@ class WP_Backup {
 						die($msg);
 					}
 
-					$percent_done = __('unknown', 'wpbtd');
-					if ($total_files > 0) {
-						$percent_done = round(($processed_file_count / $total_files) * 100, 0);
-						if ($percent_done > 99)
-							$percent_done = 99;
-					}
+					$percent_done = round(($processed_file_count / $total_files) * 100, 0);
+					if ($percent_done > 99)
+						$percent_done = 99;
 
 					$this->config->add_processed_files($current_processed_files);
 
