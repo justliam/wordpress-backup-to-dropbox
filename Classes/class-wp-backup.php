@@ -82,8 +82,10 @@ class WP_Backup {
 				if (!in_array($file, $always_include) && $file_list->is_excluded($file))
 					continue;
 
-				if (is_file($file)) {
+				if ($file_list->in_ignore_list($file))
+					continue;
 
+				if (is_file($file)) {
 					if (in_array($file, $processed_files))
 						continue;
 

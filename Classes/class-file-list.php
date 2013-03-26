@@ -62,9 +62,6 @@ class File_List {
 	}
 
 	public function is_excluded($path) {
-		if ($this->in_ignore_list($path))
-			return true;
-
 		if (is_dir($path))
 			return $this->is_excluded_dir($path);
 		else
