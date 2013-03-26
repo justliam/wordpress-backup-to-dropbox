@@ -33,9 +33,12 @@ class WP_Backup {
 		$this->config = WP_Backup_Config::construct();
 	}
 
-	public function backup_path($path, $always_include = array()) {
+	public function backup_path($path, $dropbox_path = null, $always_include = array()) {
 		if (!$this->config->get_option('in_progress'))
 			return;
+
+		if (!$dropbox_path)
+			$dropbox_path = get_blog_root_dir();
 
 		WP_Backup_Logger::log(sprintf(__('Backing up WordPress path at (%s).', 'wpbtd'), $path));
 
@@ -87,9 +90,9 @@ class WP_Backup {
 					if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include))
 						continue;
 
-					if ($this->output->out($source, $file)) {
+					if ($this->output->out($dropbox_path, $file)) {
 						$uploaded_files[] = array(
-							'file' => str_replace($source . DIRECTORY_SEPARATOR, '', $file),
+							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', $file),
 							'mtime' => filemtime($file),
 						);
 					}
@@ -129,7 +132,7 @@ class WP_Backup {
 			$manager->on_start();
 
 			//Backup the content dir first
-			$this->backup_path(WP_CONTENT_DIR, array(
+			$this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
 				$core->get_file(),
 				$plugins->get_file()
 			));
