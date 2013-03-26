@@ -140,6 +140,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Added support for multi site
 * Added support for running WordPress in its own directory. http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory
 * Added support for an alternate WP_CONTENT_DIR
+* Fixed an issue where diretories where being marked as partial when they had no excluded files
 
 = 1.4.4 =
 * Attempt to set the memory limit WP_MAX_MEMORY_LIMIT and have a better go at setting the time limit
