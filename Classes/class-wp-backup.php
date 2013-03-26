@@ -110,10 +110,8 @@ class WP_Backup {
 	public function execute() {
 		$manager = WP_Backup_Extension_Manager::construct();
 
-		$this->config
-			->set_time_limit()
-			->set_memory_limit()
-			;
+		$this->config->set_time_limit();
+		$this->config->set_memory_limit();
 
 		try {
 
