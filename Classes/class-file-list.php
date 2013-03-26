@@ -105,7 +105,7 @@ class File_List {
 		if (in_array($dir, $this->excluded_dirs))
 			return true;
 
-		if ($dir == rtrim(ABSPATH,'/'))
+		if ($dir == rtrim(get_blog_root_dir(),'/'))
 			return false;
 
 		return $this->is_excluded_dir(dirname($dir));

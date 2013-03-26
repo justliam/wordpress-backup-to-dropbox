@@ -152,7 +152,8 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 = 1.4.3 =
 * Fixed an issue where windows servers where uploading with incorrect slashes
-* Added support for multi site`
+* Added support for multi site
+* Added support for running WordPress in its own directory. http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory
 
 = 1.4.3 =
 * Fixed issue where autorise link was invalid

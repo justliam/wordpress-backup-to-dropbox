@@ -33,7 +33,7 @@ class WP_Backup {
 		$this->config = WP_Backup_Config::construct();
 	}
 
-	public function backup_path($path, $always_include) {
+	public function backup_path($path, $always_include = array()) {
 		if (!$this->config->get_option('in_progress'))
 			return;
 
@@ -130,10 +130,14 @@ class WP_Backup {
 
 			$manager->on_start();
 
-			$this->backup_path(ABSPATH, array(
+			//Backup the content dir first
+			$this->backup_path(WP_CONTENT_DIR, array(
 				$core->get_file(),
 				$plugins->get_file()
 			));
+
+			//Now backup the blog root
+			$this->backup_path(get_blog_root_dir());
 
 			$core->remove_file();
 			$plugins->remove_file();
@@ -155,7 +159,7 @@ class WP_Backup {
 
 			$log_file = WP_Backup_Logger::get_log_file();
 			WP_Backup_Logger::log(sprintf(__('Uploading %s.'), $log_file));
-			$this->output->out(ABSPATH, $log_file, $root);
+			$this->output->out(get_blog_root_dir(), $log_file, $root);
 
 			$this->config
 				->complete()

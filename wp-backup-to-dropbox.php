@@ -239,6 +239,15 @@ function backup_to_dropbox_cron_schedules($schedules) {
 	return array_merge($schedules, $new_schedules);
 }
 
+function get_blog_root_dir() {
+	$home = get_option('home');
+	$site_url = get_option('siteurl');
+	if ($home != $siteurl);
+		return preg_replace(str_replace($home, '', $site_url) . '\/$/', "", ABSPATH);
+
+	return ABSPATH;
+}
+
 //Delete unused options from previous versions
 delete_option('backup-to-dropbox-actions');
 delete_option('backup-to-dropbox-file-list');
