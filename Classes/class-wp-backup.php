@@ -164,9 +164,7 @@ class WP_Backup {
 				$root = true;
 			}
 
-			$log_file = WP_Backup_Logger::get_log_file();
-			WP_Backup_Logger::log(sprintf(__('Uploading %s.'), $log_file));
-			$this->output->out(get_blog_root_dir(), $log_file, $root);
+			$this->output->out(get_blog_root_dir(), WP_Backup_Logger::get_log_file(), $root);
 
 			$this->config
 				->complete()
