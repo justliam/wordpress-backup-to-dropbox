@@ -113,13 +113,15 @@ class File_List {
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
 			$files->setMaxDepth(10);
 			foreach ($files as $file) {
-				if ($file == $dir)
+				$file_name = $file->getPathname();
+
+				if ($file_name == $dir)
 					continue;
 
-				if (self::in_ignore_list(basename($file)))
+				if (self::in_ignore_list(basename($file_name)))
 					continue;
 
-				if ($this->is_excluded($file))
+				if ($this->is_excluded($file_name))
 					return true;
 			}
 		}
