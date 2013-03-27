@@ -3,7 +3,7 @@
 Plugin Name: WordPress Backup to Dropbox
 Plugin URI: http://wpb2d.com
 Description: Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
-Version: 1.4.3
+Version: 1.4.5
 Author: Michael De Wildt
 Author URI: http://www.mikeyd.com.au
 License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
@@ -21,7 +21,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 		along with this program; if not, write to the Free Software
 		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-define('BACKUP_TO_DROPBOX_VERSION', '1.4.3');
+define('BACKUP_TO_DROPBOX_VERSION', '1.4.5');
 define('EXTENSIONS_DIR', implode(array(WP_CONTENT_DIR, 'plugins', 'wordpress-backup-to-dropbox', 'Extensions'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
 define('MINUMUM_PHP_VERSION', 50216); //5.2.16
@@ -155,13 +155,8 @@ function execute_drobox_backup() {
 		ini_get('memory_limit')
 	));
 
-	if (ini_get('safe_mode')) {
-		WP_Backup_Logger::log(sprintf(
-			__("%sSafe mode%s is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'),
-			'<a href="http://php.net/manual/en/features.safe-mode.php">',
-			'</a>'
-		));
-	}
+	if (ini_get('safe_mode'))
+		WP_Backup_Logger::log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
 
 	WP_Backup_Config::construct()->set_option('in_progress', true);
 
@@ -237,6 +232,15 @@ function backup_to_dropbox_cron_schedules($schedules) {
 		),
 	);
 	return array_merge($schedules, $new_schedules);
+}
+
+function get_blog_root_dir() {
+	$home = get_option('home');
+	$site_url = get_option('siteurl');
+	if ($siteurl != null && $home != $siteurl)
+		return preg_replace(str_replace($home, '', $site_url) . '\/$/', "", ABSPATH);
+
+	return ABSPATH;
 }
 
 //Delete unused options from previous versions

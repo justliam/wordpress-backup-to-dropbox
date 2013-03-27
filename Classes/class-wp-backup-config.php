@@ -92,16 +92,12 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function set_time_limit() {
+	public static function set_time_limit() {
 		@set_time_limit(0);
-		return $this;
 	}
 
-	public function set_memory_limit() {
-		if (function_exists('memory_get_usage'))
-			@ini_set('memory_limit', -1);
-
-		return $this;
+	public static function set_memory_limit() {
+		@ini_set('memory_limit', WP_MAX_MEMORY_LIMIT);
 	}
 
 	public function is_scheduled() {

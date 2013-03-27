@@ -21,11 +21,8 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-
-WP_Backup_Config::construct()
-	->set_time_limit()
-	->set_memory_limit()
-	;
+WP_Backup_Config::set_time_limit();
+WP_Backup_Config::set_memory_limit();
 
 try {
 	$file_list = new File_List();
@@ -41,7 +38,7 @@ try {
 				foreach ($files as $file) {
 					if ($file != '.' && $file != '..' && file_exists($_POST['dir'] . $file) && is_dir($_POST['dir'] . $file)) {
 
-						if (!is_readable($_POST['dir']) || $_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
+						if (!is_readable($_POST['dir']) || $_POST['dir'] == dirname(get_blog_root_dir()) . '/' && !strstr($file, basename(get_blog_root_dir()))) {
 							continue;
 						}
 
@@ -64,7 +61,7 @@ try {
 
 					if ($file != '.' && $file != '..' && file_exists($_POST['dir'] . $file) && !is_dir($_POST['dir'] . $file)) {
 
-						if ($_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
+						if ($_POST['dir'] == dirname(get_blog_root_dir()) . '/' && !strstr($file, basename(get_blog_root_dir()))) {
 							continue;
 						}
 

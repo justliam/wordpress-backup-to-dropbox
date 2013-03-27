@@ -22,6 +22,7 @@ class Dropbox_Facade {
 
 	const CONSUMER_KEY = 'u1i8xniul59ggxs';
 	const CONSUMER_SECRET = '0ssom5yd1ybebhy';
+	const RETRY_COUNT = 3;
 
 	private static $instance = null;
 
@@ -142,7 +143,13 @@ class Dropbox_Facade {
 	}
 
 	public function upload_file($path, $file) {
-		return $this->dropbox->putFile($file, null, $path);
+		$i = 0;
+		while ($i++ < self::RETRY_COUNT) {
+			try {
+				return $this->dropbox->putFile($file, null, $path);
+			} catch (Exception $e) {}
+		}
+		throw $e;
 	}
 
 	public function chunk_upload_file($path, $file) {

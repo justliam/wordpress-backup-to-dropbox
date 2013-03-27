@@ -91,56 +91,41 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 
 == Frequently Asked Questions ==
 
-= How do I get a free Dropbox account? =
+= Why won’t my backup start? =
 
-Browse to http://db.tt/szCyl7o and create a free account.
+To diagnose issues with your plugin please refer to this [sticky topic](http://wordpress.org/support/topic/why-won%E2%80%99t-my-backup-start).
 
-= Where is my backup located? Can I move it? =
-By default your backup is located in 'Applications/wpb2d'. You can move the 'wpb2d' folder anywhere your want in your Dropbox. You can even rename it to 'my super awesome backup' or anything else if you want!
+= How do I restore my website? =
 
-= Nothing seems to happen when backing up, whats up? =
+Simply download [WPB2D Simple Restore](http://wpb2d.com/simple-restore) and upload it to an empty host. Once uploaded you will be guided through a wizard of 5 easy steps and have your blog restored in no time.
 
-Your server settings (.htaccess file) might be blocking wp-cron which is required to start the backup process. You will need to add the following to a .htaccess file in your WordPress root directory:
+You don’t even have to install WordPress!
 
-<Files "wp-cron.php">
-Allow from All
-Satisfy Any
-</Files>
+= Why does my keep going away and resuming? =
 
-For information please refer to this thread - http://wordpress.org/support/topic/plugin-wordpress-backup-to-dropbox-nothing-seems-to-happen-when-backing-up
+By default PHP has its time limit set to 30 seconds. The plugin will attempt to set the time limit to unlimited in order to complete the backup, however if [safe mode](http://php.net/manual/en/features.safe-mode.php) is enabled this will not be possible.
 
-= Why doesn't my backup execute at the exact time I set? =
+In addition the Apache [TimeOut](http://httpd.apache.org/docs/2.2/mod/core.html#TimeOut) directive has a default of 300 seconds (5 minutes) that cannot be altered without manual intervention. It is not recommended you change this value.
 
-This could be because your blog's timezone is not set. By defauly it is set to UTC+0, so if you set your backup to start at midnight it will
-be kicked off at 4pm (PST) in LA. You can change your blogs timezone in WordPress' General Settings.
+However, the plugin has been designed to get around these limitations by using a backup monitor that will detect if the backup has gone away and resume it from where it stopped.
 
-If your timezone is correct then WordPress' scheduling system could be the problem. Unlike a cron job, kicks of tasks the next time your
-blog is accessed after the scheduled time. If you are using a caching solution then the plugin may be blocking calls to wp-cron.php, if so
-you will need to whitelist this file in the plugin settings.
+In short, this is a feature! :-)
 
-= Where is my database SQL dump located? =
-The database is backed up into two files named '[database name]-backup-core.sql' that contains all the core WordPress tables and data,
-and '[database name]-backup-plugins.sql' that cotains tables and data related to your plugins.
-These files will be will be found at the path 'wp-content/backups' within the App folder of your Dropbox.
+= Where are my database backup files located? =
+
+The database is backed up into two files named '[database name]-backup-core.sql' and '[database name]-backup-plugins.sql'. These files will be will be found at the path 'wp-content/backups' within the App folder of your Dropbox.
+
+The first file contains all the core WordPress tables and data and the second contains tables and data related to your plugins. Sometimes your second file will not have any data in it because most plugins will store their data in the wp_options table.
 
 = Wow! My second backup was heaps faster. Why is that? =
-In order to save time and bandwidth the plugin only uploads files that have changed since the last backup. The only exception
-is your SQL dump file that will be uploaded every time.
 
-= Can I perform a backup if my PHP installation has safe mode enabled? =
-Yes you can, however you need to modify the max execution time in your php.ini manually.
-[Please read this blog post for more information.](http://www.mikeyd.com.au/2011/05/24/setting-the-maximum-execution-time-when-php-is-running-in-safe-mode/)
+In order to save time and bandwidth the plugin only uploads files that have changed since the last backup. The only exception is your SQL dump file that will be uploaded every time.
 
 = How can I revert to a previous version of a backed up file? =
-Dropbox has this functionality built in and it is extremely easy to do.
-[Please read this blog post for more information.](http://www.mikeyd.com.au/2011/06/05/restoring-previous-versions-of-files-in-dropbox/)
 
-= Why does my backup keep stalling and restarting? =
-Sometimes hosts implement measures to prevent long running tasks like a backup. To circumvent this I have implemented a backup monitor that restarts the backup if it is terminated before it is fully completed. So it is quite normal to see up to ten or more backup restarts.
+Dropbox has this functionality built in and it is extremely easy to do, please checkout [this blog post](http://www.mikeyd.com.au/2011/06/05/restoring-previous-versions-of-files-in-dropbox) for more information.
 
-= Why cant I see the exclude files and directories widget in Internet Explorer 7? =
-That is because it only supports IE8 or higher or any of the awesome modern better alternatives like Google Chrome, Firefox,
-Opera, etc. In order to use the widget you have no choice but to update to IE8 or any of the aforementioned browsers.
+You can also install the zip [premium extension](http://wpb2d.com/premium) that will zip up all your files, including the SQL dumps, before uploading it to Dropbox allowing you to store multiple backups.
 
 == Screenshots ==
 
@@ -150,9 +135,20 @@ Opera, etc. In order to use the widget you have no choice but to update to IE8 o
 
 == Changelog ==
 
-= 1.4.3 =
+= 1.4.5 =
+* Added support for multi site
+* Added support for running WordPress in its own directory. http://codex.wordpress.org/Giving_WordPress_Its_Own_Directory
+* Added support for an alternate WP_CONTENT_DIR
 * Fixed an issue where windows servers where uploading with incorrect slashes
-* Added support for multi site`
+* Fixed an issue where diretories where being marked as partial when they had no excluded files
+* Fixed a memory leak in the exclude file widget
+
+= 1.4.4 =
+* Attempt to set the memory limit WP_MAX_MEMORY_LIMIT and have a better go at setting the time limit
+* Added .dropbox to the ignored files list as Dropbox does not accept it
+* Added retry logic for normal uploads that receive errors
+* Updated the Dropbox API lib that includes retries for chunked uploads
+* Fixed a minor potential XSS issue when viewing the backup log, thanks Mahadev Subedi (@blinkms) for the heads up
 
 = 1.4.3 =
 * Fixed issue where autorise link was invalid
