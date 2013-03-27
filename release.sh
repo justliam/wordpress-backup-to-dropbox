@@ -1,6 +1,6 @@
 #!/bin/sh
-TRUNK='/Users/mikey/Documents/wpb2d/svn/wordpress-backup-to-dropbox/trunk/'
-ARCHIVE='/Users/mikey/Documents/wpb2d/releases/wordpress-backup-to-dropbox.zip'
+TRUNK=$HOME/Projects/wpb2d/svn/wordpress-backup-to-dropbox/trunk/
+ARCHIVE=$HOME/Projects/wpb2d/releases/wordpress-backup-to-dropbox.zip
 
 cp *.txt $TRUNK
 cp *.png $TRUNK

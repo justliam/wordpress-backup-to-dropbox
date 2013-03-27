@@ -23,7 +23,7 @@ class File_List {
 	private static $ignored_patterns = array(
 		'.DS_Store', 'Thumbs.db', 'desktop.ini',
 		'.git', '.gitignore', '.gitmodules',
-		'.svn',
+		'.svn', '.dropbox',
 		'.sass-cache',
 	);
 
@@ -62,9 +62,6 @@ class File_List {
 	}
 
 	public function is_excluded($path) {
-		if ($this->in_ignore_list($path))
-			return true;
-
 		if (is_dir($path))
 			return $this->is_excluded_dir($path);
 		else
@@ -105,7 +102,7 @@ class File_List {
 		if (in_array($dir, $this->excluded_dirs))
 			return true;
 
-		if ($dir == rtrim(ABSPATH,'/'))
+		if ($dir == rtrim(get_blog_root_dir(),'/'))
 			return false;
 
 		return $this->is_excluded_dir(dirname($dir));
@@ -116,13 +113,15 @@ class File_List {
 			$files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir), RecursiveIteratorIterator::SELF_FIRST, RecursiveIteratorIterator::CATCH_GET_CHILD);
 			$files->setMaxDepth(10);
 			foreach ($files as $file) {
-				if ($file == $dir)
+				$file_name = $file->getPathname();
+
+				if ($file_name == $dir)
 					continue;
 
-				if (self::in_ignore_list(basename($file)))
+				if (self::in_ignore_list(basename($file_name)))
 					continue;
 
-				if ($this->is_excluded($file))
+				if ($this->is_excluded($file_name))
 					return true;
 			}
 		}

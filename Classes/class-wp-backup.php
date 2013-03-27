@@ -33,9 +33,12 @@ class WP_Backup {
 		$this->config = WP_Backup_Config::construct();
 	}
 
-	public function backup_path($path, $always_include) {
+	public function backup_path($path, $dropbox_path = null, $always_include = array()) {
 		if (!$this->config->get_option('in_progress'))
 			return;
+
+		if (!$dropbox_path)
+			$dropbox_path = get_blog_root_dir();
 
 		WP_Backup_Logger::log(sprintf(__('Backing up WordPress path at (%s).', 'wpbtd'), $path));
 
@@ -46,6 +49,9 @@ class WP_Backup {
 
 		$next_check = time() + 5;
 		$total_files = $this->config->get_option('total_file_count');
+		if ($total_files < 1500) //I doub't very much a wp installation can get smaller then this
+			$total_files = 1500;
+
 		$processed_file_count = count($processed_files);
 
 		if (file_exists($path)) {
@@ -61,12 +67,9 @@ class WP_Backup {
 						die($msg);
 					}
 
-					$percent_done = __('unknown', 'wpbtd');
-					if ($total_files > 0) {
-						$percent_done = round(($processed_file_count / $total_files) * 100, 0);
-						if ($percent_done > 99)
-							$percent_done = 99;
-					}
+					$percent_done = round(($processed_file_count / $total_files) * 100, 0);
+					if ($percent_done > 99)
+						$percent_done = 99;
 
 					$this->config->add_processed_files($current_processed_files);
 
@@ -79,17 +82,19 @@ class WP_Backup {
 				if (!in_array($file, $always_include) && $file_list->is_excluded($file))
 					continue;
 
-				if (is_file($file)) {
+				if ($file_list->in_ignore_list($file))
+					continue;
 
+				if (is_file($file)) {
 					if (in_array($file, $processed_files))
 						continue;
 
 					if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include))
 						continue;
 
-					if ($this->output->out($source, $file)) {
+					if ($this->output->out($dropbox_path, $file)) {
 						$uploaded_files[] = array(
-							'file' => str_replace($source . DIRECTORY_SEPARATOR, '', $file),
+							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', $file),
 							'mtime' => filemtime($file),
 						);
 					}
@@ -99,21 +104,15 @@ class WP_Backup {
 				}
 			}
 
-			$this->output->end();
-			WP_Backup_Logger::log(sprintf(__('A total of %s files were processed.'), $processed_file_count));
-
-			if ($processed_file_count > 800) //I doub't very much a wp installation can get smaller then this
-				$this->config->set_option('total_file_count', $processed_file_count);
+			return $processed_file_count;
 		}
 	}
 
 	public function execute() {
 		$manager = WP_Backup_Extension_Manager::construct();
 
-		$this->config
-			->set_time_limit()
-			->set_memory_limit()
-			;
+		$this->config->set_time_limit();
+		$this->config->set_memory_limit();
 
 		try {
 
@@ -130,17 +129,29 @@ class WP_Backup {
 
 			$manager->on_start();
 
-			$this->backup_path(ABSPATH, array(
+			//Backup the content dir first
+			$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
 				$core->get_file(),
 				$plugins->get_file()
 			));
 
+			//Now backup the blog root
+			$processed_files += $this->backup_path(get_blog_root_dir());
+
+			//Record the number of files processed to make the progress meter more accurate
+			$this->config->set_option('total_file_count', $processed_files);
+
+			//Remove the backed up SQL files
 			$core->remove_file();
 			$plugins->remove_file();
 
+			//Call end hooks
+			$this->output->end();
 			$manager->on_complete();
 
+			//Update log file with stats
 			WP_Backup_Logger::log(__('Backup complete.', 'wpbtd'));
+			WP_Backup_Logger::log(sprintf(__('A total of %s files were processed.'), $processed_files));
 			WP_Backup_Logger::log(sprintf(
 				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
 				(memory_get_usage(true) / 1048576)
@@ -153,9 +164,7 @@ class WP_Backup {
 				$root = true;
 			}
 
-			$log_file = WP_Backup_Logger::get_log_file();
-			WP_Backup_Logger::log(sprintf(__('Uploading %s.'), $log_file));
-			$this->output->out(ABSPATH, $log_file, $root);
+			$this->output->out(get_blog_root_dir(), WP_Backup_Logger::get_log_file(), $root);
 
 			$this->config
 				->complete()

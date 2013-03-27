@@ -19,11 +19,6 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 try {
-	$v = phpversion();
-	if ($v < 5) {
-		throw new Exception(sprintf(__('Your PHP version (%s) is too old for this plugin to function correctly please update to PHP 5.2 or higher.'), $v));
-	}
-
 	global $wpdb;
 
 	$validation_errors = null;
@@ -91,7 +86,7 @@ try {
 
 		//Display the file tree with a call back to update the clicked on check box and white list
 		$('#file_tree').fileTree({
-			root: '<?php echo addslashes(ABSPATH); ?>',
+			root: '<?php echo addslashes(get_blog_root_dir()); ?>',
 			script: ajaxurl,
 			expandSpeed: 500,
 			collapseSpeed: 500,
