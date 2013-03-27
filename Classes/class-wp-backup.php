@@ -49,8 +49,8 @@ class WP_Backup {
 
 		$next_check = time() + 5;
 		$total_files = $this->config->get_option('total_file_count');
-		if ($total_files < 1000) //I doub't very much a wp installation can get smaller then this
-			$total_files = 1000;
+		if ($total_files < 1500) //I doub't very much a wp installation can get smaller then this
+			$total_files = 1500;
 
 		$processed_file_count = count($processed_files);
 
