@@ -97,8 +97,7 @@ class WP_Backup_Config {
 	}
 
 	public static function set_memory_limit() {
-		if (function_exists('memory_get_usage'))
-			@ini_set('memory_limit', -1);
+		@ini_set('memory_limit', WP_MAX_MEMORY_LIMIT);
 	}
 
 	public function is_scheduled() {
