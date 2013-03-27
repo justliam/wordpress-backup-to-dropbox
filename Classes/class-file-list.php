@@ -23,7 +23,7 @@ class File_List {
 	private static $ignored_patterns = array(
 		'.DS_Store', 'Thumbs.db', 'desktop.ini',
 		'.git', '.gitignore', '.gitmodules',
-		'.svn',
+		'.svn', '.dropbox',
 		'.sass-cache',
 	);
 
