@@ -104,11 +104,7 @@ class WP_Backup {
 				}
 			}
 
-			$this->output->end();
-			WP_Backup_Logger::log(sprintf(__('A total of %s files were processed.'), $processed_file_count));
-
-			if ($processed_file_count > 800) //I doub't very much a wp installation can get smaller then this
-				$this->config->set_option('total_file_count', $processed_file_count);
+			return $processed_file_count;
 		}
 	}
 
@@ -134,20 +130,28 @@ class WP_Backup {
 			$manager->on_start();
 
 			//Backup the content dir first
-			$this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
+			$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
 				$core->get_file(),
 				$plugins->get_file()
 			));
 
 			//Now backup the blog root
-			$this->backup_path(get_blog_root_dir());
+			$processed_files += $this->backup_path(get_blog_root_dir());
 
+			//Record the number of files processed to make the progress meter more accurate
+			$this->config->set_option('total_file_count', $processed_files);
+
+			//Remove the backed up SQL files
 			$core->remove_file();
 			$plugins->remove_file();
 
+			//Call end hooks
+			$this->output->end();
 			$manager->on_complete();
 
+			//Update log file with stats
 			WP_Backup_Logger::log(__('Backup complete.', 'wpbtd'));
+			WP_Backup_Logger::log(sprintf(__('A total of %s files were processed.'), $processed_files));
 			WP_Backup_Logger::log(sprintf(
 				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
 				(memory_get_usage(true) / 1048576)
