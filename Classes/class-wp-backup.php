@@ -40,8 +40,6 @@ class WP_Backup {
 		if (!$dropbox_path)
 			$dropbox_path = get_blog_root_dir();
 
-		WP_Backup_Logger::log(sprintf(__('Backing up WordPress path at (%s).', 'wpbtd'), $path));
-
 		$file_list = new File_List();
 
 		$processed_files = $this->config->get_processed_files();
