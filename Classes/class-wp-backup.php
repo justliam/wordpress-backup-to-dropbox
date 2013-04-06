@@ -69,6 +69,9 @@ class WP_Backup {
 					if ($percent_done > 99)
 						$percent_done = 99;
 
+					if ($percent_done < 1)
+						$percent_done = 1;
+
 					$this->config->add_processed_files($current_processed_files);
 
 					WP_Backup_Logger::log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
