@@ -24,12 +24,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 define('BACKUP_TO_DROPBOX_VERSION', '1.4.5');
 define('EXTENSIONS_DIR', implode(array(WP_CONTENT_DIR, 'plugins', 'wordpress-backup-to-dropbox', 'Extensions'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
-define('MINUMUM_PHP_VERSION', 50216); //5.2.16
-
-if (!defined('PHP_VERSION_ID')) {
-    $version = explode('.', PHP_VERSION);
-    define('PHP_VERSION_ID', ($version[0] * 10000 + $version[1] * 100 + $version[2]));
-}
+define('MINUMUM_PHP_VERSION', '5.2.16');
 
 require_once('Dropbox/Dropbox/API.php');
 require_once('Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
@@ -68,7 +63,7 @@ function backup_to_dropbox_admin_menu() {
 	$text = __('Backup Settings', 'wpbtd');
 	add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
 
-	if (PHP_VERSION_ID >= MINUMUM_PHP_VERSION) {
+	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
 		$text = __('Backup Log', 'wpbtd');
 		add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
@@ -88,10 +83,10 @@ function backup_to_dropbox_admin_menu_contents() {
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
-	if (PHP_VERSION_ID < MINUMUM_PHP_VERSION)
-		include('Views/wp-backup-to-dropbox-deprecated.php');
-	else
+	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
 		include('Views/wp-backup-to-dropbox-options.php');
+	else
+		include('Views/wp-backup-to-dropbox-deprecated.php');
 }
 
 /**
