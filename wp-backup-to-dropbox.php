@@ -83,7 +83,7 @@ function backup_to_dropbox_admin_menu_contents() {
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
-	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
+	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0)
 		include('Views/wp-backup-to-dropbox-options.php');
 	else
 		include('Views/wp-backup-to-dropbox-deprecated.php');
