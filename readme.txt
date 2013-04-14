@@ -83,6 +83,8 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 * Hungarian (hu_HU) - [Lazarevics](http://hardverborze.tk)
 * Russian (ru_RU) - [Evgeny Vlasov](http://verha.net)
 
+Help keep WPB2D's language files up ot date on [HunStart](https://code.google.com/p/wpbtd)
+
 == Installation ==
 
 1. Upload the contents of `wordpress-dropbox-backup.zip` to the `/wp-content/plugins/` directory or use WordPress' built-in plugin install tool
