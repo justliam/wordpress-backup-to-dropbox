@@ -257,7 +257,7 @@ load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
 
 if (defined('MULTISITE') && MULTISITE) {
 	function custom_menu_order($menu_ord) {
-		if (!$menu_ord)
+		if (!is_array($menu_ord))
 			return true;
 
 		if (in_array('backup-to-dropbox', $menu_ord))
