@@ -141,12 +141,15 @@ class WP_Backup_Config {
 	public function get_schedule() {
 		$time = wp_next_scheduled('execute_periodic_drobox_backup');
 		$frequency = wp_get_schedule('execute_periodic_drobox_backup');
+		$schedule = null;
+
 		if ($time && $frequency) {
 			//Convert the time to the blogs timezone
 			$blog_time = strtotime(date('Y-m-d H', strtotime(current_time('mysql'))) . ':00:00');
 			$blog_time += $time - strtotime(date('Y-m-d H') . ':00:00');
 			$schedule = array($blog_time, $frequency);
 		}
+
 		return $schedule;
 	}
 
