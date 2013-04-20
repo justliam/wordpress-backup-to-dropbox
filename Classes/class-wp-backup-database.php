@@ -43,20 +43,25 @@ abstract class WP_Backup_Database {
 	}
 
 	public function remove_file() {
-		$sql_file_name = $this->get_file();
-		if (file_exists($sql_file_name))
-			unlink($sql_file_name);
+		$sql_file_name = glob($this->get_file(false) . '*');
+		if (file_exists($sql_file_name[0]))
+			unlink($sql_file_name[0]);
 	}
 
 	private function set_wait_timeout() {
 		$this->database->query("SET SESSION wait_timeout=" . self::WAIT_TIMEOUT);
 	}
 
-	public function get_file() {
+	public function get_file($secret = true) {
 		if (!$this->type)
 			throw new Exception();
 
-		return rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
+		$file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
+
+		if ($secret)
+			$file .= '.' . hash_hmac('sha1', DB_NAME, time()) . '-secret';
+
+		return $file;
 	}
 
 	protected function exists() {

@@ -95,7 +95,7 @@ class WP_Backup {
 
 					if ($this->output->out($dropbox_path, $file)) {
 						$uploaded_files[] = array(
-							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', $file),
+							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', Dropbox_Facade::remove_secret($file)),
 							'mtime' => filemtime($file),
 						);
 					}

@@ -146,14 +146,14 @@ class Dropbox_Facade {
 		$i = 0;
 		while ($i++ < self::RETRY_COUNT) {
 			try {
-				return $this->dropbox->putFile($file, null, $path);
+				return $this->dropbox->putFile($file, $this->remove_secret($file), $path);
 			} catch (Exception $e) {}
 		}
 		throw $e;
 	}
 
 	public function chunk_upload_file($path, $file) {
-		return $this->dropbox->chunkedUpload($file, null, $path);
+		return $this->dropbox->chunkedUpload($file, $this->remove_secret($file), $path);
 	}
 
 	public function delete_file($file) {
@@ -191,5 +191,13 @@ class Dropbox_Facade {
 		delete_option('backup-to-dropbox-tokens');
 
 		$this->init();
+	}
+
+	public static function remove_secret($file) {
+		if (preg_match('/-secret$/', $file)) {
+			return substr($file, 0, strrpos($file, '.'));
+		}
+
+		return $file;
 	}
 }
