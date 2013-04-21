@@ -26,12 +26,56 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		reset_globals();
-		$this->list = new File_List();
+
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->andReturn(array())
+			->shouldReceive('insert')
+			->shouldReceive('query')
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$this->list = new File_List($db);
 	}
 
-	public function testSetGetExcludedFile() {
-		$this->list->set_excluded(__FILE__);
-		$this->assertTrue($this->list->is_excluded(__FILE__));
+	public function testDatabaseInteractions() {
+
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->andReturn(array())
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_excluded_files', array(
+				'file' => __FILE__,
+				'isdir' => false
+			))
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$list = new File_List($db);
+		$list->set_excluded(__FILE__);
+
+		$this->assertTrue($list->is_excluded(__FILE__));
+
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->andReturn(array(array(__FILE__)))
+			->shouldReceive('query')
+			->with("DELETE FROM wp_wpb2d_excluded_files WHERE file = '" . __FILE__ . "'")
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$list = new File_List($db);
+		$this->assertTrue($list->is_excluded(__FILE__));
+
+		$list->set_included(__FILE__);
+		$this->assertFalse($list->is_excluded(__FILE__));
 	}
 
 	public function testExcludedIncludeFile() {
