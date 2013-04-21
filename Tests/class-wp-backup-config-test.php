@@ -24,51 +24,121 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		reset_globals();
-		$this->config = WP_Backup_Config::construct();
+	}
+
+	public function tearDown() {
+		Mockery::close();
 	}
 
 	public function testConstruct() {
-		$this->assertEquals(false, $this->config->get_option('last_backup_time'));
-		$this->assertEquals(false, $this->config->get_option('in_progress'));
-	}
 
-	public function testConstructDudData() {
-		global $options;
-		$options['backup-to-dropbox-options'] = array('bad');
+		$db = Mockery::mock()
+			->shouldReceive('get_var')
+			->with("SELECT value FROM wp_wpb2d_options WHERE name = 'last_backup_time'")
+			->once()
 
-		$this->config = WP_Backup_Config::construct();
-		$this->assertEquals(false, $this->config->get_option('last_backup_time'));
-		$this->assertEquals(false, $this->config->get_option('in_progress'));
+			->shouldReceive('get_var')
+			->with("SELECT value FROM wp_wpb2d_options WHERE name = 'in_progress'")
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$config = new WP_Backup_Config($db);
+		$this->assertEquals(false, $config->get_option('last_backup_time'));
+		$this->assertEquals(false, $config->get_option('in_progress'));
 	}
 
 	public function testAddBackupHistory() {
+
+		$db = Mockery::mock()
+			->shouldReceive('get_var')
+			->with("SELECT value FROM wp_wpb2d_options WHERE name = 'history'")
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_options', Mockery::type('array'))
+			->andReturn(true)
+			->times(30)
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$config = new WP_Backup_Config($db);
+
 		for ($i = 0; $i < 30; $i++) {
 			set_current_time('2012-03-12 00:00:' . $i);
-			$this->config->log_finished_time();
+			$config->log_finished_time();
 		}
 
-		$history = $this->config->get_history();
+		$history = $config->get_history();
 		$this->assertEquals(20, count($history));
 	}
 
 	public function testGetUploadedFiles() {
-		$files = $this->config->add_processed_files(array('File1', 'File2'));
 
-		$files = $this->config->get_processed_files();
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->with('SELECT file FROM wp_wpb2d_processed_files', 1)
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_processed_files', array('file' => 'File1'))
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_processed_files', array('file' => 'File2'))
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_processed_files', array('file' => 'File3'))
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_processed_files', array('file' => 'File4'))
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$config = new WP_Backup_Config($db);
+
+		$this->assertEmpty($config->get_processed_files());
+
+		$files = $config->add_processed_files(array('File1', 'File2'));
+
+		$files = $config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2'));
 
-		$files = $this->config->add_processed_files(array('File3', 'File4'));
+		$files = $config->add_processed_files(array('File3', 'File4'));
 
-		$files = $this->config->get_processed_files();
+		$files = $config->get_processed_files();
 		$this->assertEquals($files, array('File1', 'File2', 'File3', 'File4'));
 	}
 
+	private function getConfig()
+	{
+		$db = Mockery::mock();
+		$db->prefix = 'wp_';
+
+		return new WP_Backup_Config($db);
+	}
+
 	public function testSetGetScheduleWhereTimeOfDayHasPast() {
+
+		$config = $this->getConfig();
+
 		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+2 hours')));
 		set_current_time(date('Y-m-d H:i:s ', $blog_time));
 
-		$this->config->set_schedule(date('D', $blog_time), date('H', $blog_time) . ':00', 'daily');
-		$schedule = $this->config->get_schedule();
+		$config->set_schedule(date('D', $blog_time), date('H', $blog_time) . ':00', 'daily');
+		$schedule = $config->get_schedule();
 
 		//Next week in the blog time time is expected
 		$expected_date_time = date('Y-m-d', strtotime('+7 days', $blog_time)) . ' ' . date('H', $blog_time) . ':00:00';
@@ -81,11 +151,14 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasPastAndNoDaySupplied() {
+
+		$config = $this->getConfig();
+
 		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+2 hours')));
 		set_current_time(date('Y-m-d H:i:s ', $blog_time));
 
-		$this->config->set_schedule(null, date('H') . ':00', 'daily');
-		$schedule = $this->config->get_schedule();
+		$config->set_schedule(null, date('H') . ':00', 'daily');
+		$schedule = $config->get_schedule();
 
 		//Today in the blog time time is expected
 		$expected_date_time = date('Y-m-d', strtotime('+1 day')) . ' ' . date('H') . ':00:00';
@@ -98,6 +171,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasNotPast() {
+
+		$config = $this->getConfig();
+
 		$blog_time = strtotime(date('Y-m-d H:00:00', strtotime('+2 hours')));
 		set_current_time(date('Y-m-d H:i:s ', $blog_time));
 
@@ -106,8 +182,8 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 			$hour = "0$hour";
 		}
 
-		$this->config->set_schedule(date('D', $blog_time), $hour . ':00', 'weekly');
-		$schedule = $this->config->get_schedule();
+		$config->set_schedule(date('D', $blog_time), $hour . ':00', 'weekly');
+		$schedule = $config->get_schedule();
 
 		$expected_date_time = date('Y-m-d', $blog_time) . ' ' . $hour . ':00:00';
 		$this->assertEquals($expected_date_time, date('Y-m-d H:i:s', $schedule[0]));
@@ -118,32 +194,97 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testGetDropboxLocation() {
-		$dropbox_path = $this->config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
+
+		$db = Mockery::mock()
+			->shouldReceive('get_var')
+			->with("SELECT value FROM wp_wpb2d_options WHERE name = 'store_in_subfolder'")
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_options', array(
+				'name' => 'dropbox_location',
+				'value' => 'MyDropboxRoot'
+			))
+			->andReturn(false)
+			->once()
+
+			->shouldReceive('update')
+			->with(
+				'wp_wpb2d_options',
+				array('value' => 'MyDropboxRoot'),
+				array('name' => 'dropbox_location')
+			)
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_options', array(
+				'name' => 'store_in_subfolder',
+				'value' => true
+			))
+			->andReturn(true)
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$config = new WP_Backup_Config($db);
+
+		$dropbox_path = $config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
 		$this->assertEquals('Out', $dropbox_path);
 
-		$this->config
+		$config
 			->set_option('dropbox_location', 'MyDropboxRoot')
 			->set_option('store_in_subfolder', true)
 			;
 
-		$dropbox_path = $this->config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
+		$dropbox_path = $config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
 		$this->assertEquals('MyDropboxRoot/Out', $dropbox_path);
 
-		$dropbox_path = $this->config->get_dropbox_path(__DIR__ . DIRECTORY_SEPARATOR, __DIR__ . '/Out/file.txt');
+		$dropbox_path = $config->get_dropbox_path(__DIR__ . DIRECTORY_SEPARATOR, __DIR__ . '/Out/file.txt');
 		$this->assertEquals('MyDropboxRoot/Out', $dropbox_path);
 
-		$dropbox_path = $this->config->get_dropbox_path(__DIR__ . DIRECTORY_SEPARATOR, __DIR__ . '/Out/file.txt', true);
+		$dropbox_path = $config->get_dropbox_path(__DIR__ . DIRECTORY_SEPARATOR, __DIR__ . '/Out/file.txt', true);
 		$this->assertEquals('MyDropboxRoot', $dropbox_path);
 	}
 
 	public function testComplete() {
-		$this->config->set_schedule('Monday', '00:00:00', 'daily');
+
+		$db = Mockery::mock()
+			->shouldReceive('query')
+			->with("TRUNCATE wp_wpb2d_processed_files")
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_options', array(
+				'name' => 'in_progress',
+				'value' => false
+			))
+			->andReturn(true)
+			->once()
+
+			->shouldReceive('insert')
+			->with('wp_wpb2d_options', array(
+				'name' => 'is_running',
+				'value' => false
+			))
+			->andReturn(true)
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$config = new WP_Backup_Config($db);
+
+		$config->set_schedule('Monday', '00:00:00', 'daily');
 
 		set_current_time('2012-03-12 00:00:00');
 
-		$this->config->complete();
+		$config->complete();
 
-		$this->assertEmpty($this->config->get_actions());
 		$this->assertFalse(wp_next_scheduled('monitor_dropbox_backup_hook'));
 		$this->assertFalse(wp_next_scheduled('run_dropbox_backup_hook'));
 	}

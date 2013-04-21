@@ -21,74 +21,70 @@
 class WP_Backup_Config {
 	const MAX_HISTORY_ITEMS = 20;
 
+	private
+		$db,
+		$options,
+		$processed_files
+		;
+
 	public static function construct() {
 		return new self();
 	}
 
-	public function __construct() {
-		if (!is_array(get_option('backup-to-dropbox-log'))) {
-			add_option('backup-to-dropbox-log', array(), null, 'no');
-		}
+	public function __construct($wpdb = null) {
+		if (!$wpdb) global $wpdb;
 
-		if (!is_array(get_option('backup-to-dropbox-history'))) {
-			add_option('backup-to-dropbox-history', array(), null, 'no');
-		}
-
-		$options = get_option('backup-to-dropbox-options');
-		if (!$options) {
-			$options = array(
-				'dropbox_location' => null,
-				'in_progress' => false,
-				'store_in_subfolder' => false,
-				'total_file_count' => 0,
-			);
-			add_option('backup-to-dropbox-options', $options, null, 'no');
-		}
-
-		$actions = get_option('backup-to-dropbox-actions');
-		if (!$actions) {
-			add_option('backup-to-dropbox-actions', array(), null, 'no');
-		}
-
-		$files = get_option('backup-to-dropbox-processed-files');
-		if (!$files) {
-			add_option('backup-to-dropbox-processed-files', array(), null, 'no');
-		}
+		$this->db = $wpdb;
+		$this->db->prefix = $wpdb->prefix;
 	}
 
 	public static function get_backup_dir() {
 		return WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'backups';
 	}
 
-	public function set_option($option, $value) {
-		$options = get_option('backup-to-dropbox-options');
-		$options[$option] = $value;
-		update_option('backup-to-dropbox-options', $options);
+	public function set_option($name, $value) {
+		$this->options[$name] = $value;
+
+		$result = $this->db->insert($this->db->prefix . "wpb2d_options", array(
+			'name' => $name,
+			'value' => $value,
+		));
+
+		if (!$result) {
+			$this->db->update(
+				$this->db->prefix . 'wpb2d_options',
+				array('value' => $value),
+				array('name' => $name)
+			);
+		}
+
 		return $this;
 	}
 
-	public function get_option($option, $no_cache = false) {
-		if ($no_cache)
-			wp_cache_flush();
+	public function get_option($name) {
+		if (!isset($this->options[$name])) {
+			$this->options[$name] = $this->db->get_var("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = '$name'");
+		}
 
-		$options = get_option('backup-to-dropbox-options');
-		return isset($options[$option]) ? $options[$option] : false;
-	}
-
-	public function get_actions() {
-		return get_option('backup-to-dropbox-actions');
+		return $this->options[$name];
 	}
 
 	public function get_processed_files() {
-		return get_option('backup-to-dropbox-processed-files');
+		if (!$this->processed_files)
+			$this->processed_files = $this->db->get_results("SELECT file FROM {$this->db->prefix}wpb2d_processed_files", ARRAY_A);
+
+		return $this->processed_files;
 	}
 
 	public function add_processed_files($new_files) {
-		$files = $this->get_processed_files();
-		if (!is_array($files))
-			$files = array();
 
-		update_option('backup-to-dropbox-processed-files', array_merge($files, $new_files));
+		foreach ($new_files as $file) {
+			$this->processed_files[] = $file;
+			$this->db->insert($this->db->prefix . 'wpb2d_processed_files', array(
+				'file' => $file
+			));
+		}
+
 		return $this;
 	}
 
@@ -154,11 +150,15 @@ class WP_Backup_Config {
 	}
 
 	public function clear_history() {
-		update_option('backup-to-dropbox-history', array());
+		$this->set_option('history', null);
 	}
 
 	public function get_history() {
-		return get_option('backup-to-dropbox-history');
+		$history = $this->get_option('history');
+		if (!$history)
+			return array();
+
+		return explode(',', $history);
 	}
 
 	public function get_dropbox_path($source, $file, $root = false) {
@@ -181,7 +181,8 @@ class WP_Backup_Config {
 		if (count($history) > self::MAX_HISTORY_ITEMS)
 			array_shift($history);
 
-		update_option('backup-to-dropbox-history', $history);
+		$this->set_option('history', implode(',', $history));
+
 		return $this;
 	}
 
@@ -190,7 +191,7 @@ class WP_Backup_Config {
 		wp_clear_scheduled_hook('run_dropbox_backup_hook');
 		wp_clear_scheduled_hook('execute_instant_drobox_backup');
 
-		update_option('backup-to-dropbox-processed-files', array());
+		$this->db->query("TRUNCATE {$this->db->prefix}wpb2d_processed_files");
 
 		$this->set_option('in_progress', false);
 		$this->set_option('is_running', false);
