@@ -238,10 +238,104 @@ function get_blog_root_dir() {
 	return ABSPATH;
 }
 
-//Delete unused options from previous versions
-delete_option('backup-to-dropbox-actions');
-delete_option('backup-to-dropbox-file-list');
-delete_option('backup-to-dropbox-log');
+function wpb2d_install() {
+	global $wpdb;
+
+	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
+
+	$table_name = $wpdb->prefix . 'wpb2d_options';
+	dbDelta("CREATE TABLE $table_name (
+		name varchar(50) NOT NULL,
+		value text NOT NULL,
+		UNIQUE KEY name (name)
+	);");
+
+	$table_name = $wpdb->prefix . 'wpb2d_processed_files';
+	dbDelta("CREATE TABLE $table_name (
+		file varchar(500) NOT NULL,
+		UNIQUE KEY file (file)
+	);");
+
+	$table_name = $wpdb->prefix . 'wpb2d_excluded_files';
+	dbDelta("CREATE TABLE $table_name (
+		file varchar(500) NOT NULL,
+		isdir tinyint(1) NOT NULL,
+		INDEX isdir (isdir),
+		UNIQUE KEY file (file)
+	);");
+
+	$table_name = $wpdb->prefix . 'wpb2d_premium_extensions';
+	dbDelta("CREATE TABLE $table_name (
+		name varchar(50) NOT NULL,
+		file varchar(500) NOT NULL,
+		UNIQUE KEY name (name)
+	);");
+}
+
+function wpb2d_install_data() {
+	global $wpdb;
+
+	$options = get_option('backup-to-dropbox-options');
+	if ($options) {
+		foreach ($options as $key => $value) {
+			$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
+				'name' => $key,
+				'value' => $value,
+			));
+		}
+	}
+
+	$history = get_option('backup-to-dropbox-history');
+	if ($history) {
+		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
+			'name' => 'history',
+			'value' => implode(',', $history),
+		));
+	}
+
+	list($dirs, $files) = get_option('backup-to-dropbox-excluded-files');
+	if ($files) {
+		foreach ($files as $file) {
+			$wpdb->insert($wpdb->prefix . 'wpb2d_excluded_files', array(
+				'file' => $file,
+				'isdir' => false
+			));
+		}
+	}
+
+	if ($dirs) {
+		foreach ($dirs as $file) {
+			$wpdb->insert($wpdb->prefix . 'wpb2d_excluded_files', array(
+				'file' => $file,
+				'isdir' => true
+			));
+		}
+	}
+
+	$premium_extensions = get_option('backup-to-dropbox-premium-extensions');
+	if ($premium_extensions) {
+		foreach ($premium_extensions as $name => $file) {
+			$wpdb->insert($wpdb->prefix . 'wpb2d_premium_extensions', array(
+				'name' => $name,
+				'file' => $file,
+			));
+		}
+	}
+
+	//Delete unused options
+	delete_option('backup-to-dropbox-premium-extensions');
+	delete_option('backup-to-dropbox-excluded-files');
+	delete_option('backup-to-dropbox-processed-files');
+	delete_option('backup-to-dropbox-history');
+	delete_option('backup-to-dropbox-options');
+	delete_option('backup-to-dropbox-actions');
+	delete_option('backup-to-dropbox-file-list');
+	delete_option('backup-to-dropbox-log');
+}
+
+//Register database install
+register_activation_hook(__FILE__, 'wpb2d_install');
+register_activation_hook(__FILE__, 'wpb2d_install_data');
 
 //WordPress filters and actions
 add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
