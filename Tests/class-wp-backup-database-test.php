@@ -38,9 +38,16 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 	public function setUp() {
 		reset_globals();
 		set_current_time('2012-03-12 00:00:00');
-		$this->config = WP_Backup_Config::construct();
-		if (!file_exists($this->config->get_backup_dir()))
-			mkdir($this->config->get_backup_dir());
+
+		$dir = __DIR__ . '/BackupTest';
+		$this->config = Mockery::mock('Config')
+			->shouldReceive('get_backup_dir')
+			->andReturn($dir)
+
+			->mock()
+			;
+
+		mkdir($dir);
 	}
 
 	private function getTableData() {

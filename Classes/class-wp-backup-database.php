@@ -30,14 +30,16 @@ abstract class WP_Backup_Database {
 
 	abstract function execute();
 
-	public function __construct($type, $wpdb = null) {
+	public function __construct($type, $wpdb = null, $config = null) {
 		if (!$wpdb) global $wpdb;
+		if (!$config)
+			$config = WP_Backup_Config::construct();
 
 		WP_Backup::create_dump_dir();
 
 		$this->type = $type;
 		$this->database = $wpdb;
-		$this->config = WP_Backup_Config::construct();
+		$this->config = $config;
 
 		$this->set_wait_timeout();
 	}

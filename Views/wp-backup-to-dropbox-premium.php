@@ -58,7 +58,7 @@ try {
 			<?php _e('Installing a premium extensions is easy:', 'wpbtd'); ?>
 		</p>
 		<ol class="instructions">
-			<li><?php _e('Click Buy Now and pay for your extension using PayPal', 'wpbtd'); ?></li>
+			<li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
 			<li><?php _e('Click Download & Install to download and install the extension', 'wpbtd'); ?></li>
 			<li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
 		</ol>
@@ -113,6 +113,6 @@ try {
 	</table>
 	<p>
 		<strong><?php _e('Please Note:') ?></strong>&nbsp;
-		<?php echo sprintf(__('Each extension can only be activated on a single website for one year. If you manage multiple websites please %s.'), '<a href="http://wpb2d.com/buy-subscription">' . __('purchase a subscription') . '</a>') ?>
+		<?php echo sprintf(__('Each payment includes updates and support on a single website for one year. If you manage multiple websites please consider purchasing an %s.'), '<a href="http://wpb2d.com/buy-subscription">' . __('unlimited site subscription') . '</a>') ?>
 	</p>
 </div>

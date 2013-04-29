@@ -19,16 +19,18 @@
 class WP_Backup_Extension_Manager {
 	private
 		$key = 'c7d97d59e0af29b2b2aa3ca17c695f96',
-		$objectCache
+		$objectCache,
+		$installed,
+		$db
 		;
 
 	public static function construct() {
 		return new self();
 	}
 
-	public function __construct() {
-		if (!get_option('backup-to-dropbox-premium-extensions'))
-			add_option('backup-to-dropbox-premium-extensions', array(), null, 'no');
+	public function __construct($wpdb = null) {
+		if (!$wpdb) global $wpdb;
+		$this->db = $wpdb;
 	}
 
 	public function get_key() {
@@ -64,11 +66,14 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function get_installed() {
-		$extensions = get_option('backup-to-dropbox-premium-extensions');
-		if (!is_array($extensions))
-			return array();
+		if (!$this->installed) {
+			$this->installed = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_premium_extensions", ARRAY_N);
 
-		return $extensions;
+			if (!is_array($this->installed))
+				return array();
+		}
+
+		return $this->installed;
 	}
 
 	public function install($name, $file) {
@@ -109,9 +114,10 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function activate($name, $file) {
-		$extensions = get_option('backup-to-dropbox-premium-extensions');
-		$extensions[$name] = $file;
-		update_option('backup-to-dropbox-premium-extensions', $extensions);
+		$this->db->insert($this->db->prefix . "wpb2d_premium_extensions", array(
+			'name' => $name,
+			'file' => $file,
+		));
 	}
 
 	public function init() {
@@ -120,11 +126,10 @@ class WP_Backup_Extension_Manager {
 		foreach ($installed as $name => $file) {
 			if (file_exists(EXTENSIONS_DIR . $file)) {
 				include_once EXTENSIONS_DIR . $file;
-				$active[$name] = $file;
+				$this->activate($name, $file);
 			}
 
 		}
-		update_option('backup-to-dropbox-premium-extensions', $active);
 	}
 
 	public function get_output() {

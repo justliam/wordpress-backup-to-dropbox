@@ -17,8 +17,8 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 class WP_Backup_Database_Plugins extends WP_Backup_Database {
-	public function __construct($wpdb = null) {
-		parent::__construct('plugins', $wpdb);
+	public function __construct($wpdb = null, $config = null) {
+		parent::__construct('plugins', $wpdb, $config);
 	}
 
 	public function execute() {
