@@ -82,6 +82,7 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 * Italian (it_IT) - [René Querin](http://q-design.it)
 * Hungarian (hu_HU) - [Lazarevics](http://hardverborze.tk)
 * Russian (ru_RU) - [Evgeny Vlasov](http://verha.net)
+* Sweedish (sv_SE) - [Webbyrå](http://webbyra.se)
 
 Help keep WPB2D's language files up ot date on [HunStart](https://code.google.com/p/wpbtd)
 
@@ -136,6 +137,12 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.4.6 =
+* Fix issue #127: in_array() warning on multisite setups
+* Fix a few E_NOTICES, sorry guys I moved to a new VM that had these supressed
+* Add a sha1 secret to SQL dump files and Zip archives to make them imposible to guess and download
+* Fix copy on subscriptions page
 
 = 1.4.5 =
 * Added support for multi site

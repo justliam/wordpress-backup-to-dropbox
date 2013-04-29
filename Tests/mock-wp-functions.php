@@ -59,6 +59,10 @@ $options = array();
 $next_schedule = array();
 $schedule = array();
 
+function get_blog_root_dir() {
+	return ABSPATH;
+}
+
 function reset_globals() {
 	global $options;
 	global $schedule;
@@ -125,23 +129,6 @@ function get_bloginfo($key) {
 	return "Mikey's blog";
 }
 
-function get_option($key) {
-	global $options;
-	return array_key_exists($key, $options) ? $options[$key] : false;
-}
-
-function add_option($key, $value, $not_used, $load) {
-	if ($load != 'no') {
-		throw new Exception('Load should be no');
-	}
-	update_option($key, $value);
-}
-
-function update_option($key, $value) {
-	global $options;
-	$options[$key] = $value;
-}
-
 function wp_clear_scheduled_hook($hook) {
 	global $schedule;
 	unset($schedule[$hook]);
@@ -187,8 +174,6 @@ function wp_schedule_single_event($server_time, $key) {
 	$schedule[$key] = array($server_time);
 	return true;
 }
-
-function delete_option($option) {}
 
 function wp_unschedule_event($server_time, $key) {
 	global $schedule;

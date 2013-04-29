@@ -20,26 +20,40 @@ require_once 'mock-wp-functions.php';
 
 class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 
-	private $mgr;
-
 	public function setUp() {
 		reset_globals();
-		$this->mgr = WP_Backup_Extension_Manager::construct();
 		WP_Backup::create_dump_dir();
 	}
+
+
 
 	public function tearDown() {
 		@unlink(EXTENSIONS_DIR . 'extension.php');
 		unlink(WP_Backup_Config::get_backup_dir() . '/index.php');
 		rmdir(WP_Backup_Config::get_backup_dir());
+		Mockery::close();
 	}
 
 	public function testConstruct() {
-		$this->assertEquals(array(), $this->mgr->get_installed());
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->with("SELECT * FROM wp_wpb2d_premium_extensions", 1)
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$mgr = new WP_Backup_Extension_Manager($db);
+
+		$this->assertEquals(array(), $mgr->get_installed());
 	}
 
 	public function testGetExtensions() {
-		$extensions = $this->mgr->get_extensions();
+		$mgr = new WP_Backup_Extension_Manager(Mockery::mock());
+
+		$extensions = $mgr->get_extensions();
 		$this->assertEquals(array(
 			'extensionid' => 1,
 			'name' => 'name',
@@ -51,17 +65,62 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testInstallGetInstalled() {
-		$this->mgr->install('Test extension', 'extension-file.php');
+		$db = Mockery::mock()
+			->shouldReceive('insert')
+			->with('wp_wpb2d_premium_extensions', array(
+				'name' => 'Test extension' ,
+				'file' => 'extension-file.php'
+			))
+			->andReturn(true)
+			->once()
+
+			->shouldReceive('get_results')
+			->with("SELECT * FROM wp_wpb2d_premium_extensions", 1)
+			->andReturn(array(
+				'Test extension' => 'extension-file.php'
+			))
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$mgr = new WP_Backup_Extension_Manager($db);
+		$mgr->install('Test extension', 'extension-file.php');
 		$this->assertEquals(array(
 			'Test extension' => 'extension-file.php'
-		), $this->mgr->get_installed());
+		), $mgr->get_installed());
 	}
 
-	public function testInit() {
+	public function testInitAndCallbacks() {
+		$db = Mockery::mock()
+			->shouldReceive('insert')
+			->with('wp_wpb2d_premium_extensions', array(
+				'name' => 'Test extension' ,
+				'file' => 'extension.php'
+			))
+			->andReturn(true)
+			->twice()
+
+			->shouldReceive('get_results')
+			->with("SELECT * FROM wp_wpb2d_premium_extensions", 1)
+			->andReturn(array(
+				'Test extension' => 'extension.php'
+			))
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		$mgr = new WP_Backup_Extension_Manager($db);
+
 		$this->assertFalse(function_exists('new_func'));
 
-		$this->mgr->install('Test extension', 'extension.php');
-		$this->mgr->init();
+		$mgr->install('Test extension', 'extension.php');
+		$mgr->init();
 
 		$this->assertTrue(class_exists('Test_Extension'));
 		$this->assertTrue(Test_Extension::on_complete());
@@ -70,40 +129,18 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(2, Test_Extension::get_type());
 		$this->assertTrue(Test_Extension::is_enabled());
 		$this->assertTrue(Test_Extension::set_enabled(true));
-	}
+		$this->assertInstanceOf('Test_Extension', $mgr->get_output());
 
-	public function testGetOutput() {
-		$this->assertInstanceOf('WP_Backup_Output', $this->mgr->get_output());
-		$this->mgr->install('Test extension', 'extension.php');
-		$this->mgr->init();
-		$this->assertInstanceOf('Test_Extension', $this->mgr->get_output());
-	}
-
-	public function testAddMenuItems() {
-		$this->mgr->install('Test extension', 'extension.php');
-		$this->mgr->init();
-		$this->mgr->add_menu_items();
+		$mgr->add_menu_items();
 		$this->assertEquals('get_menu', Test_Extension::$lastCalled);
-	}
 
-	public function testOnStart() {
-		$this->mgr->install('Test extension', 'extension.php');
-		$this->mgr->init();
-		$this->mgr->on_start();
+		$mgr->on_start();
 		$this->assertEquals('on_start', Test_Extension::$lastCalled);
-	}
 
-	public function testOnComplete() {
-		$this->mgr->install('Test extension', 'extension.php');
-		$this->mgr->init();
-		$this->mgr->on_complete();
+		$mgr->on_complete();
 		$this->assertEquals('on_complete', Test_Extension::$lastCalled);
-	}
 
-	public function testOnFailure() {
-		$this->mgr->install('Test extension', 'extension.php');
-		$this->mgr->init();
-		$this->mgr->on_failure();
+		$mgr->on_failure();
 		$this->assertEquals('on_failure', Test_Extension::$lastCalled);
 	}
 }
