@@ -143,18 +143,7 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function add_menu_items() {
-		$installed = $this->get_installed();
-		foreach ($installed as $name => $file)
-			$this->get_instance($name)->get_menu();
-	}
-
-	private function call($func) {
-		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$obj = $this->get_instance($name);
-			if ($obj->is_enabled())
-				$obj->$func();
-		}
+		return $this->call('get_menu');
 	}
 
 	public function on_start() {
@@ -169,12 +158,22 @@ class WP_Backup_Extension_Manager {
 		$this->call('on_failure');
 	}
 
+	private function call($func) {
+		$installed = $this->get_installed();
+		foreach ($installed as $name => $file) {
+			$obj = $this->get_instance($name);
+			if ($obj && $obj->is_enabled())
+				$obj->$func();
+		}
+	}
+
 	private function get_instance($name) {
 		$class = str_replace(' ', '_', ucwords($name));
 
 		if (!isset($this->objectCache[$class])) {
 			if (class_exists($class))
-				 $this->objectCache[$class] = new $class();
+				$this->objectCache[$class] = new $class();
+			return false;
 		}
 
 		return $this->objectCache[$class];
