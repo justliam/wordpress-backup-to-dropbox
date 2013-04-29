@@ -45,9 +45,8 @@ abstract class WP_Backup_Database {
 	}
 
 	public function remove_file() {
-		$sql_file_name = glob($this->get_file(false) . '*');
-		if (file_exists($sql_file_name[0]))
-			unlink($sql_file_name[0]);
+		foreach (glob($this->get_file(false) . '*') as $file)
+			unlink($file);
 	}
 
 	private function set_wait_timeout() {
@@ -67,7 +66,7 @@ abstract class WP_Backup_Database {
 	}
 
 	protected function exists() {
-		return file_exists($this->get_file());
+		return count(glob($this->get_file(false) . '*')) > 0;
 	}
 
 	protected function write_db_dump_header() {
