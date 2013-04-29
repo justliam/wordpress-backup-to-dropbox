@@ -25,7 +25,7 @@ $key = $manager->get_key();
 $installUrl = $manager->get_install_url();
 $buyUrl = $manager->get_buy_url();
 
-$error = $title = null;
+$extensions = $error = $title = null;
 if (isset($_REQUEST['error']))
 	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>');
 
