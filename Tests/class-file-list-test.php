@@ -40,6 +40,10 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 		$this->list = new File_List($db);
 	}
 
+	public function tearDown() {
+		Mockery::close();
+	}
+
 	public function testDatabaseInteractions() {
 
 		$db = Mockery::mock()
