@@ -206,10 +206,9 @@ class Dropbox_Facade {
 	}
 
 	public static function remove_secret($file) {
-		if (preg_match('/-secret$/', $file)) {
-			return substr($file, 0, strrpos($file, '.'));
-		}
+		if (preg_match('/-secret$/', $file))
+			$file = substr($file, 0, strrpos($file, '.'));
 
-		return $file;
+		return basename($file);
 	}
 }
