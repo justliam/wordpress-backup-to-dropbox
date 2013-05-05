@@ -45,3 +45,17 @@ remove_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
 remove_action('admin_menu', 'backup_to_dropbox_admin_menu');
 remove_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
 remove_action('wp_ajax_progress', 'backup_to_dropbox_progress');
+
+global $wpdb;
+
+$table_name = $wpdb->prefix . 'wpb2d_options';
+$wpdb->query("DROP TABLE IF EXISTS $table_name");
+
+$table_name = $wpdb->prefix . 'wpb2d_processed_files';
+$wpdb->query("DROP TABLE IF EXISTS $table_name");
+
+$table_name = $wpdb->prefix . 'wpb2d_excluded_files';
+$wpdb->query("DROP TABLE IF EXISTS $table_name");
+
+$table_name = $wpdb->prefix . 'wpb2d_premium_extensions';
+$wpdb->query("DROP TABLE IF EXISTS $table_name");
