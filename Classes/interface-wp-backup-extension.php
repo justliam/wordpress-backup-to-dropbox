@@ -16,17 +16,14 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-abstract class WP_Backup_Extension {
-	const TYPE_DEFAULT = 1;
-	const TYPE_OUTPUT = 2;
+interface WP_Backup_Extension_Interface {
+	public function on_start();
+	public function on_complete();
+	public function on_failure();
 
-	abstract function on_start();
-	abstract function on_complete();
-	abstract function on_failure();
+	public function get_menu();
+	public function get_type();
 
-	abstract function get_menu();
-	abstract function get_type();
-
-	abstract function is_enabled();
-	abstract function set_enabled($bool);
+	public function is_enabled();
+	public function set_enabled($bool);
 }
