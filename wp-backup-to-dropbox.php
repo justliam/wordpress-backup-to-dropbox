@@ -238,7 +238,7 @@ function wpb2d_install() {
 	$table_name = $wpdb->prefix . 'wpb2d_options';
 	dbDelta("CREATE TABLE $table_name (
 		name varchar(50) NOT NULL,
-		value text NOT NULL,
+		value varchar(500) NOT NULL,
 		PRIMARY KEY name (name)
 	);");
 
