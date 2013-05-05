@@ -77,9 +77,9 @@ if (array_key_exists('stop_backup', $_POST)) {
 	</div>
 	<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
 		<?php if ($config->get_option('in_progress') || isset($started)): ?>
-			<input type="submit" id="stop_backup" name="stop_backup" class="button-secondary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
+			<input type="submit" id="stop_backup" name="stop_backup" class="button-primary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
 		<?php else: ?>
-			<input type="submit" id="start_backup" name="start_backup" class="button-secondary" value="<?php _e('Start Backup', 'wpbtd'); ?>">
+			<input type="submit" id="start_backup" name="start_backup" class="button-primary" value="<?php _e('Start Backup', 'wpbtd'); ?>">
 		<?php endif; ?>
 
 		<?php wp_nonce_field('backup_to_dropbox_monitor_stop'); ?>
