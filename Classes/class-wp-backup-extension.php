@@ -50,7 +50,7 @@ abstract class WP_Backup_Extension {
 		if ($this->chunked_upload_threashold)
 			return $this->chunked_upload_threashold;
 
-		return CHUNKED_UPLOAD_THESHOLD;
+		return CHUNKED_UPLOAD_THREASHOLD;
 	}
 
 	abstract function start();
