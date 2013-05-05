@@ -20,7 +20,8 @@ abstract class WP_Backup_Base_Output {
 	protected
 		$dropbox,
 		$dropbox_path,
-		$config
+		$config,
+		$chunked_upload_threashold
 		;
 
 	public function set_dropbox_api($dropbox) {
@@ -31,6 +32,12 @@ abstract class WP_Backup_Base_Output {
 
 	public function set_config($config) {
 		$this->config = $config;
+
+		return $this;
+	}
+
+	public function set_chunked_upload_threashold($threashold) {
+		$this->chunked_upload_threashold = $threashold;
 
 		return $this;
 	}
