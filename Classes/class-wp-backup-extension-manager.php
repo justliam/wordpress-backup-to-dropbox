@@ -67,7 +67,7 @@ class WP_Backup_Extension_Manager {
 
 	public function get_installed() {
 		if (!$this->installed) {
-			$this->installed = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_premium_extensions", ARRAY_N);
+			$this->installed = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_premium_extensions");
 
 			if (!is_array($this->installed))
 				return array();
@@ -123,10 +123,11 @@ class WP_Backup_Extension_Manager {
 	public function init() {
 		$installed = $this->get_installed();
 		$active = array();
-		foreach ($installed as $name => $file) {
-			if (file_exists(EXTENSIONS_DIR . $file)) {
-				include_once EXTENSIONS_DIR . $file;
-				$this->activate($name, $file);
+		foreach ($installed as $extension) {
+			if (file_exists(EXTENSIONS_DIR . $extension->file)) {
+
+				include_once EXTENSIONS_DIR . $extension->file;
+				$this->activate($extension->name, $extension->file);
 			}
 
 		}
@@ -134,16 +135,16 @@ class WP_Backup_Extension_Manager {
 
 	public function get_output() {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$obj = $this->get_instance($name);
-			if ($obj && $obj->get_type() == WP_Backup_Extension::TYPE_OUTPUT && $obj->is_enabled())
+		foreach ($installed as $extension) {
+			$obj = $this->get_instance($extension->name);
+			if ($obj && $obj->get_type() == 'OUTPUT' && $obj->is_enabled())
 				return $obj;
 		}
 		return new WP_Backup_Output();
 	}
 
 	public function add_menu_items() {
-		return $this->call('get_menu');
+		return $this->call('get_menu', false);
 	}
 
 	public function on_start() {
@@ -158,11 +159,11 @@ class WP_Backup_Extension_Manager {
 		$this->call('on_failure');
 	}
 
-	private function call($func) {
+	private function call($func, $check_enabled = true) {
 		$installed = $this->get_installed();
-		foreach ($installed as $name => $file) {
-			$obj = $this->get_instance($name);
-			if ($obj && $obj->is_enabled())
+		foreach ($installed as $extension) {
+			$obj = $this->get_instance($extension->name);
+			if ($obj && ($check_enabled == false || $obj->is_enabled()))
 				$obj->$func();
 		}
 	}
@@ -171,9 +172,10 @@ class WP_Backup_Extension_Manager {
 		$class = str_replace(' ', '_', ucwords($name));
 
 		if (!isset($this->objectCache[$class])) {
-			if (class_exists($class))
-				$this->objectCache[$class] = new $class();
-			return false;
+			if (!class_exists($class))
+				return false;
+
+			$this->objectCache[$class] = new $class();
 		}
 
 		return $this->objectCache[$class];
