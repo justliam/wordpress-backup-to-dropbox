@@ -18,34 +18,43 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Output {
+class WP_Backup_Output extends WP_Backup_Base_Output {
 
 	const MAX_ERRORS = 10;
 
-	private $dropbox;
-	private $config;
-	private $last_backup_time;
-	private $error_count;
+	private
+		$last_backup_time,
+		$error_count,
+		$root
+		;
 
-	public function __construct($dropbox = false, $config = false) {
-		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
-		$this->config = $config ? $config : WP_Backup_Config::construct();
-		$this->last_backup_time = array_pop($this->config->get_history());
+	public function set_last_backup_time($time) {
+		$this->last_backup_time = $time;
+
+		return $this;
 	}
 
-	public function out($source, $file, $root = false) {
+	public function set_root($root) {
+		$this->root = $root;
 
-		if ($this->error_count > self::MAX_ERRORS) {
+		return $this;
+	}
+
+	public function out($source, $file, $processed_file = null) {
+		if ($this->error_count > self::MAX_ERRORS)
 			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.'), self::MAX_ERRORS));
-		}
 
-		$dropbox_path = $this->config->get_dropbox_path($source, $file, $root);
+		if (!$this->dropbox)
+			throw new Exception(__("Dropbox API not set"));
+
+		$dropbox_path = $this->config->get_dropbox_path($source, $file, $this->root);
 
 		try {
 			$directory_contents = $this->dropbox->get_directory_contents($dropbox_path);
+
 			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time) {
 				if (filesize($file) > CHUNKED_UPLOAD_THREASHOLD)
-					return $this->dropbox->chunk_upload_file($dropbox_path, $file);
+					return $this->dropbox->chunk_upload_file($dropbox_path, $file, $processed_file);
 				else
 					return $this->dropbox->upload_file($dropbox_path, $file);
 			}
