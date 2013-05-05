@@ -16,15 +16,49 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-interface WP_Backup_Extension_Interface {
-	public function start();
-	public function end();
-	public function complete();
-	public function failure();
+abstract class WP_Backup_Extension {
 
-	public function get_menu();
-	public function get_type();
+	protected
+		$dropbox,
+		$dropbox_path,
+		$config
+		;
 
-	public function is_enabled();
-	public function set_enabled($bool);
+	private	$chunked_upload_threashold;
+
+	public function set_dropbox_api($dropbox) {
+		$this->dropbox = $dropbox;
+
+		return $this;
+	}
+
+	public function set_config($config) {
+		$this->config = $config;
+
+		return $this;
+	}
+
+	public function set_chunked_upload_threashold($threashold) {
+		$this->chunked_upload_threashold = $threashold;
+
+		return $this;
+	}
+
+	public function get_chunked_upload_threashold() {
+		if ($this->chunked_upload_threashold)
+			return $this->chunked_upload_threashold;
+
+		return CHUNKED_UPLOAD_THESHOLD;
+	}
+
+	abstract function start();
+	abstract function end();
+	abstract function complete();
+	abstract function failure();
+
+	abstract function get_menu();
+	abstract function get_type();
+
+	abstract function is_enabled();
+	abstract function set_enabled($bool);
 }

@@ -147,16 +147,16 @@ class WP_Backup_Extension_Manager {
 		return $this->call('get_menu', false);
 	}
 
-	public function on_start() {
-		$this->call('on_start');
+	public function start() {
+		return $this->call('start');
 	}
 
-	public function on_complete() {
-		$this->call('on_complete');
+	public function complete() {
+		return $this->call('complete');
 	}
 
-	public function on_failure() {
-		$this->call('on_failure');
+	public function failure() {
+		return $this->call('failure');
 	}
 
 	private function call($func, $check_enabled = true) {
@@ -164,7 +164,7 @@ class WP_Backup_Extension_Manager {
 		foreach ($installed as $extension) {
 			$obj = $this->get_instance($extension->name);
 			if ($obj && ($check_enabled == false || $obj->is_enabled()))
-				$obj->$func();
+				return $obj->$func();
 		}
 	}
 
@@ -176,6 +176,11 @@ class WP_Backup_Extension_Manager {
 				return false;
 
 			$this->objectCache[$class] = new $class();
+
+			$this->objectCache[$class]
+				->set_dropbox_api(Dropbox_Facade::construct())
+				->set_config(WP_Backup_Config::construct())
+				;
 		}
 
 		return $this->objectCache[$class];

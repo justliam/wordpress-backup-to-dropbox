@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Output extends WP_Backup_Base_Output {
+class WP_Backup_Output extends WP_Backup_Extension {
 
 	const MAX_ERRORS = 10;
 
@@ -65,5 +65,17 @@ class WP_Backup_Output extends WP_Backup_Base_Output {
 		}
 	}
 
+	public function start() {
+		return true;
+	}
+
 	public function end() {}
+	public function complete() {}
+	public function failure() {}
+
+	public function get_menu() {}
+	public function get_type() {}
+
+	public function is_enabled() {}
+	public function set_enabled($bool) {}
 }
