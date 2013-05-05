@@ -41,19 +41,20 @@ class WP_Backup {
 			return;
 
 		if (!$dropbox_path)
-			$dropbox_path = get_blog_root_dir();
+			$dropbox_path = ABSPATH;
 
 		$file_list = new File_List();
 
-		$processed_files = $this->config->get_processed_files();
 		$current_processed_files = $uploaded_files = array();
 
 		$next_check = time() + 5;
 		$total_files = $this->config->get_option('total_file_count');
-		if ($total_files < 1500) //I doub't very much a wp installation can get smaller then this
-			$total_files = 1500;
+		if ($total_files < 1800) //I doub't very much a wp installation can get smaller then this
+			$total_files = 1800;
 
-		$processed_file_count = count($processed_files);
+		$processed_files = new WP_Backup_Processed_Files();
+
+		$processed_file_count = $processed_files->get_file_count();
 
 		if (file_exists($path)) {
 			$source = realpath($path);
@@ -75,7 +76,7 @@ class WP_Backup {
 					if ($percent_done < 1)
 						$percent_done = 1;
 
-					$this->config->add_processed_files($current_processed_files);
+					$processed_files->add_files($current_processed_files);
 
 					WP_Backup_Logger::log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
 
@@ -90,13 +91,14 @@ class WP_Backup {
 					continue;
 
 				if (is_file($file)) {
-					if (in_array($file, $processed_files))
+					$processed_file = $processed_files->get_file($file);
+					if ($processed_file && $processed_file->offset == 0)
 						continue;
 
 					if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include))
 						continue;
 
-					if ($this->output->out($dropbox_path, $file)) {
+					if ($this->output->out($dropbox_path, $file, $processed_file)) {
 						$uploaded_files[] = array(
 							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', Dropbox_Facade::remove_secret($file)),
 							'mtime' => filemtime($file),
@@ -140,7 +142,7 @@ class WP_Backup {
 			));
 
 			//Now backup the blog root
-			$processed_files += $this->backup_path(get_blog_root_dir());
+			$processed_files += $this->backup_path(ABSPATH);
 
 			//Record the number of files processed to make the progress meter more accurate
 			$this->config->set_option('total_file_count', $processed_files);
