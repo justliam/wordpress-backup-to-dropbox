@@ -34,7 +34,6 @@ class WP_Backup_Config {
 		if (!$wpdb) global $wpdb;
 
 		$this->db = $wpdb;
-		$this->db->prefix = $wpdb->prefix;
 	}
 
 	public static function get_backup_dir() {
