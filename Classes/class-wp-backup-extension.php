@@ -17,6 +17,8 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 abstract class WP_Backup_Extension {
+	const TYPE_DEFAULT = 1;
+	const TYPE_OUTPUT = 2;
 
 	protected
 		$dropbox,

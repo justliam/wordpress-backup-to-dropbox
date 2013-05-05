@@ -137,10 +137,10 @@ class WP_Backup_Extension_Manager {
 		$installed = $this->get_installed();
 		foreach ($installed as $extension) {
 			$obj = $this->get_instance($extension->name);
-			if ($obj && $obj->get_type() == 'OUTPUT' && $obj->is_enabled())
+			if ($obj && $obj->get_type() == WP_Backup_Extension::TYPE_OUTPUT && $obj->is_enabled())
 				return $obj;
 		}
-		return new WP_Backup_Output();
+		return $this->get_instance('WP_Backup_Output');
 	}
 
 	public function add_menu_items() {
