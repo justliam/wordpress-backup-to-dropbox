@@ -167,10 +167,11 @@ class WP_Backup {
 			$root = false;
 			if (get_class($this->output) != 'WP_Backup_Output') {
 				$this->output = new WP_Backup_Output();
+				$this->output->set_dropbox_api($this->dropbox)->set_config($this->config);
 				$root = true;
 			}
 
-			$this->output->out(get_blog_root_dir(), WP_Backup_Logger::get_log_file(), $root);
+			$this->output->set_root($root)->out(ABSPATH, WP_Backup_Logger::get_log_file());
 
 			$this->config
 				->complete()
