@@ -30,10 +30,12 @@ require_once($prefix . '../Classes/class-wp-backup.php');
 require_once($prefix . '../Classes/class-wp-backup-database.php');
 require_once($prefix . '../Classes/class-wp-backup-database-core.php');
 require_once($prefix . '../Classes/class-wp-backup-database-plugins.php');
-require_once($prefix . '../Classes/class-wp-backup-output.php');
-require_once($prefix . '../Classes/class-wp-backup-extension.php');
+require_once($prefix . '../Classes/interface-wp-backup-extension.php');
 require_once($prefix . '../Classes/class-wp-backup-extension-manager.php');
 require_once($prefix . '../Classes/class-wp-backup-logger.php');
+require_once($prefix . '../Classes/class-wp-backup-processed-files.php');
+require_once($prefix . '../Classes/class-wp-backup-output-abstract.php');
+require_once($prefix . '../Classes/class-wp-backup-output.php');
 
 $loader = new \Mockery\Loader;
 $loader->register();
@@ -66,6 +68,8 @@ function reset_globals() {
 	$options = array();
 	$schedule = array();
 	$current_time = array();
+
+	WP_Backup_Logger::set_test_mode();
 }
 
 function wp_remote_get($url) {
@@ -99,13 +103,13 @@ function download_url($url) {
 function unzip_file($file, $dir) {
 	$fh = fopen($dir . 'extension.php', 'w');
 	fwrite($fh, "<?php\n");
-	fwrite($fh, 'class Test_Extension extends WP_Backup_Extension {');
+	fwrite($fh, 'class Test_Extension impelents WP_Backup_Extension_Interface exends WP_Backup_Base_Output {');
 	fwrite($fh, 'public static $lastCalled;');
 	fwrite($fh, 'public function on_start() { self::$lastCalled = "on_start"; return true; }');
 	fwrite($fh, 'public function on_complete() { self::$lastCalled = "on_complete"; return true; }');
 	fwrite($fh, 'public function on_failure() { self::$lastCalled = "on_failure"; return true; }');
 	fwrite($fh, 'public function get_menu() { self::$lastCalled = "get_menu"; return true; }');
-	fwrite($fh, 'public function get_type() { self::$lastCalled = "get_type"; return self::TYPE_OUTPUT; }');
+	fwrite($fh, 'public function get_type() { self::$lastCalled = "get_type"; return "OUTPUT"; }');
 	fwrite($fh, 'public function is_enabled() { self::$lastCalled = "is_enabled"; return true; }');
 	fwrite($fh, 'public function set_enabled($bool) { self::$lastCalled = "set_enabled"; return $bool; }');
 	fwrite($fh, '}');
