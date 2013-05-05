@@ -114,6 +114,12 @@ class Dropbox_Facade {
 		}
 
 		$this->dropbox = new API($this->oauth);
+		$this->dropbox->setTracker(new WP_Backup_Processed_Files());
+	}
+
+	public function set_tracker($tracker)
+	{
+		$this->dropbox->setTracker($tracker);
 	}
 
 	public function is_authorized() {
@@ -152,8 +158,14 @@ class Dropbox_Facade {
 		throw $e;
 	}
 
-	public function chunk_upload_file($path, $file) {
-		return $this->dropbox->chunkedUpload($file, $this->remove_secret($file), $path);
+	public function chunk_upload_file($path, $file, $processed_file) {
+		$offest = $offest_id = null;
+		if ($processed_file) {
+			$offest = $processed_file['offset'];
+			$upload_id = $processed_file['uploadid'];
+		}
+
+		return $this->dropbox->chunkedUpload($file, $this->remove_secret($file), $path, true, $offest, $upload_id);
 	}
 
 	public function delete_file($file) {
