@@ -133,27 +133,29 @@ class WP_Backup {
 			$plugins = new WP_Backup_Database_Plugins();
 			$plugins->execute();
 
-			$manager->on_start();
+			if ($manager->start()) {
 
-			//Backup the content dir first
-			$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
-				$core->get_file(),
-				$plugins->get_file()
-			));
+				//Backup the content dir first
+				$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
+					$core->get_file(),
+					$plugins->get_file()
+				));
 
-			//Now backup the blog root
-			$processed_files += $this->backup_path(ABSPATH);
+				//Now backup the blog root
+				$processed_files += $this->backup_path(ABSPATH);
 
-			//Record the number of files processed to make the progress meter more accurate
-			$this->config->set_option('total_file_count', $processed_files);
+				//Record the number of files processed to make the progress meter more accurate
+				$this->config->set_option('total_file_count', $processed_files);
 
-			//Remove the backed up SQL files
-			$core->remove_file();
-			$plugins->remove_file();
+				//Remove the backed up SQL files
+				$core->remove_file();
+				$plugins->remove_file();
 
-			//Call end hooks
-			$this->output->end();
-			$manager->on_complete();
+				//Call end hooks
+				$this->output->end();
+			}
+
+			$manager->complete();
 
 			//Update log file with stats
 			WP_Backup_Logger::log(__('Backup complete.', 'wpbtd'));
