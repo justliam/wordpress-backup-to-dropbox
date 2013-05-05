@@ -360,9 +360,9 @@ try {
 	<form id="backup_to_dropbox_continue" name="backup_to_dropbox_continue"
 		  action="options-general.php?page=backup-to-dropbox" method="post">
 		<input type="button" name="authorize" id="authorize" value="<?php _e('Authorize', 'wpbtd'); ?>"
-			   onclick="dropbox_authorize('<?php echo $url ?>')"/><br/>
+			   class="button-primary" onclick="dropbox_authorize('<?php echo $url ?>')"/><br/>
 		<input style="visibility: hidden;" type="submit" name="continue" id="continue"
-			   value="<?php _e('Continue', 'wpbtd'); ?>"/>
+			   class="button-primary" value="<?php _e('Continue', 'wpbtd'); ?>"/>
 	</form>
 	</p>
 		<?php

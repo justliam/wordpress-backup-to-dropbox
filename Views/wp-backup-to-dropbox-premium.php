@@ -104,7 +104,7 @@ try {
 					<?php if (in_array($extension['name'], $installed)): ?>
 						<span class="installed">Installed</span>
 					<?php else: ?>
-						<input type="submit" value="<?php echo $extension['purchased'] ? __('Download & Install') : __('Buy Now'); ?>" class="submitBtn" />
+						<input class="button-primary" type="submit" value="<?php echo $extension['purchased'] ? __('Download & Install') : __('Buy Now'); ?>" class="submitBtn" />
 					<?php endif; ?>
 				</form>
 			</td>
