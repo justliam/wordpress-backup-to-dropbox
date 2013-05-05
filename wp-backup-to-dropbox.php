@@ -229,15 +229,6 @@ function backup_to_dropbox_cron_schedules($schedules) {
 	return array_merge($schedules, $new_schedules);
 }
 
-function get_blog_root_dir() {
-	$home = get_option('home');
-	$site_url = get_option('siteurl');
-	if ($site_url != null && $home != $site_url)
-		return preg_replace(str_replace($home, '', $site_url) . '\/$/', "", ABSPATH);
-
-	return ABSPATH;
-}
-
 function wpb2d_install() {
 	global $wpdb;
 

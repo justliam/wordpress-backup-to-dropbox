@@ -38,7 +38,7 @@ try {
 				foreach ($files as $file) {
 					if ($file != '.' && $file != '..' && file_exists($_POST['dir'] . $file) && is_dir($_POST['dir'] . $file)) {
 
-						if (!is_readable($_POST['dir']) || $_POST['dir'] == dirname(get_blog_root_dir()) . '/' && !strstr($file, basename(get_blog_root_dir()))) {
+						if (!is_readable($_POST['dir']) || $_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
 							continue;
 						}
 
@@ -61,7 +61,7 @@ try {
 
 					if ($file != '.' && $file != '..' && file_exists($_POST['dir'] . $file) && !is_dir($_POST['dir'] . $file)) {
 
-						if ($_POST['dir'] == dirname(get_blog_root_dir()) . '/' && !strstr($file, basename(get_blog_root_dir()))) {
+						if ($_POST['dir'] == dirname(ABSPATH) . '/' && !strstr($file, basename(ABSPATH))) {
 							continue;
 						}
 

@@ -86,7 +86,7 @@ try {
 
 		//Display the file tree with a call back to update the clicked on check box and white list
 		$('#file_tree').fileTree({
-			root: '<?php echo addslashes(get_blog_root_dir()); ?>',
+			root: '<?php echo addslashes(ABSPATH); ?>',
 			script: ajaxurl,
 			expandSpeed: 500,
 			collapseSpeed: 500,

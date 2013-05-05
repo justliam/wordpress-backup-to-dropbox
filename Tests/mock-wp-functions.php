@@ -59,10 +59,6 @@ $options = array();
 $next_schedule = array();
 $schedule = array();
 
-function get_blog_root_dir() {
-	return ABSPATH;
-}
-
 function reset_globals() {
 	global $options;
 	global $schedule;
