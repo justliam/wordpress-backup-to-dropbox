@@ -17,9 +17,10 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 interface WP_Backup_Extension_Interface {
-	public function on_start();
-	public function on_complete();
-	public function on_failure();
+	public function start();
+	public function end();
+	public function complete();
+	public function failure();
 
 	public function get_menu();
 	public function get_type();
