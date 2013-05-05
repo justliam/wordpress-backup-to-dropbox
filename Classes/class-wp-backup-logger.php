@@ -20,7 +20,12 @@ class WP_Backup_Logger {
 
 	const LOGFILE = 'wpb2d-backup-log.txt';
 
+	private static $test_mode = false;
+
 	public static function log($msg, $files = null) {
+		if (self::$test_mode)
+			return;
+
 		$fh = self::get_log_file_handle();
 		$log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
@@ -38,11 +43,18 @@ class WP_Backup_Logger {
 	}
 
 	public static function delete_log() {
+		if (self::$test_mode)
+			return;
+
 		@unlink(self::get_log_file());
 	}
 
 	public static function get_log_file() {
 		return WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
+	}
+
+	public static function set_test_mode() {
+		self::$test_mode = true;
 	}
 
 	private static function get_log_file_handle() {
