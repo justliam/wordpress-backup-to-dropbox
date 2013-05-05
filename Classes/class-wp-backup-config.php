@@ -23,8 +23,7 @@ class WP_Backup_Config {
 
 	private
 		$db,
-		$options,
-		$processed_files
+		$options
 		;
 
 	public static function construct() {
@@ -61,31 +60,12 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function get_option($name) {
-		if (!isset($this->options[$name])) {
+	public function get_option($name, $no_cache = false) {
+		if (!isset($this->options[$name]) || $no_cache) {
 			$this->options[$name] = $this->db->get_var("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = '$name'");
 		}
 
 		return $this->options[$name];
-	}
-
-	public function get_processed_files() {
-		if (!$this->processed_files)
-			$this->processed_files = $this->db->get_results("SELECT file FROM {$this->db->prefix}wpb2d_processed_files", ARRAY_A);
-
-		return $this->processed_files;
-	}
-
-	public function add_processed_files($new_files) {
-
-		foreach ($new_files as $file) {
-			$this->processed_files[] = $file;
-			$this->db->insert($this->db->prefix . 'wpb2d_processed_files', array(
-				'file' => $file
-			));
-		}
-
-		return $this;
 	}
 
 	public static function set_time_limit() {
