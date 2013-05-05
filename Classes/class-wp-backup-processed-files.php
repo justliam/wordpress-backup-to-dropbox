@@ -58,7 +58,11 @@ class WP_Backup_Processed_Files {
 	}
 
 	public function track_upload($file, $upload_id, $offset) {
-
+		$this->db->update(
+			$this->db->prefix . 'wpb2d_options',
+			array('upliadid' => $upload_id, 'offset' => $offset),
+			array('file' => $file)
+		);
 	}
 
 	private function get_files() {
