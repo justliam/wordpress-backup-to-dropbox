@@ -240,13 +240,15 @@ function wpb2d_install() {
 	dbDelta("CREATE TABLE $table_name (
 		name varchar(50) NOT NULL,
 		value text NOT NULL,
-		UNIQUE KEY name (name)
+		PRIMARY KEY name (name)
 	);");
 
 	$table_name = $wpdb->prefix . 'wpb2d_processed_files';
 	dbDelta("CREATE TABLE $table_name (
 		file varchar(500) NOT NULL,
-		UNIQUE KEY file (file)
+		offset int NOT NULL DEFAULT 0,
+		uploadid varchar(50),
+		PRIMARY KEY file (file)
 	);");
 
 	$table_name = $wpdb->prefix . 'wpb2d_excluded_files';
@@ -254,14 +256,14 @@ function wpb2d_install() {
 		file varchar(500) NOT NULL,
 		isdir tinyint(1) NOT NULL,
 		INDEX isdir (isdir),
-		UNIQUE KEY file (file)
+		PRIMARY KEY file (file)
 	);");
 
 	$table_name = $wpdb->prefix . 'wpb2d_premium_extensions';
 	dbDelta("CREATE TABLE $table_name (
 		name varchar(50) NOT NULL,
 		file varchar(500) NOT NULL,
-		UNIQUE KEY name (name)
+		PRIMARY KEY name (name)
 	);");
 }
 
