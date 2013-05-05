@@ -28,9 +28,12 @@ class WP_Backup {
 	}
 
 	public function __construct($dropbox = null, $output = null) {
+		$this->config = WP_Backup_Config::construct();
+
 		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
 		$this->output = $output ? $output : WP_Backup_Extension_Manager::construct()->get_output();
-		$this->config = WP_Backup_Config::construct();
+
+		$this->output->set_dropbox_api($this->dropbox)->set_config($this->config);
 	}
 
 	public function backup_path($path, $dropbox_path = null, $always_include = array()) {
