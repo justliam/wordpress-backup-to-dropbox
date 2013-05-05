@@ -37,10 +37,12 @@ require_once('Classes/class-wp-backup.php');
 require_once('Classes/class-wp-backup-database.php');
 require_once('Classes/class-wp-backup-database-core.php');
 require_once('Classes/class-wp-backup-database-plugins.php');
-require_once('Classes/class-wp-backup-output.php');
-require_once('Classes/class-wp-backup-extension.php');
+require_once('Classes/interface-wp-backup-extension.php');
 require_once('Classes/class-wp-backup-extension-manager.php');
 require_once('Classes/class-wp-backup-logger.php');
+require_once('Classes/class-wp-backup-processed-files.php');
+require_once('Classes/class-wp-backup-output-abstract.php');
+require_once('Classes/class-wp-backup-output.php');
 
 WP_Backup_Extension_Manager::construct()->init();
 
