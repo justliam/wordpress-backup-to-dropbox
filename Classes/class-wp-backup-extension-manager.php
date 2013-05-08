@@ -146,16 +146,12 @@ class WP_Backup_Extension_Manager {
 		return $this->call('get_menu', false);
 	}
 
-	public function start() {
-		return $this->call('start');
-	}
-
 	public function complete() {
-		return $this->call('complete');
+		$this->call('complete');
 	}
 
 	public function failure() {
-		return $this->call('failure');
+		$this->call('failure');
 	}
 
 	private function call($func, $check_enabled = true) {
@@ -163,7 +159,7 @@ class WP_Backup_Extension_Manager {
 		foreach ($installed as $extension) {
 			$obj = $this->get_instance($extension->name);
 			if ($obj && ($check_enabled == false || $obj->is_enabled()))
-				return $obj->$func();
+				$obj->$func();
 		}
 	}
 
