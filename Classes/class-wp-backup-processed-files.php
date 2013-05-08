@@ -56,11 +56,27 @@ class WP_Backup_Processed_Files {
 	}
 
 	public function track_upload($file, $upload_id, $offset) {
-		$this->db->update(
-			$this->db->prefix . 'wpb2d_options',
-			array('upliadid' => $upload_id, 'offset' => $offset),
-			array('file' => $file)
-		);
+		WP_Backup_Registry::config()->die_if_stopped();
+
+		WP_Backup_Registry::logger()->log(sprintf(
+			__("Uploaded %sMB of %sMB", 'wpbtd'),
+			round($offset / 1048576, 1),
+			round(filesize($file) / 1048576, 1)
+		));
+
+		$result = $this->db->insert("{$this->db->prefix}wpb2d_processed_files", array(
+			'file' => $file,
+			'uploadid' => $upload_id,
+			'offset' => $offset
+		));
+
+		if (!$result) {
+			$this->db->update(
+				"{$this->db->prefix}wpb2d_processed_files",
+				array('uploadid' => $upload_id, 'offset' => $offset),
+				array('file' => $file)
+			);
+		}
 	}
 
 	private function get_files() {
