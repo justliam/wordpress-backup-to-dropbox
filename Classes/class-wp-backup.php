@@ -126,8 +126,7 @@ class WP_Backup {
 			$plugins = new WP_Backup_Database_Plugins();
 			$plugins->execute();
 
-			if ($manager->start()) {
-
+			if ($this->output->start()) {
 				//Backup the content dir first
 				$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
 					$core->get_file(),

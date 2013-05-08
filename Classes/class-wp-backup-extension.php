@@ -40,14 +40,12 @@ abstract class WP_Backup_Extension {
 	}
 
 	public function get_chunked_upload_threashold() {
-		if ($this->chunked_upload_threashold)
+		if ($this->chunked_upload_threashold !== null)
 			return $this->chunked_upload_threashold;
 
 		return CHUNKED_UPLOAD_THREASHOLD;
 	}
 
-	abstract function start();
-	abstract function end();
 	abstract function complete();
 	abstract function failure();
 
