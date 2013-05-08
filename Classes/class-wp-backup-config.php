@@ -53,8 +53,8 @@ class WP_Backup_Config {
 		return $this;
 	}
 
-	public function get_option($name, $no_cache = false) {
-		if (!isset($this->options[$name]) || $no_cache) {
+	public function get_option($name) {
+		if (!isset($this->options[$name])) {
 			$this->options[$name] = $this->db->get_var("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = '$name'");
 		}
 
