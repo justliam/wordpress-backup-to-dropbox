@@ -171,4 +171,13 @@ class WP_Backup_Config {
 
 		return $this;
 	}
+
+	public function die_if_stopped() {
+		$in_progress = $this->db->get_var("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = 'in_progress'");
+		if (!$in_progress) {
+			$msg = __('Backup stopped by user.', 'wpbtd');
+			WP_Backup_Registry::logger()->log($msg);
+			die($msg);
+		}
+	}
 }
