@@ -1,5 +1,7 @@
 <?php
 /**
+ * A class with functions the perform a backup of WordPress
+ *
  * @copyright Copyright (C) 2011-2012 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
@@ -16,44 +18,58 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-abstract class WP_Backup_Extension {
-	const TYPE_DEFAULT = 1;
-	const TYPE_OUTPUT = 2;
+class WP_Backup_Registry {
 
-	protected
+	private static
+		$logger,
+		$config,
 		$dropbox,
-		$dropbox_path,
-		$config
+		$db
 		;
 
-	private	$chunked_upload_threashold;
+	public static function logger() {
+		if (!self::$logger)
+			self::$logger = new WP_Backup_Logger();
 
-	public function __construct() {
-		$this->dropbox = WP_Backup_Registry::dropbox();
-		$this->config  = WP_Backup_Registry::config();
+		return self::$logger;
 	}
 
-	public function set_chunked_upload_threashold($threashold) {
-		$this->chunked_upload_threashold = $threashold;
+	public static function config() {
+		if (!self::$config)
+			self::$config = new WP_Backup_Config();
 
-		return $this;
+		return self::$config;
 	}
 
-	public function get_chunked_upload_threashold() {
-		if ($this->chunked_upload_threashold)
-			return $this->chunked_upload_threashold;
+	public static function dropbox() {
+		if (!self::$dropbox)
+			self::$dropbox = new Dropbox_Facade();
 
-		return CHUNKED_UPLOAD_THREASHOLD;
+		return self::$dropbox;
 	}
 
-	abstract function start();
-	abstract function end();
-	abstract function complete();
-	abstract function failure();
+	public static function db() {
+		if (!self::$db) {
+			global $wpdb;
+			self::$db = $wpdb;
+		}
 
-	abstract function get_menu();
-	abstract function get_type();
+		return self::$db;
+	}
 
-	abstract function is_enabled();
-	abstract function set_enabled($bool);
+	public static function setLogger($logger) {
+		self::$logger = $logger;
+	}
+
+	public static function setConfig($config) {
+		self::$config = $config;
+	}
+
+	public static function setDropbox($dropbox) {
+		self::$dropbox = $dropbox;
+	}
+
+	public static function setDatabase($db) {
+		self::$db = $db;
+	}
 }

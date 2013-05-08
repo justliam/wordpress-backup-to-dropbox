@@ -30,16 +30,10 @@ abstract class WP_Backup_Database {
 
 	abstract function execute();
 
-	public function __construct($type, $wpdb = null, $config = null) {
-		if (!$wpdb) global $wpdb;
-		if (!$config)
-			$config = WP_Backup_Config::construct();
-
-		WP_Backup::create_dump_dir();
-
+	public function __construct($type) {
 		$this->type = $type;
-		$this->database = $wpdb;
-		$this->config = $config;
+		$this->database = WP_Backup_Registry::db();
+		$this->config = WP_Backup_Registry::config();
 
 		$this->set_wait_timeout();
 	}
@@ -78,7 +72,7 @@ abstract class WP_Backup_Database {
 
 		if (!is_writable($dump_location)) {
 			$msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
-			WP_Backup_Logger::log($msg);
+			WP_Backup_Registry::logger()->log($msg);
 			return false;
 		}
 

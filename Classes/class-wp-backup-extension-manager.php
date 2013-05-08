@@ -28,9 +28,8 @@ class WP_Backup_Extension_Manager {
 		return new self();
 	}
 
-	public function __construct($wpdb = null) {
-		if (!$wpdb) global $wpdb;
-		$this->db = $wpdb;
+	public function __construct() {
+		$this->db = WP_Backup_Registry::db();
 	}
 
 	public function get_key() {
@@ -176,11 +175,6 @@ class WP_Backup_Extension_Manager {
 				return false;
 
 			$this->objectCache[$class] = new $class();
-
-			$this->objectCache[$class]
-				->set_dropbox_api(Dropbox_Facade::construct())
-				->set_config(WP_Backup_Config::construct())
-				;
 		}
 
 		return $this->objectCache[$class];

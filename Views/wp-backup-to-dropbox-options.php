@@ -23,8 +23,9 @@ try {
 
 	$validation_errors = null;
 
-	$dropbox = Dropbox_Facade::construct();
-	$config = WP_Backup_Config::construct();
+	$dropbox = WP_Backup_Registry::dropbox();
+	$config = WP_Backup_Registry::config();
+
 	$backup = new WP_Backup();
 
 	$backup->create_dump_dir();

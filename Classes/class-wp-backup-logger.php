@@ -20,12 +20,7 @@ class WP_Backup_Logger {
 
 	const LOGFILE = 'wpb2d-backup-log.txt';
 
-	private static $test_mode = false;
-
-	public static function log($msg, $files = null) {
-		if (self::$test_mode)
-			return;
-
+	public function log($msg, $files = null) {
 		$fh = self::get_log_file_handle();
 		$log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
@@ -36,28 +31,21 @@ class WP_Backup_Logger {
 			throw new Exception('Error writing to log file.');
 	}
 
-	public static function get_log() {
+	public function get_log() {
 		$file = self::get_log_file();
 		if (file_exists($file))
 			return explode("\n", trim(file_get_contents($file)));
 	}
 
-	public static function delete_log() {
-		if (self::$test_mode)
-			return;
-
+	public function delete_log() {
 		@unlink(self::get_log_file());
 	}
 
-	public static function get_log_file() {
+	public function get_log_file() {
 		return WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 	}
 
-	public static function set_test_mode() {
-		self::$test_mode = true;
-	}
-
-	private static function get_log_file_handle() {
+	private function get_log_file_handle() {
 		WP_Backup::create_dump_dir();
 
 		$fh = @fopen(self::get_log_file(), 'a');

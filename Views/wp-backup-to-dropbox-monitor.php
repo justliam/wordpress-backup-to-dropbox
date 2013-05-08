@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$config = WP_Backup_Config::construct();
+$config = WP_Backup_Registry::config();
 $backup = new WP_Backup();
 
 if (array_key_exists('stop_backup', $_POST)) {

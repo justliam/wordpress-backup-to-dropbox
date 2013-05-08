@@ -26,14 +26,8 @@ class WP_Backup_Config {
 		$options
 		;
 
-	public static function construct() {
-		return new self();
-	}
-
-	public function __construct($wpdb = null) {
-		if (!$wpdb) global $wpdb;
-
-		$this->db = $wpdb;
+	public function __construct() {
+		$this->db = WP_Backup_Registry::db();
 	}
 
 	public static function get_backup_dir() {

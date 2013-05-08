@@ -27,10 +27,9 @@ class WP_Backup {
 		return new self();
 	}
 
-	public function __construct($dropbox = null, $output = null) {
-		$this->config = WP_Backup_Config::construct();
-
-		$this->dropbox = $dropbox ? $dropbox : Dropbox_Facade::construct();
+	public function __construct($output = null) {
+		$this->config = WP_Backup_Registry::config();
+		$this->dropbox = WP_Backup_Registry::dropbox();
 		$this->output = $output ? $output : WP_Backup_Extension_Manager::construct()->get_output();
 	}
 
@@ -76,7 +75,7 @@ class WP_Backup {
 
 					$processed_files->add_files($current_processed_files);
 
-					WP_Backup_Logger::log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
+					WP_Backup_Registry::logger()->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
 
 					$next_check = time() + 5;
 					$uploaded_files = $current_processed_files = array();
@@ -121,7 +120,7 @@ class WP_Backup {
 		try {
 
 			if (!$this->dropbox->is_authorized()) {
-				WP_Backup_Logger::log(__('Your Dropbox account is not authorized yet.', 'wpbtd'));
+				WP_Backup_Registry::logger()->log(__('Your Dropbox account is not authorized yet.', 'wpbtd'));
 				return;
 			}
 
@@ -156,9 +155,9 @@ class WP_Backup {
 			$manager->complete();
 
 			//Update log file with stats
-			WP_Backup_Logger::log(__('Backup complete.', 'wpbtd'));
-			WP_Backup_Logger::log(sprintf(__('A total of %s files were processed.'), $processed_files));
-			WP_Backup_Logger::log(sprintf(
+			WP_Backup_Registry::logger()->log(__('Backup complete.', 'wpbtd'));
+			WP_Backup_Registry::logger()->log(sprintf(__('A total of %s files were processed.'), $processed_files));
+			WP_Backup_Registry::logger()->log(sprintf(
 				__('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
 				(memory_get_usage(true) / 1048576)
 			));
@@ -171,7 +170,7 @@ class WP_Backup {
 				$root = true;
 			}
 
-			$this->output->set_root($root)->out(ABSPATH, WP_Backup_Logger::get_log_file());
+			$this->output->set_root($root)->out(ABSPATH, WP_Backup_Registry::logger()->get_log_file());
 
 			$this->config
 				->complete()
@@ -180,9 +179,9 @@ class WP_Backup {
 
 		} catch (Exception $e) {
 			if ($e->getMessage() == 'Unauthorized')
-				WP_Backup_Logger::log(__('The plugin is no longer authorized with Dropbox.', 'wpbtd'));
+				WP_Backup_Registry::logger()->log(__('The plugin is no longer authorized with Dropbox.', 'wpbtd'));
 			else
-				WP_Backup_Logger::log("A fatal error occured: " . $e->getMessage());
+				WP_Backup_Registry::logger()->log("A fatal error occured: " . $e->getMessage());
 
 			$manager->failure();
 			$this->stop();

@@ -53,14 +53,26 @@ class WP_Backup_Output extends WP_Backup_Extension {
 			$directory_contents = $this->dropbox->get_directory_contents($dropbox_path);
 
 			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time) {
-				if (filesize($file) > CHUNKED_UPLOAD_THREASHOLD)
+				$file_size = filesize($file);
+				if ($file_size > $this->get_chunked_upload_threashold()) {
+
+					$uploading = __("Uploading large file '%s' (%sMB) in chunks", 'wpbtd');
+					$resuming = __("Resuming upload of large file '%s'", 'wpbtd');
+
+					WP_Backup_Registry::logger()->log(sprintf(
+						$processed_file->offset < 1 ? $uploading : $resuming,
+						basename($file),
+						round($file_size / 1048576, 1)
+					));
+
 					return $this->dropbox->chunk_upload_file($dropbox_path, $file, $processed_file);
-				else
+				} else {
 					return $this->dropbox->upload_file($dropbox_path, $file);
+				}
 			}
 
 		} catch (Exception $e) {
-			WP_Backup_Logger::log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
+			WP_Backup_Registry::logger()->log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
 			$this->error_count++;
 		}
 	}

@@ -17,15 +17,15 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 class WP_Backup_Database_Core extends WP_Backup_Database {
-	public function __construct($wpdb = null, $config = null) {
-		parent::__construct('core', $wpdb, $config);
+	public function __construct() {
+		parent::__construct('core');
 	}
 
 	public function execute() {
 		if ($this->exists())
 			return false;
 
-		WP_Backup_Logger::log(__('Creating SQL backup of your WordPress core.', 'wpbtd'));
+		WP_Backup_Registry::logger()->log(__('Creating SQL backup of your WordPress core.', 'wpbtd'));
 
 		$this->write_db_dump_header();
 		$this->backup_database_tables(array_values($this->database->tables()));

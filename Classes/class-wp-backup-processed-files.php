@@ -25,10 +25,8 @@ class WP_Backup_Processed_Files {
 		$processed_files
 		;
 
-	public function __construct($wpdb = null) {
-		if (!$wpdb) global $wpdb;
-
-		$this->db = $wpdb;
+	public function __construct() {
+		$this->db = WP_Backup_Registry::db();
 	}
 
 	public function get_file_count() {
