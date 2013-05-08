@@ -27,26 +27,25 @@ class File_List {
 		'.sass-cache',
 	);
 
-	private $excluded_files = array();
-	private $excluded_dirs = array();
-	private $db, $db_table;
+	private
+		$excluded_files = array(),
+		$excluded_dirs = array(),
+		$db
+		;
 
 	public static function construct() {
 		return new self();
 	}
 
-	public function __construct($wpdb = null) {
-		if (!$wpdb) global $wpdb;
+	public function __construct() {
+		$this->db = WP_Backup_Registry::db();
 
-		$this->db = $wpdb;
-		$this->db_table = $wpdb->prefix . 'wpb2d_excluded_files';
-
-		$result = $wpdb->get_results("SELECT file FROM {$this->db_table} WHERE isdir = 0", ARRAY_N);
+		$result = $this->db->get_results("SELECT file FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0", ARRAY_N);
 		foreach ($result as $value) {
 			$this->excluded_files[] = array_shift($value);
 		}
 
-		$result = $wpdb->get_results("SELECT file FROM {$this->db_table} WHERE isdir = 1", ARRAY_N);
+		$result = $this->db->get_results("SELECT file FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 1", ARRAY_N);
 		foreach ($result as $value) {
 			$this->excluded_dirs[] = array_shift($value);
 		}
@@ -76,7 +75,7 @@ class File_List {
 	private function exclude_file($file) {
 		if (!in_array($file, $this->excluded_files)) {
 			$this->excluded_files[] = $file;
-			$this->db->insert($this->db_table, array(
+			$this->db->insert("{$this->db->prefix}wpb2d_excluded_files", array(
 				'file' => $file,
 				'isdir' => false
 			));
@@ -86,7 +85,7 @@ class File_List {
 	private function exclude_dir($dir) {
 		if (!in_array($dir, $this->excluded_dirs)) {
 			$this->excluded_dirs[] = $dir;
-			$this->db->insert($this->db_table, array(
+			$this->db->insert("{$this->db->prefix}wpb2d_excluded_files", array(
 				'file' => $dir,
 				'isdir' => true
 			));
@@ -96,7 +95,7 @@ class File_List {
 	private function include_file($file) {
 		$key = array_search($file, $this->excluded_files);
 
-		$this->db->query("DELETE FROM {$this->db_table} WHERE file = '$file'");
+		$this->db->query("DELETE FROM {$this->db->prefix}wpb2d_excluded_files WHERE file = '$file'");
 
 		unset($this->excluded_files[$key]);
 	}
@@ -104,7 +103,7 @@ class File_List {
 	private function include_dir($dir) {
 		$key = array_search($dir, $this->excluded_dirs);
 
-		$this->db->query("DELETE FROM {$this->db_table} WHERE file = '$dir'");
+		$this->db->query("DELETE FROM {$this->db->prefix}wpb2d_excluded_files WHERE file = '$dir'");
 
 		unset($this->excluded_dirs[$key]);
 	}
