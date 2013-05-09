@@ -161,7 +161,6 @@ class WP_Backup {
 			$root = false;
 			if (get_class($this->output) != 'WP_Backup_Output') {
 				$this->output = new WP_Backup_Output();
-				$this->output->set_dropbox_api($this->dropbox)->set_config($this->config);
 				$root = true;
 			}
 
