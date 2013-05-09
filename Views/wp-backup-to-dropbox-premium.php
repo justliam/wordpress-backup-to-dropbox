@@ -38,7 +38,11 @@ try {
 		echo '<script>window.location.reload(true);</script>';
 	}
 
-	$installed = array_keys($manager->get_installed());
+	$installed = array();
+	foreach ($manager->get_installed() as $ext) {
+		$installed[] = $ext->name;
+	}
+
 	$extensions = $manager->get_extensions();
 } catch (Exception $e) {
 	$error = $e->getMessage();
