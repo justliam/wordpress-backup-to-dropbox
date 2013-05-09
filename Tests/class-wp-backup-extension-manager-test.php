@@ -25,8 +25,6 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 		WP_Backup::create_dump_dir();
 	}
 
-
-
 	public function tearDown() {
 		@unlink(EXTENSIONS_DIR . 'extension.php');
 		unlink(WP_Backup_Config::get_backup_dir() . '/index.php');

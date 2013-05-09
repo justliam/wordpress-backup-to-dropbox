@@ -35,6 +35,7 @@ require_once($prefix . '../Classes/class-wp-backup-extension-manager.php');
 require_once($prefix . '../Classes/class-wp-backup-logger.php');
 require_once($prefix . '../Classes/class-wp-backup-processed-files.php');
 require_once($prefix . '../Classes/class-wp-backup-output.php');
+require_once($prefix . '../Classes/class-wp-backup-registry.php');
 
 $loader = new \Mockery\Loader;
 $loader->register();
@@ -68,7 +69,7 @@ function reset_globals() {
 	$schedule = array();
 	$current_time = array();
 
-	WP_Backup_Logger::set_test_mode();
+	WP_Backup_Registry::setLogger(Mockery::mock('Logger')->shouldReceive('log')->mock());
 }
 
 function wp_remote_get($url) {

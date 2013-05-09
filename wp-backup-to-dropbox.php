@@ -43,6 +43,7 @@ require_once('Classes/class-wp-backup-logger.php');
 require_once('Classes/class-wp-backup-processed-files.php');
 require_once('Classes/class-wp-backup-output.php');
 require_once('Classes/class-wp-backup-registry.php');
+require_once('Classes/class-wp-backup-upload-tracker.php');
 
 WP_Backup_Extension_Manager::construct()->init();
 
