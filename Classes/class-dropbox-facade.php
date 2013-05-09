@@ -200,7 +200,7 @@ class Dropbox_Facade {
 	}
 
 	public static function remove_secret($file) {
-		if (preg_match('/-secret$/', $file))
+		if (preg_match('/-wpb2d-secret$/', $file))
 			$file = substr($file, 0, strrpos($file, '.'));
 
 		return basename($file);

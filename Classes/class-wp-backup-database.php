@@ -54,7 +54,7 @@ abstract class WP_Backup_Database {
 		$file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
 
 		if ($secret)
-			$file .= '.' . hash_hmac('sha1', DB_NAME, time()) . '-secret';
+			$file .= '.' . hash_hmac('sha1', DB_NAME, time()) . '-wpb2d-secret';
 
 		return $file;
 	}
