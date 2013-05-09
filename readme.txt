@@ -138,11 +138,15 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
-= 1.4.6 =
+= 1.5 =
 * Fix issue #127: in_array() warning on multisite setups
-* Fix a few E_NOTICES, sorry guys I moved to a new VM that had these supressed
+* Fix a few E_NOTICES, sorry guys I did not realise these supressed
 * Add a sha1 secret to SQL dump files and Zip archives to make them imposible to guess and download
 * Fix copy on subscriptions page
+* Added style to some buttons
+* Moved all plugin storage into it's own table structure to increse performance
+* Added the ablilty for chunked uploads to resume
+* Added a brand new logo!
 
 = 1.4.5 =
 * Added support for multi site
