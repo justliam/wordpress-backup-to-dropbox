@@ -18,47 +18,35 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Processed_Files {
+class WP_Backup_Upload_Tracker {
 
-	private
-		$db,
-		$processed_files
-		;
+	private $db;
 
 	public function __construct() {
 		$this->db = WP_Backup_Registry::db();
 	}
 
-	public function get_file_count() {
-		return count($this->get_files());
-	}
+	public function track_upload($file, $upload_id, $offset) {
+		WP_Backup_Registry::config()->die_if_stopped();
 
-	public function get_file($file_name) {
-		foreach ($this->get_files() as $file) {
-			if ($file->file == $file_name)
-				return $file;
+		WP_Backup_Registry::logger()->log(sprintf(
+			__("Uploaded %sMB of %sMB", 'wpbtd'),
+			round($offset / 1048576, 1),
+			round(filesize($file) / 1048576, 1)
+		));
+
+		$result = $this->db->insert("{$this->db->prefix}wpb2d_processed_files", array(
+			'file' => $file,
+			'uploadid' => $upload_id,
+			'offset' => $offset
+		));
+
+		if (!$result) {
+			$this->db->update(
+				"{$this->db->prefix}wpb2d_processed_files",
+				array('uploadid' => $upload_id, 'offset' => $offset),
+				array('file' => $file)
+			);
 		}
-	}
-
-	public function add_files($new_files) {
-		foreach ($new_files as $file) {
-
-			$file_details = new stdClass;
-			$file_details->file = $file;
-
-			$this->processed_files[] = $file_details;
-			$this->db->insert($this->db->prefix . 'wpb2d_processed_files', array(
-				'file' => $file
-			));
-		}
-
-		return $this;
-	}
-
-	private function get_files() {
-		if (!$this->processed_files)
-			$this->processed_files = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_files");
-
-		return $this->processed_files;
 	}
 }

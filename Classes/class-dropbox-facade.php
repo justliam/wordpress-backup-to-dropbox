@@ -76,7 +76,7 @@ class Dropbox_Facade {
 		$this->save_tokens();
 
 		$this->dropbox = new API($this->oauth);
-		$this->dropbox->setTracker(new WP_Backup_Processed_Files());
+		$this->dropbox->setTracker(new WP_Backup_Upload_Tracker());
 	}
 
 	private function get_token($type) {
@@ -97,11 +97,6 @@ class Dropbox_Facade {
 		$this->request_token = $this->oauth->getRequestToken();
 		$this->oauth->setToken($this->request_token);
 		$this->oauth_state = 'request';
-	}
-
-	public function set_tracker($tracker)
-	{
-		$this->dropbox->setTracker($tracker);
 	}
 
 	public function is_authorized() {
