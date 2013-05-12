@@ -42,7 +42,7 @@ class WP_Backup_Logger {
 	}
 
 	public function get_log_file() {
-		return WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
+		return WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 	}
 
 	private function get_log_file_handle() {
