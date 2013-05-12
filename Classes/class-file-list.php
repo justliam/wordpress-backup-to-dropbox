@@ -40,14 +40,14 @@ class File_List {
 	public function __construct() {
 		$this->db = WP_Backup_Registry::db();
 
-		$result = $this->db->get_results("SELECT file FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0", ARRAY_N);
+		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0");
 		foreach ($result as $value) {
-			$this->excluded_files[] = array_shift($value);
+			$this->excluded_files[] = $value->file;
 		}
 
-		$result = $this->db->get_results("SELECT file FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 1", ARRAY_N);
+		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 1");
 		foreach ($result as $value) {
-			$this->excluded_dirs[] = array_shift($value);
+			$this->excluded_dirs[] = $value->file;
 		}
 	}
 
