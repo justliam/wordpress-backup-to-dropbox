@@ -136,15 +136,15 @@ class WP_Backup {
 				//Now backup the blog root
 				$processed_files += $this->backup_path(ABSPATH);
 
+				//End any output extensions
+				$this->output->end();
+
 				//Record the number of files processed to make the progress meter more accurate
 				$this->config->set_option('total_file_count', $processed_files);
 
 				//Remove the backed up SQL files
 				$core->remove_file();
 				$plugins->remove_file();
-
-				//Call end hooks
-				$this->output->end();
 			}
 
 			$manager->complete();
