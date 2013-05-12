@@ -45,18 +45,20 @@ class WP_Backup_Output extends WP_Backup_Extension {
 		try {
 			$directory_contents = $this->dropbox->get_directory_contents($dropbox_path);
 
-			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->last_backup_time) {
+			if (!in_array(basename($file), $directory_contents) || filemtime($file) > $this->config->get_option('last_backup_time')) {
 				$file_size = filesize($file);
 				if ($file_size > $this->get_chunked_upload_threashold()) {
 
-					$uploading = __("Uploading large file '%s' (%sMB) in chunks", 'wpbtd');
-					$resuming = __("Resuming upload of large file '%s'", 'wpbtd');
+					if ($processed_file) {
+						$uploading = __("Uploading large file '%s' (%sMB) in chunks", 'wpbtd');
+						$resuming = __("Resuming upload of large file '%s'", 'wpbtd');
 
-					WP_Backup_Registry::logger()->log(sprintf(
-						$processed_file->offset < 1 ? $uploading : $resuming,
-						basename($file),
-						round($file_size / 1048576, 1)
-					));
+						WP_Backup_Registry::logger()->log(sprintf(
+							$processed_file->offset < 1 ? $uploading : $resuming,
+							basename($file),
+							round($file_size / 1048576, 1)
+						));
+					}
 
 					return $this->dropbox->chunk_upload_file($dropbox_path, $file, $processed_file);
 				} else {
