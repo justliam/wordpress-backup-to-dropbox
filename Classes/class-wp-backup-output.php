@@ -23,16 +23,9 @@ class WP_Backup_Output extends WP_Backup_Extension {
 	const MAX_ERRORS = 10;
 
 	private
-		$last_backup_time,
 		$error_count,
 		$root
 		;
-
-	public function set_last_backup_time($time) {
-		$this->last_backup_time = $time;
-
-		return $this;
-	}
 
 	public function set_root($root) {
 		$this->root = $root;
