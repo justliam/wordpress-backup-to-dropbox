@@ -46,7 +46,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$config = new WP_Backup_Config($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$config = new WP_Backup_Config();
 		$this->assertEquals(false, $config->get_option('last_backup_time'));
 		$this->assertEquals(false, $config->get_option('in_progress'));
 	}
@@ -68,7 +70,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$config = new WP_Backup_Config($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$config = new WP_Backup_Config();
 
 		for ($i = 0; $i < 30; $i++) {
 			set_current_time('2012-03-12 00:00:' . $i);
@@ -79,55 +83,14 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(20, count($history));
 	}
 
-	public function testGetUploadedFiles() {
-
-		$db = Mockery::mock()
-			->shouldReceive('get_results')
-			->with('SELECT file FROM wp_wpb2d_processed_files', 1)
-			->once()
-
-			->shouldReceive('insert')
-			->with('wp_wpb2d_processed_files', array('file' => 'File1'))
-			->once()
-
-			->shouldReceive('insert')
-			->with('wp_wpb2d_processed_files', array('file' => 'File2'))
-			->once()
-
-			->shouldReceive('insert')
-			->with('wp_wpb2d_processed_files', array('file' => 'File3'))
-			->once()
-
-			->shouldReceive('insert')
-			->with('wp_wpb2d_processed_files', array('file' => 'File4'))
-			->once()
-
-			->mock()
-			;
-
-		$db->prefix = 'wp_';
-
-		$config = new WP_Backup_Config($db);
-
-		$this->assertEmpty($config->get_processed_files());
-
-		$files = $config->add_processed_files(array('File1', 'File2'));
-
-		$files = $config->get_processed_files();
-		$this->assertEquals($files, array('File1', 'File2'));
-
-		$files = $config->add_processed_files(array('File3', 'File4'));
-
-		$files = $config->get_processed_files();
-		$this->assertEquals($files, array('File1', 'File2', 'File3', 'File4'));
-	}
-
 	private function getConfig()
 	{
 		$db = Mockery::mock();
 		$db->prefix = 'wp_';
 
-		return new WP_Backup_Config($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		return new WP_Backup_Config();
 	}
 
 	public function testSetGetScheduleWhereTimeOfDayHasPast() {
@@ -229,7 +192,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$config = new WP_Backup_Config($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$config = new WP_Backup_Config();
 
 		$dropbox_path = $config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
 		$this->assertEquals('Out', $dropbox_path);
@@ -277,7 +242,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$config = new WP_Backup_Config($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$config = new WP_Backup_Config();
 
 		$config->set_schedule('Monday', '00:00:00', 'daily');
 

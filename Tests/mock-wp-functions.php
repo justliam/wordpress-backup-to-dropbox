@@ -69,7 +69,16 @@ function reset_globals() {
 	$schedule = array();
 	$current_time = array();
 
-	WP_Backup_Registry::setLogger(Mockery::mock('Logger')->shouldReceive('log')->mock());
+	WP_Backup_Registry::setLogger(Mockery::mock('Logger')
+		->shouldReceive('log')
+		->mock()
+	);
+
+	WP_Backup_Registry::setConfig(Mockery::mock('Config')
+		->shouldReceive('get_backup_dir')
+		->andReturn(__DIR__ . '/BackupTest/')
+		->mock()
+	);
 }
 
 function wp_remote_get($url) {
@@ -103,11 +112,11 @@ function download_url($url) {
 function unzip_file($file, $dir) {
 	$fh = fopen($dir . 'extension.php', 'w');
 	fwrite($fh, "<?php\n");
-	fwrite($fh, 'class Test_Extension impelents WP_Backup_Extension {');
+	fwrite($fh, 'class Test_Extension extends WP_Backup_Extension {');
 	fwrite($fh, 'public static $lastCalled;');
-	fwrite($fh, 'public function on_start() { self::$lastCalled = "on_start"; return true; }');
-	fwrite($fh, 'public function on_complete() { self::$lastCalled = "on_complete"; return true; }');
-	fwrite($fh, 'public function on_failure() { self::$lastCalled = "on_failure"; return true; }');
+	fwrite($fh, 'public function start() { self::$lastCalled = "start"; return true; }');
+	fwrite($fh, 'public function complete() { self::$lastCalled = "complete"; return true; }');
+	fwrite($fh, 'public function failure() { self::$lastCalled = "failure"; return true; }');
 	fwrite($fh, 'public function get_menu() { self::$lastCalled = "get_menu"; return true; }');
 	fwrite($fh, 'public function get_type() { self::$lastCalled = "get_type"; return WP_Backup_Extension::TYPE_OUTPUT; }');
 	fwrite($fh, 'public function is_enabled() { self::$lastCalled = "is_enabled"; return true; }');

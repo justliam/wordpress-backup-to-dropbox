@@ -37,7 +37,9 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$this->list = new File_List($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$this->list = new File_List();
 	}
 
 	public function tearDown() {
@@ -60,7 +62,9 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$list = new File_List($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$list = new File_List();
 		$list->set_excluded(__FILE__);
 
 		$this->assertTrue($list->is_excluded(__FILE__));
@@ -75,7 +79,9 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$list = new File_List($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$list = new File_List();
 		$this->assertTrue($list->is_excluded(__FILE__));
 
 		$list->set_included(__FILE__);

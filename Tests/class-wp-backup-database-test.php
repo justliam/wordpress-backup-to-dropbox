@@ -30,24 +30,15 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		Mockery::close();
-		WP_Backup_Logger::delete_log();
-		unlink($this->config->get_backup_dir() . '/index.php');
-		rmdir($this->config->get_backup_dir());
+
+		@rmdir(__DIR__ . '/BackupTest/');
 	}
 
 	public function setUp() {
 		reset_globals();
 		set_current_time('2012-03-12 00:00:00');
 
-		$dir = __DIR__ . '/BackupTest';
-		$this->config = Mockery::mock('Config')
-			->shouldReceive('get_backup_dir')
-			->andReturn($dir)
-
-			->mock()
-			;
-
-		mkdir($dir);
+		@mkdir(__DIR__ . '/BackupTest/');
 	}
 
 	private function getTableData() {
@@ -65,7 +56,7 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testExecuteCore() {
-		$wpdb = Mockery::mock('wpdb')
+		$db = Mockery::mock('wpdb')
 
 			->shouldReceive('query')
 			->once()
@@ -111,10 +102,12 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 			->mock();
 
-		$backup = new WP_Backup_Database_Core($wpdb, $this->config);
+		WP_Backup_Registry::setDatabase($db);
+
+		$backup = new WP_Backup_Database_Core();
 		$this->assertTrue($backup->execute());
 
-		$out = $this->config->get_backup_dir() . '/TestDB-backup-core.sql';
+		$out = $backup->get_file();
 
 		$this->assertOutput($out, $this->getExpectedCoreDBDump());
 
@@ -122,7 +115,7 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testExecutePlugins() {
-		$wpdb = Mockery::mock('wpdb')
+		$db = Mockery::mock('wpdb')
 
 			->shouldReceive('query')
 			->once()
@@ -180,10 +173,12 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
 
 			->mock();
 
-		$backup = new WP_Backup_Database_Plugins($wpdb, $this->config);
+		WP_Backup_Registry::setDatabase($db);
+
+		$backup = new WP_Backup_Database_Plugins();
 		$this->assertTrue($backup->execute());
 
-		$out = $this->config->get_backup_dir() . '/TestDB-backup-plugins.sql';
+		$out = $backup->get_file();
 
 		$this->assertOutput($out, $this->getExpectedPluginDBDump());
 

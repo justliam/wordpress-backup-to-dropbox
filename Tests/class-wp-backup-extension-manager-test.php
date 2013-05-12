@@ -22,20 +22,18 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	public function setUp() {
 		reset_globals();
-		WP_Backup::create_dump_dir();
+
+		WP_Backup_Registry::setDropbox(Mockery::mock('Dropbox'));
 	}
 
 	public function tearDown() {
-		@unlink(EXTENSIONS_DIR . 'extension.php');
-		unlink(WP_Backup_Config::get_backup_dir() . '/index.php');
-		rmdir(WP_Backup_Config::get_backup_dir());
 		Mockery::close();
 	}
 
 	public function testConstruct() {
 		$db = Mockery::mock()
 			->shouldReceive('get_results')
-			->with("SELECT * FROM wp_wpb2d_premium_extensions", 1)
+			->with("SELECT * FROM wp_wpb2d_premium_extensions")
 			->once()
 
 			->mock()
@@ -43,7 +41,9 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$mgr = new WP_Backup_Extension_Manager($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$mgr = new WP_Backup_Extension_Manager();
 
 		$this->assertEquals(array(), $mgr->get_installed());
 	}
@@ -63,20 +63,22 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 	}
 
 	public function testInstallGetInstalled() {
+		$ext = new stdClass;
+		$ext->name = 'Test extension';
+		$ext->file = 'extension.php';
+
 		$db = Mockery::mock()
 			->shouldReceive('insert')
 			->with('wp_wpb2d_premium_extensions', array(
 				'name' => 'Test extension' ,
-				'file' => 'extension-file.php'
+				'file' => 'extension.php'
 			))
 			->andReturn(true)
 			->once()
 
 			->shouldReceive('get_results')
-			->with("SELECT * FROM wp_wpb2d_premium_extensions", 1)
-			->andReturn(array(
-				'Test extension' => 'extension-file.php'
-			))
+			->with("SELECT * FROM wp_wpb2d_premium_extensions")
+			->andReturn(array($ext))
 			->once()
 
 			->mock()
@@ -84,14 +86,23 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$mgr = new WP_Backup_Extension_Manager($db);
-		$mgr->install('Test extension', 'extension-file.php');
-		$this->assertEquals(array(
-			'Test extension' => 'extension-file.php'
-		), $mgr->get_installed());
+		WP_Backup_Registry::setDatabase($db);
+
+		$mgr = new WP_Backup_Extension_Manager();
+		$mgr->install('Test extension', 'extension.php');
+
+		$extensions = $mgr->get_installed();
+
+
+		$this->assertEquals($ext->name, $extensions[0]->name);
+		$this->assertEquals($ext->file, $extensions[0]->file);
 	}
 
 	public function testInitAndCallbacks() {
+		$ext = new stdClass;
+		$ext->name = 'Test extension';
+		$ext->file = 'extension.php';
+
 		$db = Mockery::mock()
 			->shouldReceive('insert')
 			->with('wp_wpb2d_premium_extensions', array(
@@ -102,10 +113,8 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 			->twice()
 
 			->shouldReceive('get_results')
-			->with("SELECT * FROM wp_wpb2d_premium_extensions", 1)
-			->andReturn(array(
-				'Test extension' => 'extension.php'
-			))
+			->with("SELECT * FROM wp_wpb2d_premium_extensions")
+			->andReturn(array($ext))
 			->once()
 
 			->mock()
@@ -113,7 +122,9 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 
 		$db->prefix = 'wp_';
 
-		$mgr = new WP_Backup_Extension_Manager($db);
+		WP_Backup_Registry::setDatabase($db);
+
+		$mgr = new WP_Backup_Extension_Manager();
 
 		$this->assertFalse(function_exists('new_func'));
 
@@ -121,10 +132,10 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 		$mgr->init();
 
 		$this->assertTrue(class_exists('Test_Extension'));
-		$this->assertTrue(Test_Extension::on_complete());
-		$this->assertTrue(Test_Extension::on_failure());
+		$this->assertTrue(Test_Extension::complete());
+		$this->assertTrue(Test_Extension::failure());
 		$this->assertTrue(Test_Extension::get_menu());
-		$this->assertEquals(2, Test_Extension::get_type());
+		$this->assertEquals(WP_Backup_Extension::TYPE_OUTPUT, Test_Extension::get_type());
 		$this->assertTrue(Test_Extension::is_enabled());
 		$this->assertTrue(Test_Extension::set_enabled(true));
 		$this->assertInstanceOf('Test_Extension', $mgr->get_output());
@@ -132,13 +143,10 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 		$mgr->add_menu_items();
 		$this->assertEquals('get_menu', Test_Extension::$lastCalled);
 
-		$mgr->on_start();
-		$this->assertEquals('on_start', Test_Extension::$lastCalled);
+		$mgr->complete();
+		$this->assertEquals('complete', Test_Extension::$lastCalled);
 
-		$mgr->on_complete();
-		$this->assertEquals('on_complete', Test_Extension::$lastCalled);
-
-		$mgr->on_failure();
-		$this->assertEquals('on_failure', Test_Extension::$lastCalled);
+		$mgr->failure();
+		$this->assertEquals('failure', Test_Extension::$lastCalled);
 	}
 }
