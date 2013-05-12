@@ -76,8 +76,6 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function install($name, $file) {
-		@umask(0000);
-
 		if (!defined('FS_METHOD'))
 			define('FS_METHOD', 'direct');
 

@@ -141,8 +141,6 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-	@umask(0000);
-
 	WP_Backup_Registry::logger()->delete_log();
 	WP_Backup_Registry::logger()->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
 
