@@ -21,6 +21,11 @@ require_once 'mock-wp-functions.php';
 class WP_Backup_Logger_Test extends PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		@unlink(WP_Backup_Logger::get_log_file());
+
+		$dir = WP_Backup_Registry::config()->get_backup_dir();
+
+		unlink($dir . 'index.php');
+		rmdir(WP_Backup_Registry::config()->get_backup_dir());
 	}
 
 	public function testLog() {

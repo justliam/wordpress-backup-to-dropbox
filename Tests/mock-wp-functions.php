@@ -81,6 +81,10 @@ function reset_globals() {
 	);
 }
 
+function get_home_path() {
+	return ABSPATH;
+}
+
 function wp_remote_get($url) {
 	global $remote_url;
 	$remote_url = $url;

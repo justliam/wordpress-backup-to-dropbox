@@ -69,9 +69,12 @@ class File_List_Test extends PHPUnit_Framework_TestCase {
 
 		$this->assertTrue($list->is_excluded(__FILE__));
 
+		$file = new stdClass;
+		$file->file = __FILE__;
+
 		$db = Mockery::mock()
 			->shouldReceive('get_results')
-			->andReturn(array(array(__FILE__)))
+			->andReturn(array($file))
 			->shouldReceive('query')
 			->with("DELETE FROM wp_wpb2d_excluded_files WHERE file = '" . __FILE__ . "'")
 			->mock()
