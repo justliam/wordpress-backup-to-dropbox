@@ -53,9 +53,12 @@ abstract class WP_Backup_Database {
 
 		$file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
 
-		foreach (glob($file . '*') as $file) {
-			if (preg_match('/(.?)' . preg_quote("-backup-{$this->type}.sql") . '(.?)/', $file))
-				return $file;
+		$files = glob($file . '*');
+		if ($files) {
+			foreach ($files as $file) {
+				if (preg_match('/(.?)' . preg_quote("-backup-{$this->type}.sql") . '(.?)/', $file))
+					return $file;
+			}
 		}
 
 		if ($secret)
