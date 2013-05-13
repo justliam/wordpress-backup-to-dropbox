@@ -28,6 +28,8 @@ class WP_Backup_Extension_Manager_Test extends PHPUnit_Framework_TestCase {
 
 	public function tearDown() {
 		Mockery::close();
+
+		unlink(EXTENSIONS_DIR . 'extension.php');
 	}
 
 	public function testConstruct() {
