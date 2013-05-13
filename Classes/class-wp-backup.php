@@ -194,14 +194,14 @@ class WP_Backup {
 	}
 
 	private static function create_silence_file() {
-		$silence = WP_Backup_Config::get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
+		$silence = WP_Backup_Registry::config()->get_backup_dir() . 'index.php';
 		if (!file_exists($silence)) {
 			$fh = @fopen($silence, 'w');
 			if (!$fh) {
 				throw new Exception(
 					sprintf(
 						__("WordPress does not have write access to '%s'. Please grant it write privileges before using this plugin."),
-						WP_Backup_Config::get_backup_dir()
+						WP_Backup_Registry::config()->get_backup_dir()
 					)
 				);
 			}
@@ -211,7 +211,7 @@ class WP_Backup {
 	}
 
 	public static function create_dump_dir() {
-		$dump_dir = WP_Backup_Config::get_backup_dir();
+		$dump_dir = WP_Backup_Registry::config()->get_backup_dir();
 		$error_message  = sprintf(__("WordPress Backup to Dropbox requires write access to '%s', please ensure it exists and has write permissions.", 'wpbtd'), $dump_dir);
 
 		if (!file_exists($dump_dir)) {
