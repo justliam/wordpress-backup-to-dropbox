@@ -212,17 +212,17 @@ class WP_Backup {
 
 	public static function create_dump_dir() {
 		$dump_dir = WP_Backup_Config::get_backup_dir();
+		$error_message  = sprintf(__("WordPress Backup to Dropbox requires write access to '%s', please ensure it exists and has write permissions.", 'wpbtd'), $dump_dir);
+
 		if (!file_exists($dump_dir)) {
 			//It really pains me to use the error suppressor here but PHP error handling sucks :-(
 			if (!@mkdir($dump_dir)) {
-				throw new Exception(
-				sprintf(
-						__("A database backup cannot be created because WordPress does not have write access to '%s', please create the folder '%s' manually.", 'wpbtd'),
-						dirname($dump_dir), basename($dump_dir)
-					)
-				);
+				throw new Exception($error_message);
 			}
+		} else if (!is_writable($dump_dir)) {
+			throw new Exception($error_message);
 		}
+
 		self::create_silence_file();
 	}
 }
