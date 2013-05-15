@@ -22,6 +22,8 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 define('BACKUP_TO_DROPBOX_VERSION', '1.5');
+define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '1');
+
 define('EXTENSIONS_DIR', str_replace(DIRECTORY_SEPARATOR, '/', WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Extensions/'));
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
 define('MINUMUM_PHP_VERSION', '5.2.16');
@@ -46,6 +48,13 @@ require_once('Classes/class-wp-backup-registry.php');
 require_once('Classes/class-wp-backup-upload-tracker.php');
 
 WP_Backup_Extension_Manager::construct()->init();
+
+function is_wpb2d_db_up_to_date() {
+	if (get_option('wpb2d_database_version') != BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+		wpb2d_install();
+		wpb2d_install_data();
+	}
+}
 
 function load_wpb2d_stylesheet() {
 	//Register stylesheet
@@ -83,6 +92,7 @@ function backup_to_dropbox_admin_menu() {
  */
 function backup_to_dropbox_admin_menu_contents() {
 	load_wpb2d_stylesheet();
+	is_wpb2d_db_up_to_date();
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
@@ -98,6 +108,7 @@ function backup_to_dropbox_admin_menu_contents() {
  */
 function backup_to_dropbox_monitor() {
 	load_wpb2d_stylesheet();
+	is_wpb2d_db_up_to_date();
 
 	if (!WP_Backup_Registry::dropbox()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
@@ -113,6 +124,7 @@ function backup_to_dropbox_monitor() {
  */
 function backup_to_dropbox_premium() {
 	load_wpb2d_stylesheet();
+	is_wpb2d_db_up_to_date();
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 	include('Views/wp-backup-to-dropbox-premium.php');
@@ -334,6 +346,8 @@ function wpb2d_install_data() {
 	delete_option('backup-to-dropbox-actions');
 	delete_option('backup-to-dropbox-file-list');
 	delete_option('backup-to-dropbox-log');
+
+	add_option('wpb2d_database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
 }
 
 //Register database install
