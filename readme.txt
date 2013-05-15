@@ -147,6 +147,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Moved all plugin storage into it's own table structure to increse performance
 * Added the ablilty for chunked uploads to resume
 * Added a brand new logo!
+* More info here: http://www.mikeyd.com.au/2013/05/15/wordpress-backup-to-dropbox-1-5
 
 = 1.4.5 =
 * Added support for multi site

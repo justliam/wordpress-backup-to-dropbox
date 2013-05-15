@@ -279,6 +279,24 @@ function wpb2d_install_data() {
 		}
 	}
 
+	$tokens = get_option('backup-to-dropbox-tokens');
+	if (isset($tokens['access'])) {
+		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
+			'name' => 'access_token',
+			'value' => $tokens['access']->oauth_token,
+		));
+
+		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
+			'name' => 'access_token_secret',
+			'value' => $tokens['access']->oauth_token_secret,
+		));
+
+		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
+			'name' => 'oauth_state',
+			'value' => 'access',
+		));
+	}
+
 	$history = get_option('backup-to-dropbox-history');
 	if ($history) {
 		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
@@ -317,6 +335,7 @@ function wpb2d_install_data() {
 	}
 
 	//Delete unused options
+	delete_option('backup-to-dropbox-tokens');
 	delete_option('backup-to-dropbox-premium-extensions');
 	delete_option('backup-to-dropbox-excluded-files');
 	delete_option('backup-to-dropbox-processed-files');
