@@ -324,16 +324,6 @@ function wpb2d_install_data() {
 		}
 	}
 
-	$premium_extensions = get_option('backup-to-dropbox-premium-extensions');
-	if ($premium_extensions) {
-		foreach ($premium_extensions as $name => $file) {
-			$wpdb->insert($wpdb->prefix . 'wpb2d_premium_extensions', array(
-				'name' => $name,
-				'file' => $file,
-			));
-		}
-	}
-
 	//Delete unused options
 	delete_option('backup-to-dropbox-tokens');
 	delete_option('backup-to-dropbox-premium-extensions');
