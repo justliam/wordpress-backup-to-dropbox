@@ -55,7 +55,9 @@ class WP_Backup_Config {
 
 	public function get_option($name) {
 		if (!isset($this->options[$name])) {
-			$this->options[$name] = $this->db->get_var("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = '$name'");
+			$this->options[$name] = $this->db->get_var(
+				$this->db->prepare("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = %s", $name)
+			);
 		}
 
 		return $this->options[$name];
