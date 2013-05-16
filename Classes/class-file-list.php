@@ -42,12 +42,12 @@ class File_List {
 
 		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0");
 		foreach ($result as $value) {
-			$this->excluded_files[] = $value->file;
+			$this->excluded_files[] = stripslashes($value->file);
 		}
 
 		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 1");
 		foreach ($result as $value) {
-			$this->excluded_dirs[] = $value->file;
+			$this->excluded_dirs[] = stripslashes($value->file);
 		}
 	}
 
