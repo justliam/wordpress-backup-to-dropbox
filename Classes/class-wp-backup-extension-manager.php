@@ -66,10 +66,16 @@ class WP_Backup_Extension_Manager {
 
 	public function get_installed() {
 		if (!$this->installed) {
-			$this->installed = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_premium_extensions");
+			$installed = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_premium_extensions");
 
-			if (!is_array($this->installed))
-				return array();
+			$this->installed = array();
+
+			if (is_array($installed)) {
+				foreach ($installed as $extension) {
+					if (file_exists(EXTENSIONS_DIR . $extension->file))
+						$this->installed[] = $extension;
+				}
+			}
 		}
 
 		return $this->installed;
