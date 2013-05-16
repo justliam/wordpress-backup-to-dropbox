@@ -54,8 +54,7 @@ class Dropbox_Facade {
 		$this->request_token = $this->get_token('request');
 		$this->access_token = $this->get_token('access');
 
-
-			//If we don't have an acess token then lets setup a new request
+		//If we don't have an acess token then lets setup a new request
 		if (!$this->oauth_state) {
 			$this->request();
 		} else if ($this->oauth_state == 'request') {
@@ -83,7 +82,10 @@ class Dropbox_Facade {
 		$token = $this->config->get_option("{$type}_token");
 		$token_secret = $this->config->get_option("{$type}_token_secret");
 
-		$ret = null;
+		$ret = new stdClass;
+		$ret->oauth_token = null;
+		$ret->oauth_token_secret = null;
+
 		if ($token && $token_secret) {
 			$ret = new stdClass;
 			$ret->oauth_token = $token;
