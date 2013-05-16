@@ -278,7 +278,7 @@ function wpb2d_install() {
 }
 
 function wpb2d_install_data() {
-	global $wpdb;
+	$wpdb = WP_Backup_Registry::db();
 
 	$options = get_option('backup-to-dropbox-options');
 	if ($options) {
