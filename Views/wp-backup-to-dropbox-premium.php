@@ -80,7 +80,7 @@ try {
 			<p class="error">
 				<?php echo $error ?>
 			</p>
-		<?php elseif ($success): ?>
+		<?php elseif (isset($success)): ?>
 			<p class="success">
 				<?php echo $success ?>
 			</p>
