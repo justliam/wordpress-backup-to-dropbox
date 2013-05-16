@@ -95,7 +95,9 @@ class File_List {
 	private function include_file($file) {
 		$key = array_search($file, $this->excluded_files);
 
-		$this->db->query("DELETE FROM {$this->db->prefix}wpb2d_excluded_files WHERE file = '$file'");
+		$this->db->query(
+			$this->db->prepare("DELETE FROM {$this->db->prefix}wpb2d_excluded_files WHERE file =  %s", $file)
+		);
 
 		unset($this->excluded_files[$key]);
 	}
@@ -103,7 +105,9 @@ class File_List {
 	private function include_dir($dir) {
 		$key = array_search($dir, $this->excluded_dirs);
 
-		$this->db->query("DELETE FROM {$this->db->prefix}wpb2d_excluded_files WHERE file = '$dir'");
+		$this->db->query(
+			$this->db->prepare("DELETE FROM {$this->db->prefix}wpb2d_excluded_files WHERE file =  %s", $dir)
+		);
 
 		unset($this->excluded_dirs[$key]);
 	}
