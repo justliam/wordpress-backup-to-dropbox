@@ -51,6 +51,9 @@ class WP_Backup_Registry {
 	public static function db() {
 		if (!self::$db) {
 			global $wpdb;
+
+			$wpdb->hide_errors();
+
 			self::$db = $wpdb;
 		}
 
