@@ -61,6 +61,7 @@ class Dropbox_Facade {
 				$this->access_token = $this->oauth->getAccessToken();
 				$this->oauth_state = 'access';
 				$this->oauth->setToken($this->access_token);
+				$this->save_tokens();
 			} catch (Exception $e) {
 				//Authorization failed so we are still pending
 				$this->unlink_account();
@@ -70,9 +71,8 @@ class Dropbox_Facade {
 		} else {
 			//If we don't have an acess token then lets setup a new request
 			$this->request();
+			$this->save_tokens();
 		}
-
-		$this->save_tokens();
 
 		$this->dropbox = new API($this->oauth);
 		$this->dropbox->setTracker(new WP_Backup_Upload_Tracker());
