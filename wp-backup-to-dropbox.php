@@ -22,7 +22,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 define('BACKUP_TO_DROPBOX_VERSION', '1.5');
-define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '1');
+define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '2');
 
 define('EXTENSIONS_DIR', str_replace(DIRECTORY_SEPARATOR, '/', WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Extensions/'));
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
@@ -250,31 +250,30 @@ function wpb2d_install() {
 	$table_name = $wpdb->prefix . 'wpb2d_options';
 	dbDelta("CREATE TABLE $table_name (
 		name varchar(50) NOT NULL,
-		value varchar(500) NOT NULL,
-		PRIMARY KEY name (name)
+		value varchar(255) NOT NULL,
+		UNIQUE KEY name (name)
 	);");
 
 	$table_name = $wpdb->prefix . 'wpb2d_processed_files';
 	dbDelta("CREATE TABLE $table_name (
-		file varchar(500) NOT NULL,
+		file varchar(255) NOT NULL,
 		offset int NOT NULL DEFAULT 0,
 		uploadid varchar(50),
-		PRIMARY KEY file (file)
+		UNIQUE KEY file (file)
 	);");
 
 	$table_name = $wpdb->prefix . 'wpb2d_excluded_files';
 	dbDelta("CREATE TABLE $table_name (
-		file varchar(500) NOT NULL,
+		file varchar(255) NOT NULL,
 		isdir tinyint(1) NOT NULL,
-		INDEX isdir (isdir),
-		PRIMARY KEY file (file)
+		UNIQUE KEY file (file)
 	);");
 
 	$table_name = $wpdb->prefix . 'wpb2d_premium_extensions';
 	dbDelta("CREATE TABLE $table_name (
 		name varchar(50) NOT NULL,
-		file varchar(500) NOT NULL,
-		PRIMARY KEY name (name)
+		file varchar(255) NOT NULL,
+		UNIQUE KEY name (name)
 	);");
 }
 
@@ -347,7 +346,7 @@ function wpb2d_install_data() {
 	delete_option('backup-to-dropbox-file-list');
 	delete_option('backup-to-dropbox-log');
 
-	add_option('wpb2d_database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION, false, 'no');
+	update_option('wpb2d_database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
 }
 
 //Register database install
