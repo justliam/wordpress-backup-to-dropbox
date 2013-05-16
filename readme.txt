@@ -138,6 +138,11 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.5.1 =
+* Fixed DB errors displaying with for servers show errors on by default
+* Fixed excluded widget not working after update due to lengthy DB key
+* Fixed autorisation not working for some people after update
+
 = 1.5 =
 * Fix issue #127: in_array() warning on multisite setups
 * Fix a few E_NOTICES, sorry guys I did not realise these supressed
