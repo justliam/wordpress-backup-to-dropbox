@@ -362,38 +362,43 @@ function wpb2d_install_data() {
 	delete_option('wpb2d_database_version');
 }
 
-//Register database install
-register_activation_hook(__FILE__, 'wpb2d_install');
-register_activation_hook(__FILE__, 'wpb2d_install_data');
+if (is_admin()) {
+	//Initilise extensions
+	WP_Backup_Extension_Manager::construct()->init();
 
-//WordPress filters and actions
-add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
-add_action('monitor_dropbox_backup_hook', 'monitor_dropbox_backup');
-add_action('run_dropbox_backup_hook', 'run_dropbox_backup');
-add_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
-add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
-add_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
-add_action('wp_ajax_progress', 'backup_to_dropbox_progress');
+	//Register database install
+	register_activation_hook(__FILE__, 'wpb2d_install');
+	register_activation_hook(__FILE__, 'wpb2d_install_data');
 
-//i18n language text domain
-load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
+	//WordPress filters and actions
+	add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
+	add_action('monitor_dropbox_backup_hook', 'monitor_dropbox_backup');
+	add_action('run_dropbox_backup_hook', 'run_dropbox_backup');
+	add_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
+	add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
+	add_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
+	add_action('wp_ajax_progress', 'backup_to_dropbox_progress');
 
-if (defined('MULTISITE') && MULTISITE) {
-	function custom_menu_order($menu_ord) {
-		if (!is_array($menu_ord))
-			return true;
+	//i18n language text domain
+	load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
 
-		if (in_array('backup-to-dropbox', $menu_ord))
-			$menu_ord[] = array_shift($menu_ord);
+	if (defined('MULTISITE') && MULTISITE) {
+		function custom_menu_order($menu_ord) {
+			if (!is_array($menu_ord))
+				return true;
 
-		return $menu_ord;
+			if (in_array('backup-to-dropbox', $menu_ord))
+				$menu_ord[] = array_shift($menu_ord);
+
+			return $menu_ord;
+		}
+
+		add_filter('custom_menu_order', 'custom_menu_order');
+		add_filter('menu_order', 'custom_menu_order');
+
+		add_action('network_admin_menu', 'backup_to_dropbox_admin_menu');
+	} else {
+		add_action('admin_menu', 'backup_to_dropbox_admin_menu');
 	}
-
-	add_filter('custom_menu_order', 'custom_menu_order');
-	add_filter('menu_order', 'custom_menu_order');
-
-	add_action('network_admin_menu', 'backup_to_dropbox_admin_menu');
-} else {
-	add_action('admin_menu', 'backup_to_dropbox_admin_menu');
 }
 
