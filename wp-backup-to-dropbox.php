@@ -269,7 +269,7 @@ function backup_to_dropbox_cron_schedules($schedules) {
 }
 
 function wpb2d_install() {
-	global $wpdb;
+	$wpdb = WP_Backup_Registry::db();
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
