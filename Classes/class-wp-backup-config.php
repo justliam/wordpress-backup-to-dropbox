@@ -35,26 +35,29 @@ class WP_Backup_Config {
 	}
 
 	public function set_option($name, $value) {
-		$this->options[$name] = $value;
+		if ($this->get_option($name) == $value)
+			return $this;
 
-		$result = $this->db->insert($this->db->prefix . "wpb2d_options", array(
-			'name' => $name,
-			'value' => $value,
-		));
-
-		if (!$result) {
+		if ($this->get_option($name, false)) {
 			$this->db->update(
 				$this->db->prefix . 'wpb2d_options',
 				array('value' => $value),
 				array('name' => $name)
 			);
+		} else {
+			$this->db->insert($this->db->prefix . "wpb2d_options", array(
+				'name' => $name,
+				'value' => $value,
+			));
 		}
+
+		$this->options[$name] = $value;
 
 		return $this;
 	}
 
-	public function get_option($name) {
-		if (!isset($this->options[$name])) {
+	public function get_option($name, $no_cache = false) {
+		if (!isset($this->options[$name]) || $no_cache) {
 			$this->options[$name] = $this->db->get_var(
 				$this->db->prepare("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = %s", $name)
 			);
