@@ -47,6 +47,8 @@ require_once('Classes/class-wp-backup-output.php');
 require_once('Classes/class-wp-backup-registry.php');
 require_once('Classes/class-wp-backup-upload-tracker.php');
 
+WP_Backup_Extension_Manager::construct()->init();
+
 function is_wpb2d_db_up_to_date() {
 	if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
 		wpb2d_install();
@@ -56,8 +58,6 @@ function is_wpb2d_db_up_to_date() {
 
 function wpb2d_init() {
 	is_wpb2d_db_up_to_date();
-
-	WP_Backup_Extension_Manager::construct()->init();
 
 	//Register stylesheet
 	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
