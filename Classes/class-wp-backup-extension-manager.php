@@ -124,10 +124,16 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function activate($name, $file) {
-		$this->db->insert($this->db->prefix . "wpb2d_premium_extensions", array(
-			'name' => $name,
-			'file' => $file,
-		));
+		$exists = $this->db->get_var(
+			$this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_premium_extensions WHERE name = %s", $name)
+		);
+
+		if (is_null($exists)) {
+			$this->db->insert("{$this->db->prefix}wpb2d_premium_extensions", array(
+				'name' => $name,
+				'file' => $file,
+			));
+		}
 	}
 
 	public function init() {
