@@ -22,7 +22,7 @@ License: Copyright 2011  Michael De Wildt  (email : michael.dewildt@gmail.com)
 		Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 define('BACKUP_TO_DROPBOX_VERSION', '1.5.1');
-define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '2');
+define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '1');
 
 define('EXTENSIONS_DIR', str_replace(DIRECTORY_SEPARATOR, '/', WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Extensions/'));
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
@@ -47,16 +47,18 @@ require_once('Classes/class-wp-backup-output.php');
 require_once('Classes/class-wp-backup-registry.php');
 require_once('Classes/class-wp-backup-upload-tracker.php');
 
-WP_Backup_Extension_Manager::construct()->init();
-
 function is_wpb2d_db_up_to_date() {
-	if (get_option('wpb2d_database_version') != BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+	if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
 		wpb2d_install();
 		wpb2d_install_data();
 	}
 }
 
-function load_wpb2d_stylesheet() {
+function wpb2d_init() {
+	is_wpb2d_db_up_to_date();
+
+	WP_Backup_Extension_Manager::construct()->init();
+
 	//Register stylesheet
 	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
 	wp_enqueue_style('wpb2d-style');
@@ -91,8 +93,7 @@ function backup_to_dropbox_admin_menu() {
  * @return void
  */
 function backup_to_dropbox_admin_menu_contents() {
-	load_wpb2d_stylesheet();
-	is_wpb2d_db_up_to_date();
+	wpb2d_init();
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
@@ -107,8 +108,7 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
-	load_wpb2d_stylesheet();
-	is_wpb2d_db_up_to_date();
+	wpb2d_init();
 
 	if (!WP_Backup_Registry::dropbox()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
@@ -123,8 +123,7 @@ function backup_to_dropbox_monitor() {
  * @return void
  */
 function backup_to_dropbox_premium() {
-	load_wpb2d_stylesheet();
-	is_wpb2d_db_up_to_date();
+	wpb2d_init();
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 	include('Views/wp-backup-to-dropbox-premium.php');
@@ -279,33 +278,19 @@ function wpb2d_install() {
 
 function wpb2d_install_data() {
 	$wpdb = WP_Backup_Registry::db();
+	$config = WP_Backup_Registry::config();
 
 	$options = get_option('backup-to-dropbox-options');
 	if ($options) {
-		foreach ($options as $key => $value) {
-			$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
-				'name' => $key,
-				'value' => $value,
-			));
-		}
+		foreach ($options as $key => $value)
+			$config->set_option($key, $value);
 	}
 
 	$tokens = get_option('backup-to-dropbox-tokens');
 	if (isset($tokens['access'])) {
-		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
-			'name' => 'access_token',
-			'value' => $tokens['access']->oauth_token,
-		));
-
-		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
-			'name' => 'access_token_secret',
-			'value' => $tokens['access']->oauth_token_secret,
-		));
-
-		$wpdb->insert($wpdb->prefix . 'wpb2d_options', array(
-			'name' => 'oauth_state',
-			'value' => 'access',
-		));
+		$config->set_option('access_token', $tokens['access']->oauth_token);
+		$config->set_option('access_token_secret', $tokens['access']->oauth_token_secret);
+		$config->set_option('oauth_state', 'access');
 	}
 
 	$history = get_option('backup-to-dropbox-history');
@@ -335,6 +320,8 @@ function wpb2d_install_data() {
 		}
 	}
 
+	$config->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
+
 	//Delete unused options
 	delete_option('backup-to-dropbox-tokens');
 	delete_option('backup-to-dropbox-premium-extensions');
@@ -345,10 +332,7 @@ function wpb2d_install_data() {
 	delete_option('backup-to-dropbox-actions');
 	delete_option('backup-to-dropbox-file-list');
 	delete_option('backup-to-dropbox-log');
-
-
 	delete_option('wpb2d_database_version');
-	add_option('wpb2d_database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION, false, 'no');
 }
 
 //Register database install
