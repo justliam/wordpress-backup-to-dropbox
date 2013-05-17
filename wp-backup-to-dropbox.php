@@ -28,26 +28,53 @@ define('EXTENSIONS_DIR', str_replace(DIRECTORY_SEPARATOR, '/', WP_CONTENT_DIR . 
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
 define('MINUMUM_PHP_VERSION', '5.2.16');
 
-require_once('Dropbox/Dropbox/API.php');
-require_once('Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
-require_once('Dropbox/Dropbox/OAuth/Consumer/Curl.php');
+if (function_exists('spl_autoload_register')) {
+	spl_autoload_register('wpb2d_autoload');
+} else {
+	require_once('Dropbox/Dropbox/API.php');
+	require_once('Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
+	require_once('Dropbox/Dropbox/OAuth/Consumer/Curl.php');
 
-require_once('Classes/class-file-list.php');
-require_once('Classes/class-dropbox-facade.php');
-require_once('Classes/class-wp-backup-config.php');
-require_once('Classes/class-wp-backup.php');
-require_once('Classes/class-wp-backup-database.php');
-require_once('Classes/class-wp-backup-database-core.php');
-require_once('Classes/class-wp-backup-database-plugins.php');
-require_once('Classes/class-wp-backup-extension.php');
-require_once('Classes/class-wp-backup-extension-manager.php');
-require_once('Classes/class-wp-backup-logger.php');
-require_once('Classes/class-wp-backup-processed-files.php');
-require_once('Classes/class-wp-backup-output.php');
-require_once('Classes/class-wp-backup-registry.php');
-require_once('Classes/class-wp-backup-upload-tracker.php');
+	require_once('Classes/class-file-list.php');
+	require_once('Classes/class-dropbox-facade.php');
+	require_once('Classes/class-wp-backup-config.php');
+	require_once('Classes/class-wp-backup.php');
+	require_once('Classes/class-wp-backup-database.php');
+	require_once('Classes/class-wp-backup-database-core.php');
+	require_once('Classes/class-wp-backup-database-plugins.php');
+	require_once('Classes/class-wp-backup-extension.php');
+	require_once('Classes/class-wp-backup-extension-manager.php');
+	require_once('Classes/class-wp-backup-logger.php');
+	require_once('Classes/class-wp-backup-processed-files.php');
+	require_once('Classes/class-wp-backup-output.php');
+	require_once('Classes/class-wp-backup-registry.php');
+	require_once('Classes/class-wp-backup-upload-tracker.php');
+}
 
-WP_Backup_Extension_Manager::construct()->init();
+function wpb2d_autoload($class_name) {
+	switch ($class_name) {
+		case 'API':
+			require_once('Dropbox/Dropbox/API.php');
+			break;
+
+		case 'OAuth_Consumer_ConsumerAbstract':
+			require_once('Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
+			break;
+
+		case 'OAuth_Consumer_Curl':
+			require_once('Dropbox/Dropbox/OAuth/Consumer/Curl.php');
+			break;
+
+		case 'File_List':
+			require_once('Classes/class-file-list.php');
+			break;
+
+		default:
+			$file = 'Classes/class-' . strtolower(str_replace('_', '-', $class_name)) . '.php';
+			if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . $file))
+				require_once($file);
+	}
+}
 
 function is_wpb2d_db_up_to_date() {
 	if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
