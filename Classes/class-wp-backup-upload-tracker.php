@@ -20,10 +20,10 @@
  */
 class WP_Backup_Upload_Tracker {
 
-	private $db;
+	private $processed_files;
 
 	public function __construct() {
-		$this->db = WP_Backup_Registry::db();
+		$this->processed_files = new WP_Backup_Processed_Files();
 	}
 
 	public function track_upload($file, $upload_id, $offset) {
@@ -35,18 +35,11 @@ class WP_Backup_Upload_Tracker {
 			round(filesize($file) / 1048576, 1)
 		));
 
-		$result = $this->db->insert("{$this->db->prefix}wpb2d_processed_files", array(
-			'file' => $file,
-			'uploadid' => $upload_id,
-			'offset' => $offset
-		));
-
-		if (!$result) {
-			$this->db->update(
-				"{$this->db->prefix}wpb2d_processed_files",
-				array('uploadid' => $upload_id, 'offset' => $offset),
-				array('file' => $file)
-			);
+		$file_obj = $this->processed_files->get_file($file);
+		if ($file_obj) {
+			$this->processed_files->update_file($file, $upload_id, $offset);
+		} else {
+			$this->processed_files->add_files(array($file));
 		}
 	}
 }

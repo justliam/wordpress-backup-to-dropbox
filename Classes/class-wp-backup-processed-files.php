@@ -40,6 +40,14 @@ class WP_Backup_Processed_Files {
 		}
 	}
 
+	public function update_file($file, $upload_id, $offset) {
+		$this->db->update(
+			"{$this->db->prefix}wpb2d_processed_files",
+			array('uploadid' => $upload_id, 'offset' => $offset),
+			array('file' => $file)
+		);
+	}
+
 	public function add_files($new_files) {
 		foreach ($new_files as $file) {
 
