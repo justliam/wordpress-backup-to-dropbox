@@ -81,6 +81,13 @@ class WP_Backup_Extension_Manager {
 		return $this->installed;
 	}
 
+	public function is_installed($name) {
+		foreach ($this->get_installed() as $ext) {
+			if (strtolower($ext->name) == strtolower($name))
+				return true;
+		}
+	}
+
 	public function install($name, $file) {
 		if (!defined('FS_METHOD'))
 			define('FS_METHOD', 'direct');

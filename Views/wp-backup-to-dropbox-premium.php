@@ -38,11 +38,6 @@ try {
 		echo '<script>window.location.reload(true);</script>';
 	}
 
-	$installed = array();
-	foreach ($manager->get_installed() as $ext) {
-		$installed[] = $ext->name;
-	}
-
 	$extensions = $manager->get_extensions();
 } catch (Exception $e) {
 	$error = $e->getMessage();
@@ -105,7 +100,7 @@ try {
 					<input type="hidden" value="<?php echo $extension['file'] ?>" name="file" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 					<input type="hidden" value="<?php echo $key ?>" name="key" />
-					<?php if (in_array($extension['name'], $installed)): ?>
+					<?php if ($manager->is_installed($extension['name'])): ?>
 						<span class="installed">Installed</span>
 					<?php else: ?>
 						<input class="button-primary" type="submit" value="<?php echo $extension['purchased'] ? __('Download & Install') : __('Buy Now'); ?>" class="submitBtn" />
