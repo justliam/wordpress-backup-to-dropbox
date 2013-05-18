@@ -369,14 +369,14 @@ add_action('run_dropbox_backup_hook', 'run_dropbox_backup');
 add_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
 add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
 
+//Register database install
+register_activation_hook(__FILE__, 'wpb2d_install');
+register_activation_hook(__FILE__, 'wpb2d_install_data');
+add_action('plugins_loaded', 'is_wpb2d_db_up_to_date');
+
 if (is_admin()) {
 	//Initilise extensions
 	WP_Backup_Extension_Manager::construct()->init();
-
-	//Register database install
-	register_activation_hook(__FILE__, 'wpb2d_install');
-	register_activation_hook(__FILE__, 'wpb2d_install_data');
-	add_action('plugins_loaded', 'is_wpb2d_db_up_to_date');
 
 	//WordPress filters and actions
 	add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
