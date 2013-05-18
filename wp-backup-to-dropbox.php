@@ -363,6 +363,12 @@ function is_wpb2d_db_up_to_date() {
 	}
 }
 
+//Backup hooks
+add_action('monitor_dropbox_backup_hook', 'monitor_dropbox_backup');
+add_action('run_dropbox_backup_hook', 'run_dropbox_backup');
+add_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
+add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
+
 if (is_admin()) {
 	//Initilise extensions
 	WP_Backup_Extension_Manager::construct()->init();
@@ -374,10 +380,6 @@ if (is_admin()) {
 
 	//WordPress filters and actions
 	add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
-	add_action('monitor_dropbox_backup_hook', 'monitor_dropbox_backup');
-	add_action('run_dropbox_backup_hook', 'run_dropbox_backup');
-	add_action('execute_periodic_drobox_backup', 'execute_drobox_backup');
-	add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
 	add_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
 	add_action('wp_ajax_progress', 'backup_to_dropbox_progress');
 
