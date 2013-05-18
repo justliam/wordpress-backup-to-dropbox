@@ -197,8 +197,8 @@ class Dropbox_Facade {
 		$this->access_token = null;
 		$this->oauth_state =  null;
 
-		$this->save_tokens();
 		$this->request();
+		$this->save_tokens();
 	}
 
 	public static function remove_secret($file) {
