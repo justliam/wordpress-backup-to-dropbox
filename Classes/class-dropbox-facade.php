@@ -201,10 +201,13 @@ class Dropbox_Facade {
 		$this->save_tokens();
 	}
 
-	public static function remove_secret($file) {
+	public static function remove_secret($file, $basename = true) {
 		if (preg_match('/-wpb2d-secret$/', $file))
 			$file = substr($file, 0, strrpos($file, '.'));
 
-		return basename($file);
+		if ($basename)
+			return basename($file);
+
+		return $file;
 	}
 }
