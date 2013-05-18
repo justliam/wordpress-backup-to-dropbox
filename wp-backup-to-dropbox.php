@@ -76,16 +76,7 @@ function wpb2d_autoload($class_name) {
 	}
 }
 
-function is_wpb2d_db_up_to_date() {
-	if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
-		wpb2d_install();
-		wpb2d_install_data();
-	}
-}
-
 function wpb2d_init() {
-	is_wpb2d_db_up_to_date();
-
 	//Register stylesheet
 	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
 	wp_enqueue_style('wpb2d-style');
@@ -362,6 +353,16 @@ function wpb2d_install_data() {
 	delete_option('wpb2d_database_version');
 }
 
+function is_wpb2d_db_up_to_date() {
+	$wpdb = WP_Backup_Registry::db();
+
+	$tables = $wpdb->get_results("SHOW TABLES LIKE '{$wpdb->prefix}wpb2d_%%'");
+	if (count($tables) < 4 || WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+		wpb2d_install();
+		wpb2d_install_data();
+	}
+}
+
 if (is_admin()) {
 	//Initilise extensions
 	WP_Backup_Extension_Manager::construct()->init();
@@ -369,6 +370,7 @@ if (is_admin()) {
 	//Register database install
 	register_activation_hook(__FILE__, 'wpb2d_install');
 	register_activation_hook(__FILE__, 'wpb2d_install_data');
+	add_action('plugins_loaded', 'is_wpb2d_db_up_to_date');
 
 	//WordPress filters and actions
 	add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
