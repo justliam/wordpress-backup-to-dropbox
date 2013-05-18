@@ -76,12 +76,6 @@ function wpb2d_autoload($class_name) {
 	}
 }
 
-function wpb2d_init() {
-	//Register stylesheet
-	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
-	wp_enqueue_style('wpb2d-style');
-}
-
 /**
  * A wrapper function that adds an options page to setup Dropbox Backup
  * @return void
@@ -111,8 +105,6 @@ function backup_to_dropbox_admin_menu() {
  * @return void
  */
 function backup_to_dropbox_admin_menu_contents() {
-	wpb2d_init();
-
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
 	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0)
@@ -126,8 +118,6 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
-	wpb2d_init();
-
 	if (!WP_Backup_Registry::dropbox()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
 	} else {
@@ -141,8 +131,6 @@ function backup_to_dropbox_monitor() {
  * @return void
  */
 function backup_to_dropbox_premium() {
-	wpb2d_init();
-
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 	include('Views/wp-backup-to-dropbox-premium.php');
 }
@@ -353,14 +341,21 @@ function wpb2d_install_data() {
 	delete_option('wpb2d_database_version');
 }
 
-function is_wpb2d_db_up_to_date() {
+function wpb2d_init() {
+	//Check that the plugin's database tables are up to date
 	$wpdb = WP_Backup_Registry::db();
-
 	$tables = $wpdb->get_results("SHOW TABLES LIKE '{$wpdb->prefix}wpb2d_%%'");
 	if (count($tables) < 4 || WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
 		wpb2d_install();
 		wpb2d_install_data();
 	}
+
+	//Initilise extensions
+	WP_Backup_Extension_Manager::construct()->init();
+
+	//Register stylesheet
+	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
+	wp_enqueue_style('wpb2d-style');
 }
 
 //Backup hooks
@@ -372,12 +367,10 @@ add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
 //Register database install
 register_activation_hook(__FILE__, 'wpb2d_install');
 register_activation_hook(__FILE__, 'wpb2d_install_data');
-add_action('plugins_loaded', 'is_wpb2d_db_up_to_date');
+
+add_action('plugins_loaded', 'wpb2d_init');
 
 if (is_admin()) {
-	//Initilise extensions
-	WP_Backup_Extension_Manager::construct()->init();
-
 	//WordPress filters and actions
 	add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
 	add_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
