@@ -138,6 +138,12 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.5.2 =
+* Fixed WP object cache issue that was incorrectly telling the plugin that the new table stucture was up to do date thus causing authorisation issues and DB warnings for some people
+* Fixed reauthorisation issue when unlinking a Dropbox account
+* Increased perfomance of the plugin after running it through P3, now only the bear minimum is loaded in a non admin context
+* Fixed an issue where zipped backups where loosing their directory structure
+
 = 1.5.1 =
 * Fixed DB errors displaying with for servers show errors on by default
 * Fixed excluded widget not working after update due to lengthy DB key
