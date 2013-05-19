@@ -120,13 +120,14 @@ class WP_Backup {
 				return;
 			}
 
-			$core = new WP_Backup_Database_Core();
-			$core->execute();
-
-			$plugins = new WP_Backup_Database_Plugins();
-			$plugins->execute();
-
 			if ($this->output->start()) {
+				//Create the SQL backups
+				$core = new WP_Backup_Database_Core();
+				$core->execute();
+
+				$plugins = new WP_Backup_Database_Plugins();
+				$plugins->execute();
+
 				//Backup the content dir first
 				$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
 					$core->get_file(),
