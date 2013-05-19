@@ -54,7 +54,7 @@ class WP_Backup_Registry {
 
 			$wpdb->hide_errors();
 
-			if (defined(WPB2D_TEST_MODE))
+			if (defined('WPB2D_TEST_MODE'))
 				$wpdb->show_errors();
 
 			self::$db = $wpdb;
