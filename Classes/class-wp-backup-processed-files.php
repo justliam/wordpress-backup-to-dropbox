@@ -27,25 +27,50 @@ class WP_Backup_Processed_Files {
 
 	public function __construct() {
 		$this->db = WP_Backup_Registry::db();
+
+		$ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_files");
+		if (is_array($ret))
+			$this->processed_files = $ret;
 	}
 
 	public function get_file_count() {
-		return count($this->get_files());
+		return count($this->processed_files);
 	}
 
 	public function get_file($file_name) {
-		foreach ($this->get_files() as $file) {
+		foreach ($this->processed_files as $file) {
 			if ($file->file == $file_name)
 				return $file;
 		}
 	}
 
 	public function update_file($file, $upload_id, $offset) {
-		$this->db->update(
-			"{$this->db->prefix}wpb2d_processed_files",
-			array('uploadid' => $upload_id, 'offset' => $offset),
-			array('file' => $file)
+		$exists = $this->db->get_var(
+			$this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_files WHERE file = %s", $file)
 		);
+
+		if (is_null($exists)) {
+			$this->db->insert("{$this->db->prefix}wpb2d_processed_files", array(
+				'file' => $file,
+				'uploadid' => $upload_id,
+				'offset' => $offset,
+			));
+		} else {
+			$this->db->update(
+				"{$this->db->prefix}wpb2d_processed_files",
+				array('uploadid' => $upload_id, 'offset' => $offset),
+				array('file' => $file)
+			);
+		}
+
+		//Update the cached version
+		for($i = 0; $i < count($this->processed_files); $i++) {
+			if ($this->processed_files[$i]->file == $file) {
+				$this->processed_files[$i]->offset = $offset;
+				$this->processed_files[$i]->uploadid = $upload_id;
+				break;
+			}
+		}
 	}
 
 	public function add_files($new_files) {
@@ -53,6 +78,8 @@ class WP_Backup_Processed_Files {
 
 			$file_details = new stdClass;
 			$file_details->file = $file;
+			$file_details->offset = null;
+			$file_details->uploadid = null;
 
 			$this->processed_files[] = $file_details;
 			$this->db->insert($this->db->prefix . 'wpb2d_processed_files', array(
@@ -61,12 +88,5 @@ class WP_Backup_Processed_Files {
 		}
 
 		return $this;
-	}
-
-	private function get_files() {
-		if (!$this->processed_files)
-			$this->processed_files = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_files");
-
-		return $this->processed_files;
 	}
 }

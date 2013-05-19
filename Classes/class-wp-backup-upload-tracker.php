@@ -29,17 +29,12 @@ class WP_Backup_Upload_Tracker {
 	public function track_upload($file, $upload_id, $offset) {
 		WP_Backup_Registry::config()->die_if_stopped();
 
+		$this->processed_files->update_file($file, $upload_id, $offset);
+
 		WP_Backup_Registry::logger()->log(sprintf(
 			__("Uploaded %sMB of %sMB", 'wpbtd'),
 			round($offset / 1048576, 1),
 			round(filesize($file) / 1048576, 1)
 		));
-
-		$file_obj = $this->processed_files->get_file($file);
-		if ($file_obj) {
-			$this->processed_files->update_file($file, $upload_id, $offset);
-		} else {
-			$this->processed_files->add_files(array($file));
-		}
 	}
 }
