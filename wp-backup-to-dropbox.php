@@ -76,6 +76,12 @@ function wpb2d_autoload($class_name) {
 	}
 }
 
+function wpb2d_style() {
+	//Register stylesheet
+	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
+	wp_enqueue_style('wpb2d-style');
+}
+
 /**
  * A wrapper function that adds an options page to setup Dropbox Backup
  * @return void
@@ -105,6 +111,8 @@ function backup_to_dropbox_admin_menu() {
  * @return void
  */
 function backup_to_dropbox_admin_menu_contents() {
+	wpb2d_style();
+
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
 	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0)
@@ -118,6 +126,8 @@ function backup_to_dropbox_admin_menu_contents() {
  * @return void
  */
 function backup_to_dropbox_monitor() {
+	wpb2d_style();
+
 	if (!WP_Backup_Registry::dropbox()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
 	} else {
@@ -131,6 +141,8 @@ function backup_to_dropbox_monitor() {
  * @return void
  */
 function backup_to_dropbox_premium() {
+	wpb2d_style();
+
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 	include('Views/wp-backup-to-dropbox-premium.php');
 }
@@ -352,10 +364,6 @@ function wpb2d_init() {
 
 	//Initilise extensions
 	WP_Backup_Extension_Manager::construct()->init();
-
-	//Register stylesheet
-	wp_register_style('wpb2d-style', plugins_url('wp-backup-to-dropbox.css', __FILE__) );
-	wp_enqueue_style('wpb2d-style');
 }
 
 //More cron shedules
