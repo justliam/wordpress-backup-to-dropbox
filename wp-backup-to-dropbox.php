@@ -354,16 +354,20 @@ function wpb2d_install_data() {
 }
 
 function wpb2d_init() {
-	//Check that the plugin's database tables are up to date
-	$wpdb = WP_Backup_Registry::db();
-	$tables = $wpdb->get_results("SHOW TABLES LIKE '{$wpdb->prefix}wpb2d_%%'");
-	if (count($tables) < 4 || WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
-		wpb2d_install();
-		wpb2d_install_data();
-	}
+	try {
+		//Check that the plugin's database tables are up to date
+		$wpdb = WP_Backup_Registry::db();
+		$tables = $wpdb->get_results("SHOW TABLES LIKE '{$wpdb->prefix}wpb2d_%%'");
+		if (count($tables) < 4 || WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+			wpb2d_install();
+			wpb2d_install_data();
+		}
 
-	//Initilise extensions
-	WP_Backup_Extension_Manager::construct()->init();
+		//Initilise extensions
+		WP_Backup_Extension_Manager::construct()->init();
+	} catch (Exception $e) {
+		error_log($e->getMessage());
+	}
 }
 
 //More cron shedules
