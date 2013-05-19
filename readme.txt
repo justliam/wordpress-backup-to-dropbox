@@ -138,6 +138,12 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.5.3 =
+* Fixed plugin stylesheet showing up globally
+* Fixed some chunked upload resume issues
+* Fixed initialisation exceptions taking out WP admin
+* Fixed another obscure oauth autorisation issue affecting some users
+
 = 1.5.2 =
 * Fixed WP object cache issue that was incorrectly telling the plugin that the new table stucture was up to do date thus causing authorisation issues and DB warnings for some people
 * Fixed reauthorisation issue when unlinking a Dropbox account
