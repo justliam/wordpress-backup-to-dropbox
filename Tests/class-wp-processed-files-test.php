@@ -1,0 +1,130 @@
+<?php
+/**
+ * @copyright Copyright (C) 2011 Michael De Wildt. All rights reserved.
+ * @author Michael De Wildt (http://www.mikeyd.com.au/)
+ * @license This program is free software; you can redistribute it and/or modify
+ *          it under the terms of the GNU General Public License as published by
+ *          the Free Software Foundation; either version 2 of the License, or
+ *          (at your option) any later version.
+ *
+ *          This program is distributed in the hope that it will be useful,
+ *          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *          GNU General Public License for more details.
+ *
+ *          You should have received a copy of the GNU General Public License
+ *          along with this program; if not, write to the Free Software
+ *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
+ */
+require_once 'mock-wp-functions.php';
+
+class WP_Backup_Processed_Files_Test extends PHPUnit_Framework_TestCase {
+
+	public function setUp() {
+		reset_globals();
+	}
+
+	public function tearDown() {
+		Mockery::close();
+	}
+
+	public function testAddFiles() {
+		$file_three = new stdClass;
+		$file_three->file = 'file3.txt';
+		$file_three->offset = 1234;
+		$file_three->uploadid = 'ABC123';
+
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->with("SELECT * FROM wp_wpb2d_processed_files")
+			->andReturn(array($file_three))
+			->once()
+
+			->shouldReceive('insert')
+			->with("wp_wpb2d_processed_files", array(
+				'file' => 'file1.txt'
+			))
+			->once()
+
+			->shouldReceive('insert')
+			->with("wp_wpb2d_processed_files", array(
+				'file' => 'file2.txt'
+			))
+			->once()
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		WP_Backup_Registry::setDatabase($db);
+
+		$p = new WP_Backup_Processed_Files();
+		$p->add_files(array(
+			'file1.txt',
+			'file2.txt',
+		));
+
+		$this->assertEquals(3, $p->get_file_count());
+
+		$file_obj = $p->get_file('file2.txt');
+
+		$this->assertEquals('file2.txt', $file_obj->file);
+
+		$this->assertNull($file_obj->offset);
+		$this->assertNull($file_obj->uploadid);
+
+		$file_obj = $p->get_file('file3.txt');
+
+		$this->assertEquals($file_three, $file_obj);
+	}
+
+	public function testUpdateFile() {
+		$file = new stdClass;
+		$file->file = 'file.txt';
+		$file->offset = 1234;
+		$file->uploadid = 'ABC123';
+
+		$db = Mockery::mock()
+			->shouldReceive('get_results')
+			->with("SELECT * FROM wp_wpb2d_processed_files")
+			->andReturn(array($file))
+			->once()
+
+			->shouldReceive('prepare')
+			->with("SELECT * FROM wp_wpb2d_processed_files WHERE file = %s", "file.txt")
+			->once()
+
+			->shouldReceive('get_var')
+			->andReturn(true)
+
+			->shouldReceive('update')
+
+			->mock()
+			;
+
+		$db->prefix = 'wp_';
+
+		WP_Backup_Registry::setDatabase($db);
+
+		$p = new WP_Backup_Processed_Files();
+
+		$this->assertEquals(1, $p->get_file_count());
+
+		$this->assertNull($p->get_file('file-not-found.txt'));
+
+		$file = $p->get_file('file.txt');
+
+		$this->assertEquals('file.txt', $file->file);
+		$this->assertEquals(1234, $file->offset);
+		$this->assertEquals('ABC123', $file->uploadid);
+
+		$p->update_file('file.txt', '123ABC', 4321);
+
+		$file = $p->get_file('file.txt');
+
+		$this->assertEquals('file.txt', $file->file);
+		$this->assertEquals(4321, $file->offset);
+		$this->assertEquals('123ABC', $file->uploadid);
+	}
+}
