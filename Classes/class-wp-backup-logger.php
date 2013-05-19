@@ -18,10 +18,10 @@
  */
 class WP_Backup_Logger {
 
-	const LOGFILE = 'wpb2d-backup-log.txt';
+	const LOGFILE = 'wpb2d-backup-log%s.txt';
 
 	public function log($msg, $files = null) {
-		$fh = self::get_log_file_handle();
+		$fh = fopen(self::get_log_file(), 'a');
 		$log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
 		if (!empty($files))
@@ -33,8 +33,14 @@ class WP_Backup_Logger {
 
 	public function get_log() {
 		$file = self::get_log_file();
-		if (file_exists($file))
-			return explode("\n", trim(file_get_contents($file)));
+		if (!file_exists($file))
+			return false;
+
+		$contents = trim(file_get_contents($file));
+		if (strlen($contents) < 1)
+			return false;
+
+		return explode("\n", $contents);
 	}
 
 	public function delete_log() {
@@ -42,16 +48,22 @@ class WP_Backup_Logger {
 	}
 
 	public function get_log_file() {
-		return WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
-	}
-
-	private function get_log_file_handle() {
 		WP_Backup::create_dump_dir();
 
-		$fh = @fopen(self::get_log_file(), 'a');
-		if ($fh === false)
-			throw new Exception('Error opening log file.');
+		$path = WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 
-		return $fh;
+		$file = sprintf($path, '');
+
+		$fh = @fopen($file, 'a');
+		if ($fh === false) {
+
+			$file = sprintf($path, '-v1');
+			$fh = @fopen($file, 'a');
+			if ($fh === false)
+				throw new Exception('Error opening log file.');
+		}
+		fclose($fh);
+
+		return $file;
 	}
 }
