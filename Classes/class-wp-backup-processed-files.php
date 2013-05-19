@@ -76,6 +76,9 @@ class WP_Backup_Processed_Files {
 	public function add_files($new_files) {
 		foreach ($new_files as $file) {
 
+			if ($this->get_file($file))
+				continue;
+
 			$file_details = new stdClass;
 			$file_details->file = $file;
 			$file_details->offset = null;
