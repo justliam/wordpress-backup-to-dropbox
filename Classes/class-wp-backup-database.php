@@ -68,7 +68,9 @@ abstract class WP_Backup_Database {
 	}
 
 	protected function exists() {
-		return count(glob($this->get_file(false) . '*')) > 0;
+		$files = glob($this->get_file(false) . '*');
+		if (is_array($files))
+			return count($files) > 0;
 	}
 
 	protected function write_db_dump_header() {

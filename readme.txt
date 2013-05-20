@@ -139,6 +139,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 == Changelog ==
 
 = 1.5.3 =
+* Fixed critical issue where SQL dumps where being missed in some circumstances
 * Fixed plugin stylesheet showing up globally
 * Fixed some chunked upload resume issues
 * Fixed initialisation exceptions taking out WP admin
