@@ -44,6 +44,10 @@ class WP_Backup_Processed_Files {
 		}
 	}
 
+	public function file_complete($file) {
+		$this->update_file($file, 0, 0);
+	}
+
 	public function update_file($file, $upload_id, $offset) {
 		$exists = $this->db->get_var(
 			$this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_files WHERE file = %s", $file)

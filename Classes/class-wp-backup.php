@@ -96,6 +96,9 @@ class WP_Backup {
 							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', Dropbox_Facade::remove_secret($file)),
 							'mtime' => filemtime($file),
 						);
+
+						if ($processed_file && $processed_file->offset > 0)
+							$processed_files->file_complete($file);
 					}
 
 					$current_processed_files[] = $file;
