@@ -292,6 +292,19 @@ function wpb2d_install() {
 		file varchar(255) NOT NULL,
 		UNIQUE KEY name (name)
 	);");
+
+	//Ensure that there where no insert errors
+	$errors = array();
+
+	global $EZSQL_ERROR;
+	if ($EZSQL_ERROR) {
+		foreach ($EZSQL_ERROR as $error) {
+			if (preg_match('/^CREATE TABLE wpb2d_/', $error['query']))
+				$errors[] = $error['error_str'];
+		}
+
+		add_option('wpb2d-init-errors', implode($errors, '<br />'), false, 'no');
+	}
 }
 
 function wpb2d_install_data() {

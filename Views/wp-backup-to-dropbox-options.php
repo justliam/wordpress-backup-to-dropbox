@@ -21,6 +21,11 @@
 try {
 	global $wpdb;
 
+	if ($errors = get_option('wpb2d-init-errors')) {
+		delete_option('wpb2d-init-errors');
+		throw new Exception(__('WordPress Backup to Dropbox failed to initialize due to these database errors.', 'wpbtd') . '<br /><br />' . $errors);
+	}
+
 	$validation_errors = null;
 
 	$dropbox = WP_Backup_Registry::dropbox();
