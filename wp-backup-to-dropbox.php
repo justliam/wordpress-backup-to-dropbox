@@ -398,13 +398,13 @@ register_activation_hook(__FILE__, 'wpb2d_install_data');
 
 add_action('plugins_loaded', 'wpb2d_init');
 
+//i18n language text domain
+load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
+
 if (is_admin()) {
 	//WordPress filters and actions
 	add_action('wp_ajax_file_tree', 'backup_to_dropbox_file_tree');
 	add_action('wp_ajax_progress', 'backup_to_dropbox_progress');
-
-	//i18n language text domain
-	load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
 
 	if (defined('MULTISITE') && MULTISITE) {
 		function custom_menu_order($menu_ord) {
