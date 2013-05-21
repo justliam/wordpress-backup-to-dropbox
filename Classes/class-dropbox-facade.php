@@ -48,7 +48,7 @@ class Dropbox_Facade {
 			));
 		}
 
-        $this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
+		$this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
 		$this->oauth_state = $this->config->get_option('oauth_state');
 		$this->request_token = $this->get_token('request');
