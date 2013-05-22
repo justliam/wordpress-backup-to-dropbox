@@ -177,6 +177,7 @@ class WP_Backup_Config {
 
 		$this->set_option('in_progress', false);
 		$this->set_option('is_running', false);
+		$this->set_option('last_backup_time', time());
 
 		return $this;
 	}
