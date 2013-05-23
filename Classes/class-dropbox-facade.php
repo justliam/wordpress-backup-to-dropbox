@@ -37,7 +37,7 @@ class Dropbox_Facade {
 		$directory_cache = array()
 		;
 
-	public function __construct() {
+	public function init() {
 		$this->config = WP_Backup_Registry::config();
 
 		if (!extension_loaded('curl')) {
@@ -70,7 +70,9 @@ class Dropbox_Facade {
 			$this->oauth->setToken($this->access_token);
 		} else {
 			//If we don't have an acess token then lets setup a new request
-			$this->request();
+			$this->request_token = $this->oauth->getRequestToken();
+			$this->oauth->setToken($this->request_token);
+			$this->oauth_state = 'request';
 			$this->save_tokens();
 		}
 
@@ -95,19 +97,11 @@ class Dropbox_Facade {
 		return $ret;
 	}
 
-	private function request() {
-		$this->request_token = $this->oauth->getRequestToken();
-		$this->oauth->setToken($this->request_token);
-		$this->oauth_state = 'request';
-	}
-
 	public function is_authorized() {
 		try {
 			$this->get_account_info();
 			return true;
 		} catch (Exception $e) {
-			$this->unlink_account();
-
 			return false;
 		}
 	}
@@ -143,6 +137,8 @@ class Dropbox_Facade {
 			$this->config->set_option('access_token', null);
 			$this->config->set_option('access_token_secret', null);
 		}
+
+		return $this;
 	}
 
 	public function upload_file($path, $file) {
@@ -197,10 +193,9 @@ class Dropbox_Facade {
 		$this->oauth->resetToken();
 		$this->request_token = null;
 		$this->access_token = null;
-		$this->oauth_state =  null;
+		$this->oauth_state = null;
 
-		$this->request();
-		$this->save_tokens();
+		return $this->save_tokens();
 	}
 
 	public static function remove_secret($file, $basename = true) {

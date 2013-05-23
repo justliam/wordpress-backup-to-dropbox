@@ -42,8 +42,10 @@ class WP_Backup_Registry {
 	}
 
 	public static function dropbox() {
-		if (!self::$dropbox)
+		if (!self::$dropbox) {
 			self::$dropbox = new Dropbox_Facade();
+			self::$dropbox->init();
+		}
 
 		return self::$dropbox;
 	}

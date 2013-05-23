@@ -53,7 +53,7 @@ try {
 		}
 	} else if (array_key_exists('unlink', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
-		$dropbox->unlink_account();
+		$dropbox->unlink_account()->init();
 	} else if (array_key_exists('clear_history', $_POST)) {
 		check_admin_referer('backup_to_dropbox_options_save');
 		$config->clear_history();
@@ -353,20 +353,20 @@ try {
 		<?php
 
 	} else {
-		//We need to re authenticate this user
-		$url = $dropbox->get_authorize_url();
+
 		?>
 	<h3><?php _e('Thank you for installing WordPress Backup to Dropbox!', 'wpbtd'); ?></h3>
 	<p><?php _e('In order to use this plugin you will need to authorized it with your Dropbox account.', 'wpbtd'); ?></p>
 	<p><?php _e('Please click the authorize button below and follow the instructions inside the pop up window.', 'wpbtd'); ?></p>
-		<?php if (array_key_exists('continue', $_POST) && !$dropbox->is_authorized()) { ?>
-		<p style="color: red"><?php _e('There was an error authorizing the plugin with your Dropbox account. Please try again.', 'wpbtd'); ?></p>
-			<?php } ?>
+		<?php if (array_key_exists('continue', $_POST) && !$dropbox->is_authorized()): ?>
+			<?php $dropbox->unlink_account()->init(); ?>
+			<p style="color: red"><?php _e('There was an error authorizing the plugin with your Dropbox account. Please try again.', 'wpbtd'); ?></p>
+		<?php endif; ?>
 	<p>
 	<form id="backup_to_dropbox_continue" name="backup_to_dropbox_continue"
 		  action="options-general.php?page=backup-to-dropbox" method="post">
 		<input type="button" name="authorize" id="authorize" value="<?php _e('Authorize', 'wpbtd'); ?>"
-			   class="button-primary" onclick="dropbox_authorize('<?php echo $url ?>')"/><br/>
+			   class="button-primary" onclick="dropbox_authorize('<?php echo $dropbox->get_authorize_url() ?>')"/><br/>
 		<input style="visibility: hidden;" type="submit" name="continue" id="continue"
 			   class="button-primary" value="<?php _e('Continue', 'wpbtd'); ?>"/>
 	</form>
