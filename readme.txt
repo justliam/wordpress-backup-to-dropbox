@@ -138,6 +138,14 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.5.4 =
+* Fixed another weird state issue with the Dropbox oauth flow
+* Fixed regression where the last backup time was not being recognised
+* Fixed full paths being uploaded to Drobpox from Windows servers
+* Fixed exclude file issues Windows servers
+* Fixed error closing zip archive in premium extension
+* Added better clean up of files on success or failure
+
 = 1.5.3 =
 * Fixed critical issue where SQL dumps where being missed in some circumstances
 * Fixed plugin stylesheet showing up globally
