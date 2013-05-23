@@ -129,13 +129,13 @@ class WP_Backup {
 			if ($this->output->start()) {
 				//Create the SQL backups
 
-				$core->execute();
-				$plugins->execute();
+				$this->db_core->execute();
+				$this->db_plugins->execute();
 
 				//Backup the content dir first
 				$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
-					$core->get_file(),
-					$plugins->get_file()
+					$this->db_core->get_file(),
+					$this->db_plugins->get_file()
 				));
 
 				//Now backup the blog root
