@@ -84,4 +84,5 @@ class WP_Backup_Output extends WP_Backup_Extension {
 
 	public function is_enabled() {}
 	public function set_enabled($bool) {}
+	public function clean_up() {}
 }

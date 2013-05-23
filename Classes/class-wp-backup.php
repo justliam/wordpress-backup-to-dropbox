@@ -31,6 +31,9 @@ class WP_Backup {
 		$this->config = WP_Backup_Registry::config();
 		$this->dropbox = WP_Backup_Registry::dropbox();
 		$this->output = $output ? $output : WP_Backup_Extension_Manager::construct()->get_output();
+
+		$this->db_core = new WP_Backup_Database_Core();
+		$this->db_plugins = new WP_Backup_Database_Plugins();
 	}
 
 	public function backup_path($path, $dropbox_path = null, $always_include = array()) {
@@ -125,10 +128,8 @@ class WP_Backup {
 
 			if ($this->output->start()) {
 				//Create the SQL backups
-				$core = new WP_Backup_Database_Core();
-				$core->execute();
 
-				$plugins = new WP_Backup_Database_Plugins();
+				$core->execute();
 				$plugins->execute();
 
 				//Backup the content dir first
@@ -145,10 +146,6 @@ class WP_Backup {
 
 				//Record the number of files processed to make the progress meter more accurate
 				$this->config->set_option('total_file_count', $processed_files);
-
-				//Remove the backed up SQL files
-				$core->remove_file();
-				$plugins->remove_file();
 			}
 
 			$manager->complete();
@@ -184,6 +181,8 @@ class WP_Backup {
 			$manager->failure();
 			$this->stop();
 		}
+
+		$this->clean_up();
 	}
 
 	public function backup_now() {
@@ -195,6 +194,13 @@ class WP_Backup {
 
 	public function stop() {
 		$this->config->complete();
+		$this->clean_up();
+	}
+
+	private function clean_up() {
+		$this->db_core->remove_file();
+		$this->db_plugins->remove_file();
+		$this->output->clean_up();
 	}
 
 	private static function create_silence_file() {
