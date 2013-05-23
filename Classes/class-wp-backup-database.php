@@ -39,8 +39,11 @@ abstract class WP_Backup_Database {
 	}
 
 	public function remove_file() {
-		foreach (glob($this->get_file(false) . '*') as $file)
-			unlink($file);
+		$files = glob($this->get_file(false) . '*');
+		if ($files) {
+			foreach ($files as $file)
+				unlink($file);
+		}
 	}
 
 	private function set_wait_timeout() {
