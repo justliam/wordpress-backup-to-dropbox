@@ -19,8 +19,6 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 try {
-	global $wpdb;
-
 	if ($errors = get_option('wpb2d-init-errors')) {
 		delete_option('wpb2d-init-errors');
 		throw new Exception(__('WordPress Backup to Dropbox failed to initialize due to these database errors.', 'wpbtd') . '<br /><br />' . $errors);
@@ -92,7 +90,7 @@ try {
 
 		//Display the file tree with a call back to update the clicked on check box and white list
 		$('#file_tree').fileTree({
-			root: '<?php echo addslashes(ABSPATH); ?>',
+			root: '<?php echo str_replace("\\", "/", get_sanitized_home_path()) . "/"; ?>',
 			script: ajaxurl,
 			expandSpeed: 500,
 			collapseSpeed: 500,

@@ -81,7 +81,7 @@ function reset_globals() {
 	);
 }
 
-function get_home_path() {
+function get_sanitized_home_path() {
 	return ABSPATH;
 }
 

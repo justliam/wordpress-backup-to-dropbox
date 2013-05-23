@@ -38,7 +38,7 @@ class WP_Backup {
 			return;
 
 		if (!$dropbox_path)
-			$dropbox_path = ABSPATH;
+			$dropbox_path = get_sanitized_home_path();
 
 		$file_list = new File_List();
 
@@ -138,7 +138,7 @@ class WP_Backup {
 				));
 
 				//Now backup the blog root
-				$processed_files += $this->backup_path(ABSPATH);
+				$processed_files += $this->backup_path(get_sanitized_home_path());
 
 				//End any output extensions
 				$this->output->end();
@@ -168,7 +168,7 @@ class WP_Backup {
 				$root = true;
 			}
 
-			$this->output->set_root($root)->out(ABSPATH, WP_Backup_Registry::logger()->get_log_file());
+			$this->output->set_root($root)->out(get_sanitized_home_path(), WP_Backup_Registry::logger()->get_log_file());
 
 			$this->config
 				->complete()

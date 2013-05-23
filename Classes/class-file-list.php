@@ -42,25 +42,25 @@ class File_List {
 
 		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0");
 		foreach ($result as $value) {
-			$this->excluded_files[] = stripslashes($value->file);
+			$this->excluded_files[] = $value->file;
 		}
 
 		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 1");
 		foreach ($result as $value) {
-			$this->excluded_dirs[] = stripslashes($value->file);
+			$this->excluded_dirs[] = $value->file;
 		}
 	}
 
 	public function set_included($path) {
 		if (is_dir($path))
-			$this->include_dir(rtrim($path,'/'));
+			$this->include_dir(rtrim($path, DIRECTORY_SEPARATOR));
 		else
 			$this->include_file($path);
 	}
 
 	public function set_excluded($path) {
 		if (is_dir($path))
-			$this->exclude_dir(rtrim($path,'/'));
+			$this->exclude_dir(rtrim($path, DIRECTORY_SEPARATOR));
 		else
 			$this->exclude_file($path);
 	}
@@ -126,7 +126,7 @@ class File_List {
 		if (in_array($dir, $this->excluded_dirs))
 			return true;
 
-		if ($dir == rtrim(ABSPATH,'/'))
+		if ($dir == get_sanitized_home_path())
 			return false;
 
 		return $this->is_excluded_dir(dirname($dir));
@@ -154,7 +154,7 @@ class File_List {
 
 	public function get_checkbox_class($path) {
 		$class = '';
-		if ($this->is_excluded(rtrim($path, '/')))
+		if ($this->is_excluded($path))
 			$class = 'checked';
 		else if ($this->is_partial_dir($path))
 			$class = 'partial';

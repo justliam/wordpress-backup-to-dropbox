@@ -383,6 +383,13 @@ function wpb2d_init() {
 	}
 }
 
+function get_sanitized_home_path() {
+	//Needed for get_home_path() function and may not be loaded
+	require_once(ABSPATH . 'wp-admin/includes/file.php');
+
+	return rtrim(str_replace('/', DIRECTORY_SEPARATOR, get_home_path()), DIRECTORY_SEPARATOR);
+}
+
 //More cron shedules
 add_filter('cron_schedules', 'backup_to_dropbox_cron_schedules');
 
