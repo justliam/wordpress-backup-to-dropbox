@@ -204,7 +204,7 @@ class WP_Backup {
 	}
 
 	private static function create_silence_file() {
-		$silence = WP_Backup_Registry::config()->get_backup_dir() . 'index.php';
+		$silence = WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
 		if (!file_exists($silence)) {
 			$fh = @fopen($silence, 'w');
 			if (!$fh) {
