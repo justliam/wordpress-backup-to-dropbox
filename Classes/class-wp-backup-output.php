@@ -2,7 +2,7 @@
 /**
  * A class with functions the perform a backup of WordPress
  *
- * @copyright Copyright (C) 2011 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2013 Michael De Wild. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by
