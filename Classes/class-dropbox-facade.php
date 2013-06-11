@@ -62,10 +62,8 @@ class Dropbox_Facade {
 				$this->oauth_state = 'access';
 				$this->oauth->setToken($this->access_token);
 				$this->save_tokens();
-			} catch (Exception $e) {
-				//Authorization failed so we are still pending
-				$this->unlink_account();
-			}
+			//Supress the error because unlink, then init should be called
+			} catch (Exception $e) {}
 		} else if ($this->oauth_state == 'access')  {
 			$this->oauth->setToken($this->access_token);
 		} else {
