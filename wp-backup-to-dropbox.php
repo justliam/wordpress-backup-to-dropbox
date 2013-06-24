@@ -299,7 +299,7 @@ function wpb2d_install() {
 	global $EZSQL_ERROR;
 	if ($EZSQL_ERROR) {
 		foreach ($EZSQL_ERROR as $error) {
-			if (preg_match('/^CREATE TABLE wpb2d_/', $error['query']))
+			if (preg_match("/^CREATE TABLE {$wpdb->prefix}wpb2d_/", $error['query']))
 				$errors[] = $error['error_str'];
 		}
 
