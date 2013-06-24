@@ -31,7 +31,7 @@ class WP_Backup_Config {
 	}
 
 	public static function get_backup_dir() {
-		return str_replace(DIRECTORY_SEPARATOR, '/', WP_CONTENT_DIR . '/backups');
+		return str_replace('/', DIRECTORY_SEPARATOR, WP_CONTENT_DIR . '/backups');
 	}
 
 	public function set_option($name, $value) {
