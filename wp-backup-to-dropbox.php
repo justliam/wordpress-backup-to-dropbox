@@ -314,7 +314,8 @@ function wpb2d_install_data() {
 	$options = get_option('backup-to-dropbox-options');
 	if ($options) {
 		foreach ($options as $key => $value)
-			$config->set_option($key, $value);
+			if (!is_array($value))
+				$config->set_option($key, $value);
 	}
 
 	$tokens = get_option('backup-to-dropbox-tokens');
