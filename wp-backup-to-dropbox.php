@@ -303,6 +303,7 @@ function wpb2d_install() {
 				$errors[] = $error['error_str'];
 		}
 
+		delete_option('wpb2d-init-errors');
 		add_option('wpb2d-init-errors', implode($errors, '<br />'), false, 'no');
 	}
 }
