@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.5.1
+Tested up to: 3.5.2
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -137,6 +137,13 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.5.5 =
+* Updated Arabic translations
+* Fixed missing directory separator when creating silence file
+* Updated the Dropbox API lib to exclude HTTP headers inserted by proxies
+* Fixed another weird oAuth authorize issue
+* Fixed 404 when clicking continue in network setup
 
 = 1.5.4 =
 * Fixed another weird state issue with the Dropbox oauth flow
