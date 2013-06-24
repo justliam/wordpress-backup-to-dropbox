@@ -361,8 +361,7 @@ try {
 			<p style="color: red"><?php _e('There was an error authorizing the plugin with your Dropbox account. Please try again.', 'wpbtd'); ?></p>
 		<?php endif; ?>
 	<p>
-	<form id="backup_to_dropbox_continue" name="backup_to_dropbox_continue"
-		  action="options-general.php?page=backup-to-dropbox" method="post">
+	<form id="backup_to_dropbox_continue" name="backup_to_dropbox_continue" method="post">
 		<input type="button" name="authorize" id="authorize" value="<?php _e('Authorize', 'wpbtd'); ?>"
 			   class="button-primary" onclick="dropbox_authorize('<?php echo $dropbox->get_authorize_url() ?>')"/><br/>
 		<input style="visibility: hidden;" type="submit" name="continue" id="continue"
