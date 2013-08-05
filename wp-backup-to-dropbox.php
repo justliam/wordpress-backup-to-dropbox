@@ -315,6 +315,10 @@ function wpb2d_install() {
 
 function wpb2d_init() {
 	try {
+		if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+			wpb2d_install();
+		}
+
 		//Initilise extensions
 		WP_Backup_Extension_Manager::construct()->init();
 	} catch (Exception $e) {
