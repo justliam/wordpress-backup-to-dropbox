@@ -103,19 +103,22 @@ class WP_Backup_Extension_Manager {
 
 		$download_file = download_url("{$this->get_url()}/download?" . http_build_query($params));
 
+		$writeableMsg = __("this might be because 'wp-content/plugins/wordpress-backup-to-dropbox/Extensions' is not writeable.");
+
 		if (is_wp_error($download_file)) {
 			$errorMsg = $download_file->get_error_messages();
-			throw new Exception(__('There was an error downloading your premium extension') . ' - ' . $errorMsg[0]);
+			throw new Exception(__('There was an error downloading your premium extension') . ", $writeableMsg ({$errorMsg[0]})");
 		}
 
 		$result = unzip_file($download_file, EXTENSIONS_DIR);
 		if (is_wp_error($result)) {
 			$errorMsg = $result->get_error_messages();
-			if ($errorMsg[0] == "Incompatible Archive.")
+			if ($errorMsg[0] == "Incompatible Archive.") {
 				$errorMsg[0] = file_get_contents($download_file);
+			}
 
 			unlink($download_file);
-			throw new Exception(__('There was an error installing your premium extension') . ' - ' . $errorMsg[0]);
+			throw new Exception(__('There was an error installing your premium extension') . ", $writeableMsg ({$errorMsg[0]})");
 		}
 
 		unlink($download_file);
