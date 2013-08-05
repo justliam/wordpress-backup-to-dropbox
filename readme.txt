@@ -141,6 +141,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 = 1.6 =
 * WordPress 3.6 compatiblity release
 * Fixed some issues where temporary files where not being cleaned up as expected
+* Removed upgrade migration code for performance reasons. So, if you are upagading form <1.5 you will need to re-authorize and re-configure the plugin.
 
 = 1.5.5 =
 * Updated Arabic translations
