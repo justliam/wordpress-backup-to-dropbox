@@ -158,6 +158,8 @@ class WP_Backup {
 				(memory_get_usage(true) / 1048576)
 			));
 
+			$this->output->clean_up();
+
 			//Process the log file using the default backup output
 			$root = false;
 			if (get_class($this->output) != 'WP_Backup_Output') {
@@ -173,10 +175,11 @@ class WP_Backup {
 				;
 
 		} catch (Exception $e) {
-			if ($e->getMessage() == 'Unauthorized')
+			if ($e->getMessage() == 'Unauthorized') {
 				WP_Backup_Registry::logger()->log(__('The plugin is no longer authorized with Dropbox.', 'wpbtd'));
-			else
+			} else {
 				WP_Backup_Registry::logger()->log("A fatal error occured: " . $e->getMessage());
+			}
 
 			$manager->failure();
 			$this->stop();
@@ -200,7 +203,6 @@ class WP_Backup {
 	private function clean_up() {
 		$this->db_core->remove_file();
 		$this->db_plugins->remove_file();
-		$this->output->clean_up();
 	}
 
 	private static function create_silence_file() {
