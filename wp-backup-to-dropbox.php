@@ -309,7 +309,7 @@ function wpb2d_install() {
 
 	//Only set the DB version if there are no errors
 	if (empty($errors)) {
-		$config->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
+		WP_Backup_Registry::config()->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
 	}
 }
 
