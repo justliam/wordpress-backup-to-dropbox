@@ -18,10 +18,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$manager = WP_Backup_Extension_Manager::construct();
+$manager = WP_Backup_Registry::extension_manager();
 
 $wpb2d = $manager->get_url();
-$key = $manager->get_key();
 $installUrl = $manager->get_install_url();
 $buyUrl = $manager->get_buy_url();
 
@@ -34,8 +33,7 @@ if (isset($_REQUEST['title']))
 
 try {
 	if (isset($_POST['name'])) {
-		$manager->install($_POST['name'], $_POST['file']);
-		echo '<script>window.location.reload(true);</script>';
+		$manager->install($_POST['name']);
 	}
 
 	$extensions = $manager->get_extensions();
@@ -58,7 +56,7 @@ try {
 		</p>
 		<ol class="instructions">
 			<li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
-			<li><?php _e('Click Download & Install to download and install the extension', 'wpbtd'); ?></li>
+			<li><?php _e('Click Install Now to download and install the extension', 'wpbtd'); ?></li>
 			<li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
 		</ol>
 		<a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
@@ -73,11 +71,11 @@ try {
 	<div class="errors">
 		<?php if ($error): ?>
 			<p class="error">
-				<?php echo $error ?>
+				<?php echo esc_attr($error) ?>
 			</p>
 		<?php elseif (isset($success)): ?>
 			<p class="success">
-				<?php echo $success ?>
+				<?php echo esc_attr($success) ?>
 			</p>
 		<?php endif; ?>
 	</div>
@@ -91,19 +89,17 @@ try {
 
 		<?php if (is_array($extensions)) foreach ($extensions as $extension): ?>
 		<tr>
-			<td><?php echo $extension['name'] ?></td>
-			<td><?php echo $extension['description'] ?></td>
-			<td>$<?php echo $extension['price'] ?> USD</td>
+			<td><?php echo esc_attr($extension['name']) ?></td>
+			<td><?php echo esc_attr($extension['description']) ?></td>
+			<td>$<?php echo esc_attr($extension['price']) ?> USD</td>
 			<td>
-				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-<?php echo $extension['name'] ?>">
-					<input type="hidden" value="<?php echo $extension['name']; ?>" name="name" />
-					<input type="hidden" value="<?php echo $extension['file'] ?>" name="file" />
+				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
+					<input type="hidden" value="<?php echo esc_attr($extension['name']); ?>" name="name" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
-					<input type="hidden" value="<?php echo $key ?>" name="key" />
 					<?php if ($manager->is_installed($extension['name'])): ?>
 						<span class="installed">Installed</span>
 					<?php else: ?>
-						<input class="button-primary" type="submit" value="<?php echo $extension['purchased'] ? __('Download & Install') : __('Buy Now'); ?>" class="submitBtn" />
+						<input class="button-primary" type="submit" value="<?php echo $extension['purchased'] ? __('Install Now') : __('Buy Now'); ?>" class="submitBtn" />
 					<?php endif; ?>
 				</form>
 			</td>

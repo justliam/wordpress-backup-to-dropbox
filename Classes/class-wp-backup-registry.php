@@ -24,6 +24,7 @@ class WP_Backup_Registry {
 		$logger,
 		$config,
 		$dropbox,
+		$extension_manager,
 		$db
 		;
 
@@ -39,6 +40,13 @@ class WP_Backup_Registry {
 			self::$config = new WP_Backup_Config();
 
 		return self::$config;
+	}
+
+	public static function extension_manager() {
+		if (!self::$extension_manager)
+			self::$extension_manager = new WP_Backup_Extension_Manager();
+
+		return self::$extension_manager;
 	}
 
 	public static function dropbox() {

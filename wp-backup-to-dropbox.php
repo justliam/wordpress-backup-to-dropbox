@@ -98,7 +98,7 @@ function backup_to_dropbox_admin_menu() {
 		$text = __('Backup Log', 'wpbtd');
 		add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
-		WP_Backup_Extension_Manager::construct()->add_menu_items();
+		WP_Backup_Registry::extension_manager()->add_menu_items();
 
 		$text = __('Premium Extensions', 'wpbtd');
 		add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');
@@ -318,9 +318,6 @@ function wpb2d_init() {
 		if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
 			wpb2d_install();
 		}
-
-		//Initilise extensions
-		WP_Backup_Extension_Manager::construct()->init();
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 	}
