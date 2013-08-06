@@ -34,6 +34,7 @@ if (isset($_REQUEST['title']))
 try {
 	if (isset($_POST['name'])) {
 		$manager->install($_POST['name']);
+		echo '<script>window.location.reload(true);</script>';
 	}
 
 	$extensions = $manager->get_extensions();
