@@ -286,13 +286,6 @@ function wpb2d_install() {
 		UNIQUE KEY file (file)
 	);");
 
-	$table_name = $wpdb->prefix . 'wpb2d_premium_extensions';
-	dbDelta("CREATE TABLE $table_name (
-		name varchar(50) NOT NULL,
-		file varchar(255) NOT NULL,
-		UNIQUE KEY name (name)
-	);");
-
 	//Ensure that there where no insert errors
 	$errors = array();
 
