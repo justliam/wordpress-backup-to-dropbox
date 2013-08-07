@@ -139,6 +139,9 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.6.1 =
+* Improved extension install UX that fixes Firefox redirect bug
+
 = 1.6 =
 * Added Finnish translations
 * WordPress 3.6 compatiblity release
