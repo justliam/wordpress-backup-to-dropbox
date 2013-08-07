@@ -83,7 +83,7 @@ try {
 			</p>
 		<?php elseif (isset($success)): ?>
 			<p class="success">
-				<?php echo esc_attr($success) ?>
+				<?php echo $success ?>
 			</p>
 		<?php endif; ?>
 	</div>
@@ -92,6 +92,11 @@ try {
 			<th><?php _e('Name') ?></th>
 			<th><?php _e('Description') ?></th>
 			<th><?php _e('Price') ?></th>
+
+			<?php if (!$manager->is_new_site()): ?>
+				<th><?php _e('Exipry') ?></th>
+			<?php endif; ?>
+
 			<th></th>
 		</tr>
 
@@ -100,14 +105,23 @@ try {
 			<td><?php echo esc_attr($extension['name']) ?></td>
 			<td><?php echo esc_attr($extension['description']) ?></td>
 			<td>$<?php echo esc_attr($extension['price']) ?> USD</td>
+
+			<?php if (!$manager->is_new_site()): ?>
+				<?php if ($extension['expiry'] == 'expired'): ?>
+					<td><?php _e('Updates for this extension have expired, please make a new purchase to get another year of updates.') ?></td>
+				<?php else: ?>
+					<td><?php echo date_i18n(get_option('date_format'), $extension['expiry']) ?></td>
+				<?php endif; ?>
+			<?php endif; ?>
+
 			<td>
-				<form action="<?php echo $extension['purchased'] ? $installUrl : $buyUrl; ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
+				<form action="<?php echo $extension['expiry'] == 'expired' ? $buyUrl : $installUrl; ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
 					<input type="hidden" value="<?php echo esc_attr($extension['name']); ?>" name="name" />
 					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
-					<?php if ($manager->is_installed($extension['name'])): ?>
-						<span class="installed">Installed</span>
+					<?php if ($extension['expiry'] != 'expired' && $manager->is_installed($extension['name'])): ?>
+						<span class="installed">Installed and up-to-date</span>
 					<?php else: ?>
-						<input class="button-primary" type="submit" value="<?php echo $extension['purchased'] ? __('Install Now') : __('Buy Now'); ?>" class="submitBtn" />
+						<input class="button-primary" type="submit" value="<?php echo $extension['expiry'] == 'expired' ? __('Buy Now') : __('Install Now'); ?>" class="submitBtn" />
 					<?php endif; ?>
 				</form>
 			</td>
