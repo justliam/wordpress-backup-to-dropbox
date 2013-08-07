@@ -65,7 +65,7 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function is_installed($name) {
-		return $this->get_instance(str_replace(' ', '_', ucwords($name)));
+		return $this->get_instance($name);
 	}
 
 	public function install($name) {
@@ -101,6 +101,10 @@ class WP_Backup_Extension_Manager {
 		}
 
 		unlink($download_file);
+
+		include EXTENSIONS_DIR . 'class-' . str_replace(' ', '-', strtolower($name)) . '.php';
+
+		return $this->get_instance($name);
 	}
 
 	public function get_output() {
@@ -113,7 +117,13 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function add_menu_items() {
-		return $this->call('get_menu', false);
+		foreach ($this->objectCache as $obj) {
+			$title = $obj->get_menu();
+			$slug = $this->get_menu_slug($obj);
+			$func = $this->get_menu_func($obj);
+
+			add_submenu_page('backup-to-dropbox', $title, $title, 'activate_plugins', $slug, $func);
+		}
 	}
 
 	public function complete() {
@@ -124,15 +134,25 @@ class WP_Backup_Extension_Manager {
 		$this->call('failure');
 	}
 
-	private function call($func, $check_enabled = true) {
+	public function get_menu_slug($obj) {
+		return 'backup-to-dropbox-' . str_replace('_', '-', strtolower(get_class($obj)));
+	}
+
+	public function get_menu_func($obj) {
+		return 'backup_to_dropbox_' . strtolower(get_class($obj));
+	}
+
+	private function call($func) {
 		foreach ($this->objectCache as $obj) {
-			if ($obj && ($check_enabled == false || $obj->is_enabled())) {
+			if ($obj && $obj->is_enabled()) {
 				$obj->$func();
 			}
 		}
 	}
 
-	private function get_instance($class) {
+	private function get_instance($name) {
+		$class = str_replace(' ', '_', ucwords($name));
+
 		if (!isset($this->objectCache[$class])) {
 			if (!class_exists($class)) {
 				return false;

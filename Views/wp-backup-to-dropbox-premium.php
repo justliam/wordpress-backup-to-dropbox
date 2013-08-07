@@ -33,8 +33,15 @@ if (isset($_REQUEST['title']))
 
 try {
 	if (isset($_POST['name'])) {
-		$manager->install($_POST['name']);
-		echo '<script>window.location.reload(true);</script>';
+		$ext = $manager->install($_POST['name']);
+		$slug = $manager->get_menu_slug($ext);
+		$title = $ext->get_menu();
+
+		?><script type='text/javascript'>
+			jQuery(document).ready(function ($) {
+				jQuery('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
+			});
+		</script>'<?php
 	}
 
 	$extensions = $manager->get_extensions();
