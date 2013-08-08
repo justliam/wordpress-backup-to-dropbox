@@ -141,6 +141,8 @@ function backup_to_dropbox_monitor() {
  */
 function backup_to_dropbox_premium() {
 	wpb2d_style();
+	wp_enqueue_script('jquery-ui-core');
+	wp_enqueue_script('jquery-ui-tabs');
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 	include('Views/wp-backup-to-dropbox-premium.php');

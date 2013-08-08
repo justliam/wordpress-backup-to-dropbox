@@ -39,10 +39,6 @@ class WP_Backup_Extension_Manager {
 		}
 	}
 
-	public function is_new_site() {
-		return $this->new_site;
-	}
-
 	public function get_url() {
 		if (defined('WPB2D_URL'))
 			return WPB2D_URL;
@@ -66,12 +62,9 @@ class WP_Backup_Extension_Manager {
 
 		$response = wp_remote_get("{$this->get_url()}/extensions?" . http_build_query($params));
 
-		if (!$response['headers']['Extendy-New-Site']) {
-			$this->new_site = false;
-		}
-
-		if (is_wp_error($response))
+		if (is_wp_error($response)) {
 			throw new Exception(__('There was an error getting the list of premium extensions'));
+		}
 
 		return json_decode($response['body'], true);
 	}

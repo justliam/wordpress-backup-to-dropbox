@@ -39,9 +39,9 @@ try {
 
 		?><script type='text/javascript'>
 			jQuery(document).ready(function ($) {
-				jQuery('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
+				$('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
 			});
-		</script>'<?php
+		</script><?php
 	}
 
 	$extensions = $manager->get_extensions();
@@ -50,6 +50,11 @@ try {
 }
 
 ?>
+<script type='text/javascript'>
+	jQuery(document).ready(function ($) {
+		$("#tabs").tabs();
+	});
+</script>
 <div class="wrap premium">
 	<div class="icon32"><img width="36px" height="36px"
 								 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
@@ -66,6 +71,7 @@ try {
 			<li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
 			<li><?php _e('Click Install Now to download and install the extension', 'wpbtd'); ?></li>
 			<li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
+			<li><?php _e("If you're manage multipe websites, consider the multipe site options"); ?></li>
 		</ol>
 		<a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
 			<img  src="https://www.paypalobjects.com/en_AU/i/bnr/horizontal_solution_PP.gif" border="0" alt="Solution Graphics">
@@ -87,49 +93,73 @@ try {
 			</p>
 		<?php endif; ?>
 	</div>
-	<table id="extensions">
-		<tr>
-			<th><?php _e('Name') ?></th>
-			<th><?php _e('Description') ?></th>
-			<th><?php _e('Price') ?></th>
 
-			<?php if (!$manager->is_new_site()): ?>
-				<th><?php _e('Exipry') ?></th>
-			<?php endif; ?>
-
-			<th></th>
-		</tr>
-
-		<?php if (is_array($extensions)) foreach ($extensions as $extension): ?>
-		<tr>
-			<td><?php echo esc_attr($extension['name']) ?></td>
-			<td><?php echo esc_attr($extension['description']) ?></td>
-			<td>$<?php echo esc_attr($extension['price']) ?> USD</td>
-
-			<?php if (!$manager->is_new_site()): ?>
-				<?php if ($extension['expiry'] == 'expired'): ?>
-					<td><?php _e('Updates for this extension have expired, please make a new purchase to get another year of updates.') ?></td>
-				<?php else: ?>
-					<td><?php echo date_i18n(get_option('date_format'), $extension['expiry']) ?></td>
-				<?php endif; ?>
-			<?php endif; ?>
-
-			<td>
-				<form action="<?php echo $extension['expiry'] == 'expired' ? $buyUrl : $installUrl; ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
-					<input type="hidden" value="<?php echo esc_attr($extension['name']); ?>" name="name" />
-					<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
-					<?php if ($extension['expiry'] != 'expired' && $manager->is_installed($extension['name'])): ?>
-						<span class="installed">Installed and up-to-date</span>
+	<div id="tabs">
+		<ul>
+			<li><a href="#single-site-tab">Singe site</a></li>
+			<li><a href="#multi-site-tab">Multiple sites</a></li>
+		</ul>
+		<div id="single-site-tab">
+			<?php if (is_array($extensions)) foreach ($extensions as $extension): ?>
+				<div class="product-box product-box--single-site">
+					<div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
+					<div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
+					<div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
+						<?php if (is_int($extension['expiry']) && $manager->is_installed($extension['name'])): ?>
+							<span class="product-box__tick">&#10004;</span>
+							<span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd'); ?></span>
+						<?php else: ?>
+							<div class="product-box__button">
+								<form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl; ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
+									<input type="hidden" value="<?php echo esc_attr($extension['name']); ?>" name="name" />
+									<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
+									<input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now'); ?>" class="submitBtn" />
+								</form>
+							</div>
+						<?php endif; ?>
+					<?php if ($extension['expiry'] == 'expired'): ?>
+						<div class="product-box__alert"><?php _e('Updates for this extension have expired. Please make a new purchase to renew.') ?></div>
+					<?php elseif ($extension['expiry'] != 'new'): ?>
+						<div class="product-box__alert"><?php echo __('Expires on', 'wpbtd') . ' ' . date_i18n(get_option('date_format'), $extension['expiry']) ?></div>
 					<?php else: ?>
-						<input class="button-primary" type="submit" value="<?php echo $extension['expiry'] == 'expired' ? __('Buy Now') : __('Install Now'); ?>" class="submitBtn" />
+						<div class="product-box__spacer"></div>
 					<?php endif; ?>
-				</form>
-			</td>
-		</tr>
-		<?php endforeach; ?>
-	</table>
-	<p>
-		<strong><?php _e('Please Note:') ?></strong>&nbsp;
-		<?php echo sprintf(__('Each payment includes updates and support on a single website for one year. If you manage multiple websites please consider purchasing an %s.'), '<a href="http://wpb2d.com/buy-subscription">' . __('unlimited site subscription') . '</a>') ?>
-	</p>
+				</div>
+			<?php endforeach; ?>
+
+			<p class="note_paragraph">
+				<strong><?php _e('Please Note:') ?></strong>&nbsp;
+				<?php echo sprintf(__('Each payment includes updates and support on a single website for one year.')) ?>
+			</p>
+		</div>
+
+		<div id="multi-site-tab">
+			<p class="paragraph-block">
+				<?php echo sprintf(__('
+					These plans are perfect for web developers and people who manage multiple websites
+					because they allow you to install all extensions on the sites that you register.
+					Each plan includes updates and support for one year and you can update site limit at any time.
+				')); ?>
+			</p>
+
+			<div class="product-box product-box--no-margin">
+				<div class="product-box__title wp-menu-name">5 sites</div>
+				<div class="product-box__subtitle">Great value if you only have a few sites to look after.</div>
+				<div class="product-box__price">$129 USD</div>
+				<a class="button-primary">Buy Now</a>
+			</div>
+			<div class="product-box">
+				<div class="product-box__title">30 sites</div>
+				<div class="product-box__subtitle">You have a nice little portfolio of sites and you want them all backed up nicely.</div>
+				<div class="product-box__price">$249 USD</div>
+				<a class="button-primary">Buy Now</a>
+			</div>
+			<div class="product-box">
+				<div class="product-box__title">Unlimited sites</div>
+				<div class="product-box__subtitle">You deal with a dizzying number of sites and add new ones all the time. Who knows how many you will get to!</div>
+				<div class="product-box__price">$399 USD</div>
+				<a class="button-primary">Buy Now</a>
+			</div>
+		</div>
+	</div>
 </div>
