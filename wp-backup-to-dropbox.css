@@ -218,25 +218,22 @@ ul {
 	max-width: 750px;
 }
 
-.product-box {
+.product-box--single, .product-box--multi {
 	display: inline-block;
 	padding: 20px;
 	text-align: center;
 	border: 1px solid #cfcfcf;
 	border-radius: 5px;
+	margin-left: 20px;
 }
 
-.product-box--single-site {
+.product-box--single {
 	margin-top: 20px;
 	float: left;
 }
 
 .product-box--no-margin {
-	margin-left: 0 !important;
-}
-
-.product-box:not(:first-child) {
-	margin-left: 20px;
+	margin-left: 0px !important;
 }
 
 .product-box__title {
@@ -279,10 +276,6 @@ ul {
 
 .product-box__button {
 	padding: 6px;
-}
-
-.product-box__spacer {
-	height: 40px;
 }
 
 .note_paragraph {

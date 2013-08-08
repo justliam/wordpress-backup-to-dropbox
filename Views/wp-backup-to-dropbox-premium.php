@@ -20,35 +20,84 @@
  */
 $manager = WP_Backup_Registry::extension_manager();
 
-$wpb2d = $manager->get_url();
-$installUrl = $manager->get_install_url();
-$buyUrl = $manager->get_buy_url();
-
-$extensions = $error = $title = null;
+$error = $title = null;
 if (isset($_REQUEST['error']))
 	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>');
 
 if (isset($_REQUEST['title']))
-	$success = sprintf(__('You have succesfully purchased the %s premium extension, please install it below.'), "<strong>{$_REQUEST['title']}</strong>");
+	$success = sprintf(__('You have succesfully purchased %s.'), "<strong>{$_REQUEST['title']}</strong>");
 
-try {
-	if (isset($_POST['name'])) {
-		$ext = $manager->install($_POST['name']);
-		$slug = $manager->get_menu_slug($ext);
-		$title = $ext->get_menu();
+if (isset($_POST['name'])) {
+	$ext = $manager->install($_POST['name']);
+	$slug = $manager->get_menu_slug($ext);
+	$title = $ext->get_menu();
 
-		?><script type='text/javascript'>
-			jQuery(document).ready(function ($) {
-				$('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
-			});
-		</script><?php
-	}
-
-	$extensions = $manager->get_extensions();
-} catch (Exception $e) {
-	$error = $e->getMessage();
+	?><script type='text/javascript'>
+		jQuery(document).ready(function ($) {
+			$('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
+		});
+	</script><?php
 }
 
+function wpb2d_products($manager, $type)
+{
+		try {
+		$extensions = $manager->get_extensions();
+		$installUrl = $manager->get_install_url();
+		$buyUrl = $manager->get_buy_url();
+
+		if (!is_array($extensions)) {
+			return;
+		}
+
+		//Hide the other two multis if one is purchsed
+		if ($type == 'multi') {
+			foreach ($extensions as $extension) {
+				if ($extension['type'] == 'multi' && is_int($extension['expiry'])) {
+					$pruchased = $extension['name'];
+				}
+			}
+		}
+
+		$i = 0;
+		foreach ($extensions as $extension) {
+			$query = '?' . http_build_query(array('site' => get_site_url(), 'name' => $extension['name']));
+
+			if ($extension['type'] != $type || (isset($pruchased) && $pruchased != $extension['name'])) {
+				continue;
+			}
+			?>
+			<div class="product-box--<?php echo $type ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
+				<div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
+				<div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
+				<div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
+				<?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || $type = 'multi')): ?>
+					<span class="product-box__tick">&#10004;</span>
+					<?php if ($type == 'single'): ?>
+						<span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd') ?></span>
+					<?php endif; ?>
+				<?php else: ?>
+					<div class="product-box__button">
+						<form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
+							<input type="hidden" value="<?php echo esc_attr($extension['name']) ?>" name="name" />
+							<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
+							<input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now') ?>" class="submitBtn" />
+						</form>
+					</div>
+				<?php endif; ?>
+
+				<?php if ($extension['expiry'] == 'expired' && $type == 'single'): ?>
+					<div class="product-box__alert"><?php _e('Your annual updates have expired. Please make a new purchase to renew.') ?></div>
+				<?php elseif (is_int($extension['expiry'])): ?>
+					<div class="product-box__alert"><?php echo __('Expires on', 'wpbtd') . ' ' . date_i18n(get_option('date_format'), $extension['expiry']) ?></div>
+				<?php endif; ?>
+			</div>
+			<?php
+		}
+	} catch (Exception $e) {
+		echo '<p class="error">' . $e->getMessage() . '</p>';
+	}
+}
 ?>
 <script type='text/javascript'>
 	jQuery(document).ready(function ($) {
@@ -62,6 +111,7 @@ try {
 	<h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
 	<p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
 	<h3><?php _e('Premium Extensions', 'wpbtd'); ?></h3>
+
 	<div>
 		<p>
 			<?php _e('Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd'); ?>
@@ -80,8 +130,8 @@ try {
 		<a class="moneyback" href="http://wpb2d.com/money-back-guarantee">
 			<img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
 		</a>
-
 	</div>
+
 	<div class="errors">
 		<?php if ($error): ?>
 			<p class="error">
@@ -100,33 +150,7 @@ try {
 			<li><a href="#multi-site-tab">Multiple sites</a></li>
 		</ul>
 		<div id="single-site-tab">
-			<?php if (is_array($extensions)) foreach ($extensions as $extension): ?>
-				<div class="product-box product-box--single-site">
-					<div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
-					<div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
-					<div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
-						<?php if (is_int($extension['expiry']) && $manager->is_installed($extension['name'])): ?>
-							<span class="product-box__tick">&#10004;</span>
-							<span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd'); ?></span>
-						<?php else: ?>
-							<div class="product-box__button">
-								<form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl; ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
-									<input type="hidden" value="<?php echo esc_attr($extension['name']); ?>" name="name" />
-									<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
-									<input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now'); ?>" class="submitBtn" />
-								</form>
-							</div>
-						<?php endif; ?>
-					<?php if ($extension['expiry'] == 'expired'): ?>
-						<div class="product-box__alert"><?php _e('Updates for this extension have expired. Please make a new purchase to renew.') ?></div>
-					<?php elseif ($extension['expiry'] != 'new'): ?>
-						<div class="product-box__alert"><?php echo __('Expires on', 'wpbtd') . ' ' . date_i18n(get_option('date_format'), $extension['expiry']) ?></div>
-					<?php else: ?>
-						<div class="product-box__spacer"></div>
-					<?php endif; ?>
-				</div>
-			<?php endforeach; ?>
-
+			<?php wpb2d_products($manager, 'single'); ?>
 			<p class="note_paragraph">
 				<strong><?php _e('Please Note:') ?></strong>&nbsp;
 				<?php echo sprintf(__('Each payment includes updates and support on a single website for one year.')) ?>
@@ -141,25 +165,7 @@ try {
 					Each plan includes updates and support for one year and you can update site limit at any time.
 				')); ?>
 			</p>
-
-			<div class="product-box product-box--no-margin">
-				<div class="product-box__title wp-menu-name">5 sites</div>
-				<div class="product-box__subtitle">Great value if you only have a few sites to look after.</div>
-				<div class="product-box__price">$129 USD</div>
-				<a class="button-primary">Buy Now</a>
-			</div>
-			<div class="product-box">
-				<div class="product-box__title">30 sites</div>
-				<div class="product-box__subtitle">You have a nice little portfolio of sites and you want them all backed up nicely.</div>
-				<div class="product-box__price">$249 USD</div>
-				<a class="button-primary">Buy Now</a>
-			</div>
-			<div class="product-box">
-				<div class="product-box__title">Unlimited sites</div>
-				<div class="product-box__subtitle">You deal with a dizzying number of sites and add new ones all the time. Who knows how many you will get to!</div>
-				<div class="product-box__price">$399 USD</div>
-				<a class="button-primary">Buy Now</a>
-			</div>
+			<?php wpb2d_products($manager, 'multi'); ?>
 		</div>
 	</div>
 </div>
