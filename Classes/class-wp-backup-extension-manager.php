@@ -20,6 +20,7 @@ class WP_Backup_Extension_Manager {
 
 	private
 		$objectCache = array(),
+		$extensionsCache,
 		$new_site = true
 		;
 
@@ -55,18 +56,22 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function get_extensions() {
-		$params = array(
-			'key' => $this->key,
-			'site' => get_site_url(),
-		);
+		if (!$this->extensionsCache) {
+			$params = array(
+				'key' => $this->key,
+				'site' => get_site_url(),
+			);
 
-		$response = wp_remote_get("{$this->get_url()}/extensions?" . http_build_query($params));
+			$response = wp_remote_get("{$this->get_url()}/products?" . http_build_query($params));
 
-		if (is_wp_error($response)) {
-			throw new Exception(__('There was an error getting the list of premium extensions'));
+			if (is_wp_error($response)) {
+				throw new Exception(__('There was an error getting the list of premium extensions'));
+			}
+
+			$this->extensionsCache = json_decode($response['body'], true);
 		}
 
-		return json_decode($response['body'], true);
+		return $this->extensionsCache;
 	}
 
 	public function is_installed($name) {
