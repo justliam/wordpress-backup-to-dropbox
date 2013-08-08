@@ -41,7 +41,7 @@ if (isset($_POST['name'])) {
 
 function wpb2d_products($manager, $type)
 {
-		try {
+	try {
 		$extensions = $manager->get_extensions();
 		$installUrl = $manager->get_install_url();
 		$buyUrl = $manager->get_buy_url();
@@ -50,20 +50,9 @@ function wpb2d_products($manager, $type)
 			return;
 		}
 
-		//Hide the other two multis if one is purchsed
-		if ($type == 'multi') {
-			foreach ($extensions as $extension) {
-				if ($extension['type'] == 'multi' && is_int($extension['expiry'])) {
-					$pruchased = $extension['name'];
-				}
-			}
-		}
-
 		$i = 0;
 		foreach ($extensions as $extension) {
-			$query = '?' . http_build_query(array('site' => get_site_url(), 'name' => $extension['name']));
-
-			if ($extension['type'] != $type || (isset($pruchased) && $pruchased != $extension['name'])) {
+			if ($extension['type'] != $type) {
 				continue;
 			}
 			?>
@@ -71,7 +60,8 @@ function wpb2d_products($manager, $type)
 				<div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
 				<div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
 				<div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
-				<?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || $type = 'multi')): ?>
+
+				<?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || $type == 'multi')): ?>
 					<span class="product-box__tick">&#10004;</span>
 					<?php if ($type == 'single'): ?>
 						<span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd') ?></span>
@@ -121,7 +111,7 @@ function wpb2d_products($manager, $type)
 			<li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
 			<li><?php _e('Click Install Now to download and install the extension', 'wpbtd'); ?></li>
 			<li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
-			<li><?php _e("If you're manage multipe websites, consider the multipe site options"); ?></li>
+			<li><?php _e('If you manage many websites, consider the multipe site options'); ?></li>
 		</ol>
 		<a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
 			<img  src="https://www.paypalobjects.com/en_AU/i/bnr/horizontal_solution_PP.gif" border="0" alt="Solution Graphics">
