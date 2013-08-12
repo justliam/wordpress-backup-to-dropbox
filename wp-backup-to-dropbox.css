@@ -218,18 +218,30 @@ ul {
 	max-width: 750px;
 }
 
-.product-box--single, .product-box--multi {
+.product-box--single, .product-box--multi, .product-box--bundle {
 	display: inline-block;
 	padding: 20px;
 	text-align: center;
 	border: 1px solid #cfcfcf;
 	border-radius: 5px;
-	margin-left: 20px;
+	margin-left: 10px;
 }
 
 .product-box--single {
-	margin-top: 20px;
+	margin: 10px 0 10px 10px;
 	float: left;
+}
+
+.product-box--bundle {
+	display: block;
+	clear: both;
+	margin: 0;
+	width: 630px;
+}
+
+.product-box--bundle .product-box__price,
+.product-box--bundle .product-box__button {
+	display: inline-block;
 }
 
 .product-box--no-margin {

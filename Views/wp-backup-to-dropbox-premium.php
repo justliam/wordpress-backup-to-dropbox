@@ -52,11 +52,11 @@ function wpb2d_products($manager, $type)
 
 		$i = 0;
 		foreach ($extensions as $extension) {
-			if ($extension['type'] != $type) {
+			if (!in_array($extension['type'], $type)) {
 				continue;
 			}
 			?>
-			<div class="product-box--<?php echo $type ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
+			<div class="product-box--<?php echo $extension['type'] ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
 				<div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
 				<div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
 				<div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
@@ -140,7 +140,7 @@ function wpb2d_products($manager, $type)
 			<li><a href="#multi-site-tab">Multiple sites</a></li>
 		</ul>
 		<div id="single-site-tab">
-			<?php wpb2d_products($manager, 'single'); ?>
+			<?php wpb2d_products($manager, array('single', 'bundle')); ?>
 			<p class="note_paragraph">
 				<strong><?php _e('Please Note:') ?></strong>&nbsp;
 				<?php echo sprintf(__('Each payment includes updates and support on a single website for one year.', 'wpbtd')) ?>
@@ -153,9 +153,9 @@ function wpb2d_products($manager, $type)
 					These plans are perfect for web developers and people who manage multiple websites
 					because they allow you to install all extensions on the sites that you register.
 					Each plan includes updates and support for one year and you can update site limit at any time.
-				')); ?>
+				', 'wpbtd')); ?>
 			</p>
-			<?php wpb2d_products($manager, 'multi'); ?>
+			<?php wpb2d_products($manager, array('multi')); ?>
 		</div>
 	</div>
 </div>
