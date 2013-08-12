@@ -322,6 +322,13 @@ function get_sanitized_home_path() {
 	//Needed for get_home_path() function and may not be loaded
 	require_once(ABSPATH . 'wp-admin/includes/file.php');
 
+	//If site address and WordPress address differ but are not in a different directory
+	//then get_home_path will return '/' and cause issues.
+	$home_path = get_home_path();
+	if ($home_path == '/') {
+		$home_path = ABSPATH;
+	}
+
 	return rtrim(str_replace('/', DIRECTORY_SEPARATOR, get_home_path()), DIRECTORY_SEPARATOR);
 }
 
