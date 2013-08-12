@@ -18,7 +18,7 @@
  */
 class WP_Backup_Logger {
 
-	const LOGFILE = 'wpb2d-backup-log%s.txt';
+	const LOGFILE = 'wpb2d-backup-log%s.txt%s';
 
 	public function log($msg, $files = null) {
 		$fh = fopen(self::get_log_file(), 'a');
@@ -52,12 +52,13 @@ class WP_Backup_Logger {
 
 		$path = WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 
-		$file = sprintf($path, '');
+		$secret = WP_Backup_Registry::get_secret($file);
+		$file = sprintf($path, '', $secret);
 
 		$fh = @fopen($file, 'a');
 		if ($fh === false) {
 
-			$file = sprintf($path, '-v1');
+			$file = sprintf($path, '-v1', $secret);
 			$fh = @fopen($file, 'a');
 			if ($fh === false)
 				throw new Exception('Error opening log file.');

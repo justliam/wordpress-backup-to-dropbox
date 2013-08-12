@@ -73,6 +73,10 @@ class WP_Backup_Registry {
 		return self::$db;
 	}
 
+	public static function get_secret($data) {
+		return hash_hmac('sha1', $data, uniqid(mt_rand(), true)) . '-wpb2d-secret';
+	}
+
 	public static function setLogger($logger) {
 		self::$logger = $logger;
 	}

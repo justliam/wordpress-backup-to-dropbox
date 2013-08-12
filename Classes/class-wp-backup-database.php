@@ -64,8 +64,9 @@ abstract class WP_Backup_Database {
 			}
 		}
 
-		if ($secret)
-			$file .= '.' . hash_hmac('sha1', DB_NAME, time()) . '-wpb2d-secret';
+		if ($secret) {
+			$file .= '.' . WP_Backup_Registry::get_secret(DB_NAME);
+		}
 
 		return $file;
 	}
