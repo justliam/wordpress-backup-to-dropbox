@@ -22,10 +22,10 @@ $manager = WP_Backup_Registry::extension_manager();
 
 $error = $title = null;
 if (isset($_REQUEST['error']))
-	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>');
+	$error = sprintf(__('There was an error with your payment, please contact %s to resolve.', 'wpbtd'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>');
 
 if (isset($_REQUEST['title']))
-	$success = sprintf(__('You have succesfully purchased %s.'), "<strong>{$_REQUEST['title']}</strong>");
+	$success = sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>");
 
 if (isset($_POST['name'])) {
 	$ext = $manager->install($_POST['name']);
@@ -143,7 +143,7 @@ function wpb2d_products($manager, $type)
 			<?php wpb2d_products($manager, 'single'); ?>
 			<p class="note_paragraph">
 				<strong><?php _e('Please Note:') ?></strong>&nbsp;
-				<?php echo sprintf(__('Each payment includes updates and support on a single website for one year.')) ?>
+				<?php echo sprintf(__('Each payment includes updates and support on a single website for one year.', 'wpbtd')) ?>
 			</p>
 		</div>
 

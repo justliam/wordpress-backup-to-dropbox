@@ -35,7 +35,7 @@ class WP_Backup_Output extends WP_Backup_Extension {
 
 	public function out($source, $file, $processed_file = null) {
 		if ($this->error_count > self::MAX_ERRORS)
-			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.'), self::MAX_ERRORS));
+			throw new Exception(sprintf(__('The backup is having trouble uploading files to Dropbox, it has failed %s times and is aborting the backup.', 'wpbtd'), self::MAX_ERRORS));
 
 		if (!$this->dropbox)
 			throw new Exception(__("Dropbox API not set"));

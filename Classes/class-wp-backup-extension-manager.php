@@ -65,7 +65,7 @@ class WP_Backup_Extension_Manager {
 			$response = wp_remote_get("{$this->get_url()}/products?" . http_build_query($params));
 
 			if (is_wp_error($response)) {
-				throw new Exception(__('There was an error getting the list of premium extensions'));
+				throw new Exception(__('There was an error getting the list of premium extensions', 'wpbtd'));
 			}
 
 			$this->extensionsCache = json_decode($response['body'], true);
@@ -92,11 +92,11 @@ class WP_Backup_Extension_Manager {
 
 		$download_file = download_url("{$this->get_url()}/download?" . http_build_query($params));
 
-		$writeableMsg = __("this might be because 'wp-content/plugins/wordpress-backup-to-dropbox/Extensions' is not writeable.");
+		$writeableMsg = __("this might be because 'wp-content/plugins/wordpress-backup-to-dropbox/Extensions' is not writeable.", 'wpbtd');
 
 		if (is_wp_error($download_file)) {
 			$errorMsg = $download_file->get_error_messages();
-			throw new Exception(__('There was an error downloading your premium extension') . ", $writeableMsg ({$errorMsg[0]})");
+			throw new Exception(__('There was an error downloading your premium extension', 'wpbtd') . ", $writeableMsg ({$errorMsg[0]})");
 		}
 
 		$result = unzip_file($download_file, EXTENSIONS_DIR);
@@ -107,7 +107,7 @@ class WP_Backup_Extension_Manager {
 			}
 
 			unlink($download_file);
-			throw new Exception(__('There was an error installing your premium extension') . ", $writeableMsg ({$errorMsg[0]})");
+			throw new Exception(__('There was an error installing your premium extension', 'wpbtd') . ", $writeableMsg ({$errorMsg[0]})");
 		}
 
 		unlink($download_file);

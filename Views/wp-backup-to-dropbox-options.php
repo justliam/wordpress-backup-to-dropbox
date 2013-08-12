@@ -185,7 +185,7 @@ try {
 				$backup_date = date('l F j, Y', $blog_time);
 				$backup_time_str = date('H:i:s', $blog_time);
 
-				echo '<li>' . sprintf(__('Backup completed on %s at %s.'), $backup_date, $backup_time_str) . '</li>';
+				echo '<li>' . sprintf(__('Backup completed on %s at %s.', 'wpbtd'), $backup_date, $backup_time_str) . '</li>';
 			}
 			echo '</ol>';
 			echo '<input type="submit" id="clear_history" name="clear_history"" class="bump button-secondary" value="' . __('Clear history', 'wpbtd') . '">';
