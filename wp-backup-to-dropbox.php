@@ -313,6 +313,11 @@ function wpb2d_init() {
 		if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
 			wpb2d_install();
 		}
+
+        if (!get_option('wpb2d-premium-extensions')) {
+            add_option('wpb2d-premium-extensions', array(), false, 'no');
+        }
+
 	} catch (Exception $e) {
 		error_log($e->getMessage());
 	}

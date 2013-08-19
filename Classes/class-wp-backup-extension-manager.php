@@ -29,14 +29,11 @@ class WP_Backup_Extension_Manager {
 	}
 
 	public function __construct() {
-		foreach (glob(EXTENSIONS_DIR . 'class-*.php') as $extension) {
-			include_once $extension;
+		$extensions = get_option('wpb2d-premium-extensions');
+		foreach ($extensions as $name => $file) {
+			include_once $file;
 
-			$this->get_instance(
-				str_replace('-', '_',
-				preg_replace('/.php$/', '',
-				preg_replace('/^class-/', '',
-			basename($extension)))));
+			$this->get_instance($name);
 		}
 	}
 
@@ -112,9 +109,15 @@ class WP_Backup_Extension_Manager {
 
 		unlink($download_file);
 
-		include EXTENSIONS_DIR . 'class-' . str_replace(' ', '-', strtolower($name)) . '.php';
+		$extensions = get_option('wpb2d-premium-extensions');
 
-		return $this->get_instance($name);
+		$extensions[$name] = EXTENSIONS_DIR . "class-$class.php";
+
+		update_option('wpb2d-premium-extensions', $extensions);
+
+		include $extensions[$name];
+
+		return $this->get_instance($class);
 	}
 
 	public function get_output() {
