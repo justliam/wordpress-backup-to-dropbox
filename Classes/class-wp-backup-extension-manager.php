@@ -18,6 +18,8 @@
  */
 class WP_Backup_Extension_Manager {
 
+	const API_VERSION = 0;
+
 	private
 		$objectCache = array(),
 		$extensionsCache,
@@ -37,11 +39,18 @@ class WP_Backup_Extension_Manager {
 		}
 	}
 
-	public function get_url() {
-		if (defined('WPB2D_URL'))
-			return WPB2D_URL;
+	public function get_url($api = false) {
+		if (defined('WPB2D_URL')) {
+			$url =  WPB2D_URL;
+		} else {
+			$url = 'http://wpb2d.com';
+		}
 
-		return 'http://wpb2d.com';
+		if ($api) {
+			$url .= '/' . self::API_VERSION;
+		}
+
+		return $url;
 	}
 
 	public function get_install_url() {
@@ -59,7 +68,7 @@ class WP_Backup_Extension_Manager {
 				'site' => get_site_url(),
 			);
 
-			$response = wp_remote_get("{$this->get_url()}/products?" . http_build_query($params));
+			$response = wp_remote_get("{$this->get_url(true)}/products?" . http_build_query($params));
 
 			if (is_wp_error($response)) {
 				throw new Exception(__('There was an error getting the list of premium extensions', 'wpbtd'));
@@ -87,7 +96,7 @@ class WP_Backup_Extension_Manager {
 			'version' => BACKUP_TO_DROPBOX_VERSION,
 		);
 
-		$download_file = download_url("{$this->get_url()}/download?" . http_build_query($params));
+		$download_file = download_url("{$this->get_url(true)}/download?" . http_build_query($params));
 
 		$writeableMsg = __("this might be because 'wp-content/plugins/wordpress-backup-to-dropbox/Extensions' is not writeable.", 'wpbtd');
 
