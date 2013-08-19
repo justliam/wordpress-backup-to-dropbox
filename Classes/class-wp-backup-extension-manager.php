@@ -19,6 +19,7 @@
 class WP_Backup_Extension_Manager {
 
 	const API_VERSION = 0;
+	const API_KEY = '7121664d208a603de9d93e564adfcd0a';
 
 	private
 		$objectCache = array(),
@@ -33,9 +34,11 @@ class WP_Backup_Extension_Manager {
 	public function __construct() {
 		$extensions = get_option('wpb2d-premium-extensions');
 		foreach ($extensions as $name => $file) {
-			include_once $file;
+			if (file_exists($file)) {
+				include_once $file;
 
-			$this->get_instance($name);
+				$this->get_instance($name);
+			}
 		}
 	}
 
@@ -64,7 +67,7 @@ class WP_Backup_Extension_Manager {
 	public function get_extensions() {
 		if (!$this->extensionsCache) {
 			$params = array(
-				'key' => $this->key,
+				'apikey' => self::API_KEY,
 				'site' => get_site_url(),
 			);
 
@@ -91,6 +94,7 @@ class WP_Backup_Extension_Manager {
 		WP_Filesystem();
 
 		$params = array(
+			'apikey' => self::API_KEY,
 			'name' => $name,
 			'site' => get_site_url(),
 			'version' => BACKUP_TO_DROPBOX_VERSION,
@@ -120,13 +124,13 @@ class WP_Backup_Extension_Manager {
 
 		$extensions = get_option('wpb2d-premium-extensions');
 
-		$extensions[$name] = EXTENSIONS_DIR . "class-$class.php";
+		$extensions[$name] = EXTENSIONS_DIR . 'class-' . str_replace(' ', '-', strtolower($name)) . '.php';
 
 		update_option('wpb2d-premium-extensions', $extensions);
 
-		include $extensions[$name];
+		include_once $extensions[$name];
 
-		return $this->get_instance($class);
+		return $this->get_instance($name);
 	}
 
 	public function get_output() {

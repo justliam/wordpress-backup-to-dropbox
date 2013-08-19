@@ -28,15 +28,19 @@ if (isset($_REQUEST['title']))
 	$success = sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>");
 
 if (isset($_POST['name'])) {
-	$ext = $manager->install($_POST['name']);
-	$slug = $manager->get_menu_slug($ext);
-	$title = $ext->get_menu();
+	try {
+		$ext = $manager->install($_POST['name']);
+		$slug = $manager->get_menu_slug($ext);
+		$title = $ext->get_menu();
 
-	?><script type='text/javascript'>
-		jQuery(document).ready(function ($) {
-			$('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
-		});
-	</script><?php
+		?><script type='text/javascript'>
+			jQuery(document).ready(function ($) {
+				$('a[href$="backup-to-dropbox-premium"]').parent().before('<li><a href="admin.php?page=<?php echo $slug ?>"><?php echo $title ?></a></li>');
+			});
+		</script><?php
+	} catch (Exception $e) {
+		$error = $e->getMessage();
+	}
 }
 
 function wpb2d_products($manager, $type)
@@ -56,12 +60,12 @@ function wpb2d_products($manager, $type)
 				continue;
 			}
 			?>
-			<div class="product-box--<?php echo $extension['type'] ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
+			<div class="product-box--<?php echo $extension['type'] ?> product-box--<?php echo $extension['type'] . "--$i" ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
 				<div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
 				<div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
 				<div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
 
-				<?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || $type == 'multi')): ?>
+				<?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || in_array($extension['type'], array('multi', 'bundle')))): ?>
 					<span class="product-box__tick">&#10004;</span>
 					<?php if ($type == 'single'): ?>
 						<span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd') ?></span>
@@ -69,6 +73,7 @@ function wpb2d_products($manager, $type)
 				<?php else: ?>
 					<div class="product-box__button">
 						<form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
+							<input type="hidden" value="<?php echo WP_Backup_Extension_Manager::API_KEY ?>" name="apikey" />
 							<input type="hidden" value="<?php echo esc_attr($extension['name']) ?>" name="name" />
 							<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 							<input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now') ?>" class="submitBtn" />
@@ -76,7 +81,7 @@ function wpb2d_products($manager, $type)
 					</div>
 				<?php endif; ?>
 
-				<?php if ($extension['expiry'] == 'expired' && $type == 'single'): ?>
+				<?php if ($extension['expiry'] == 'expired' && $extension['type'] == 'single'): ?>
 					<div class="product-box__alert"><?php _e('Your annual updates have expired. Please make a new purchase to renew.') ?></div>
 				<?php elseif (is_int($extension['expiry'])): ?>
 					<div class="product-box__alert"><?php echo __('Expires on', 'wpbtd') . ' ' . date_i18n(get_option('date_format'), $extension['expiry']) ?></div>
@@ -117,9 +122,7 @@ function wpb2d_products($manager, $type)
 			<img  src="https://www.paypalobjects.com/en_AU/i/bnr/horizontal_solution_PP.gif" border="0" alt="Solution Graphics">
 		</a>
 
-		<a class="moneyback" href="http://wpb2d.com/money-back-guarantee">
-			<img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
-		</a>
+		<img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
 	</div>
 
 	<div class="errors">
@@ -152,7 +155,7 @@ function wpb2d_products($manager, $type)
 				<?php echo sprintf(__('
 					These plans are perfect for web developers and people who manage multiple websites
 					because they allow you to install all extensions on the sites that you register.
-					Each plan includes updates and support for one year and you can update site limit at any time.
+					Each plan includes updates and support for one year and you can update your limit at any time.
 				', 'wpbtd')); ?>
 			</p>
 			<?php wpb2d_products($manager, array('multi')); ?>

@@ -230,15 +230,26 @@ ul {
 .product-box--single {
 	margin: 10px 0 10px 10px;
 	float: left;
+	min-height: 182px;
 }
 
 .product-box--bundle {
 	display: block;
 	clear: both;
 	margin: 0;
-	width: 630px;
 }
 
+.product-box--bundle--1 {
+	width: 201px;
+}
+
+.product-box--bundle--2 {
+	width: 402px;
+}
+
+.product-box--bundle--3 {
+	width: 603px;
+}
 .product-box--bundle .product-box__price,
 .product-box--bundle .product-box__button {
 	display: inline-block;
@@ -259,6 +270,11 @@ ul {
 .product-box__subtitle {
 	padding: 10px 0;
 	max-width: 175px;
+}
+
+.product-box--bundle .product-box__subtitle,
+.product-box--bundle .product-box__alert {
+	max-width: 100%;
 }
 
 .product-box__price {
