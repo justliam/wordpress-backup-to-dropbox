@@ -101,9 +101,7 @@ To diagnose issues with your plugin please refer to this [sticky topic](http://w
 
 = How do I restore my website? =
 
-Simply download [WPB2D Simple Restore](http://wpb2d.com/simple-restore) and upload it to an empty host. Once uploaded you will be guided through a wizard of 5 easy steps and have your blog restored in no time.
-
-You don’t even have to install WordPress!
+Restoring can be a complicated process because every host is different. You can try and follow the steps in this [blog post](http://www.mikeyd.com.au/2011/10/26/restoring-wordpress-from-a-backup-to-dropbox-using-cpanel-and-phpmyadmin), if that does not work I would consult your web developer for help.
 
 = Why does my keep going away and resuming? =
 
@@ -143,6 +141,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Improved extension install user interface that fixes Firefox redirect bug.
 * Use ABSPATH for WP root if get_home_path returns '/' that can cause the plugin the attemt to backup root.
 * Improved security of DB dumps, Zip archives and the backup log. A better sha1 secret is now appended to them all and removed before upload to Dropbox.
+* Update cURL CA Certs to the latest version from Mozilla
 
 = 1.6 =
 * Added Finnish translations
