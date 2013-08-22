@@ -46,7 +46,7 @@ class WP_Backup_Extension_Manager {
 		if (defined('WPB2D_URL')) {
 			$url =  WPB2D_URL;
 		} else {
-			$url = 'http://wpb2d.com';
+			$url = 'http://extendy.com';
 		}
 
 		if ($api) {
