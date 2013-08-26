@@ -18,4 +18,4 @@ cp -r Images/guarantee.gif $TRUNK/Images/
 cp -r Images/banner-772x250.png $TRUNK/../assets/
 
 cd $TRUNK
-zip -r $ARCHIVE * -x '*/.svn/*' -x '.DS_Store'
+zip -r $ARCHIVE * -x '*/.svn/*' -x '*.DS_Store*'
