@@ -1,3 +1,7 @@
+.heading--inline {
+	display: inline-block;
+}
+
 .history_box {
 	max-height: 140px;
 	overflow-y: scroll;

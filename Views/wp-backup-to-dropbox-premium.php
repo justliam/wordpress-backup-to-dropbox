@@ -105,8 +105,7 @@ function wpb2d_products($manager, $type)
 								 alt="WordPress Backup to Dropbox Logo"></div>
 	<h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
 	<p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
-	<h3><?php _e('Premium Extensions', 'wpbtd'); ?></h3>
-
+	<h3><?php _e('Premium Extensions', 'wpbtd'); ?> <small class="heading--inline"><?php echo sprintf(__('powered by %s', 'wpbtd'), '<a href="http://extendy.com">Extendy</a>'); ?></small></h3>
 	<div>
 		<p>
 			<?php _e('Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd'); ?>
