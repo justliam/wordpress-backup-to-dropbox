@@ -141,7 +141,8 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Added [Extendy](http://extendy.com) and improved extension installation user interface that fixes a few bugs and adds the ability to renew and buy bundles.
 * Use ABSPATH for WP root if get_home_path returns '/' that can cause the plugin the attemt to backup root.
 * Improved security of DB dumps, Zip archives and the backup log. A better sha1 secret is now appended to them all and removed before upload to Dropbox.
-* Update cURL CA Certs to the latest version from Mozilla
+* Updated cURL CA Certs to the latest version from Mozilla
+* Updated dutch translations
 
 = 1.6 =
 * Added Finnish translations
