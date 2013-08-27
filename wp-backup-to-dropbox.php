@@ -231,31 +231,31 @@ function backup_to_dropbox_cron_schedules($schedules) {
 	$new_schedules = array(
 		'every_min' => array(
 			'interval' => 60,
-			'display' => 'every_min'
+			'display' => 'WPB2D - Monitor'
 		),
 		'daily' => array(
 			'interval' => 86400,
-			'display' => 'Daily'
+			'display' => 'WPB2D - Daily'
 		),
 		'weekly' => array(
 			'interval' => 604800,
-			'display' => 'Weekly'
+			'display' => 'WPB2D - Weekly'
 		),
 		'fortnightly' => array(
 			'interval' => 1209600,
-			'display' => 'Fortnightly'
+			'display' => 'WPB2D - Fortnightly'
 		),
 		'monthly' => array(
 			'interval' => 2419200,
-			'display' => 'Once Every 4 weeks'
+			'display' => 'WPB2D - Once Every 4 weeks'
 		),
 		'two_monthly' => array(
 			'interval' => 4838400,
-			'display' => 'Once Every 8 weeks'
+			'display' => 'WPB2D - Once Every 8 weeks'
 		),
 		'three_monthly' => array(
 			'interval' => 7257600,
-			'display' => 'Once Every 12 weeks'
+			'display' => 'WPB2D - Once Every 12 weeks'
 		),
 	);
 	return array_merge($schedules, $new_schedules);
