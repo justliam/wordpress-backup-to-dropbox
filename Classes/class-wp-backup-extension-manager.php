@@ -102,22 +102,27 @@ class WP_Backup_Extension_Manager {
 
 		$download_file = download_url("{$this->get_url(true)}/download?" . http_build_query($params));
 
-		$writeableMsg = __("this might be because 'wp-content/plugins/wordpress-backup-to-dropbox/Extensions' is not writeable.", 'wpbtd');
-
 		if (is_wp_error($download_file)) {
-			$errorMsg = $download_file->get_error_messages();
-			throw new Exception(__('There was an error downloading your premium extension', 'wpbtd') . ", $writeableMsg ({$errorMsg[0]})");
+			$errorMsg = $download_file->get_error_message();
+            if ($errorMsg == 'Forbidden') {
+                $errorMsg = __('access is deined, this could be because your payment has expired.', 'wpbtd');
+            } else {
+                $errorMsg = __('you have exceeded your download limit for this extension on this site.', 'wpbtd');
+            }
+
+			throw new Exception(__('There was an error downloading your premium extension because', 'wpbtd') . " $errorMsg");
 		}
 
 		$result = unzip_file($download_file, EXTENSIONS_DIR);
 		if (is_wp_error($result)) {
-			$errorMsg = $result->get_error_messages();
-			if ($errorMsg[0] == "Incompatible Archive.") {
-				$errorMsg[0] = file_get_contents($download_file);
-			}
+			$errorCode = $result->get_error_code();
+            $errorMsg = strtolower($result->get_error_message());
 
-			unlink($download_file);
-			throw new Exception(__('There was an error installing your premium extension', 'wpbtd') . ", $writeableMsg ({$errorMsg[0]})");
+            if (in_array($errorCode, array('copy_failed', 'incompatible_archive'))) {
+                $errorMsg = sprintf(__("'%s' is not writeable.", 'wpbtd'), EXTENSIONS_DIR);
+            }
+
+			throw new Exception(__('There was an error installing your premium extension because', 'wpbtd') . " $errorMsg");
 		}
 
 		unlink($download_file);
