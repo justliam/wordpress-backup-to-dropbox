@@ -71,7 +71,7 @@ abstract class WP_Backup_Database {
 		return $file;
 	}
 
-	protected function exists() {
+	public function exists() {
 		$files = glob($this->get_file(false) . '*');
 		if (is_array($files))
 			return count($files) > 0;

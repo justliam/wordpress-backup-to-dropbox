@@ -130,12 +130,14 @@ class WP_Backup {
 			if ($this->output->start()) {
 				//Create the SQL backups
 
-				$logger->log(__('Creating SQL backup.', 'wpbtd'));
+				if (!$this->db_core->exists() || !$this->db_plugins->exists()) {
+					$logger->log(__('Creating SQL backup.', 'wpbtd'));
 
-				$this->db_core->execute();
-				$this->db_plugins->execute();
+					$this->db_core->execute();
+					$this->db_plugins->execute();
 
-				$logger->log(__('SQL backup complete. Starting file backup.', 'wpbtd'));
+					$logger->log(__('SQL backup complete. Starting file backup.', 'wpbtd'));
+				}
 
 				//Backup the content dir first
 				$processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
