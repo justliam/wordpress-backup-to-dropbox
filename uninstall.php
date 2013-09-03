@@ -19,7 +19,7 @@
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
 if (!defined('ABSPATH') && !defined('WP_UNINSTALL_PLUGIN')) {
-	exit();
+    exit();
 }
 
 delete_option('backup-to-dropbox-tokens');

@@ -18,82 +18,88 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_ProcessedFiles {
+class WPB2D_ProcessedFiles
+{
+    private
+        $db,
+        $processed_files
+        ;
 
-	private
-		$db,
-		$processed_files
-		;
+    public function __construct()
+    {
+        $this->db = WPB2D_Registry::db();
 
-	public function __construct() {
-		$this->db = WPB2D_Registry::db();
+        $ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_files");
+        if (is_array($ret))
+            $this->processed_files = $ret;
+    }
 
-		$ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_files");
-		if (is_array($ret))
-			$this->processed_files = $ret;
-	}
+    public function get_file_count()
+    {
+        return count($this->processed_files);
+    }
 
-	public function get_file_count() {
-		return count($this->processed_files);
-	}
+    public function get_file($file_name)
+    {
+        foreach ($this->processed_files as $file) {
+            if ($file->file == $file_name)
+                return $file;
+        }
+    }
 
-	public function get_file($file_name) {
-		foreach ($this->processed_files as $file) {
-			if ($file->file == $file_name)
-				return $file;
-		}
-	}
+    public function file_complete($file)
+    {
+        $this->update_file($file, 0, 0);
+    }
 
-	public function file_complete($file) {
-		$this->update_file($file, 0, 0);
-	}
+    public function update_file($file, $upload_id, $offset)
+    {
+        $exists = $this->db->get_var(
+            $this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_files WHERE file = %s", $file)
+        );
 
-	public function update_file($file, $upload_id, $offset) {
-		$exists = $this->db->get_var(
-			$this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_files WHERE file = %s", $file)
-		);
+        if (is_null($exists)) {
+            $this->db->insert("{$this->db->prefix}wpb2d_processed_files", array(
+                'file' => $file,
+                'uploadid' => $upload_id,
+                'offset' => $offset,
+            ));
+        } else {
+            $this->db->update(
+                "{$this->db->prefix}wpb2d_processed_files",
+                array('uploadid' => $upload_id, 'offset' => $offset),
+                array('file' => $file)
+            );
+        }
 
-		if (is_null($exists)) {
-			$this->db->insert("{$this->db->prefix}wpb2d_processed_files", array(
-				'file' => $file,
-				'uploadid' => $upload_id,
-				'offset' => $offset,
-			));
-		} else {
-			$this->db->update(
-				"{$this->db->prefix}wpb2d_processed_files",
-				array('uploadid' => $upload_id, 'offset' => $offset),
-				array('file' => $file)
-			);
-		}
+        //Update the cached version
+        for ($i = 0; $i < count($this->processed_files); $i++) {
+            if ($this->processed_files[$i]->file == $file) {
+                $this->processed_files[$i]->offset = $offset;
+                $this->processed_files[$i]->uploadid = $upload_id;
+                break;
+            }
+        }
+    }
 
-		//Update the cached version
-		for($i = 0; $i < count($this->processed_files); $i++) {
-			if ($this->processed_files[$i]->file == $file) {
-				$this->processed_files[$i]->offset = $offset;
-				$this->processed_files[$i]->uploadid = $upload_id;
-				break;
-			}
-		}
-	}
+    public function add_files($new_files)
+    {
+        foreach ($new_files as $file) {
 
-	public function add_files($new_files) {
-		foreach ($new_files as $file) {
+            if ($this->get_file($file))
+                continue;
 
-			if ($this->get_file($file))
-				continue;
+            $file_details = new stdClass;
+            $file_details->file = $file;
+            $file_details->offset = null;
+            $file_details->uploadid = null;
 
-			$file_details = new stdClass;
-			$file_details->file = $file;
-			$file_details->offset = null;
-			$file_details->uploadid = null;
+            $this->processed_files[] = $file_details;
+            $this->db->insert($this->db->prefix . 'WPB2D_ProcessedFiles', array(
+                'file' => $file
+            ));
+        }
 
-			$this->processed_files[] = $file_details;
-			$this->db->insert($this->db->prefix . 'WPB2D_ProcessedFiles', array(
-				'file' => $file
-			));
-		}
-
-		return $this;
-	}
+        return $this;
+    }
 }

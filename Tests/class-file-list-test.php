@@ -20,147 +20,160 @@
  */
 require_once 'mock-wp-functions.php';
 
-class File_List_Test extends PHPUnit_Framework_TestCase {
+class File_List_Test extends PHPUnit_Framework_TestCase
+{
+    private $list;
 
-	private $list;
+    public function setUp()
+    {
+        reset_globals();
 
-	public function setUp() {
-		reset_globals();
+        $db = Mockery::mock()
+            ->shouldReceive('get_results')
+            ->andReturn(array())
+            ->shouldReceive('insert')
+            ->shouldReceive('query')
+            ->mock()
+            ;
 
-		$db = Mockery::mock()
-			->shouldReceive('get_results')
-			->andReturn(array())
-			->shouldReceive('insert')
-			->shouldReceive('query')
-			->mock()
-			;
+        $db->prefix = 'wp_';
 
-		$db->prefix = 'wp_';
+        WP_Backup_Registry::setDatabase($db);
 
-		WP_Backup_Registry::setDatabase($db);
+        $this->list = new File_List();
+    }
 
-		$this->list = new File_List();
-	}
+    public function tearDown()
+    {
+        Mockery::close();
+    }
 
-	public function tearDown() {
-		Mockery::close();
-	}
+    public function testDatabaseInteractions()
+    {
+        $db = Mockery::mock()
+            ->shouldReceive('get_results')
+            ->andReturn(array())
 
-	public function testDatabaseInteractions() {
+            ->shouldReceive('insert')
+            ->with('wp_wpb2d_excluded_files', array(
+                'file' => __FILE__,
+                'isdir' => false
+            ))
+            ->mock()
+            ;
 
-		$db = Mockery::mock()
-			->shouldReceive('get_results')
-			->andReturn(array())
+        $db->prefix = 'wp_';
 
-			->shouldReceive('insert')
-			->with('wp_wpb2d_excluded_files', array(
-				'file' => __FILE__,
-				'isdir' => false
-			))
-			->mock()
-			;
+        WP_Backup_Registry::setDatabase($db);
 
-		$db->prefix = 'wp_';
+        $list = new File_List();
+        $list->set_excluded(__FILE__);
 
-		WP_Backup_Registry::setDatabase($db);
+        $this->assertTrue($list->is_excluded(__FILE__));
 
-		$list = new File_List();
-		$list->set_excluded(__FILE__);
+        $file = new stdClass;
+        $file->file = __FILE__;
 
-		$this->assertTrue($list->is_excluded(__FILE__));
+        $db = Mockery::mock()
+            ->shouldReceive('get_results')
+            ->andReturn(array($file))
+            ->shouldReceive('query')
+            ->with("DELETE FROM wp_wpb2d_excluded_files WHERE file = '" . __FILE__ . "'")
+            ->mock()
+            ;
 
-		$file = new stdClass;
-		$file->file = __FILE__;
+        $db->prefix = 'wp_';
 
-		$db = Mockery::mock()
-			->shouldReceive('get_results')
-			->andReturn(array($file))
-			->shouldReceive('query')
-			->with("DELETE FROM wp_wpb2d_excluded_files WHERE file = '" . __FILE__ . "'")
-			->mock()
-			;
+        WP_Backup_Registry::setDatabase($db);
 
-		$db->prefix = 'wp_';
+        $list = new File_List();
+        $this->assertTrue($list->is_excluded(__FILE__));
 
-		WP_Backup_Registry::setDatabase($db);
+        $list->set_included(__FILE__);
+        $this->assertFalse($list->is_excluded(__FILE__));
+    }
 
-		$list = new File_List();
-		$this->assertTrue($list->is_excluded(__FILE__));
+    public function testExcludedIncludeFile()
+    {
+        $this->list->set_excluded(__FILE__);
+        $this->list->set_excluded(__FILE__);
 
-		$list->set_included(__FILE__);
-		$this->assertFalse($list->is_excluded(__FILE__));
-	}
+        $this->assertTrue($this->list->is_excluded(__FILE__));
 
-	public function testExcludedIncludeFile() {
-		$this->list->set_excluded(__FILE__);
-		$this->list->set_excluded(__FILE__);
+        $this->list->set_included(__FILE__);
+        $this->assertFalse($this->list->is_excluded(__FILE__));
+    }
 
-		$this->assertTrue($this->list->is_excluded(__FILE__));
+    public function testExcludedIncludeDir()
+    {
+        $this->list->set_excluded(__DIR__);
+        $this->list->set_excluded(__DIR__);
 
-		$this->list->set_included(__FILE__);
-		$this->assertFalse($this->list->is_excluded(__FILE__));
-	}
+        $this->assertTrue($this->list->is_excluded(__DIR__));
 
-	public function testExcludedIncludeDir() {
-		$this->list->set_excluded(__DIR__);
-		$this->list->set_excluded(__DIR__);
+        $this->list->set_included(__DIR__);
+        $this->assertFalse($this->list->is_excluded(__DIR__));
+    }
 
-		$this->assertTrue($this->list->is_excluded(__DIR__));
+    public function testSetGetExcludedDir()
+    {
+        $this->list->set_excluded(__DIR__);
+        $this->assertTrue($this->list->is_excluded(__DIR__));
 
-		$this->list->set_included(__DIR__);
-		$this->assertFalse($this->list->is_excluded(__DIR__));
-	}
+        $this->list->set_included(__DIR__);
+        $this->assertFalse($this->list->is_excluded(__DIR__));
+    }
 
-	public function testSetGetExcludedDir() {
-		$this->list->set_excluded(__DIR__);
-		$this->assertTrue($this->list->is_excluded(__DIR__));
+    public function testGetExcludedFileWithExcludedParentDir()
+    {
+        $this->list->set_excluded(__FILE__);
+        $this->assertTrue($this->list->is_excluded(__FILE__));
 
-		$this->list->set_included(__DIR__);
-		$this->assertFalse($this->list->is_excluded(__DIR__));
-	}
+        $this->list->set_included(__FILE__);
+        $this->assertFalse($this->list->is_excluded(__FILE__));
+    }
 
-	public function testGetExcludedFileWithExcludedParentDir() {
-		$this->list->set_excluded(__FILE__);
-		$this->assertTrue($this->list->is_excluded(__FILE__));
+    public function testGetExcludedFileWithExcludedRootDir()
+    {
+        $this->list->set_excluded(ABSPATH);
+        $this->assertTrue($this->list->is_excluded(__FILE__));
+    }
 
-		$this->list->set_included(__FILE__);
-		$this->assertFalse($this->list->is_excluded(__FILE__));
-	}
+    public function testGetIncludedDir()
+    {
+        $this->assertFalse($this->list->is_excluded(__DIR__));
+    }
 
-	public function testGetExcludedFileWithExcludedRootDir() {
-		$this->list->set_excluded(ABSPATH);
-		$this->assertTrue($this->list->is_excluded(__FILE__));
-	}
+    public function testGetIncludedFile()
+    {
+        $this->assertFalse($this->list->is_excluded(__FILE__));
+    }
 
-	public function testGetIncludedDir() {
-		$this->assertFalse($this->list->is_excluded(__DIR__));
-	}
+    public function testGetCheckBoxClassCheckedFile()
+    {
+        $this->list->set_excluded(__FILE__);
+        $this->assertEquals('checked', $this->list->get_checkbox_class(__FILE__));
+    }
 
-	public function testGetIncludedFile() {
-		$this->assertFalse($this->list->is_excluded(__FILE__));
-	}
+    public function testGetCheckBoxClassCheckedDir()
+    {
+        $this->list->set_excluded(__DIR__);
+        $this->assertEquals('checked', $this->list->get_checkbox_class(__DIR__));
+    }
 
-	public function testGetCheckBoxClassCheckedFile() {
-		$this->list->set_excluded(__FILE__);
-		$this->assertEquals('checked', $this->list->get_checkbox_class(__FILE__));
-	}
+    public function testGetCheckBoxClassNotCheckedFile()
+    {
+        $this->assertEquals('', $this->list->get_checkbox_class(__FILE__));
+    }
 
-	public function testGetCheckBoxClassCheckedDir() {
-		$this->list->set_excluded(__DIR__);
-		$this->assertEquals('checked', $this->list->get_checkbox_class(__DIR__));
-	}
+    public function testGetCheckBoxClassNotCheckedDir()
+    {
+        $this->assertEquals('', $this->list->get_checkbox_class(__DIR__));
+    }
 
-	public function testGetCheckBoxClassNotCheckedFile() {
-		$this->assertEquals('', $this->list->get_checkbox_class(__FILE__));
-	}
-
-	public function testGetCheckBoxClassNotCheckedDir() {
-		$this->assertEquals('', $this->list->get_checkbox_class(__DIR__));
-	}
-
-	public function testGetCheckBoxClassPartialDir() {
-		$this->list->set_excluded(__FILE__);
-		$this->assertEquals('partial', $this->list->get_checkbox_class(__DIR__));
-	}
+    public function testGetCheckBoxClassPartialDir()
+    {
+        $this->list->set_excluded(__FILE__);
+        $this->assertEquals('partial', $this->list->get_checkbox_class(__DIR__));
+    }
 }
-?>

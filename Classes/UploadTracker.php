@@ -18,23 +18,25 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_UploadTracker {
+class WPB2D_UploadTracker
+{
+    private $processed_files;
 
-	private $processed_files;
+    public function __construct()
+    {
+        $this->processed_files = new WPB2D_ProcessedFiles();
+    }
 
-	public function __construct() {
-		$this->processed_files = new WPB2D_ProcessedFiles();
-	}
+    public function track_upload($file, $upload_id, $offset)
+    {
+        WPB2D_Registry::config()->die_if_stopped();
 
-	public function track_upload($file, $upload_id, $offset) {
-		WPB2D_Registry::config()->die_if_stopped();
+        $this->processed_files->update_file($file, $upload_id, $offset);
 
-		$this->processed_files->update_file($file, $upload_id, $offset);
-
-		WPB2D_Registry::logger()->log(sprintf(
-			__("Uploaded %sMB of %sMB", 'wpbtd'),
-			round($offset / 1048576, 1),
-			round(filesize($file) / 1048576, 1)
-		));
-	}
+        WPB2D_Registry::logger()->log(sprintf(
+            __("Uploaded %sMB of %sMB", 'wpbtd'),
+            round($offset / 1048576, 1),
+            round(filesize($file) / 1048576, 1)
+        ));
+    }
 }

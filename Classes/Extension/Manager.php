@@ -16,182 +16,199 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_Extension_Manager {
+class WPB2D_Extension_Manager
+{
+    const API_VERSION = 0;
+    const API_KEY = '7121664d208a603de9d93e564adfcd0a';
 
-	const API_VERSION = 0;
-	const API_KEY = '7121664d208a603de9d93e564adfcd0a';
+    private
+        $objectCache = array(),
+        $extensionsCache,
+        $new_site = true
+        ;
 
-	private
-		$objectCache = array(),
-		$extensionsCache,
-		$new_site = true
-		;
+    public static function construct()
+    {
+        return new self();
+    }
 
-	public static function construct() {
-		return new self();
-	}
+    public function __construct()
+    {
+        $extensions = get_option('wpb2d-premium-extensions');
+        foreach ($extensions as $name => $file) {
+            if (file_exists($file)) {
+                include_once $file;
 
-	public function __construct() {
-		$extensions = get_option('wpb2d-premium-extensions');
-		foreach ($extensions as $name => $file) {
-			if (file_exists($file)) {
-				include_once $file;
+                $this->get_instance($name);
+            }
+        }
+    }
 
-				$this->get_instance($name);
-			}
-		}
-	}
+    public function get_url($api = false)
+    {
+        if (defined('WPB2D_URL')) {
+            $url =  WPB2D_URL;
+        } else {
+            $url = 'http://extendy.com';
+        }
 
-	public function get_url($api = false) {
-		if (defined('WPB2D_URL')) {
-			$url =  WPB2D_URL;
-		} else {
-			$url = 'http://extendy.com';
-		}
+        if ($api) {
+            $url .= '/' . self::API_VERSION;
+        }
 
-		if ($api) {
-			$url .= '/' . self::API_VERSION;
-		}
+        return $url;
+    }
 
-		return $url;
-	}
+    public function get_install_url()
+    {
+        return 'admin.php?page=backup-to-dropbox-premium';
+    }
 
-	public function get_install_url() {
-		return 'admin.php?page=backup-to-dropbox-premium';
-	}
+    public function get_buy_url()
+    {
+        return $this->get_url() . '/buy';
+    }
 
-	public function get_buy_url() {
-		return $this->get_url() . '/buy';
-	}
+    public function get_extensions()
+    {
+        if (!$this->extensionsCache) {
+            $params = array(
+                'apikey' => self::API_KEY,
+                'site' => get_site_url(),
+            );
 
-	public function get_extensions() {
-		if (!$this->extensionsCache) {
-			$params = array(
-				'apikey' => self::API_KEY,
-				'site' => get_site_url(),
-			);
+            $response = wp_remote_get("{$this->get_url(true)}/products?" . http_build_query($params));
 
-			$response = wp_remote_get("{$this->get_url(true)}/products?" . http_build_query($params));
+            if (is_wp_error($response)) {
+                throw new Exception(__('There was an error getting the list of premium extensions', 'wpbtd'));
+            }
 
-			if (is_wp_error($response)) {
-				throw new Exception(__('There was an error getting the list of premium extensions', 'wpbtd'));
-			}
+            $this->extensionsCache = json_decode($response['body'], true);
+        }
 
-			$this->extensionsCache = json_decode($response['body'], true);
-		}
+        return $this->extensionsCache;
+    }
 
-		return $this->extensionsCache;
-	}
+    public function is_installed($name)
+    {
+        return $this->get_instance($name);
+    }
 
-	public function is_installed($name) {
-		return $this->get_instance($name);
-	}
+    public function install($name)
+    {
+        if (!defined('FS_METHOD'))
+            define('FS_METHOD', 'direct');
 
-	public function install($name) {
-		if (!defined('FS_METHOD'))
-			define('FS_METHOD', 'direct');
+        WP_Filesystem();
 
-		WP_Filesystem();
+        $params = array(
+            'apikey' => self::API_KEY,
+            'name' => $name,
+            'site' => get_site_url(),
+            'version' => BACKUP_TO_DROPBOX_VERSION,
+        );
 
-		$params = array(
-			'apikey' => self::API_KEY,
-			'name' => $name,
-			'site' => get_site_url(),
-			'version' => BACKUP_TO_DROPBOX_VERSION,
-		);
+        $download_file = download_url("{$this->get_url(true)}/download?" . http_build_query($params));
 
-		$download_file = download_url("{$this->get_url(true)}/download?" . http_build_query($params));
-
-		if (is_wp_error($download_file)) {
-			$errorMsg = $download_file->get_error_message();
+        if (is_wp_error($download_file)) {
+            $errorMsg = $download_file->get_error_message();
             if ($errorMsg == 'Forbidden') {
                 $errorMsg = __('access is deined, this could be because your payment has expired.', 'wpbtd');
             } else {
                 $errorMsg = __('you have exceeded your download limit for this extension on this site.', 'wpbtd');
             }
 
-			throw new Exception(__('There was an error downloading your premium extension because', 'wpbtd') . " $errorMsg");
-		}
+            throw new Exception(__('There was an error downloading your premium extension because', 'wpbtd') . " $errorMsg");
+        }
 
-		$result = unzip_file($download_file, EXTENSIONS_DIR);
-		if (is_wp_error($result)) {
-			$errorCode = $result->get_error_code();
+        $result = unzip_file($download_file, EXTENSIONS_DIR);
+        if (is_wp_error($result)) {
+            $errorCode = $result->get_error_code();
             $errorMsg = strtolower($result->get_error_message());
 
             if (in_array($errorCode, array('copy_failed', 'incompatible_archive'))) {
                 $errorMsg = sprintf(__("'%s' is not writeable.", 'wpbtd'), EXTENSIONS_DIR);
             }
 
-			throw new Exception(__('There was an error installing your premium extension because', 'wpbtd') . " $errorMsg");
-		}
+            throw new Exception(__('There was an error installing your premium extension because', 'wpbtd') . " $errorMsg");
+        }
 
-		unlink($download_file);
+        unlink($download_file);
 
-		$extensions = get_option('wpb2d-premium-extensions');
+        $extensions = get_option('wpb2d-premium-extensions');
 
-		$extensions[$name] = EXTENSIONS_DIR . 'class-' . str_replace(' ', '-', strtolower($name)) . '.php';
+        $extensions[$name] = EXTENSIONS_DIR . 'class-' . str_replace(' ', '-', strtolower($name)) . '.php';
 
-		update_option('wpb2d-premium-extensions', $extensions);
+        update_option('wpb2d-premium-extensions', $extensions);
 
-		include_once $extensions[$name];
+        include_once $extensions[$name];
 
-		return $this->get_instance($name);
-	}
+        return $this->get_instance($name);
+    }
 
-	public function get_output() {
-		foreach ($this->objectCache as $obj) {
-			if ($obj && $obj->get_type() == WPB2D_Extension::TYPE_OUTPUT && $obj->is_enabled()) {
-				return $obj;
-			}
-		}
-		return $this->get_instance('WPB2D_DefaultOutput');
-	}
+    public function get_output()
+    {
+        foreach ($this->objectCache as $obj) {
+            if ($obj && $obj->get_type() == WPB2D_Extension::TYPE_OUTPUT && $obj->is_enabled()) {
+                return $obj;
+            }
+        }
 
-	public function add_menu_items() {
-		foreach ($this->objectCache as $obj) {
-			$title = $obj->get_menu();
-			$slug = $this->get_menu_slug($obj);
-			$func = $this->get_menu_func($obj);
+        return $this->get_instance('WPB2D_DefaultOutput');
+    }
 
-			add_submenu_page('backup-to-dropbox', $title, $title, 'activate_plugins', $slug, $func);
-		}
-	}
+    public function add_menu_items()
+    {
+        foreach ($this->objectCache as $obj) {
+            $title = $obj->get_menu();
+            $slug = $this->get_menu_slug($obj);
+            $func = $this->get_menu_func($obj);
 
-	public function complete() {
-		$this->call('complete');
-	}
+            add_submenu_page('backup-to-dropbox', $title, $title, 'activate_plugins', $slug, $func);
+        }
+    }
 
-	public function failure() {
-		$this->call('failure');
-	}
+    public function complete()
+    {
+        $this->call('complete');
+    }
 
-	public function get_menu_slug($obj) {
-		return 'backup-to-dropbox-' . str_replace('_', '-', strtolower(get_class($obj)));
-	}
+    public function failure()
+    {
+        $this->call('failure');
+    }
 
-	public function get_menu_func($obj) {
-		return 'backup_to_dropbox_' . strtolower(get_class($obj));
-	}
+    public function get_menu_slug($obj)
+    {
+        return 'backup-to-dropbox-' . str_replace('_', '-', strtolower(get_class($obj)));
+    }
 
-	private function call($func) {
-		foreach ($this->objectCache as $obj) {
-			if ($obj && $obj->is_enabled()) {
-				$obj->$func();
-			}
-		}
-	}
+    public function get_menu_func($obj)
+    {
+        return 'backup_to_dropbox_' . strtolower(get_class($obj));
+    }
 
-	private function get_instance($name) {
-		$class = str_replace(' ', '_', ucwords($name));
+    private function call($func)
+    {
+        foreach ($this->objectCache as $obj) {
+            if ($obj && $obj->is_enabled()) {
+                $obj->$func();
+            }
+        }
+    }
 
-		if (!isset($this->objectCache[$class])) {
-			if (!class_exists($class)) {
-				return false;
-			}
+    private function get_instance($name)
+    {
+        $class = str_replace(' ', '_', ucwords($name));
 
-			$this->objectCache[$class] = new $class();
-		}
+        if (!isset($this->objectCache[$class])) {
+            if (!class_exists($class)) {
+                return false;
+            }
 
-		return $this->objectCache[$class];
-	}
+            $this->objectCache[$class] = new $class();
+        }
+
+        return $this->objectCache[$class];
+    }
 }

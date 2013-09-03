@@ -18,149 +18,161 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-abstract class WPB2D_Database_Base {
-	const SELECT_QUERY_LIMIT = 10;
-	const WAIT_TIMEOUT = 600; //10 minutes
+abstract class WPB2D_Database_Base
+{
+    const SELECT_QUERY_LIMIT = 10;
+    const WAIT_TIMEOUT = 600; //10 minutes
 
-	private $handle;
-	private $type;
+    private $handle;
+    private $type;
 
-	protected $database;
-	protected $config;
+    protected $database;
+    protected $config;
 
-	abstract function execute();
+    abstract public function execute();
 
-	public function __construct($type) {
-		$this->type = $type;
-		$this->database = WPB2D_Registry::db();
-		$this->config = WPB2D_Registry::config();
+    public function __construct($type)
+    {
+        $this->type = $type;
+        $this->database = WPB2D_Registry::db();
+        $this->config = WPB2D_Registry::config();
 
-		$this->set_wait_timeout();
-	}
+        $this->set_wait_timeout();
+    }
 
-	public function remove_file() {
-		$files = glob($this->get_file(false) . '*');
-		if ($files) {
-			foreach ($files as $file)
-				unlink($file);
-		}
-	}
+    public function remove_file()
+    {
+        $files = glob($this->get_file(false) . '*');
+        if ($files) {
+            foreach ($files as $file)
+                unlink($file);
+        }
+    }
 
-	private function set_wait_timeout() {
-		$this->database->query("SET SESSION wait_timeout=" . self::WAIT_TIMEOUT);
-	}
+    private function set_wait_timeout()
+    {
+        $this->database->query("SET SESSION wait_timeout=" . self::WAIT_TIMEOUT);
+    }
 
-	public function get_file($secret = true) {
-		if (!$this->type)
-			throw new Exception();
+    public function get_file($secret = true)
+    {
+        if (!$this->type)
+            throw new Exception();
 
-		$file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
+        $file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
 
-		$files = glob($file . '*');
-		if ($files) {
-			foreach ($files as $file) {
-				if (preg_match('/(.?)' . preg_quote("-backup-{$this->type}.sql") . '(.?)/', $file))
-					return $file;
-			}
-		}
+        $files = glob($file . '*');
+        if ($files) {
+            foreach ($files as $file) {
+                if (preg_match('/(.?)' . preg_quote("-backup-{$this->type}.sql") . '(.?)/', $file))
 
-		if ($secret) {
-			$file .= '.' . WPB2D_Registry::get_secret(DB_NAME);
-		}
+                    return $file;
+            }
+        }
 
-		return $file;
-	}
+        if ($secret) {
+            $file .= '.' . WPB2D_Registry::get_secret(DB_NAME);
+        }
 
-	public function exists() {
-		$files = glob($this->get_file(false) . '*');
-		if (is_array($files))
-			return count($files) > 0;
-	}
+        return $file;
+    }
 
-	protected function write_db_dump_header() {
-		$this->handle = fopen($this->get_file(), 'w+');
-		if (!$this->handle)
-			throw new Exception(__('Error creating sql dump file.', 'wpbtd'));
+    public function exists()
+    {
+        $files = glob($this->get_file(false) . '*');
+        if (is_array($files))
+            return count($files) > 0;
+    }
 
-		$dump_location = $this->config->get_backup_dir();
+    protected function write_db_dump_header()
+    {
+        $this->handle = fopen($this->get_file(), 'w+');
+        if (!$this->handle)
+            throw new Exception(__('Error creating sql dump file.', 'wpbtd'));
 
-		if (!is_writable($dump_location)) {
-			$msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
-			WPB2D_Registry::logger()->log($msg);
-			return false;
-		}
+        $dump_location = $this->config->get_backup_dir();
 
-		$blog_time = strtotime(current_time('mysql'));
+        if (!is_writable($dump_location)) {
+            $msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
+            WPB2D_Registry::logger()->log($msg);
 
-		$this->write_to_file("-- WordPress Backup to Dropbox SQL Dump\n");
-		$this->write_to_file("-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n");
-		$this->write_to_file("-- http://wpb2d.com\n");
-		$this->write_to_file("-- Generation Time: " . date("F j, Y", $blog_time) . " at " . date("H:i", $blog_time) . "\n\n");
-		$this->write_to_file('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n");
+            return false;
+        }
 
-		//I got this out of the phpMyAdmin database dump to make sure charset is correct
-		$this->write_to_file("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n");
-		$this->write_to_file("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n");
-		$this->write_to_file("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n");
-		$this->write_to_file("/*!40101 SET NAMES utf8 */;\n\n");
+        $blog_time = strtotime(current_time('mysql'));
 
-		$this->write_to_file("--\n-- Create and use the backed up database\n--\n\n");
-		$this->write_to_file("CREATE DATABASE IF NOT EXISTS " . DB_NAME . ";\n");
-		$this->write_to_file("USE " . DB_NAME . ";\n\n");
-	}
+        $this->write_to_file("-- WordPress Backup to Dropbox SQL Dump\n");
+        $this->write_to_file("-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n");
+        $this->write_to_file("-- http://wpb2d.com\n");
+        $this->write_to_file("-- Generation Time: " . date("F j, Y", $blog_time) . " at " . date("H:i", $blog_time) . "\n\n");
+        $this->write_to_file('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n");
 
-	protected function backup_database_tables($tables) {
-		$db_error = __('Error while accessing database.', 'wpbtd');
-		foreach ($tables as $table) {
-			$this->write_to_file("--\n-- Table structure for table `$table`\n--\n\n");
+        //I got this out of the phpMyAdmin database dump to make sure charset is correct
+        $this->write_to_file("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n");
+        $this->write_to_file("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n");
+        $this->write_to_file("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n");
+        $this->write_to_file("/*!40101 SET NAMES utf8 */;\n\n");
 
-			$table_create = $this->database->get_row("SHOW CREATE TABLE $table", ARRAY_N);
-			if ($table_create === false) {
-				throw new Exception($db_error . ' (ERROR_3)');
-			}
-			$this->write_to_file($table_create[1] . ";\n\n");
+        $this->write_to_file("--\n-- Create and use the backed up database\n--\n\n");
+        $this->write_to_file("CREATE DATABASE IF NOT EXISTS " . DB_NAME . ";\n");
+        $this->write_to_file("USE " . DB_NAME . ";\n\n");
+    }
 
-			$table_count = $this->database->get_var("SELECT COUNT(*) FROM $table");
-			if ($table_count == 0) {
-				$this->write_to_file("--\n-- Table `$table` is empty\n--\n\n");
-				continue;
-			} else {
-				$this->write_to_file("--\n-- Dumping data for table `$table`\n--\n\n");
-				for ($i = 0; $i < $table_count; $i = $i + self::SELECT_QUERY_LIMIT) {
-					$table_data = $this->database->get_results("SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A);
-					if ($table_data === false) {
-						throw new Exception($db_error . ' (ERROR_4)');
-					}
+    protected function backup_database_tables($tables)
+    {
+        $db_error = __('Error while accessing database.', 'wpbtd');
+        foreach ($tables as $table) {
+            $this->write_to_file("--\n-- Table structure for table `$table`\n--\n\n");
 
-					$fields = '`' . implode('`, `', array_keys($table_data[0])) . '`';
-					$this->write_to_file("INSERT INTO `$table` ($fields) VALUES\n");
+            $table_create = $this->database->get_row("SHOW CREATE TABLE $table", ARRAY_N);
+            if ($table_create === false) {
+                throw new Exception($db_error . ' (ERROR_3)');
+            }
+            $this->write_to_file($table_create[1] . ";\n\n");
 
-					$out = '';
-					foreach ($table_data as $data) {
-						$data_out = '(';
-						foreach ($data as $value) {
-							$value = addslashes($value);
-							$value = str_replace("\n", "\\n", $value);
-							$value = str_replace("\r", "\\r", $value);
-							$data_out .= "'$value', ";
-						}
-						$out .= rtrim($data_out, ' ,') . "),\n";
-					}
-					$this->write_to_file(rtrim($out, ",\n") . ";\n\n");
-				}
-			}
-		}
-	}
+            $table_count = $this->database->get_var("SELECT COUNT(*) FROM $table");
+            if ($table_count == 0) {
+                $this->write_to_file("--\n-- Table `$table` is empty\n--\n\n");
+                continue;
+            } else {
+                $this->write_to_file("--\n-- Dumping data for table `$table`\n--\n\n");
+                for ($i = 0; $i < $table_count; $i = $i + self::SELECT_QUERY_LIMIT) {
+                    $table_data = $this->database->get_results("SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A);
+                    if ($table_data === false) {
+                        throw new Exception($db_error . ' (ERROR_4)');
+                    }
 
-	protected function write_to_file($out) {
-		if (fwrite($this->handle, $out) === false)
-			throw new Exception(__('Error writing to sql dump file.', 'wpbtd'));
-	}
+                    $fields = '`' . implode('`, `', array_keys($table_data[0])) . '`';
+                    $this->write_to_file("INSERT INTO `$table` ($fields) VALUES\n");
 
-	protected function close_file() {
-		if (!fclose($this->handle))
-			throw new Exception(__('Error closing sql dump file.', 'wpbtd'));
+                    $out = '';
+                    foreach ($table_data as $data) {
+                        $data_out = '(';
+                        foreach ($data as $value) {
+                            $value = addslashes($value);
+                            $value = str_replace("\n", "\\n", $value);
+                            $value = str_replace("\r", "\\r", $value);
+                            $data_out .= "'$value', ";
+                        }
+                        $out .= rtrim($data_out, ' ,') . "),\n";
+                    }
+                    $this->write_to_file(rtrim($out, ",\n") . ";\n\n");
+                }
+            }
+        }
+    }
 
-		return true;
-	}
+    protected function write_to_file($out)
+    {
+        if (fwrite($this->handle, $out) === false)
+            throw new Exception(__('Error writing to sql dump file.', 'wpbtd'));
+    }
+
+    protected function close_file()
+    {
+        if (!fclose($this->handle))
+            throw new Exception(__('Error closing sql dump file.', 'wpbtd'));
+
+        return true;
+    }
 }

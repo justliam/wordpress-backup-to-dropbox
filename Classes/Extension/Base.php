@@ -16,7 +16,8 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-abstract class WPB2D_Extension_Base {
+abstract class WPB2D_Extension_Base
+{
     const TYPE_DEFAULT = 1;
     const TYPE_OUTPUT = 2;
 
@@ -28,30 +29,33 @@ abstract class WPB2D_Extension_Base {
 
     private $chunked_upload_threashold;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->dropbox = WPB2D_Registry::dropbox();
         $this->config  = WPB2D_Registry::config();
     }
 
-    public function set_chunked_upload_threashold($threashold) {
+    public function set_chunked_upload_threashold($threashold)
+    {
         $this->chunked_upload_threashold = $threashold;
 
         return $this;
     }
 
-    public function get_chunked_upload_threashold() {
+    public function get_chunked_upload_threashold()
+    {
         if ($this->chunked_upload_threashold !== null)
             return $this->chunked_upload_threashold;
 
         return CHUNKED_UPLOAD_THREASHOLD;
     }
 
-    abstract function complete();
-    abstract function failure();
+    abstract public function complete();
+    abstract public function failure();
 
-    abstract function get_menu();
-    abstract function get_type();
+    abstract public function get_menu();
+    abstract public function get_type();
 
-    abstract function is_enabled();
-    abstract function set_enabled($bool);
+    abstract public function is_enabled();
+    abstract public function set_enabled($bool);
 }

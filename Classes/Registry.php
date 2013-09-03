@@ -18,78 +18,88 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_Registry {
+class WPB2D_Registry
+{
+    private static
+        $logger,
+        $config,
+        $dropbox,
+        $extension_manager,
+        $db
+        ;
 
-	private static
-		$logger,
-		$config,
-		$dropbox,
-		$extension_manager,
-		$db
-		;
+    public static function logger()
+    {
+        if (!self::$logger)
+            self::$logger = new WPB2D_Logger();
 
-	public static function logger() {
-		if (!self::$logger)
-			self::$logger = new WPB2D_Logger();
+        return self::$logger;
+    }
 
-		return self::$logger;
-	}
+    public static function config()
+    {
+        if (!self::$config)
+            self::$config = new WPB2D_Config();
 
-	public static function config() {
-		if (!self::$config)
-			self::$config = new WPB2D_Config();
+        return self::$config;
+    }
 
-		return self::$config;
-	}
+    public static function extension_manager()
+    {
+        if (!self::$extension_manager)
+            self::$extension_manager = new WPB2D_Extension_Manager();
 
-	public static function extension_manager() {
-		if (!self::$extension_manager)
-			self::$extension_manager = new WPB2D_Extension_Manager();
+        return self::$extension_manager;
+    }
 
-		return self::$extension_manager;
-	}
+    public static function dropbox()
+    {
+        if (!self::$dropbox) {
+            self::$dropbox = new WPB2D_DropboxFacade();
+            self::$dropbox->init();
+        }
 
-	public static function dropbox() {
-		if (!self::$dropbox) {
-			self::$dropbox = new WPB2D_DropboxFacade();
-			self::$dropbox->init();
-		}
+        return self::$dropbox;
+    }
 
-		return self::$dropbox;
-	}
+    public static function db()
+    {
+        if (!self::$db) {
+            global $wpdb;
 
-	public static function db() {
-		if (!self::$db) {
-			global $wpdb;
+            $wpdb->hide_errors();
 
-			$wpdb->hide_errors();
+            if (defined('WPB2D_TEST_MODE'))
+                $wpdb->show_errors();
 
-			if (defined('WPB2D_TEST_MODE'))
-				$wpdb->show_errors();
+            self::$db = $wpdb;
+        }
 
-			self::$db = $wpdb;
-		}
+        return self::$db;
+    }
 
-		return self::$db;
-	}
+    public static function get_secret($data)
+    {
+        return hash_hmac('sha1', $data, uniqid(mt_rand(), true)) . '-wpb2d-secret';
+    }
 
-	public static function get_secret($data) {
-		return hash_hmac('sha1', $data, uniqid(mt_rand(), true)) . '-wpb2d-secret';
-	}
+    public static function setLogger($logger)
+    {
+        self::$logger = $logger;
+    }
 
-	public static function setLogger($logger) {
-		self::$logger = $logger;
-	}
+    public static function setConfig($config)
+    {
+        self::$config = $config;
+    }
 
-	public static function setConfig($config) {
-		self::$config = $config;
-	}
+    public static function setDropbox($dropbox)
+    {
+        self::$dropbox = $dropbox;
+    }
 
-	public static function setDropbox($dropbox) {
-		self::$dropbox = $dropbox;
-	}
-
-	public static function setDatabase($db) {
-		self::$db = $db;
-	}
+    public static function setDatabase($db)
+    {
+        self::$db = $db;
+    }
 }

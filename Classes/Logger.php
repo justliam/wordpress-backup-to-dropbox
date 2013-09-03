@@ -16,58 +16,62 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_Logger {
+class WPB2D_Logger
+{
+    const LOGFILE = 'wpb2d-backup-log.txt';
 
-	const LOGFILE = 'wpb2d-backup-log.txt';
+    private $logFile = null;
 
-	private $logFile = null;
+    public function log($msg, $files = null)
+    {
+        $fh = fopen(self::get_log_file(), 'a');
+        $log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
-	public function log($msg, $files = null) {
-		$fh = fopen(self::get_log_file(), 'a');
-		$log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
+        if (!empty($files)) {
+            $log .= "Uploaded Files:" . json_encode($files) . "\n";
+        }
 
-		if (!empty($files)) {
-			$log .= "Uploaded Files:" . json_encode($files) . "\n";
-		}
+        if (@fwrite($fh, $log) === false || @fclose($fh) === false) {
+            throw new Exception('Error writing to log file.');
+        }
+    }
 
-		if (@fwrite($fh, $log) === false || @fclose($fh) === false) {
-			throw new Exception('Error writing to log file.');
-		}
-	}
+    public function get_log()
+    {
+        $file = self::get_log_file();
+        if (!file_exists($file)) {
+            return false;
+        }
 
-	public function get_log() {
-		$file = self::get_log_file();
-		if (!file_exists($file)) {
-			return false;
-		}
+        $contents = trim(file_get_contents($file));
+        if (strlen($contents) < 1) {
+            return false;
+        }
 
-		$contents = trim(file_get_contents($file));
-		if (strlen($contents) < 1) {
-			return false;
-		}
+        return explode("\n", $contents);
+    }
 
-		return explode("\n", $contents);
-	}
+    public function delete_log()
+    {
+        $this->logFile = null;
+        @unlink(self::get_log_file());
+    }
 
-	public function delete_log() {
-		$this->logFile = null;
-		@unlink(self::get_log_file());
-	}
+    public function get_log_file()
+    {
+        if (!$this->logFile) {
+            WPB2D_BackupController::create_dump_dir();
 
-	public function get_log_file() {
-		if (!$this->logFile) {
-			WPB2D_BackupController::create_dump_dir();
+            $path = WPB2D_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 
-			$path = WPB2D_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
+            $files = glob($path . '.*');
+            if (isset($files[0])) {
+                $this->logFile = $files[0];
+            } else {
+                $this->logFile = $path . '.' . WPB2D_Registry::get_secret($file);
+            }
+        }
 
-			$files = glob($path . '.*');
-			if (isset($files[0])) {
-				$this->logFile = $files[0];
-			} else {
-				$this->logFile = $path . '.' . WPB2D_Registry::get_secret($file);
-			}
-		}
-
-		return $this->logFile;
-	}
+        return $this->logFile;
+    }
 }

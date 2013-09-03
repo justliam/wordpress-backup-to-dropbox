@@ -16,30 +16,33 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_Database_Plugins extends WPB2D_Database_Base {
-	public function __construct() {
-		parent::__construct('plugins');
-	}
+class WPB2D_Database_Plugins extends WPB2D_Database_Base
+{
+    public function __construct()
+    {
+        parent::__construct('plugins');
+    }
 
-	public function execute() {
-		if ($this->exists())
-			return false;
+    public function execute()
+    {
+        if ($this->exists())
+            return false;
 
-		$this->write_db_dump_header();
+        $this->write_db_dump_header();
 
-		$tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
-		$core_tables = array_values($this->database->tables());
-		$tables_to_backup = array();
+        $tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
+        $core_tables = array_values($this->database->tables());
+        $tables_to_backup = array();
 
-		foreach ($tables as $t) {
-			$table = $t[0];
-			if (!in_array($table, $core_tables))
-				$tables_to_backup[] = $table;
-		}
+        foreach ($tables as $t) {
+            $table = $t[0];
+            if (!in_array($table, $core_tables))
+                $tables_to_backup[] = $table;
+        }
 
-		if (!empty($tables_to_backup))
-			$this->backup_database_tables($tables_to_backup);
+        if (!empty($tables_to_backup))
+            $this->backup_database_tables($tables_to_backup);
 
-		return $this->close_file();
-	}
+        return $this->close_file();
+    }
 }

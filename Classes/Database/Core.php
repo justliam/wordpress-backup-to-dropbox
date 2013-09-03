@@ -16,18 +16,21 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WPB2D_Database_Core extends WPB2D_Database_Base {
-	public function __construct() {
-		parent::__construct('core');
-	}
+class WPB2D_Database_Core extends WPB2D_Database_Base
+{
+    public function __construct()
+    {
+        parent::__construct('core');
+    }
 
-	public function execute() {
-		if ($this->exists())
-			return false;
+    public function execute()
+    {
+        if ($this->exists())
+            return false;
 
-		$this->write_db_dump_header();
-		$this->backup_database_tables(array_values($this->database->tables()));
+        $this->write_db_dump_header();
+        $this->backup_database_tables(array_values($this->database->tables()));
 
-		return $this->close_file();
-	}
+        return $this->close_file();
+    }
 }

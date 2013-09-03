@@ -18,174 +18,182 @@
  */
 require_once 'mock-wp-functions.php';
 
-class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase {
+class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase
+{
+    private function assertOutput($actual, $expected)
+    {
+        $actual = explode("\n", file_get_contents($actual));
+        $expected = explode("\n", $expected);
 
-	private function assertOutput($actual, $expected) {
-		$actual = explode("\n", file_get_contents($actual));
-		$expected = explode("\n", $expected);
+        for ($i = 0; $i < count($actual); $i++)
+            $this->assertEquals($expected[$i], $actual[$i]);
+    }
 
-		for ($i = 0; $i < count($actual); $i++)
-			$this->assertEquals($expected[$i], $actual[$i]);
-	}
+    public function tearDown()
+    {
+        Mockery::close();
 
-	public function tearDown() {
-		Mockery::close();
+        @rmdir(__DIR__ . '/BackupTest/');
+    }
 
-		@rmdir(__DIR__ . '/BackupTest/');
-	}
+    public function setUp()
+    {
+        reset_globals();
+        set_current_time('2012-03-12 00:00:00');
 
-	public function setUp() {
-		reset_globals();
-		set_current_time('2012-03-12 00:00:00');
+        @mkdir(__DIR__ . '/BackupTest/');
+    }
 
-		@mkdir(__DIR__ . '/BackupTest/');
-	}
+    private function getTableData()
+    {
+        $tableData = array();
+        for ($i = 0; $i < 10; $i++) {
+            $tableData[] = array(
+                'field1' => 'value1',
+                'field2' => 'value2',
+                'field3' => 'value3',
+                'field4' => 'value4',
+                'field5' => 'value5',
+            );
+        }
 
-	private function getTableData() {
-		$tableData = array();
-		for ($i = 0; $i < 10; $i++) {
-			$tableData[] = array(
-				'field1' => 'value1',
-				'field2' => 'value2',
-				'field3' => 'value3',
-				'field4' => 'value4',
-				'field5' => 'value5',
-			);
-		}
-		return $tableData;
-	}
+        return $tableData;
+    }
 
-	public function testExecuteCore() {
-		$db = Mockery::mock('wpdb')
+    public function testExecuteCore()
+    {
+        $db = Mockery::mock('wpdb')
 
-			->shouldReceive('query')
-			->once()
+            ->shouldReceive('query')
+            ->once()
 
-			->shouldReceive('tables')
-			->andReturn(
-				array(
-					1 => 'table1',
-					2 => 'table2'
-				)
-			)
-			->once()
+            ->shouldReceive('tables')
+            ->andReturn(
+                array(
+                    1 => 'table1',
+                    2 => 'table2'
+                )
+            )
+            ->once()
 
-			->shouldReceive('get_row')
-			->with('SHOW CREATE TABLE table1', ARRAY_N)
-			->andReturn(array(1, $this->getCreateTable('table1')))
-			->once()
+            ->shouldReceive('get_row')
+            ->with('SHOW CREATE TABLE table1', ARRAY_N)
+            ->andReturn(array(1, $this->getCreateTable('table1')))
+            ->once()
 
-			->shouldReceive('get_row')
-			->with('SHOW CREATE TABLE table2', ARRAY_N)
-			->andReturn(array(1, $this->getCreateTable('table2')))
-			->once()
+            ->shouldReceive('get_row')
+            ->with('SHOW CREATE TABLE table2', ARRAY_N)
+            ->andReturn(array(1, $this->getCreateTable('table2')))
+            ->once()
 
-			->shouldReceive('get_var')
-			->with('SELECT COUNT(*) FROM table1')
-			->andReturn(0)
-			->once()
+            ->shouldReceive('get_var')
+            ->with('SELECT COUNT(*) FROM table1')
+            ->andReturn(0)
+            ->once()
 
-			->shouldReceive('get_var')
-			->with('SELECT COUNT(*) FROM table2')
-			->andReturn(20)
-			->once()
+            ->shouldReceive('get_var')
+            ->with('SELECT COUNT(*) FROM table2')
+            ->andReturn(20)
+            ->once()
 
-			->shouldReceive('get_results')
-			->with('SELECT * FROM table2 LIMIT 10 OFFSET 0', ARRAY_A)
-			->andReturn($this->getTableData())
-			->once()
+            ->shouldReceive('get_results')
+            ->with('SELECT * FROM table2 LIMIT 10 OFFSET 0', ARRAY_A)
+            ->andReturn($this->getTableData())
+            ->once()
 
-			->shouldReceive('get_results')
-			->with('SELECT * FROM table2 LIMIT 10 OFFSET 10', ARRAY_A)
-			->andReturn($this->getTableData())
-			->once()
+            ->shouldReceive('get_results')
+            ->with('SELECT * FROM table2 LIMIT 10 OFFSET 10', ARRAY_A)
+            ->andReturn($this->getTableData())
+            ->once()
 
-			->mock();
+            ->mock();
 
-		WP_Backup_Registry::setDatabase($db);
+        WP_Backup_Registry::setDatabase($db);
 
-		$backup = new WP_Backup_Database_Core();
-		$this->assertTrue($backup->execute());
+        $backup = new WP_Backup_Database_Core();
+        $this->assertTrue($backup->execute());
 
-		$out = $backup->get_file();
+        $out = $backup->get_file();
 
-		$this->assertOutput($out, $this->getExpectedCoreDBDump());
+        $this->assertOutput($out, $this->getExpectedCoreDBDump());
 
-		unlink($out);
-	}
+        unlink($out);
+    }
 
-	public function testExecutePlugins() {
-		$db = Mockery::mock('wpdb')
+    public function testExecutePlugins()
+    {
+        $db = Mockery::mock('wpdb')
 
-			->shouldReceive('query')
-			->once()
+            ->shouldReceive('query')
+            ->once()
 
-			->shouldReceive('tables')
-			->andReturn(
-				array(
-					1 => 'table1',
-					2 => 'table2'
-				)
-			)
-			->once()
+            ->shouldReceive('tables')
+            ->andReturn(
+                array(
+                    1 => 'table1',
+                    2 => 'table2'
+                )
+            )
+            ->once()
 
-			->shouldReceive('get_results')
-			->with('SHOW TABLES', ARRAY_N)
-			->andReturn(
-				array(
-					array('table1'),
-					array('table2'),
-					array('table3'),
-					array('table4'),
-				)
-			)
-			->once()
+            ->shouldReceive('get_results')
+            ->with('SHOW TABLES', ARRAY_N)
+            ->andReturn(
+                array(
+                    array('table1'),
+                    array('table2'),
+                    array('table3'),
+                    array('table4'),
+                )
+            )
+            ->once()
 
-			->shouldReceive('get_row')
-			->with('SHOW CREATE TABLE table3', ARRAY_N)
-			->andReturn(array(1, $this->getCreateTable('table3')))
-			->once()
+            ->shouldReceive('get_row')
+            ->with('SHOW CREATE TABLE table3', ARRAY_N)
+            ->andReturn(array(1, $this->getCreateTable('table3')))
+            ->once()
 
-			->shouldReceive('get_var')
-			->with('SELECT COUNT(*) FROM table3')
-			->andReturn(5)
-			->once()
+            ->shouldReceive('get_var')
+            ->with('SELECT COUNT(*) FROM table3')
+            ->andReturn(5)
+            ->once()
 
-			->shouldReceive('get_results')
-			->with('SELECT * FROM table3 LIMIT 10 OFFSET 0', ARRAY_A)
-			->andReturn($this->getTableData())
-			->once()
+            ->shouldReceive('get_results')
+            ->with('SELECT * FROM table3 LIMIT 10 OFFSET 0', ARRAY_A)
+            ->andReturn($this->getTableData())
+            ->once()
 
-			->shouldReceive('get_row')
-			->with('SHOW CREATE TABLE table4', ARRAY_N)
-			->andReturn(array(1, $this->getCreateTable('table4')))
-			->once()
+            ->shouldReceive('get_row')
+            ->with('SHOW CREATE TABLE table4', ARRAY_N)
+            ->andReturn(array(1, $this->getCreateTable('table4')))
+            ->once()
 
-			->shouldReceive('get_var')
-			->with('SELECT COUNT(*) FROM table4')
-			->andReturn(5)
-			->once()
+            ->shouldReceive('get_var')
+            ->with('SELECT COUNT(*) FROM table4')
+            ->andReturn(5)
+            ->once()
 
-			->shouldReceive('get_results')
-			->with('SELECT * FROM table4 LIMIT 10 OFFSET 0', ARRAY_A)
-			->andReturn($this->getTableData())
-			->once()
+            ->shouldReceive('get_results')
+            ->with('SELECT * FROM table4 LIMIT 10 OFFSET 0', ARRAY_A)
+            ->andReturn($this->getTableData())
+            ->once()
 
-			->mock();
+            ->mock();
 
-		WP_Backup_Registry::setDatabase($db);
+        WP_Backup_Registry::setDatabase($db);
 
-		$backup = new WP_Backup_Database_Plugins();
-		$this->assertTrue($backup->execute());
+        $backup = new WP_Backup_Database_Plugins();
+        $this->assertTrue($backup->execute());
 
-		$out = $backup->get_file();
+        $out = $backup->get_file();
 
-		$this->assertOutput($out, $this->getExpectedPluginDBDump());
+        $this->assertOutput($out, $this->getExpectedPluginDBDump());
 
-		unlink($out);
-	}
+        unlink($out);
+    }
 
-	private function getCreateTable($table) {
+    private function getCreateTable($table)
+    {
 return "CREATE TABLE `$table` (\n" . <<<EOS
   `field1` varchar(255) default NULL,
   `field2` varchar(255) default NULL,
@@ -195,10 +203,10 @@ return "CREATE TABLE `$table` (\n" . <<<EOS
   PRIMARY KEY  (`field1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1
 EOS;
-	}
+    }
 
-	private function getExpectedCoreDBDump()
-	{
+    private function getExpectedCoreDBDump()
+    {
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
 -- Version 99
@@ -279,10 +287,10 @@ INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 
 
 EOS;
-	}
+    }
 
-		private function getExpectedPluginDBDump()
-	{
+        private function getExpectedPluginDBDump()
+    {
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
 -- Version 99
@@ -363,5 +371,5 @@ INSERT INTO `table4` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 
 
 EOS;
-	}
+    }
 }
