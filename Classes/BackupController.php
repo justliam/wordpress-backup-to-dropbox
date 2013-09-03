@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup {
+class WPB2D_BackupController {
 	private $dropbox;
 	private $config;
 	private $output;
@@ -28,12 +28,12 @@ class WP_Backup {
 	}
 
 	public function __construct($output = null) {
-		$this->config = WP_Backup_Registry::config();
-		$this->dropbox = WP_Backup_Registry::dropbox();
-		$this->output = $output ? $output : WP_Backup_Extension_Manager::construct()->get_output();
+		$this->config = WPB2D_Registry::config();
+		$this->dropbox = WPB2D_Registry::dropbox();
+		$this->output = $output ? $output : WPB2D_Extension_Manager::construct()->get_output();
 
-		$this->db_core = new WP_Backup_Database_Core();
-		$this->db_plugins = new WP_Backup_Database_Plugins();
+		$this->db_core = new WPB2D_Database_Core();
+		$this->db_plugins = new WPB2D_Database_Plugins();
 	}
 
 	public function backup_path($path, $dropbox_path = null, $always_include = array()) {
@@ -43,7 +43,7 @@ class WP_Backup {
 		if (!$dropbox_path)
 			$dropbox_path = get_sanitized_home_path();
 
-		$file_list = new File_List();
+		$file_list = new WPB2D_FileList();
 
 		$current_processed_files = $uploaded_files = array();
 
@@ -52,7 +52,7 @@ class WP_Backup {
 		if ($total_files < 1800) //I doub't very much a wp installation can get smaller then this
 			$total_files = 1800;
 
-		$processed_files = new WP_Backup_Processed_Files();
+		$processed_files = new WPB2D_ProcessedFiles();
 
 		$processed_file_count = $processed_files->get_file_count();
 
@@ -74,7 +74,7 @@ class WP_Backup {
 
 					$processed_files->add_files($current_processed_files);
 
-					WP_Backup_Registry::logger()->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
+					WPB2D_Registry::logger()->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
 
 					$next_check = time() + 5;
 					$uploaded_files = $current_processed_files = array();
@@ -96,7 +96,7 @@ class WP_Backup {
 
 					if ($this->output->out($dropbox_path, $file, $processed_file)) {
 						$uploaded_files[] = array(
-							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', Dropbox_Facade::remove_secret($file)),
+							'file' => str_replace($dropbox_path . DIRECTORY_SEPARATOR, '', WPB2D_DropboxFacade::remove_secret($file)),
 							'mtime' => filemtime($file),
 						);
 
@@ -114,8 +114,8 @@ class WP_Backup {
 	}
 
 	public function execute() {
-		$manager = WP_Backup_Extension_Manager::construct();
-		$logger = WP_Backup_Registry::logger();
+		$manager = WPB2D_Extension_Manager::construct();
+		$logger = WPB2D_Registry::logger();
 
 		$this->config->set_time_limit();
 		$this->config->set_memory_limit();
@@ -169,8 +169,8 @@ class WP_Backup {
 
 			//Process the log file using the default backup output
 			$root = false;
-			if (get_class($this->output) != 'WP_Backup_Output') {
-				$this->output = new WP_Backup_Output();
+			if (get_class($this->output) != 'WPB2D_Output') {
+				$this->output = new WPB2D_Output();
 				$root = true;
 			}
 
@@ -213,14 +213,14 @@ class WP_Backup {
 	}
 
 	private static function create_silence_file() {
-		$silence = WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
+		$silence = WPB2D_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
 		if (!file_exists($silence)) {
 			$fh = @fopen($silence, 'w');
 			if (!$fh) {
 				throw new Exception(
 					sprintf(
 						__("WordPress does not have write access to '%s'. Please grant it write privileges before using this plugin."),
-						WP_Backup_Registry::config()->get_backup_dir()
+						WPB2D_Registry::config()->get_backup_dir()
 					)
 				);
 			}
@@ -230,7 +230,7 @@ class WP_Backup {
 	}
 
 	public static function create_dump_dir() {
-		$dump_dir = WP_Backup_Registry::config()->get_backup_dir();
+		$dump_dir = WPB2D_Registry::config()->get_backup_dir();
 		$error_message  = sprintf(__("WordPress Backup to Dropbox requires write access to '%s', please ensure it exists and has write permissions.", 'wpbtd'), $dump_dir);
 
 		if (!file_exists($dump_dir)) {

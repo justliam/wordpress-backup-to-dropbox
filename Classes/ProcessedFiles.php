@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Processed_Files {
+class WPB2D_ProcessedFiles {
 
 	private
 		$db,
@@ -26,7 +26,7 @@ class WP_Backup_Processed_Files {
 		;
 
 	public function __construct() {
-		$this->db = WP_Backup_Registry::db();
+		$this->db = WPB2D_Registry::db();
 
 		$ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_files");
 		if (is_array($ret))
@@ -89,7 +89,7 @@ class WP_Backup_Processed_Files {
 			$file_details->uploadid = null;
 
 			$this->processed_files[] = $file_details;
-			$this->db->insert($this->db->prefix . 'wpb2d_processed_files', array(
+			$this->db->insert($this->db->prefix . 'WPB2D_ProcessedFiles', array(
 				'file' => $file
 			));
 		}

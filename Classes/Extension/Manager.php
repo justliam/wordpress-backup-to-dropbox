@@ -16,7 +16,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Extension_Manager {
+class WPB2D_Extension_Manager {
 
 	const API_VERSION = 0;
 	const API_KEY = '7121664d208a603de9d93e564adfcd0a';
@@ -140,11 +140,11 @@ class WP_Backup_Extension_Manager {
 
 	public function get_output() {
 		foreach ($this->objectCache as $obj) {
-			if ($obj && $obj->get_type() == WP_Backup_Extension::TYPE_OUTPUT && $obj->is_enabled()) {
+			if ($obj && $obj->get_type() == WPB2D_Extension::TYPE_OUTPUT && $obj->is_enabled()) {
 				return $obj;
 			}
 		}
-		return $this->get_instance('WP_Backup_Output');
+		return $this->get_instance('WPB2D_DefaultOutput');
 	}
 
 	public function add_menu_items() {

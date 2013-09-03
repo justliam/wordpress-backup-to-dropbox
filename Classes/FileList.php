@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class File_List {
+class WPB2D_FileList {
 
 	private static $ignored_patterns = array(
 		'.DS_Store', 'Thumbs.db', 'desktop.ini',
@@ -38,7 +38,7 @@ class File_List {
 	}
 
 	public function __construct() {
-		$this->db = WP_Backup_Registry::db();
+		$this->db = WPB2D_Registry::db();
 
 		$result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0");
 		foreach ($result as $value) {

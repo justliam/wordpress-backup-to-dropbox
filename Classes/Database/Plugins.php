@@ -1,7 +1,5 @@
 <?php
 /**
- * A class with functions the perform a backup of WordPress
- *
  * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
@@ -18,23 +16,30 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Upload_Tracker {
-
-	private $processed_files;
-
+class WPB2D_Database_Plugins extends WPB2D_Database_Base {
 	public function __construct() {
-		$this->processed_files = new WP_Backup_Processed_Files();
+		parent::__construct('plugins');
 	}
 
-	public function track_upload($file, $upload_id, $offset) {
-		WP_Backup_Registry::config()->die_if_stopped();
+	public function execute() {
+		if ($this->exists())
+			return false;
 
-		$this->processed_files->update_file($file, $upload_id, $offset);
+		$this->write_db_dump_header();
 
-		WP_Backup_Registry::logger()->log(sprintf(
-			__("Uploaded %sMB of %sMB", 'wpbtd'),
-			round($offset / 1048576, 1),
-			round(filesize($file) / 1048576, 1)
-		));
+		$tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
+		$core_tables = array_values($this->database->tables());
+		$tables_to_backup = array();
+
+		foreach ($tables as $t) {
+			$table = $t[0];
+			if (!in_array($table, $core_tables))
+				$tables_to_backup[] = $table;
+		}
+
+		if (!empty($tables_to_backup))
+			$this->backup_database_tables($tables_to_backup);
+
+		return $this->close_file();
 	}
 }

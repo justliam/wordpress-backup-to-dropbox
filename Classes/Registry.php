@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Registry {
+class WPB2D_Registry {
 
 	private static
 		$logger,
@@ -30,28 +30,28 @@ class WP_Backup_Registry {
 
 	public static function logger() {
 		if (!self::$logger)
-			self::$logger = new WP_Backup_Logger();
+			self::$logger = new WPB2D_Logger();
 
 		return self::$logger;
 	}
 
 	public static function config() {
 		if (!self::$config)
-			self::$config = new WP_Backup_Config();
+			self::$config = new WPB2D_Config();
 
 		return self::$config;
 	}
 
 	public static function extension_manager() {
 		if (!self::$extension_manager)
-			self::$extension_manager = new WP_Backup_Extension_Manager();
+			self::$extension_manager = new WPB2D_Extension_Manager();
 
 		return self::$extension_manager;
 	}
 
 	public static function dropbox() {
 		if (!self::$dropbox) {
-			self::$dropbox = new Dropbox_Facade();
+			self::$dropbox = new WPB2D_DropboxFacade();
 			self::$dropbox->init();
 		}
 

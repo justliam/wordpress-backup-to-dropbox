@@ -16,7 +16,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Logger {
+class WPB2D_Logger {
 
 	const LOGFILE = 'wpb2d-backup-log.txt';
 
@@ -56,15 +56,15 @@ class WP_Backup_Logger {
 
 	public function get_log_file() {
 		if (!$this->logFile) {
-			WP_Backup::create_dump_dir();
+			WPB2D_BackupController::create_dump_dir();
 
-			$path = WP_Backup_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
+			$path = WPB2D_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 
 			$files = glob($path . '.*');
 			if (isset($files[0])) {
 				$this->logFile = $files[0];
 			} else {
-				$this->logFile = $path . '.' . WP_Backup_Registry::get_secret($file);
+				$this->logFile = $path . '.' . WPB2D_Registry::get_secret($file);
 			}
 		}
 

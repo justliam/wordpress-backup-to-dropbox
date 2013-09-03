@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Output extends WP_Backup_Extension {
+class WPB2D_Exrension_DefaultOutput extends WPB2D_Extension_Base {
 
 	const MAX_ERRORS = 10;
 
@@ -53,7 +53,7 @@ class WP_Backup_Output extends WP_Backup_Extension {
 					if ($processed_file && $processed_file->offset > 0)
 						$msg = __("Resuming upload of large file '%s'", 'wpbtd');
 
-					WP_Backup_Registry::logger()->log(sprintf(
+					WPB2D_Registry::logger()->log(sprintf(
 						$msg,
 						basename($file),
 						round($file_size / 1048576, 1)
@@ -66,7 +66,7 @@ class WP_Backup_Output extends WP_Backup_Extension {
 			}
 
 		} catch (Exception $e) {
-			WP_Backup_Registry::logger()->log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
+			WPB2D_Registry::logger()->log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
 			$this->error_count++;
 		}
 	}

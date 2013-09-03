@@ -34,45 +34,40 @@ if (function_exists('spl_autoload_register')) {
 	require_once('Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
 	require_once('Dropbox/Dropbox/OAuth/Consumer/Curl.php');
 
-	require_once('Classes/class-file-list.php');
-	require_once('Classes/class-dropbox-facade.php');
-	require_once('Classes/class-wp-backup-config.php');
-	require_once('Classes/class-wp-backup.php');
-	require_once('Classes/class-wp-backup-database.php');
-	require_once('Classes/class-wp-backup-database-core.php');
-	require_once('Classes/class-wp-backup-database-plugins.php');
-	require_once('Classes/class-wp-backup-extension.php');
-	require_once('Classes/class-wp-backup-extension-manager.php');
-	require_once('Classes/class-wp-backup-logger.php');
-	require_once('Classes/class-wp-backup-processed-files.php');
-	require_once('Classes/class-wp-backup-output.php');
-	require_once('Classes/class-wp-backup-registry.php');
-	require_once('Classes/class-wp-backup-upload-tracker.php');
+    require_once('Classes/Database/Base.php');
+    require_once('Classes/Database/Core.php');
+    require_once('Classes/Database/Plugins.php');
+
+    require_once('Classes/Extension/Base.php');
+    require_once('Classes/Extension/Manager.php');
+    require_once('Classes/Extension/DefaultOutput.php');
+
+	require_once('Classes/FileList.php');
+	require_once('Classes/DropboxFacade.php');
+	require_once('Classes/Config.php');
+	require_once('Classes/BackupController.php');
+	require_once('Classes/Logger.php');
+	require_once('Classes/ProcessedFiles.php');
+	require_once('Classes/Registry.php');
+	require_once('Classes/UploadTracker.php');
 }
 
-function wpb2d_autoload($class_name) {
-	switch ($class_name) {
-		case 'API':
-			require_once('Dropbox/Dropbox/API.php');
-			break;
+function wpb2d_autoload($className) {
+    $fileName = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
-		case 'OAuth_Consumer_ConsumerAbstract':
-			require_once('Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
-			break;
+    if (preg_match('/^WPB2D/', $fileName)) {
+        $fileName = 'Classes' . str_replace('WPB2D', '', $fileName);
+    } elseif (preg_match('/^Dropbox/', $fileName)) {
+        $fileName = 'Dropbox' . DIRECTORY_SEPARATOR . $fileName;
+    } else {
+        return false;
+    }
 
-		case 'OAuth_Consumer_Curl':
-			require_once('Dropbox/Dropbox/OAuth/Consumer/Curl.php');
-			break;
+    $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . $fileName;
 
-		case 'File_List':
-			require_once('Classes/class-file-list.php');
-			break;
-
-		default:
-			$file = 'Classes/class-' . strtolower(str_replace('_', '-', $class_name)) . '.php';
-			if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . $file))
-				require_once($file);
-	}
+    if (file_exists($path)) {
+        require_once $path;
+    }
 }
 
 function wpb2d_style() {
@@ -98,7 +93,7 @@ function backup_to_dropbox_admin_menu() {
 		$text = __('Backup Log', 'wpbtd');
 		add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
-		WP_Backup_Registry::extension_manager()->add_menu_items();
+		WPB2D_Registry::extension_manager()->add_menu_items();
 
 		$text = __('Premium Extensions', 'wpbtd');
 		add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');
@@ -115,9 +110,9 @@ function backup_to_dropbox_admin_menu_contents() {
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
 	if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0)
-		include('Views/wp-backup-to-dropbox-options.php');
+		include('Views/wpb2d-options.php');
 	else
-		include('Views/wp-backup-to-dropbox-deprecated.php');
+		include('Views/wpb2d-deprecated.php');
 }
 
 /**
@@ -127,11 +122,11 @@ function backup_to_dropbox_admin_menu_contents() {
 function backup_to_dropbox_monitor() {
 	wpb2d_style();
 
-	if (!WP_Backup_Registry::dropbox()->is_authorized()) {
+	if (!WPB2D_Registry::dropbox()->is_authorized()) {
 		backup_to_dropbox_admin_menu_contents();
 	} else {
 		$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
-		include('Views/wp-backup-to-dropbox-monitor.php');
+		include('Views/wpb2d-monitor.php');
 	}
 }
 
@@ -145,7 +140,7 @@ function backup_to_dropbox_premium() {
 	wp_enqueue_script('jquery-ui-tabs');
 
 	$uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
-	include('Views/wp-backup-to-dropbox-premium.php');
+	include('Views/wpb2d-premium.php');
 }
 
 /**
@@ -153,7 +148,7 @@ function backup_to_dropbox_premium() {
  * @return void
  */
 function backup_to_dropbox_file_tree() {
-	include('Views/wp-backup-to-dropbox-file-tree.php');
+	include('Views/wpb2d-file-tree.php');
 	die();
 }
 
@@ -162,7 +157,7 @@ function backup_to_dropbox_file_tree() {
  * @return void
  */
 function backup_to_dropbox_progress() {
-	include('Views/wp-backup-to-dropbox-progress.php');
+	include('Views/wpb2d-progress.php');
 	die();
 }
 
@@ -171,21 +166,21 @@ function backup_to_dropbox_progress() {
  * @return void
  */
 function execute_drobox_backup() {
-	WP_Backup_Registry::logger()->delete_log();
-	WP_Backup_Registry::logger()->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
+	WPB2D_Registry::logger()->delete_log();
+	WPB2D_Registry::logger()->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
 
 	$time = ini_get('max_execution_time');
-	WP_Backup_Registry::logger()->log(sprintf(
+	WPB2D_Registry::logger()->log(sprintf(
 		__('Your time limit is %s and your memory limit is %s'),
 		$time ? $time . ' ' . __('seconds', 'wpbtd') : __('unlimited', 'wpbtd'),
 		ini_get('memory_limit')
 	));
 
 	if (ini_get('safe_mode')) {
-		WP_Backup_Registry::logger()->log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
+		WPB2D_Registry::logger()->log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
 	}
 
-	WP_Backup_Registry::config()->set_option('in_progress', true);
+	WPB2D_Registry::config()->set_option('in_progress', true);
 
 	if (defined('WPB2D_TEST_MODE')) {
 		run_dropbox_backup();
@@ -199,12 +194,12 @@ function execute_drobox_backup() {
  * @return void
  */
 function monitor_dropbox_backup() {
-	$config = WP_Backup_Registry::config();
-	$mtime = filemtime(WP_Backup_Registry::logger()->get_log_file());
+	$config = WPB2D_Registry::config();
+	$mtime = filemtime(WPB2D_Registry::logger()->get_log_file());
 
 	//5 mins to allow for socket timeouts and long uploads
 	if ($config->get_option('in_progress') && ($mtime < time() - 300)) {
-		WP_Backup_Registry::logger()->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
+		WPB2D_Registry::logger()->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
 		$config->set_option('is_running', false);
 
 		wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
@@ -215,10 +210,10 @@ function monitor_dropbox_backup() {
  * @return void
  */
 function run_dropbox_backup() {
-	$options = WP_Backup_Registry::config();
+	$options = WPB2D_Registry::config();
 	if (!$options->get_option('is_running')) {
 		$options->set_option('is_running', true);
-		WP_Backup::construct()->execute();
+		WPB2D_BackupController::construct()->execute();
 	}
 }
 
@@ -262,7 +257,7 @@ function backup_to_dropbox_cron_schedules($schedules) {
 }
 
 function wpb2d_install() {
-	$wpdb = WP_Backup_Registry::db();
+	$wpdb = WPB2D_Registry::db();
 
 	require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -304,13 +299,13 @@ function wpb2d_install() {
 
 	//Only set the DB version if there are no errors
 	if (empty($errors)) {
-		WP_Backup_Registry::config()->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
+		WPB2D_Registry::config()->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
 	}
 }
 
 function wpb2d_init() {
 	try {
-		if (WP_Backup_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+		if (WPB2D_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
 			wpb2d_install();
 		}
 

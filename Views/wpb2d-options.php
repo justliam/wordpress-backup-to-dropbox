@@ -26,10 +26,10 @@ try {
 
 	$validation_errors = null;
 
-	$dropbox = WP_Backup_Registry::dropbox();
-	$config = WP_Backup_Registry::config();
+	$dropbox = WPB2D_Registry::dropbox();
+	$config = WPB2D_Registry::config();
 
-	$backup = new WP_Backup();
+	$backup = new WPB2D_BackupController();
 
 	$backup->create_dump_dir();
 

@@ -1,5 +1,7 @@
 <?php
 /**
+ * A class with functions the perform a backup of WordPress
+ *
  * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
@@ -16,18 +18,23 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Database_Core extends WP_Backup_Database {
+class WPB2D_UploadTracker {
+
+	private $processed_files;
+
 	public function __construct() {
-		parent::__construct('core');
+		$this->processed_files = new WPB2D_ProcessedFiles();
 	}
 
-	public function execute() {
-		if ($this->exists())
-			return false;
+	public function track_upload($file, $upload_id, $offset) {
+		WPB2D_Registry::config()->die_if_stopped();
 
-		$this->write_db_dump_header();
-		$this->backup_database_tables(array_values($this->database->tables()));
+		$this->processed_files->update_file($file, $upload_id, $offset);
 
-		return $this->close_file();
+		WPB2D_Registry::logger()->log(sprintf(
+			__("Uploaded %sMB of %sMB", 'wpbtd'),
+			round($offset / 1048576, 1),
+			round(filesize($file) / 1048576, 1)
+		));
 	}
 }

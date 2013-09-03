@@ -16,30 +16,42 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Database_Plugins extends WP_Backup_Database {
-	public function __construct() {
-		parent::__construct('plugins');
-	}
+abstract class WPB2D_Extension_Base {
+    const TYPE_DEFAULT = 1;
+    const TYPE_OUTPUT = 2;
 
-	public function execute() {
-		if ($this->exists())
-			return false;
+    protected
+        $dropbox,
+        $dropbox_path,
+        $config
+        ;
 
-		$this->write_db_dump_header();
+    private $chunked_upload_threashold;
 
-		$tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
-		$core_tables = array_values($this->database->tables());
-		$tables_to_backup = array();
+    public function __construct() {
+        $this->dropbox = WPB2D_Registry::dropbox();
+        $this->config  = WPB2D_Registry::config();
+    }
 
-		foreach ($tables as $t) {
-			$table = $t[0];
-			if (!in_array($table, $core_tables))
-				$tables_to_backup[] = $table;
-		}
+    public function set_chunked_upload_threashold($threashold) {
+        $this->chunked_upload_threashold = $threashold;
 
-		if (!empty($tables_to_backup))
-			$this->backup_database_tables($tables_to_backup);
+        return $this;
+    }
 
-		return $this->close_file();
-	}
+    public function get_chunked_upload_threashold() {
+        if ($this->chunked_upload_threashold !== null)
+            return $this->chunked_upload_threashold;
+
+        return CHUNKED_UPLOAD_THREASHOLD;
+    }
+
+    abstract function complete();
+    abstract function failure();
+
+    abstract function get_menu();
+    abstract function get_type();
+
+    abstract function is_enabled();
+    abstract function set_enabled($bool);
 }

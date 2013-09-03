@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-abstract class WP_Backup_Database {
+abstract class WPB2D_Database_Base {
 	const SELECT_QUERY_LIMIT = 10;
 	const WAIT_TIMEOUT = 600; //10 minutes
 
@@ -32,8 +32,8 @@ abstract class WP_Backup_Database {
 
 	public function __construct($type) {
 		$this->type = $type;
-		$this->database = WP_Backup_Registry::db();
-		$this->config = WP_Backup_Registry::config();
+		$this->database = WPB2D_Registry::db();
+		$this->config = WPB2D_Registry::config();
 
 		$this->set_wait_timeout();
 	}
@@ -65,7 +65,7 @@ abstract class WP_Backup_Database {
 		}
 
 		if ($secret) {
-			$file .= '.' . WP_Backup_Registry::get_secret(DB_NAME);
+			$file .= '.' . WPB2D_Registry::get_secret(DB_NAME);
 		}
 
 		return $file;
@@ -86,7 +86,7 @@ abstract class WP_Backup_Database {
 
 		if (!is_writable($dump_location)) {
 			$msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
-			WP_Backup_Registry::logger()->log($msg);
+			WPB2D_Registry::logger()->log($msg);
 			return false;
 		}
 

@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$manager = WP_Backup_Registry::extension_manager();
+$manager = WPB2D_Registry::extension_manager();
 
 $error = $title = null;
 if (isset($_REQUEST['error']))
@@ -73,7 +73,7 @@ function wpb2d_products($manager, $type)
 				<?php else: ?>
 					<div class="product-box__button">
 						<form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
-							<input type="hidden" value="<?php echo WP_Backup_Extension_Manager::API_KEY ?>" name="apikey" />
+							<input type="hidden" value="<?php echo WPB2D_Extension_Manager::API_KEY ?>" name="apikey" />
 							<input type="hidden" value="<?php echo esc_attr($extension['name']) ?>" name="name" />
 							<input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
 							<input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now') ?>" class="submitBtn" />

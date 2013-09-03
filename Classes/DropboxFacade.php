@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class Dropbox_Facade {
+class WPB2D_DropboxFacade {
 
 	const CONSUMER_KEY = 'u1i8xniul59ggxs';
 	const CONSUMER_SECRET = '0ssom5yd1ybebhy';
@@ -38,7 +38,7 @@ class Dropbox_Facade {
 		;
 
 	public function init() {
-		$this->config = WP_Backup_Registry::config();
+		$this->config = WPB2D_Registry::config();
 
 		if (!extension_loaded('curl')) {
 			throw new Exception(sprintf(
@@ -48,7 +48,7 @@ class Dropbox_Facade {
 			));
 		}
 
-		$this->oauth = new OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
+		$this->oauth = new Dropbox_OAuth_Consumer_Curl(self::CONSUMER_KEY, self::CONSUMER_SECRET);
 
 		$this->oauth_state = $this->config->get_option('oauth_state');
 		$this->request_token = $this->get_token('request');
@@ -74,8 +74,8 @@ class Dropbox_Facade {
 			$this->save_tokens();
 		}
 
-		$this->dropbox = new API($this->oauth);
-		$this->dropbox->setTracker(new WP_Backup_Upload_Tracker());
+		$this->dropbox = new Dropbox_API($this->oauth);
+		$this->dropbox->setTracker(new WPB2D_UploadTracker());
 	}
 
 	private function get_token($type) {

@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-class WP_Backup_Config {
+class WPB2D_Config {
 	const MAX_HISTORY_ITEMS = 20;
 
 	private
@@ -27,7 +27,7 @@ class WP_Backup_Config {
 		;
 
 	public function __construct() {
-		$this->db = WP_Backup_Registry::db();
+		$this->db = WPB2D_Registry::db();
 	}
 
 	public static function get_backup_dir() {
@@ -186,7 +186,7 @@ class WP_Backup_Config {
 		$in_progress = $this->db->get_var("SELECT value FROM {$this->db->prefix}wpb2d_options WHERE name = 'in_progress'");
 		if (!$in_progress) {
 			$msg = __('Backup stopped by user.', 'wpbtd');
-			WP_Backup_Registry::logger()->log($msg);
+			WPB2D_Registry::logger()->log($msg);
 			die($msg);
 		}
 	}
