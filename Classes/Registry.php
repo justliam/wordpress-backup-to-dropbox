@@ -30,24 +30,27 @@ class WPB2D_Registry
 
     public static function logger()
     {
-        if (!self::$logger)
+        if (!self::$logger) {
             self::$logger = new WPB2D_Logger();
+        }
 
         return self::$logger;
     }
 
     public static function config()
     {
-        if (!self::$config)
+        if (!self::$config) {
             self::$config = new WPB2D_Config();
+        }
 
         return self::$config;
     }
 
     public static function extension_manager()
     {
-        if (!self::$extension_manager)
+        if (!self::$extension_manager) {
             self::$extension_manager = new WPB2D_Extension_Manager();
+        }
 
         return self::$extension_manager;
     }
@@ -67,10 +70,13 @@ class WPB2D_Registry
         if (!self::$db) {
             global $wpdb;
 
-            $wpdb->hide_errors();
+            if ($wpdb) {
+                $wpdb->hide_errors();
+            }
 
-            if (defined('WPB2D_TEST_MODE'))
+            if (defined('WPB2D_TEST_MODE')) {
                 $wpdb->show_errors();
+            }
 
             self::$db = $wpdb;
         }

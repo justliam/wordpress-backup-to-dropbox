@@ -16,31 +16,38 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-require_once 'mock-wp-functions.php';
+require_once 'MockWordPressFunctions.php';
 
-class WP_Backup_Logger_Test extends PHPUnit_Framework_TestCase
+class WPB2D_Logger_Test extends PHPUnit_Framework_TestCase
 {
     public function tearDown()
     {
-        @unlink(WP_Backup_Logger::get_log_file());
+        $logger = new WPB2D_Logger();
 
-        $dir = WP_Backup_Registry::config()->get_backup_dir();
+        if (file_exists($logger->get_log_file())) {
+            unlink($logger->get_log_file());
+        }
 
-        unlink($dir . 'index.php');
-        rmdir(WP_Backup_Registry::config()->get_backup_dir());
+        $dir = WPB2D_Registry::config()->get_backup_dir();
+
+        unlink($dir . '/index.php');
+        rmdir($dir);
     }
 
     public function testLog()
     {
         $time = strtotime(current_time('mysql'));
 
-        WP_Backup_Logger::log('Test');
+        $logger = new WPB2D_Logger();
+        $logger->log('Test');
 
-        $this->assertEquals(sprintf("%s: Test\n", date('H:i:s', $time)), file_get_contents(WP_Backup_Logger::get_log_file()));
+        $this->assertEquals(sprintf("%s: Test\n", date('H:i:s', $time)), file_get_contents($logger->get_log_file()));
     }
 
     public function testLogWithFile()
     {
+        $logger = new WPB2D_Logger();
+
         $time = strtotime(current_time('mysql'));
 
         $files = array(array(
@@ -48,7 +55,7 @@ class WP_Backup_Logger_Test extends PHPUnit_Framework_TestCase
             'mtime' => 999944449999,
         ));
 
-        WP_Backup_Logger::log('Test', $files);
+        $logger->log('Test', $files);
 
         $expected = <<<EOS
 %s: Test
@@ -56,28 +63,31 @@ Uploaded Files:[{"file":"file1.txt","mtime":999944449999}]
 
 EOS;
 
-        $this->assertEquals(sprintf($expected, date('H:i:s', $time)), file_get_contents(WP_Backup_Logger::get_log_file()));
+        $this->assertEquals(sprintf($expected, date('H:i:s', $time)), file_get_contents($logger->get_log_file()));
     }
 
     public function testGetLog()
     {
+        $logger = new WPB2D_Logger();
+
         $time = strtotime(current_time('mysql'));
 
-        WP_Backup_Logger::log('One');
-        WP_Backup_Logger::log('Two');
+        $logger->log('One');
+        $logger->log('Two');
 
         $this->assertEquals(array(
                 sprintf('%s: One', date('H:i:s', $time)),
                 sprintf('%s: Two', date('H:i:s', $time)),
             ),
-            WP_Backup_Logger::get_log()
+            $logger->get_log()
         );
     }
 
     public function testDeleteLog()
     {
-        WP_Backup_Logger::log('Test');
-        WP_Backup_Logger::delete_log();
-        $this->assertFalse(file_exists(WP_Backup_Logger::get_log_file()));
+        $logger = new WPB2D_Logger();
+        $logger->log('Test');
+        $logger->delete_log();
+        $this->assertFalse(file_exists($logger->get_log_file()));
     }
 }

@@ -24,7 +24,7 @@ class WPB2D_Logger
 
     public function log($msg, $files = null)
     {
-        $fh = fopen(self::get_log_file(), 'a');
+        $fh = fopen($this->get_log_file(), 'a');
         $log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
         if (!empty($files)) {
@@ -38,7 +38,7 @@ class WPB2D_Logger
 
     public function get_log()
     {
-        $file = self::get_log_file();
+        $file = $this->get_log_file();
         if (!file_exists($file)) {
             return false;
         }
@@ -54,7 +54,7 @@ class WPB2D_Logger
     public function delete_log()
     {
         $this->logFile = null;
-        @unlink(self::get_log_file());
+        @unlink($this->get_log_file());
     }
 
     public function get_log_file()
@@ -68,7 +68,7 @@ class WPB2D_Logger
             if (isset($files[0])) {
                 $this->logFile = $files[0];
             } else {
-                $this->logFile = $path . '.' . WPB2D_Registry::get_secret($file);
+                $this->logFile = $path . '.' . WPB2D_Registry::get_secret(self::LOGFILE);
             }
         }
 
