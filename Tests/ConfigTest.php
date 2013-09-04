@@ -16,9 +16,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
+require_once 'MockWordPressFunctions.php';
 
-
-class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
+class WPB2D_ConfigTest extends PHPUnit_Framework_TestCase
 {
     private $config;
 
@@ -34,14 +34,17 @@ class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
 
     public function testConstruct()
     {
-        $db = Mockery::mock()
-            ->shouldReceive('get_var')
-            ->with("SELECT value FROM wp_wpb2d_options WHERE name = 'last_backup_time'")
+        $db = Mockery::mock('DB')
+            ->shouldReceive('prepare')
+            ->with('SELECT value FROM wp_wpb2d_options WHERE name = %s', 'last_backup_time')
+            ->once()
+
+            ->shouldReceive('prepare')
+            ->with('SELECT value FROM wp_wpb2d_options WHERE name = %s', 'in_progress')
             ->once()
 
             ->shouldReceive('get_var')
-            ->with("SELECT value FROM wp_wpb2d_options WHERE name = 'in_progress'")
-            ->once()
+            ->andReturn(false)
 
             ->mock()
             ;
@@ -58,14 +61,14 @@ class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
     public function testAddBackupHistory()
     {
         $db = Mockery::mock()
+            ->shouldReceive('prepare')
             ->shouldReceive('get_var')
-            ->with("SELECT value FROM wp_wpb2d_options WHERE name = 'history'")
-            ->once()
+            ->andReturn(null)
 
             ->shouldReceive('insert')
             ->with('wp_wpb2d_options', Mockery::type('array'))
             ->andReturn(true)
-            ->times(30)
+            ->times(20)
 
             ->mock()
             ;
@@ -160,10 +163,10 @@ class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
 
     public function testGetDropboxLocation()
     {
-        $db = Mockery::mock()
+        $db = Mockery::mock('DB')
+            ->shouldReceive('prepare')
             ->shouldReceive('get_var')
-            ->with("SELECT value FROM wp_wpb2d_options WHERE name = 'store_in_subfolder'")
-            ->once()
+            ->andReturn(null)
 
             ->shouldReceive('insert')
             ->with('wp_wpb2d_options', array(
@@ -171,14 +174,6 @@ class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
                 'value' => 'MyDropboxRoot'
             ))
             ->andReturn(false)
-            ->once()
-
-            ->shouldReceive('update')
-            ->with(
-                'wp_wpb2d_options',
-                array('value' => 'MyDropboxRoot'),
-                array('name' => 'dropbox_location')
-            )
             ->once()
 
             ->shouldReceive('insert')
@@ -219,8 +214,17 @@ class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
     public function testComplete()
     {
         $db = Mockery::mock()
+            ->shouldReceive('get_results')
+            ->shouldReceive('prepare')
+            ->shouldReceive('get_var')
+            ->andReturn(null)
+
             ->shouldReceive('query')
             ->with("TRUNCATE wp_wpb2d_processed_files")
+            ->once()
+
+            ->shouldReceive('query')
+            ->with("TRUNCATE wp_wpb2d_processed_dbtables")
             ->once()
 
             ->shouldReceive('insert')
@@ -236,6 +240,11 @@ class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
                 'name' => 'is_running',
                 'value' => false
             ))
+            ->andReturn(true)
+            ->once()
+
+            ->shouldReceive('insert')
+            ->with('wp_wpb2d_options', Mockery::type('array'))
             ->andReturn(true)
             ->once()
 

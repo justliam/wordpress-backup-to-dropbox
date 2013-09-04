@@ -39,8 +39,10 @@ class WPB2D_Config
 
     public function set_option($name, $value)
     {
-        if ($this->get_option($name) === $value)
+        //Short circut if not changed
+        if ($this->get_option($name) === $value) {
             return $this;
+        }
 
         $exists = $this->db->get_var(
             $this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_options WHERE name = %s", $name)
@@ -150,8 +152,9 @@ class WPB2D_Config
     public function get_history()
     {
         $history = $this->get_option('history');
-        if (!$history)
+        if (!$history){
             return array();
+        }
 
         return explode(',', $history);
     }
@@ -159,11 +162,13 @@ class WPB2D_Config
     public function get_dropbox_path($source, $file, $root = false)
     {
         $dropbox_location = null;
-        if ($this->get_option('store_in_subfolder'))
+        if ($this->get_option('store_in_subfolder')){
             $dropbox_location = $this->get_option('dropbox_location');
+        }
 
-        if ($root)
+        if ($root){
             return $dropbox_location;
+        }
 
         $source = rtrim($source, DIRECTORY_SEPARATOR);
 
@@ -175,8 +180,9 @@ class WPB2D_Config
         $history = $this->get_history();
         $history[] = time();
 
-        if (count($history) > self::MAX_HISTORY_ITEMS)
+        if (count($history) > self::MAX_HISTORY_ITEMS) {
             array_shift($history);
+        }
 
         $this->set_option('history', implode(',', $history));
 
