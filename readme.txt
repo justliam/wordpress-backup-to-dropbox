@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.6
+Tested up to: 3.7
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -136,6 +136,11 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.6.2 =
+* Code is now conforms to most of the PSR standards that are much better then the WP ones
+* Database dumps are now tracked so they can be resumed
+* Improved error handling around extension installs
 
 = 1.6.1 =
 * Added [Extendy](http://extendy.com) and improved extension installation user interface that fixes a few bugs and adds the ability to renew and buy bundles.
