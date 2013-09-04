@@ -345,7 +345,7 @@ function get_sanitized_home_path()
         $home_path = ABSPATH;
     }
 
-    return rtrim(str_replace('/', DIRECTORY_SEPARATOR, get_home_path()), DIRECTORY_SEPARATOR);
+    return rtrim(str_replace('/', DIRECTORY_SEPARATOR, $home_path), DIRECTORY_SEPARATOR);
 }
 
 //More cron shedules
