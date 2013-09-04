@@ -154,7 +154,7 @@ class WPB2D_Extension_Manager
             }
         }
 
-        return $this->get_instance('WPB2D_DefaultOutput');
+        return $this->get_instance('WPB2D_Extension_DefaultOutput');
     }
 
     public function add_menu_items()
