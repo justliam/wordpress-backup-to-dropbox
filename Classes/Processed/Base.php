@@ -20,9 +20,9 @@
  */
 abstract class WPB2D_Processed_Base
 {
-    private
+    protected
         $db,
-        $processed
+        $processed = array()
         ;
 
     public function __construct()
