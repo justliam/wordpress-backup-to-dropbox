@@ -16,26 +16,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$prefix = isset($prefix) ? $prefix : __DIR__ . '/';
-require $prefix . '../vendor/autoload.php';
-
-require_once($prefix . '../Dropbox/Dropbox/API.php');
-require_once($prefix . '../Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php');
-require_once($prefix . '../Dropbox/Dropbox/OAuth/Consumer/Curl.php');
-
-require_once($prefix . '../Classes/class-file-list.php');
-require_once($prefix . '../Classes/class-dropbox-facade.php');
-require_once($prefix . '../Classes/class-wp-backup-config.php');
-require_once($prefix . '../Classes/class-wp-backup.php');
-require_once($prefix . '../Classes/class-wp-backup-database.php');
-require_once($prefix . '../Classes/class-wp-backup-database-core.php');
-require_once($prefix . '../Classes/class-wp-backup-database-plugins.php');
-require_once($prefix . '../Classes/class-wp-backup-extension.php');
-require_once($prefix . '../Classes/class-wp-backup-extension-manager.php');
-require_once($prefix . '../Classes/class-wp-backup-logger.php');
-require_once($prefix . '../Classes/class-wp-backup-processed-files.php');
-require_once($prefix . '../Classes/class-wp-backup-output.php');
-require_once($prefix . '../Classes/class-wp-backup-registry.php');
+require '../vendor/autoload.php';
 
 $loader = new \Mockery\Loader;
 $loader->register();
@@ -51,6 +32,7 @@ define('BACKUP_TO_DROPBOX_MEMORY_LIMIT', 150);
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
 
 date_default_timezone_set('Australia/NSW');
+spl_autoload_register('wpb2d_autoload');
 
 global $options;
 global $schedule;
@@ -60,6 +42,25 @@ global $remote_url;
 $options = array();
 $next_schedule = array();
 $schedule = array();
+
+function wpb2d_autoload($className)
+{
+    $fileName = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+    if (preg_match('/^WPB2D/', $fileName)) {
+        $fileName = 'Classes' . str_replace('WPB2D', '', $fileName);
+    } elseif (preg_match('/^Dropbox/', $fileName)) {
+        $fileName = 'Dropbox' . DIRECTORY_SEPARATOR . $fileName;
+    } else {
+        return false;
+    }
+
+    $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $fileName;
+
+    if (file_exists($path)) {
+        require_once $path;
+    }
+}
 
 function reset_globals()
 {

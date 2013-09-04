@@ -189,7 +189,11 @@ class WPB2D_Config
         wp_clear_scheduled_hook('run_dropbox_backup_hook');
         wp_clear_scheduled_hook('execute_instant_drobox_backup');
 
-        $this->db->query("TRUNCATE {$this->db->prefix}wpb2d_processed_files");
+        $processed = new WPB2D_Processed_Files();
+        $processed->truncate();
+
+        $processed = new WPB2D_Processed_DBTables();
+        $processed->truncate();
 
         $this->set_option('in_progress', false);
         $this->set_option('is_running', false);

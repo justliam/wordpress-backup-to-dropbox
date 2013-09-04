@@ -16,9 +16,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-require_once 'mock-wp-functions.php';
 
-class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase
+
+class WPB2D_Config_Test extends PHPUnit_Framework_TestCase
 {
     private $config;
 
@@ -48,9 +48,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $config = new WP_Backup_Config();
+        $config = new WPB2D_Config();
         $this->assertEquals(false, $config->get_option('last_backup_time'));
         $this->assertEquals(false, $config->get_option('in_progress'));
     }
@@ -72,9 +72,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $config = new WP_Backup_Config();
+        $config = new WPB2D_Config();
 
         for ($i = 0; $i < 30; $i++) {
             set_current_time('2012-03-12 00:00:' . $i);
@@ -90,9 +90,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase
         $db = Mockery::mock();
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        return new WP_Backup_Config();
+        return new WPB2D_Config();
     }
 
     public function testSetGetScheduleWhereTimeOfDayHasPast()
@@ -194,9 +194,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $config = new WP_Backup_Config();
+        $config = new WPB2D_Config();
 
         $dropbox_path = $config->get_dropbox_path(__DIR__, __DIR__ . '/Out/file.txt');
         $this->assertEquals('Out', $dropbox_path);
@@ -244,9 +244,9 @@ class WP_Backup_Config_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $config = new WP_Backup_Config();
+        $config = new WPB2D_Config();
 
         $config->set_schedule('Monday', '00:00:00', 'daily');
 

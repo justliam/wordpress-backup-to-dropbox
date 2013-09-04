@@ -120,6 +120,8 @@ abstract class WPB2D_Database_Base
 
     protected function backup_database_tables($tables)
     {
+        $processed = new WPB2D_Processed_DBTables();
+
         $db_error = __('Error while accessing database.', 'wpbtd');
         foreach ($tables as $table) {
             $this->write_to_file("--\n-- Table structure for table `$table`\n--\n\n");
@@ -130,6 +132,7 @@ abstract class WPB2D_Database_Base
             }
             $this->write_to_file($table_create[1] . ";\n\n");
 
+            $row_count = 0;
             $table_count = $this->database->get_var("SELECT COUNT(*) FROM $table");
             if ($table_count == 0) {
                 $this->write_to_file("--\n-- Table `$table` is empty\n--\n\n");
@@ -155,8 +158,11 @@ abstract class WPB2D_Database_Base
                             $data_out .= "'$value', ";
                         }
                         $out .= rtrim($data_out, ' ,') . "),\n";
+                        $row_count++;
                     }
                     $this->write_to_file(rtrim($out, ",\n") . ";\n\n");
+
+                    $processed->update_table($table, $row_count);
                 }
             }
         }

@@ -18,9 +18,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-require_once 'mock-wp-functions.php';
 
-class WP_Backup_Test extends PHPUnit_Framework_TestCase
+
+class WPB2D_Test extends PHPUnit_Framework_TestCase
 {
     private $backup;
     private $dropbox;
@@ -34,7 +34,7 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        WP_Backup_Registry::setDropbox(Mockery::mock('Dropbox'));
+        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox'));
 
         $db = Mockery::mock('DB')
             ->shouldReceive('get_results')
@@ -45,12 +45,12 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
     }
 
     public function testBackupPath()
     {
-        WP_Backup_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Registry::setConfig(Mockery::mock('Config')
             ->shouldReceive('get_backup_dir')
             ->andReturn(__DIR__ . '/BackupTest/')
             ->mock()
@@ -121,9 +121,9 @@ class WP_Backup_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        WP_Backup_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Registry::setConfig(Mockery::mock('Config')
             ->shouldReceive('get_backup_dir')
             ->andReturn(__DIR__ . '/BackupTest/')
             ->mock()

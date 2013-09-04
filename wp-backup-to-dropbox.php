@@ -290,6 +290,13 @@ function wpb2d_install()
         UNIQUE KEY file (file)
     );");
 
+    $table_name = $wpdb->prefix . 'wpb2d_processed_dbtables';
+    dbDelta("CREATE TABLE $table_name (
+        dbtable varchar(255) NOT NULL,
+        dbrow int NOT NULL DEFAULT 0,
+        UNIQUE KEY dbtable (dbtable)
+    );");
+
     $table_name = $wpdb->prefix . 'wpb2d_excluded_files';
     dbDelta("CREATE TABLE $table_name (
         file varchar(255) NOT NULL,

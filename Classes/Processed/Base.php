@@ -28,15 +28,23 @@ abstract class WPB2D_Processed_Base
     public function __construct()
     {
         $this->db = WPB2D_Registry::db();
-        $this->init();
-    }
 
-    private function init()
-    {
         $ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getType()}");
         if (is_array($ret)) {
             $this->processed = $ret;
         }
+    }
+
+    protected function getType()
+    {
+        $bits = explode('_', get_class($this));
+
+        return strtolower(array_pop($bits));
+    }
+
+    protected function getId()
+    {
+        return rtrim($this->getType(), 's');
     }
 
     protected function getVar($val)
@@ -58,15 +66,26 @@ abstract class WPB2D_Processed_Base
             $this->processed[] = (object)$data;
         } else {
             $this->db->update(
-                "{$this->db->prefix}wpb2d_processed",
+                "{$this->db->prefix}wpb2d_processed_{$this->getType()}",
                 $data,
                 array($this->getId() => $data[$this->getId()])
             );
 
-            $this->init();
+            $i = 0;
+            foreach ($this->processed as $p) {
+                $id = $this->getId();
+                if ($p->$id == $data[$this->getId()]) {
+                    break;
+                }
+                $i++;
+            }
+
+            $this->processed[$i] = (object)$data;
         }
     }
 
-    protected abstract function getType();
-    protected abstract function getId();
+    public function truncate()
+    {
+        $this->db->query("TRUNCATE {$this->db->prefix}wpb2d_processed_{$this->getType()}");
+    }
 }
