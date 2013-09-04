@@ -56,7 +56,7 @@ class WPB2D_BackupController
         if ($total_files < 1800) //I doub't very much a wp installation can get smaller then this
             $total_files = 1800;
 
-        $processed_files = new WPB2D_ProcessedFiles();
+        $processed_files = new WPB2D_Processed_Files();
 
         $processed_file_count = $processed_files->get_file_count();
 

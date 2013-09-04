@@ -24,7 +24,7 @@ class WPB2D_UploadTracker
 
     public function __construct()
     {
-        $this->processed_files = new WPB2D_ProcessedFiles();
+        $this->processed_files = new WPB2D_Processed_Files();
     }
 
     public function track_upload($file, $upload_id, $offset)
