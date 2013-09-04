@@ -32,8 +32,7 @@ if (array_key_exists('stop_backup', $_POST)) {
 
 ?>
 <script type="text/javascript" language="javascript">
-    public function reload()
-    {
+    function reload() {
         jQuery('.files').hide();
         jQuery.post(ajaxurl, { action : 'progress' }, function(data) {
             if (data.length) {

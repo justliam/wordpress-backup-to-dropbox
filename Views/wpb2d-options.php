@@ -82,7 +82,7 @@ try {
                 $('#day').append($("<option></option>").attr("value", "").text('<?php _e('Daily', 'wpbtd'); ?>'));
                 $('#day option:last').attr('selected', 'selected');
                 $('#day').attr('disabled', 'disabled');
-            } elseif (len == 8) {
+            } else if (len == 8) {
                 $('#day').removeAttr('disabled');
                 $('#day option:last').remove();
             }
@@ -129,8 +129,7 @@ try {
      * Display the Dropbox authorize url, hide the authorize button and then show the continue button.
      * @param url
      */
-    public function dropbox_authorize(url)
-    {
+    function dropbox_authorize(url) {
         window.open(url);
         document.getElementById('continue').style.visibility = 'visible';
         document.getElementById('authorize').style.visibility = 'hidden';
