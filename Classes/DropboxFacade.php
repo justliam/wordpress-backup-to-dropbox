@@ -37,6 +37,11 @@ class WPB2D_DropboxFacade
         $directory_cache = array()
         ;
 
+    public function __construct()
+    {
+        $this->init();
+    }
+
     public function init()
     {
         $this->config = WPB2D_Factory::get('config');
