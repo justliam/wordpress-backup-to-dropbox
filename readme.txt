@@ -137,10 +137,12 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
-= 1.6.2 =
+= 1.7 =
 * Code is now conforms to most of the PSR standards that are much better then the WP ones
 * Database dumps are now tracked so they can be resumed
 * Improved error handling around extension installs
+* Updated tests for better code coverage that revealed a few small bugs
+* Implemented a factory for better dependency injection and performance
 
 = 1.6.1 =
 * Added [Extendy](http://extendy.com) and improved extension installation user interface that fixes a few bugs and adds the ability to renew and buy bundles.
