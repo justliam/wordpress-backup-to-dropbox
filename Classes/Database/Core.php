@@ -18,15 +18,16 @@
  */
 class WPB2D_Database_Core extends WPB2D_Database_Base
 {
-    public function __construct()
+    public function __construct($processed = null)
     {
-        parent::__construct('core');
+        parent::__construct('core', $processed);
     }
 
     public function execute()
     {
-        if ($this->exists())
+        if ($this->exists()) {
             return false;
+        }
 
         $this->write_db_dump_header();
         $this->backup_database_tables(array_values($this->database->tables()));

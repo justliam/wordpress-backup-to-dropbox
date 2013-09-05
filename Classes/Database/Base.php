@@ -31,11 +31,12 @@ abstract class WPB2D_Database_Base
 
     abstract public function execute();
 
-    public function __construct($type)
+    public function __construct($type, $processed = null)
     {
         $this->type = $type;
         $this->database = WPB2D_Registry::db();
         $this->config = WPB2D_Registry::config();
+        $this->processed = $processed ? $processed : new WPB2D_Processed_DBTables();
 
         $this->set_wait_timeout();
     }
@@ -44,8 +45,9 @@ abstract class WPB2D_Database_Base
     {
         $files = glob($this->get_file(false) . '*');
         if ($files) {
-            foreach ($files as $file)
+            foreach ($files as $file) {
                 unlink($file);
+            }
         }
     }
 
@@ -56,8 +58,9 @@ abstract class WPB2D_Database_Base
 
     public function get_file($secret = true)
     {
-        if (!$this->type)
+        if (!$this->type) {
             throw new Exception();
+        }
 
         $file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->type}.sql";
 
@@ -80,15 +83,17 @@ abstract class WPB2D_Database_Base
     public function exists()
     {
         $files = glob($this->get_file(false) . '*');
-        if (is_array($files))
+        if (is_array($files)) {
             return count($files) > 0;
+        }
     }
 
     protected function write_db_dump_header()
     {
         $this->handle = fopen($this->get_file(), 'w+');
-        if (!$this->handle)
+        if (!$this->handle) {
             throw new Exception(__('Error creating sql dump file.', 'wpbtd'));
+        }
 
         $dump_location = $this->config->get_backup_dir();
 
@@ -120,8 +125,6 @@ abstract class WPB2D_Database_Base
 
     protected function backup_database_tables($tables)
     {
-        $processed = new WPB2D_Processed_DBTables();
-
         $db_error = __('Error while accessing database.', 'wpbtd');
         foreach ($tables as $table) {
             $this->write_to_file("--\n-- Table structure for table `$table`\n--\n\n");
@@ -162,7 +165,7 @@ abstract class WPB2D_Database_Base
                     }
                     $this->write_to_file(rtrim($out, ",\n") . ";\n\n");
 
-                    $processed->update_table($table, $row_count);
+                    $this->processed->update_table($table, $row_count);
                 }
             }
         }
@@ -170,14 +173,16 @@ abstract class WPB2D_Database_Base
 
     protected function write_to_file($out)
     {
-        if (fwrite($this->handle, $out) === false)
+        if (fwrite($this->handle, $out) === false) {
             throw new Exception(__('Error writing to sql dump file.', 'wpbtd'));
+        }
     }
 
     protected function close_file()
     {
-        if (!fclose($this->handle))
+        if (!fclose($this->handle)) {
             throw new Exception(__('Error closing sql dump file.', 'wpbtd'));
+        }
 
         return true;
     }

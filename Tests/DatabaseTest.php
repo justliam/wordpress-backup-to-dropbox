@@ -16,17 +16,18 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-require_once 'mock-wp-functions.php';
+require_once 'MockWordPressFunctions.php';
 
-class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase
+class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
 {
     private function assertOutput($actual, $expected)
     {
         $actual = explode("\n", file_get_contents($actual));
         $expected = explode("\n", $expected);
 
-        for ($i = 0; $i < count($actual); $i++)
+        for ($i = 0; $i < count($actual); $i++) {
             $this->assertEquals($expected[$i], $actual[$i]);
+        }
     }
 
     public function tearDown()
@@ -108,9 +109,16 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase
 
             ->mock();
 
-        WP_Backup_Registry::setDatabase($db);
+        $db->prefix = 'wp_';
 
-        $backup = new WP_Backup_Database_Core();
+        WPB2D_Registry::setDatabase($db);
+
+        $processed = Mockery::mock('Processed_DBTables')
+            ->shouldReceive('update_table')
+            ->mock()
+            ;
+
+        $backup = new WPB2D_Database_Core($processed);
         $this->assertTrue($backup->execute());
 
         $out = $backup->get_file();
@@ -180,9 +188,16 @@ class WP_Backup_Database_Test extends PHPUnit_Framework_TestCase
 
             ->mock();
 
-        WP_Backup_Registry::setDatabase($db);
+        $db->prefix = 'wp_';
 
-        $backup = new WP_Backup_Database_Plugins();
+        WPB2D_Registry::setDatabase($db);
+
+        $processed = Mockery::mock('Processed_DBTables')
+            ->shouldReceive('update_table')
+            ->mock()
+            ;
+
+        $backup = new WPB2D_Database_Plugins($processed);
         $this->assertTrue($backup->execute());
 
         $out = $backup->get_file();
