@@ -18,7 +18,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$manager = WPB2D_Registry::extension_manager();
+$manager = WPB2D_Factory::get('extension-manager');
 
 $error = $title = null;
 if (isset($_REQUEST['error']))

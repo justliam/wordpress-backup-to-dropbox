@@ -28,6 +28,14 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
     public function tearDown()
     {
         Mockery::close();
+
+        if (file_exists(__DIR__ . '/BackupTest')) {
+            foreach (glob(__DIR__ . '/BackupTest/*') as $file) {
+                unlink($file);
+            }
+
+            rmdir(__DIR__ . '/BackupTest');
+        }
     }
 
     public function testOutFileNotInDropbox()
@@ -75,6 +83,9 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->andReturn('/DropboxPath')
             ->once()
 
+            ->shouldReceive('get_backup_dir')
+            ->andReturn(__DIR__ . '/BackupTest/')
+
             ->mock()
         );
 
@@ -112,6 +123,9 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->with('last_backup_time')
             ->never()
 
+            ->shouldReceive('get_backup_dir')
+            ->andReturn(__DIR__ . '/BackupTest/')
+
             ->mock()
         );
 
@@ -141,6 +155,9 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->andReturn('/DropboxPath')
             ->once()
 
+            ->shouldReceive('get_backup_dir')
+            ->andReturn(__DIR__ . '/BackupTest/')
+
             ->mock()
         );
 
@@ -158,7 +175,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Registry::setLogger(Mockery::mock('Logger')
+        WPB2D_Factory::set('logger', Mockery::mock('Logger')
             ->shouldReceive('log')
             ->with("Error uploading '" . __FILE__ . "' to Dropbox: Bad Bad Bad")
             ->once()

@@ -21,7 +21,7 @@
 class WPB2D_Factory
 {
     private static
-        $objectCache,
+        $objectCache = array(),
         $aliases = array(
             'dropbox' => 'DropboxFacade',
             'db-core' => 'Database_Core',
@@ -83,6 +83,11 @@ class WPB2D_Factory
         } else {
             self::$objectCache[self::getClassName($name)] = $object;
         }
+    }
+
+    public static function reset()
+    {
+        self::$objectCache = array();
     }
 
     public static function secret($data)

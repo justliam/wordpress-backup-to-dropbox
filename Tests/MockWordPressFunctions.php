@@ -72,10 +72,7 @@ function reset_globals()
     $schedule = array();
     $current_time = array();
 
-    WPB2D_Registry::setLogger(Mockery::mock('Logger')
-        ->shouldReceive('log')
-        ->mock()
-    );
+    WPB2D_Factory::reset();
 
     WPB2D_Factory::set('config', Mockery::mock('Config')
         ->shouldReceive('get_backup_dir')

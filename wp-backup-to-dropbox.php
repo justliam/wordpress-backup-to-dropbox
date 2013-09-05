@@ -96,7 +96,7 @@ function backup_to_dropbox_admin_menu()
         $text = __('Backup Log', 'wpbtd');
         add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
-        WPB2D_Registry::extension_manager()->add_menu_items();
+        WPB2D_Factory::get('extension-manager')->add_menu_items();
 
         $text = __('Premium Extensions', 'wpbtd');
         add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');

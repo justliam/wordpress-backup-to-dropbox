@@ -74,7 +74,7 @@ abstract class WPB2D_Database_Base
         }
 
         if ($secret) {
-            $file .= '.' . WPB2D_Registry::get_secret(DB_NAME);
+            $file .= '.' . WPB2D_Factory::secret(DB_NAME);
         }
 
         return $file;

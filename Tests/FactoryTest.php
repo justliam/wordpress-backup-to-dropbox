@@ -22,6 +22,13 @@ require_once 'MockWordPressFunctions.php';
 
 class WPB2D_FactoryTest extends PHPUnit_Framework_TestCase
 {
+    public function setUp()
+    {
+        reset_globals();
+
+        WPB2D_Factory::reset();
+    }
+
     public function testGet()
     {
         global $wpdb;
@@ -60,5 +67,16 @@ class WPB2D_FactoryTest extends PHPUnit_Framework_TestCase
     public function testSecret()
     {
         $this->assertNotNull(WPB2D_Factory::secret('Bob'));
+    }
+
+    public function testReset()
+    {
+        WPB2D_Factory::set('config', $this);
+        WPB2D_Factory::set('logger', $this);
+
+        WPB2D_Factory::reset();
+
+        $this->assertInstanceOf('WPB2D_Logger', WPB2D_Factory::get('logger'));
+        $this->assertInstanceOf('WPB2D_Config', WPB2D_Factory::get('config'));
     }
 }

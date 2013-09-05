@@ -18,7 +18,7 @@
  */
 require_once 'MockWordPressFunctions.php';
 
-class WPB2D_Processed_Files_Test extends PHPUnit_Framework_TestCase
+class WPB2D_Processed_FilesTest extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
