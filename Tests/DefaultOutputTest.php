@@ -16,9 +16,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-require_once 'mock-wp-functions.php';
+require_once 'MockWordPressFunctions.php';
 
-class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
+class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -32,7 +32,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
 
     public function testOutFileNotInDropbox()
     {
-        WP_Backup_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Registry::setConfig(Mockery::mock('Config')
             ->shouldReceive('get_dropbox_path')
             ->with(__DIR__, __FILE__, false)
             ->andReturn('/DropboxPath')
@@ -45,7 +45,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WP_Backup_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array())
@@ -58,13 +58,13 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        $out = new WP_Backup_Output;
+        $out = new WPB2D_Extension_DefaultOutput;
         $out->out(__DIR__, __FILE__);
     }
 
     public function testOutFileInDropboxButOlder()
     {
-        WP_Backup_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Registry::setConfig(Mockery::mock('Config')
             ->shouldReceive('get_option')
             ->with('last_backup_time')
             ->andReturn(filemtime(__FILE__) - 1)
@@ -78,7 +78,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WP_Backup_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array(basename(__FILE__)))
@@ -91,7 +91,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        $out = new WP_Backup_Output;
+        $out = new WPB2D_Extension_DefaultOutput;
         $out->out(__DIR__, __FILE__);
     }
 
@@ -102,7 +102,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
         $processed_file->offset = 123;
         $processed_file->uploadid = 456;
 
-        WP_Backup_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Registry::setConfig(Mockery::mock('Config')
             ->shouldReceive('get_dropbox_path')
             ->with(__DIR__, __FILE__, false)
             ->andReturn('/DropboxPath')
@@ -115,7 +115,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WP_Backup_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array())
@@ -128,14 +128,14 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        $out = new WP_Backup_Output;
+        $out = new WPB2D_Extension_DefaultOutput;
         $out->set_chunked_upload_threashold(0);
         $out->out(__DIR__, __FILE__, $processed_file);
     }
 
     public function testOutFileUploadWarning()
     {
-        WP_Backup_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Registry::setConfig(Mockery::mock('Config')
             ->shouldReceive('get_dropbox_path')
             ->with(__DIR__, __FILE__, false)
             ->andReturn('/DropboxPath')
@@ -144,7 +144,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WP_Backup_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array())
@@ -158,7 +158,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WP_Backup_Registry::setLogger(Mockery::mock('Logger')
+        WPB2D_Registry::setLogger(Mockery::mock('Logger')
             ->shouldReceive('log')
             ->with("Error uploading '" . __FILE__ . "' to Dropbox: Bad Bad Bad")
             ->once()
@@ -166,7 +166,7 @@ class WP_Backup_Output_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        $out = new WP_Backup_Output;
+        $out = new WPB2D_Extension_DefaultOutput;
         $out->out(__DIR__, __FILE__);
     }
 }
