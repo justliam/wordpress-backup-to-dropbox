@@ -27,7 +27,7 @@ abstract class WPB2D_Processed_Base
 
     public function __construct()
     {
-        $this->db = WPB2D_Registry::db();
+        $this->db = WPB2D_Factory::db();
 
         $ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getType()}");
         if (is_array($ret)) {

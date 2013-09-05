@@ -111,7 +111,7 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $processed = Mockery::mock('Processed_DBTables')
             ->shouldReceive('update_table')
@@ -190,7 +190,7 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $processed = Mockery::mock('Processed_DBTables')
             ->shouldReceive('update_table')

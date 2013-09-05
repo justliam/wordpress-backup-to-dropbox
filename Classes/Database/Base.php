@@ -34,8 +34,8 @@ abstract class WPB2D_Database_Base
     public function __construct($type, $processed = null)
     {
         $this->type = $type;
-        $this->database = WPB2D_Registry::db();
-        $this->config = WPB2D_Registry::config();
+        $this->database = WPB2D_Factory::db();
+        $this->config = WPB2D_Factory::get('config');
         $this->processed = $processed ? $processed : new WPB2D_Processed_DBTables();
 
         $this->set_wait_timeout();

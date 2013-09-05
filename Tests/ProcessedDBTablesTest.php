@@ -61,7 +61,7 @@ class WPB2D_Processed_Files_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $p = new WPB2D_Processed_DBTables();
 
@@ -109,7 +109,7 @@ class WPB2D_Processed_Files_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $p = new WPB2D_Processed_DBTables();
 

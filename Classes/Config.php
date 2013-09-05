@@ -29,7 +29,7 @@ class WPB2D_Config
 
     public function __construct()
     {
-        $this->db = WPB2D_Registry::db();
+        $this->db = WPB2D_Factory::db();
     }
 
     public static function get_backup_dir()

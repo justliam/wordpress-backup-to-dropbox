@@ -31,8 +31,8 @@ class WPB2D_BackupController
 
     public function __construct($output = null)
     {
-        $this->config = WPB2D_Registry::config();
-        $this->dropbox = WPB2D_Registry::dropbox();
+        $this->config = WPB2D_Factory::get('config');
+        $this->dropbox = WPB2D_Factory::get('dropbox');
         $this->output = $output ? $output : WPB2D_Extension_Manager::construct()->get_output();
 
         $this->db_core = new WPB2D_Database_Core();
@@ -223,14 +223,14 @@ class WPB2D_BackupController
 
     private static function create_silence_file()
     {
-        $silence = WPB2D_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
+        $silence = WPB2D_Factory::get('config')->get_backup_dir() . DIRECTORY_SEPARATOR . 'index.php';
         if (!file_exists($silence)) {
             $fh = @fopen($silence, 'w');
             if (!$fh) {
                 throw new Exception(
                     sprintf(
                         __("WordPress does not have write access to '%s'. Please grant it write privileges before using this plugin."),
-                        WPB2D_Registry::config()->get_backup_dir()
+                        WPB2D_Factory::get('config')->get_backup_dir()
                     )
                 );
             }
@@ -241,7 +241,7 @@ class WPB2D_BackupController
 
     public static function create_dump_dir()
     {
-        $dump_dir = WPB2D_Registry::config()->get_backup_dir();
+        $dump_dir = WPB2D_Factory::get('config')->get_backup_dir();
         $error_message  = sprintf(__("WordPress Backup to Dropbox requires write access to '%s', please ensure it exists and has write permissions.", 'wpbtd'), $dump_dir);
 
         if (!file_exists($dump_dir)) {

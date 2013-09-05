@@ -77,7 +77,7 @@ function reset_globals()
         ->mock()
     );
 
-    WPB2D_Registry::setConfig(Mockery::mock('Config')
+    WPB2D_Factory::set('config', Mockery::mock('Config')
         ->shouldReceive('get_backup_dir')
         ->andReturn(__DIR__ . '/BackupTest/')
         ->mock()

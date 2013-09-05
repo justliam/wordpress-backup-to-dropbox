@@ -21,8 +21,8 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-WPB2D_Registry::config()->set_time_limit();
-WPB2D_Registry::config()->set_memory_limit();
+WPB2D_Factory::get('config')->set_time_limit();
+WPB2D_Factory::get('config')->set_memory_limit();
 
 try {
     $file_list = new WPB2D_FileList();

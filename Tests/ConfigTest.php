@@ -51,7 +51,7 @@ class WPB2D_ConfigTest extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $config = new WPB2D_Config();
         $this->assertEquals(false, $config->get_option('last_backup_time'));
@@ -75,7 +75,7 @@ class WPB2D_ConfigTest extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $config = new WPB2D_Config();
 
@@ -93,7 +93,7 @@ class WPB2D_ConfigTest extends PHPUnit_Framework_TestCase
         $db = Mockery::mock();
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         return new WPB2D_Config();
     }
@@ -189,7 +189,7 @@ class WPB2D_ConfigTest extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $config = new WPB2D_Config();
 
@@ -253,7 +253,7 @@ class WPB2D_ConfigTest extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $config = new WPB2D_Config();
 

@@ -16,7 +16,7 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-$config = WPB2D_Registry::config();
+$config = WPB2D_Factory::get('config');
 
 if (!$config->get_option('in_progress'))
     spawn_cron();

@@ -26,8 +26,8 @@ try {
 
     $validation_errors = null;
 
-    $dropbox = WPB2D_Registry::dropbox();
-    $config = WPB2D_Registry::config();
+    $dropbox = WPB2D_Factory::get('dropbox');
+    $config = WPB2D_Factory::get('config');
 
     $backup = new WPB2D_BackupController();
 

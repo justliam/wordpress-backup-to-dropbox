@@ -39,7 +39,7 @@ class WPB2D_DropboxFacade
 
     public function init()
     {
-        $this->config = WPB2D_Registry::config();
+        $this->config = WPB2D_Factory::get('config');
 
         if (!extension_loaded('curl')) {
             throw new Exception(sprintf(

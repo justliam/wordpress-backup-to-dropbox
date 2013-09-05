@@ -127,7 +127,7 @@ function backup_to_dropbox_monitor()
 {
     wpb2d_style();
 
-    if (!WPB2D_Registry::dropbox()->is_authorized()) {
+    if (!WPB2D_Factory::get('dropbox') ->is_authorized()) {
         backup_to_dropbox_admin_menu_contents();
     } else {
         $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
@@ -189,7 +189,7 @@ function execute_drobox_backup()
         WPB2D_Registry::logger()->log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
     }
 
-    WPB2D_Registry::config()->set_option('in_progress', true);
+    WPB2D_Factory::get('config')->set_option('in_progress', true);
 
     if (defined('WPB2D_TEST_MODE')) {
         run_dropbox_backup();
@@ -204,7 +204,7 @@ function execute_drobox_backup()
  */
 function monitor_dropbox_backup()
 {
-    $config = WPB2D_Registry::config();
+    $config = WPB2D_Factory::get('config');
     $mtime = filemtime(WPB2D_Registry::logger()->get_log_file());
 
     //5 mins to allow for socket timeouts and long uploads
@@ -221,7 +221,7 @@ function monitor_dropbox_backup()
  */
 function run_dropbox_backup()
 {
-    $options = WPB2D_Registry::config();
+    $options = WPB2D_Factory::get('config');
     if (!$options->get_option('is_running')) {
         $options->set_option('is_running', true);
         WPB2D_BackupController::construct()->execute();
@@ -271,7 +271,7 @@ function backup_to_dropbox_cron_schedules($schedules)
 
 function wpb2d_install()
 {
-    $wpdb = WPB2D_Registry::db();
+    $wpdb = WPB2D_Factory::db();
 
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -320,14 +320,14 @@ function wpb2d_install()
 
     //Only set the DB version if there are no errors
     if (empty($errors)) {
-        WPB2D_Registry::config()->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
+        WPB2D_Factory::get('config')->set_option('database_version', BACKUP_TO_DROPBOX_DATABASE_VERSION);
     }
 }
 
 function wpb2d_init()
 {
     try {
-        if (WPB2D_Registry::config()->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
+        if (WPB2D_Factory::get('config')->get_option('database_version') < BACKUP_TO_DROPBOX_DATABASE_VERSION) {
             wpb2d_install();
         }
 

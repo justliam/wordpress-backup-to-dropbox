@@ -31,8 +31,8 @@ abstract class WPB2D_Extension_Base
 
     public function __construct()
     {
-        $this->dropbox = WPB2D_Registry::dropbox();
-        $this->config  = WPB2D_Registry::config();
+        $this->dropbox = WPB2D_Factory::get('dropbox');
+        $this->config  = WPB2D_Factory::get('config');
     }
 
     public function set_chunked_upload_threashold($threashold)

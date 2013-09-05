@@ -62,7 +62,7 @@ class WPB2D_Logger
         if (!$this->logFile) {
             WPB2D_BackupController::create_dump_dir();
 
-            $path = WPB2D_Registry::config()->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
+            $path = WPB2D_Factory::get('config')->get_backup_dir() . DIRECTORY_SEPARATOR . self::LOGFILE;
 
             $files = glob($path . '.*');
             if (isset($files[0])) {

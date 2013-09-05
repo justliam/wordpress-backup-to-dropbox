@@ -39,7 +39,7 @@ class WPB2D_FileList_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $this->list = new WPB2D_FileList();
     }
@@ -65,7 +65,7 @@ class WPB2D_FileList_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $list = new WPB2D_FileList();
         $list->set_excluded(__FILE__);
@@ -90,7 +90,7 @@ class WPB2D_FileList_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WPB2D_Registry::setDatabase($db);
+        WPB2D_Factory::set('db', $db);
 
         $list = new WPB2D_FileList();
         $this->assertTrue($list->is_excluded(__FILE__));

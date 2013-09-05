@@ -28,7 +28,7 @@ class WPB2D_Logger_Test extends PHPUnit_Framework_TestCase
             unlink($logger->get_log_file());
         }
 
-        $dir = WPB2D_Registry::config()->get_backup_dir();
+        $dir = WPB2D_Factory::get('config')->get_backup_dir();
 
         unlink($dir . '/index.php');
         rmdir($dir);

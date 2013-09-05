@@ -40,7 +40,7 @@ class WPB2D_FileList
 
     public function __construct()
     {
-        $this->db = WPB2D_Registry::db();
+        $this->db = WPB2D_Factory::db();
 
         $result = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_excluded_files WHERE isdir = 0");
         foreach ($result as $value) {

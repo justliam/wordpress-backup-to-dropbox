@@ -32,7 +32,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
 
     public function testOutFileNotInDropbox()
     {
-        WPB2D_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Factory::set('config', Mockery::mock('Config')
             ->shouldReceive('get_dropbox_path')
             ->with(__DIR__, __FILE__, false)
             ->andReturn('/DropboxPath')
@@ -45,7 +45,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Factory::set('dropbox', Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array())
@@ -64,7 +64,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
 
     public function testOutFileInDropboxButOlder()
     {
-        WPB2D_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Factory::set('config', Mockery::mock('Config')
             ->shouldReceive('get_option')
             ->with('last_backup_time')
             ->andReturn(filemtime(__FILE__) - 1)
@@ -78,7 +78,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Factory::set('dropbox', Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array(basename(__FILE__)))
@@ -102,7 +102,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
         $processed_file->offset = 123;
         $processed_file->uploadid = 456;
 
-        WPB2D_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Factory::set('config', Mockery::mock('Config')
             ->shouldReceive('get_dropbox_path')
             ->with(__DIR__, __FILE__, false)
             ->andReturn('/DropboxPath')
@@ -115,7 +115,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Factory::set('dropbox', Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array())
@@ -135,7 +135,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
 
     public function testOutFileUploadWarning()
     {
-        WPB2D_Registry::setConfig(Mockery::mock('Config')
+        WPB2D_Factory::set('config', Mockery::mock('Config')
             ->shouldReceive('get_dropbox_path')
             ->with(__DIR__, __FILE__, false)
             ->andReturn('/DropboxPath')
@@ -144,7 +144,7 @@ class WPB2D_Extension_DefaultOutput_Test extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox')
+        WPB2D_Factory::set('dropbox', Mockery::mock('Dropbox')
             ->shouldReceive('get_directory_contents')
             ->with('/DropboxPath')
             ->andReturn(array())

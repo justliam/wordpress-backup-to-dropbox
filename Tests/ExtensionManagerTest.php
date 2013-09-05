@@ -24,7 +24,7 @@ class WPB2D_Extension_Manager_Test extends PHPUnit_Framework_TestCase
     {
         reset_globals();
 
-        WPB2D_Registry::setDropbox(Mockery::mock('Dropbox'));
+        WPB2D_Factory::set('dropbox', Mockery::mock('Dropbox'));
     }
 
     public function tearDown()
