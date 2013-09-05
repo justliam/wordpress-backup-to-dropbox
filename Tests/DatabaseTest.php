@@ -43,6 +43,12 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
         set_current_time('2012-03-12 00:00:00');
 
         @mkdir(__DIR__ . '/BackupTest/');
+
+        WPB2D_Factory::set('config', Mockery::mock('Config')
+            ->shouldReceive('get_backup_dir')
+            ->andReturn(__DIR__ . '/BackupTest/')
+            ->mock()
+        );
     }
 
     private function getTableData()

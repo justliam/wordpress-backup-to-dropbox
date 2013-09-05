@@ -25,8 +25,11 @@ class WPB2D_FactoryTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         reset_globals();
+    }
 
-        WPB2D_Factory::reset();
+    public function tearDown()
+    {
+        Mockery::close();
     }
 
     public function testGet()
@@ -47,7 +50,6 @@ class WPB2D_FactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('WPB2D_Logger', WPB2D_Factory::get('logger'));
         $this->assertInstanceOf('WPB2D_Config', WPB2D_Factory::get('config'));
-        $this->assertInstanceOf('WPB2D_DropboxFacade', WPB2D_Factory::get('dropbox'));
         $this->assertInstanceOf('WPB2D_Processed_Files', WPB2D_Factory::get('processed-files'));
 
         $this->assertInstanceOf(get_class($wpdb), WPB2D_Factory::db());

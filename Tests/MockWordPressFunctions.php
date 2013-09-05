@@ -73,12 +73,6 @@ function reset_globals()
     $current_time = array();
 
     WPB2D_Factory::reset();
-
-    WPB2D_Factory::set('config', Mockery::mock('Config')
-        ->shouldReceive('get_backup_dir')
-        ->andReturn(__DIR__ . '/BackupTest/')
-        ->mock()
-    );
 }
 
 function add_submenu_page() {
