@@ -1,0 +1,77 @@
+<?php
+/**
+ * A class with functions the perform a backup of WordPress
+ *
+ * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
+ * @author Michael De Wildt (http://www.mikeyd.com.au/)
+ * @license This program is free software; you can redistribute it and/or modify
+ *          it under the terms of the GNU General Public License as published by
+ *          the Free Software Foundation; either version 2 of the License, or
+ *          (at your option) any later version.
+ *
+ *          This program is distributed in the hope that it will be useful,
+ *          but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *          GNU General Public License for more details.
+ *
+ *          You should have received a copy of the GNU General Public License
+ *          along with this program; if not, write to the Free Software
+ *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
+ */
+class WPB2D_Factory
+{
+    private static $objectCache;
+
+    private static function getClassName($name)
+    {
+        return 'WPB2D_' . ucfirst($name);
+    }
+
+    public static function db()
+    {
+        if (!isset(self::$objectCache['WPDB'])) {
+            global $wpdb;
+
+            if ($wpdb) {
+                $wpdb->hide_errors();
+            }
+
+            if (defined('WPB2D_TEST_MODE')) {
+                $wpdb->show_errors();
+            }
+
+            self::$objectCache['WPDB'] = $wpdb;
+        }
+
+       return self::$objectCache['WPDB'];
+    }
+
+    public static function get($name)
+    {
+        $className = self::getClassName($name);
+
+        if (!class_exists($className)) {
+            return null;
+        }
+
+        if (!isset(self::$objectCache[$className])) {
+            self::$objectCache[$className] = new $className();
+        }
+
+        return self::$objectCache[$className];
+    }
+
+    public static function set($name, $object)
+    {
+        if ($name == 'db') {
+            self::$objectCache['WPDB'] = $object;
+        } else {
+            self::$objectCache[self::getClassName($name)] = $object;
+        }
+    }
+
+    public static function secret($data)
+    {
+        return hash_hmac('sha1', $data, uniqid(mt_rand(), true)) . '-wpb2d-secret';
+    }
+}
