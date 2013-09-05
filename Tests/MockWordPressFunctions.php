@@ -27,7 +27,7 @@ define('BACKUP_TO_DROPBOX_VERSION', 99);
 define('ABSPATH', dirname(dirname(__FILE__)));
 define('WP_CONTENT_DIR', ABSPATH);
 define('DB_NAME', 'TestDB');
-define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/Extensions/');
+define('EXTENSIONS_DIR', WP_CONTENT_DIR . '/Classes/Extension/');
 define('BACKUP_TO_DROPBOX_MEMORY_LIMIT', 150);
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
 
@@ -38,6 +38,7 @@ global $options;
 global $schedule;
 global $current_time;
 global $remote_url;
+global $submenu;
 
 $options = array();
 $next_schedule = array();
@@ -71,16 +72,41 @@ function reset_globals()
     $schedule = array();
     $current_time = array();
 
-    WP_Backup_Registry::setLogger(Mockery::mock('Logger')
+    WPB2D_Registry::setLogger(Mockery::mock('Logger')
         ->shouldReceive('log')
         ->mock()
     );
 
-    WP_Backup_Registry::setConfig(Mockery::mock('Config')
+    WPB2D_Registry::setConfig(Mockery::mock('Config')
         ->shouldReceive('get_backup_dir')
         ->andReturn(__DIR__ . '/BackupTest/')
         ->mock()
     );
+}
+
+function add_submenu_page() {
+    global $submenu;
+
+    $submenu = func_get_args();
+}
+
+function set_option($name, $value)
+{
+    global $options;
+
+    $options[$name] = $value;
+}
+
+function update_option($name, $value)
+{
+    set_option($name, $value);
+}
+
+function get_option($name)
+{
+    global $options;
+
+    return isset($options[$name]) ? $options[$name] : null;
 }
 
 function get_sanitized_home_path()
@@ -121,15 +147,15 @@ function download_url($url)
 
 function unzip_file($file, $dir)
 {
-    $fh = fopen($dir . 'extension.php', 'w');
+    $fh = fopen($dir . 'TestExtension.php', 'w');
     fwrite($fh, "<?php\n");
-    fwrite($fh, 'class Test_Extension extends WP_Backup_Extension {');
+    fwrite($fh, 'class WPB2D_Extension_TestExtension extends WPB2D_Extension_Base {');
     fwrite($fh, 'public static $lastCalled;');
     fwrite($fh, 'public function start() { self::$lastCalled = "start"; return true; }');
     fwrite($fh, 'public function complete() { self::$lastCalled = "complete"; return true; }');
     fwrite($fh, 'public function failure() { self::$lastCalled = "failure"; return true; }');
     fwrite($fh, 'public function get_menu() { self::$lastCalled = "get_menu"; return true; }');
-    fwrite($fh, 'public function get_type() { self::$lastCalled = "get_type"; return WP_Backup_Extension::TYPE_OUTPUT; }');
+    fwrite($fh, 'public function get_type() { self::$lastCalled = "get_type"; return self::TYPE_OUTPUT; }');
     fwrite($fh, 'public function is_enabled() { self::$lastCalled = "is_enabled"; return true; }');
     fwrite($fh, 'public function set_enabled($bool) { self::$lastCalled = "set_enabled"; return $bool; }');
     fwrite($fh, '}');

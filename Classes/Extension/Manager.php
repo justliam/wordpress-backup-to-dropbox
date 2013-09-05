@@ -35,11 +35,18 @@ class WPB2D_Extension_Manager
     public function __construct()
     {
         $extensions = get_option('wpb2d-premium-extensions');
-        foreach ($extensions as $name => $file) {
-            if (file_exists($file)) {
-                include_once $file;
 
-                $this->get_instance($name);
+        if (is_array($extensions)) {
+            foreach ($extensions as $name => $file) {
+                if (file_exists($file)) {
+
+                    //Support for pre PHP 5.3
+                    if (!function_exists('spl_autoload_register')) {
+                        require_once $file;
+                    }
+
+                    $this->get_instance($name);
+                }
             }
         }
     }
@@ -96,8 +103,9 @@ class WPB2D_Extension_Manager
 
     public function install($name)
     {
-        if (!defined('FS_METHOD'))
+        if (!defined('FS_METHOD')) {
             define('FS_METHOD', 'direct');
+        }
 
         WP_Filesystem();
 
@@ -137,11 +145,14 @@ class WPB2D_Extension_Manager
 
         $extensions = get_option('wpb2d-premium-extensions');
 
-        $extensions[$name] = EXTENSIONS_DIR . 'class-' . str_replace(' ', '-', strtolower($name)) . '.php';
+        $extensions[$name] = str_replace(' ', '', ucwords($name)) . '.php';
 
         update_option('wpb2d-premium-extensions', $extensions);
 
-        include_once $extensions[$name];
+        //Support for pre PHP 5.3
+        if (!function_exists('spl_autoload_register')) {
+            require_once EXTENSIONS_DIR . $extensions[$name];
+        }
 
         return $this->get_instance($name);
     }
@@ -149,7 +160,7 @@ class WPB2D_Extension_Manager
     public function get_output()
     {
         foreach ($this->objectCache as $obj) {
-            if ($obj && $obj->get_type() == WPB2D_Extension::TYPE_OUTPUT && $obj->is_enabled()) {
+            if ($obj && $obj->get_type() == WPB2D_Extension_Base::TYPE_OUTPUT && $obj->is_enabled()) {
                 return $obj;
             }
         }
@@ -199,7 +210,7 @@ class WPB2D_Extension_Manager
 
     private function get_instance($name)
     {
-        $class = str_replace(' ', '_', ucwords($name));
+        $class = 'WPB2D_Extension_' . str_replace(' ', '', ucwords($name));
 
         if (!isset($this->objectCache[$class])) {
             if (!class_exists($class)) {
