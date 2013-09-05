@@ -20,10 +20,19 @@
  */
 class WPB2D_Factory
 {
-    private static $objectCache;
+    private static
+        $objectCache,
+        $aliases = array(
+            'dropbox' => 'DropboxFacade'
+        );
+
 
     private static function getClassName($name)
     {
+        if (isset(self::$aliases[$name])) {
+            $name = self::$aliases[$name];
+        }
+
         return 'WPB2D_' . ucfirst($name);
     }
 

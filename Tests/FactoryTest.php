@@ -34,6 +34,8 @@ class WPB2D_FactoryTest extends PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('WPB2D_Logger', WPB2D_Factory::get('logger'));
         $this->assertInstanceOf('WPB2D_Config', WPB2D_Factory::get('config'));
+        $this->assertInstanceOf('WPB2D_DropboxFacade', WPB2D_Factory::get('dropbox'));
+
         $this->assertInstanceOf(get_class($wpdb), WPB2D_Factory::db());
 
         $this->assertNull(WPB2D_Factory::get('IAmNull'));
