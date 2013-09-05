@@ -29,12 +29,19 @@ class WPB2D_FactoryTest extends PHPUnit_Framework_TestCase
         $wpdb = Mockery::mock('DB')
             ->shouldReceive('hide_errors')
             ->once()
+
+            ->shouldReceive('get_results')
+            ->once()
+
             ->mock()
             ;
+
+        $wpdb->prefix = 'wp_';
 
         $this->assertInstanceOf('WPB2D_Logger', WPB2D_Factory::get('logger'));
         $this->assertInstanceOf('WPB2D_Config', WPB2D_Factory::get('config'));
         $this->assertInstanceOf('WPB2D_DropboxFacade', WPB2D_Factory::get('dropbox'));
+        $this->assertInstanceOf('WPB2D_Processed_Files', WPB2D_Factory::get('processed-files'));
 
         $this->assertInstanceOf(get_class($wpdb), WPB2D_Factory::db());
 

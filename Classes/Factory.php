@@ -23,9 +23,10 @@ class WPB2D_Factory
     private static
         $objectCache,
         $aliases = array(
-            'dropbox' => 'DropboxFacade'
+            'dropbox' => 'DropboxFacade',
+            'db-core' => 'Database_Core',
+            'db-plugins' => 'Database_Plugins',
         );
-
 
     private static function getClassName($name)
     {
@@ -33,7 +34,12 @@ class WPB2D_Factory
             $name = self::$aliases[$name];
         }
 
-        return 'WPB2D_' . ucfirst($name);
+        $class = '';
+        foreach (explode('-', $name) as $bit) {
+            $class .= '_' . ucfirst($bit);
+        }
+
+        return 'WPB2D' . $class;
     }
 
     public static function db()

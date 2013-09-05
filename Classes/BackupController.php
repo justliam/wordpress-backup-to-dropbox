@@ -35,28 +35,33 @@ class WPB2D_BackupController
         $this->dropbox = WPB2D_Factory::get('dropbox');
         $this->output = $output ? $output : WPB2D_Extension_Manager::construct()->get_output();
 
-        $this->db_core = new WPB2D_Database_Core();
-        $this->db_plugins = new WPB2D_Database_Plugins();
+        $this->db_core = WPB2D_Factory::get('db-core');
+        $this->db_plugins = WPB2D_Factory::get('db-plugins');
     }
 
     public function backup_path($path, $dropbox_path = null, $always_include = array())
     {
-        if (!$this->config->get_option('in_progress'))
+        if (!$this->config->get_option('in_progress')) {
             return;
+        }
 
-        if (!$dropbox_path)
+        if (!$dropbox_path) {
             $dropbox_path = get_sanitized_home_path();
+        }
 
-        $file_list = new WPB2D_FileList();
+        $file_list = WPB2D_Factory::get('fileList');
 
         $current_processed_files = $uploaded_files = array();
 
         $next_check = time() + 5;
         $total_files = $this->config->get_option('total_file_count');
-        if ($total_files < 1800) //I doub't very much a wp installation can get smaller then this
-            $total_files = 1800;
 
-        $processed_files = new WPB2D_Processed_Files();
+        if ($total_files < 1800) {
+            //I doub't very much a wp installation can get smaller then this
+            $total_files = 1800;
+        }
+
+        $processed_files = WPB2D_Factory::get('processed-files');
 
         $processed_file_count = $processed_files->get_file_count();
 
@@ -70,33 +75,39 @@ class WPB2D_BackupController
                     $this->config->die_if_stopped();
 
                     $percent_done = round(($processed_file_count / $total_files) * 100, 0);
-                    if ($percent_done > 99)
+                    if ($percent_done > 99) {
                         $percent_done = 99;
+                    }
 
-                    if ($percent_done < 1)
+                    if ($percent_done < 1) {
                         $percent_done = 1;
+                    }
 
                     $processed_files->add_files($current_processed_files);
 
-                    WPB2D_Registry::logger()->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
+                    WPB2D_Factory::get('logger')->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
 
                     $next_check = time() + 5;
                     $uploaded_files = $current_processed_files = array();
                 }
 
-                if (!in_array($file, $always_include) && $file_list->is_excluded($file))
+                if (!in_array($file, $always_include) && $file_list->is_excluded($file)) {
                     continue;
+                }
 
-                if ($file_list->in_ignore_list($file))
+                if ($file_list->in_ignore_list($file)) {
                     continue;
+                }
 
                 if (is_file($file)) {
                     $processed_file = $processed_files->get_file($file);
-                    if ($processed_file && $processed_file->offset == 0)
+                    if ($processed_file && $processed_file->offset == 0) {
                         continue;
+                    }
 
-                    if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include))
+                    if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include)) {
                         continue;
+                    }
 
                     if ($this->output->out($dropbox_path, $file, $processed_file)) {
                         $uploaded_files[] = array(
@@ -104,8 +115,9 @@ class WPB2D_BackupController
                             'mtime' => filemtime($file),
                         );
 
-                        if ($processed_file && $processed_file->offset > 0)
+                        if ($processed_file && $processed_file->offset > 0) {
                             $processed_files->file_complete($file);
+                        }
                     }
 
                     $current_processed_files[] = $file;
@@ -120,7 +132,7 @@ class WPB2D_BackupController
     public function execute()
     {
         $manager = WPB2D_Extension_Manager::construct();
-        $logger = WPB2D_Registry::logger();
+        $logger = WPB2D_Factory::get('logger');
 
         $this->config->set_time_limit();
         $this->config->set_memory_limit();

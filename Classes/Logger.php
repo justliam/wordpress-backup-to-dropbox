@@ -68,7 +68,7 @@ class WPB2D_Logger
             if (isset($files[0])) {
                 $this->logFile = $files[0];
             } else {
-                $this->logFile = $path . '.' . WPB2D_Registry::get_secret(self::LOGFILE);
+                $this->logFile = $path . '.' . WPB2D_Factory::secret(self::LOGFILE);
             }
         }
 

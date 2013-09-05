@@ -99,7 +99,7 @@ abstract class WPB2D_Database_Base
 
         if (!is_writable($dump_location)) {
             $msg = sprintf(__("A database backup cannot be created because WordPress does not have write access to '%s', please ensure this directory has write access.", 'wpbtd'), $dump_location);
-            WPB2D_Registry::logger()->log($msg);
+            WPB2D_Factory::get('logger')->log($msg);
 
             return false;
         }

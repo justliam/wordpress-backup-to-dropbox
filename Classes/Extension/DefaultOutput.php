@@ -55,7 +55,7 @@ class WPB2D_Extension_DefaultOutput extends WPB2D_Extension_Base
                     if ($processed_file && $processed_file->offset > 0)
                         $msg = __("Resuming upload of large file '%s'", 'wpbtd');
 
-                    WPB2D_Registry::logger()->log(sprintf(
+                    WPB2D_Factory::get('logger')->log(sprintf(
                         $msg,
                         basename($file),
                         round($file_size / 1048576, 1)
@@ -68,7 +68,7 @@ class WPB2D_Extension_DefaultOutput extends WPB2D_Extension_Base
             }
 
         } catch (Exception $e) {
-            WPB2D_Registry::logger()->log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
+            WPB2D_Factory::get('logger')->log(sprintf(__("Error uploading '%s' to Dropbox: %s", 'wpbtd'), $file, strip_tags($e->getMessage())));
             $this->error_count++;
         }
     }

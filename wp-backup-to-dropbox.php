@@ -175,18 +175,18 @@ function backup_to_dropbox_progress()
  */
 function execute_drobox_backup()
 {
-    WPB2D_Registry::logger()->delete_log();
-    WPB2D_Registry::logger()->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
+    WPB2D_Factory::get('logger')->delete_log();
+    WPB2D_Factory::get('logger')->log(sprintf(__('Backup started on %s.', 'wpbtd'), date("l F j, Y", strtotime(current_time('mysql')))));
 
     $time = ini_get('max_execution_time');
-    WPB2D_Registry::logger()->log(sprintf(
+    WPB2D_Factory::get('logger')->log(sprintf(
         __('Your time limit is %s and your memory limit is %s'),
         $time ? $time . ' ' . __('seconds', 'wpbtd') : __('unlimited', 'wpbtd'),
         ini_get('memory_limit')
     ));
 
     if (ini_get('safe_mode')) {
-        WPB2D_Registry::logger()->log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
+        WPB2D_Factory::get('logger')->log(__("Safe mode is enabled on your server so the PHP time and memory limit cannot be set by the backup process. So if your backup fails it's highly probable that these settings are too low.", 'wpbtd'));
     }
 
     WPB2D_Factory::get('config')->set_option('in_progress', true);
@@ -205,11 +205,11 @@ function execute_drobox_backup()
 function monitor_dropbox_backup()
 {
     $config = WPB2D_Factory::get('config');
-    $mtime = filemtime(WPB2D_Registry::logger()->get_log_file());
+    $mtime = filemtime(WPB2D_Factory::get('logger')->get_log_file());
 
     //5 mins to allow for socket timeouts and long uploads
     if ($config->get_option('in_progress') && ($mtime < time() - 300)) {
-        WPB2D_Registry::logger()->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
+        WPB2D_Factory::get('logger')->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
         $config->set_option('is_running', false);
 
         wp_schedule_single_event(time(), 'run_dropbox_backup_hook');
