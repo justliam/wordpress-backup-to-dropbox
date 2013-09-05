@@ -55,26 +55,29 @@ class WPB2D_FileList
 
     public function set_included($path)
     {
-        if (is_dir($path))
+        if (is_dir($path)) {
             $this->include_dir(rtrim($path, DIRECTORY_SEPARATOR));
-        else
+        } else {
             $this->include_file($path);
+        }
     }
 
     public function set_excluded($path)
     {
-        if (is_dir($path))
+        if (is_dir($path)) {
             $this->exclude_dir(rtrim($path, DIRECTORY_SEPARATOR));
-        else
+        } else {
             $this->exclude_file($path);
+        }
     }
 
     public function is_excluded($path)
     {
-        if (is_dir($path))
+        if (is_dir($path)) {
             return $this->is_excluded_dir($path);
-        else
+        } else {
             return $this->is_excluded_file($path);
+        }
     }
 
     private function exclude_file($file)
@@ -123,22 +126,26 @@ class WPB2D_FileList
 
     private function is_excluded_file($file)
     {
-        if (!in_array($file, $this->excluded_files))
+        if (!in_array($file, $this->excluded_files)) {
             return $this->is_excluded_dir(dirname($file));
+        }
 
         return true;
     }
 
     private function is_excluded_dir($dir)
     {
-        if (empty($this->excluded_dirs))
+        if (empty($this->excluded_dirs)) {
             return false;
+        }
 
-        if (in_array($dir, $this->excluded_dirs))
+        if (in_array($dir, $this->excluded_dirs)) {
             return true;
+        }
 
-        if ($dir == get_sanitized_home_path())
+        if ($dir == get_sanitized_home_path()) {
             return false;
+        }
 
         return $this->is_excluded_dir(dirname($dir));
     }
@@ -151,14 +158,17 @@ class WPB2D_FileList
             foreach ($files as $file) {
                 $file_name = $file->getPathname();
 
-                if ($file_name == $dir)
+                if ($file_name == $dir) {
                     continue;
+                }
 
-                if (self::in_ignore_list(basename($file_name)))
+                if (self::in_ignore_list(basename($file_name))) {
                     continue;
+                }
 
-                if ($this->is_excluded($file_name))
+                if ($this->is_excluded($file_name)) {
                     return true;
+                }
             }
         }
 
@@ -168,10 +178,11 @@ class WPB2D_FileList
     public function get_checkbox_class($path)
     {
         $class = '';
-        if ($this->is_excluded($path))
+        if ($this->is_excluded($path)) {
             $class = 'checked';
-        else if ($this->is_partial_dir($path))
+        } elseif ($this->is_partial_dir($path)) {
             $class = 'partial';
+        }
 
         return $class;
     }
@@ -179,8 +190,9 @@ class WPB2D_FileList
     public static function in_ignore_list($file)
     {
         foreach (self::$ignored_patterns as $pattern) {
-            if (preg_match('/' . preg_quote($pattern) . '/', $file))
+            if (preg_match('/' . preg_quote($pattern) . '/', $file)) {
                 return true;
+            }
         }
     }
 }

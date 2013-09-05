@@ -1,6 +1,6 @@
 <?php
 /**
- * A test for the File_List class
+ * A test for the WPB2D_FileList class
  *
  * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
@@ -18,9 +18,9 @@
  *          along with this program; if not, write to the Free Software
  *          Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110, USA.
  */
-require_once 'mock-wp-functions.php';
+require_once 'MockWordPressFunctions.php';
 
-class File_List_Test extends PHPUnit_Framework_TestCase
+class WPB2D_FileList_Test extends PHPUnit_Framework_TestCase
 {
     private $list;
 
@@ -32,15 +32,16 @@ class File_List_Test extends PHPUnit_Framework_TestCase
             ->shouldReceive('get_results')
             ->andReturn(array())
             ->shouldReceive('insert')
+            ->shouldReceive('prepare')
             ->shouldReceive('query')
             ->mock()
             ;
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $this->list = new File_List();
+        $this->list = new WPB2D_FileList();
     }
 
     public function tearDown()
@@ -64,9 +65,9 @@ class File_List_Test extends PHPUnit_Framework_TestCase
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $list = new File_List();
+        $list = new WPB2D_FileList();
         $list->set_excluded(__FILE__);
 
         $this->assertTrue($list->is_excluded(__FILE__));
@@ -77,16 +78,21 @@ class File_List_Test extends PHPUnit_Framework_TestCase
         $db = Mockery::mock()
             ->shouldReceive('get_results')
             ->andReturn(array($file))
+            ->shouldReceive('prepare')
+            ->with('DELETE FROM wp_wpb2d_excluded_files WHERE file =  %s', __FILE__)
+            ->once()
+
             ->shouldReceive('query')
-            ->with("DELETE FROM wp_wpb2d_excluded_files WHERE file = '" . __FILE__ . "'")
+            ->once()
+
             ->mock()
             ;
 
         $db->prefix = 'wp_';
 
-        WP_Backup_Registry::setDatabase($db);
+        WPB2D_Registry::setDatabase($db);
 
-        $list = new File_List();
+        $list = new WPB2D_FileList();
         $this->assertTrue($list->is_excluded(__FILE__));
 
         $list->set_included(__FILE__);
