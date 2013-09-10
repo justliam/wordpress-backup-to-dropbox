@@ -36,7 +36,7 @@ class WPB2D_BackupController
         $this->output = $output ? $output : WPB2D_Extension_Manager::construct()->get_output();
     }
 
-    public function backup_path($path, $dropbox_path = null, $always_include = array())
+    public function backup_path($path, $dropbox_path = null, $always_include = null)
     {
         if (!$this->config->get_option('in_progress')) {
             return;
@@ -88,7 +88,7 @@ class WPB2D_BackupController
                     $uploaded_files = $current_processed_files = array();
                 }
 
-                if (!in_array($file, $always_include) && $file_list->is_excluded($file)) {
+                if ($file != $always_include && $file_list->is_excluded($file)) {
                     continue;
                 }
 
@@ -102,7 +102,7 @@ class WPB2D_BackupController
                         continue;
                     }
 
-                    if (dirname($file) == $this->config->get_backup_dir() && !in_array($file, $always_include)) {
+                    if (dirname($file) == $this->config->get_backup_dir() && $file != $always_include) {
                         continue;
                     }
 
@@ -160,7 +160,7 @@ class WPB2D_BackupController
             if ($this->output->start()) {
 
                 //Backup the content dir first
-                $processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), $dbBackup->get_files());
+                $processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), $dbBackup->get_file());
 
                 //Now backup the blog root
                 $processed_files += $this->backup_path(get_sanitized_home_path());
@@ -229,7 +229,7 @@ class WPB2D_BackupController
 
     private function clean_up()
     {
-        WPB2D_Factory::get('databaseBackup')->remove_files();
+        WPB2D_Factory::get('databaseBackup')->clean_up();
     }
 
     private static function create_silence_file()
