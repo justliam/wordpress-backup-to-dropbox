@@ -34,9 +34,6 @@ class WPB2D_BackupController
         $this->config = WPB2D_Factory::get('config');
         $this->dropbox = WPB2D_Factory::get('dropbox');
         $this->output = $output ? $output : WPB2D_Extension_Manager::construct()->get_output();
-
-        $this->db_core = WPB2D_Factory::get('db-core');
-        $this->db_plugins = WPB2D_Factory::get('db-plugins');
     }
 
     public function backup_path($path, $dropbox_path = null, $always_include = array())
@@ -133,6 +130,7 @@ class WPB2D_BackupController
     {
         $manager = WPB2D_Extension_Manager::construct();
         $logger = WPB2D_Factory::get('logger');
+        $dbBackup = WPB2D_Factory::get('databaseBackup');
 
         $this->config->set_time_limit();
         $this->config->set_memory_limit();
@@ -145,23 +143,24 @@ class WPB2D_BackupController
                 return;
             }
 
-            if ($this->output->start()) {
-                //Create the SQL backups
-
-                if (!$this->db_core->exists() || !$this->db_plugins->exists()) {
-                    $logger->log(__('Creating SQL backup.', 'wpbtd'));
-
-                    $this->db_core->execute();
-                    $this->db_plugins->execute();
-
-                    $logger->log(__('SQL backup complete. Starting file backup.', 'wpbtd'));
+            //Create the SQL backups
+            $dbStatus = $dbBackup->get_status();
+            if ($dbStatus == WPB2D_DatabaseBackup::NOT_STARTED) {
+                if ($dbStatus == WPB2D_DatabaseBackup::IN_PROGRESS) {
+                    $logger->log(__('Resuming SQL backup.', 'wpbtd'));
+                } else {
+                    $logger->log(__('Starting SQL backup.', 'wpbtd'));
                 }
 
+                $dbBackup->execute();
+
+                $logger->log(__('SQL backup complete. Starting file backup.', 'wpbtd'));
+            }
+
+            if ($this->output->start()) {
+
                 //Backup the content dir first
-                $processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), array(
-                    $this->db_core->get_file(),
-                    $this->db_plugins->get_file()
-                ));
+                $processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), $dbBackup->get_files());
 
                 //Now backup the blog root
                 $processed_files += $this->backup_path(get_sanitized_home_path());
@@ -215,10 +214,11 @@ class WPB2D_BackupController
 
     public function backup_now()
     {
-        if (defined('WPB2D_TEST_MODE'))
+        if (defined('WPB2D_TEST_MODE')) {
             execute_drobox_backup();
-        else
+        } else {
             wp_schedule_single_event(time(), 'execute_instant_drobox_backup');
+        }
     }
 
     public function stop()
@@ -229,8 +229,7 @@ class WPB2D_BackupController
 
     private function clean_up()
     {
-        $this->db_core->remove_file();
-        $this->db_plugins->remove_file();
+        WPB2D_Factory::get('databaseBackup')->remove_files();
     }
 
     private static function create_silence_file()

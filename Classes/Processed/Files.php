@@ -20,6 +20,16 @@
  */
 class WPB2D_Processed_Files extends WPB2D_Processed_Base
 {
+    protected function getTableName()
+    {
+        return 'files';
+    }
+
+    protected function getId()
+    {
+        return 'file';
+    }
+
     public function get_file_count()
     {
         return count($this->processed);

@@ -33,8 +33,8 @@ class WPB2D_Processed_TablesTest extends PHPUnit_Framework_TestCase
     public function testUpdateTableNew()
     {
         $table_two = new stdClass;
-        $table_two->dbtable = 'table_two';
-        $table_two->dbrow = 99;
+        $table_two->name = 'table_two';
+        $table_two->count = -1;
 
         $db = Mockery::mock('DB')
             ->shouldReceive('get_results')
@@ -43,13 +43,13 @@ class WPB2D_Processed_TablesTest extends PHPUnit_Framework_TestCase
             ->once()
 
             ->shouldReceive('prepare')
-            ->with("SELECT * FROM wp_wpb2d_processed_dbtables WHERE dbtable = %s", "table_one")
+            ->with("SELECT * FROM wp_wpb2d_processed_dbtables WHERE name = %s", "table_one")
             ->once()
 
             ->shouldReceive('insert')
             ->with("wp_wpb2d_processed_dbtables", array(
-                'dbtable' => 'table_one',
-                'dbrow' => 4,
+                'name' => 'table_one',
+                'count' => -1,
             ))
             ->once()
 
@@ -65,20 +65,20 @@ class WPB2D_Processed_TablesTest extends PHPUnit_Framework_TestCase
 
         $p = new WPB2D_Processed_DBTables();
 
-        $this->assertTrue($p->is_processed('table_two'));
-        $this->assertFalse($p->is_processed('table_one'));
+        $this->assertFalse($p->is_complete('table_one'));
+        $this->assertTrue($p->is_complete('table_two'));
 
-        $p->update_table('table_one', 4);
+        $p->update_table('table_one', -1);
 
-        $this->assertTrue($p->is_processed('table_one'));
-        $this->assertTrue($p->is_processed('table_two'));
+        $this->assertTrue($p->is_complete('table_one'));
+        $this->assertTrue($p->is_complete('table_two'));
     }
 
     public function testUpdateTableUpdate()
     {
         $table_two = new stdClass;
-        $table_two->dbtable = 'table_two';
-        $table_two->dbrow = 99;
+        $table_two->name = 'table_two';
+        $table_two->count = 4;
 
         $db = Mockery::mock('DB')
             ->shouldReceive('get_results')
@@ -87,17 +87,17 @@ class WPB2D_Processed_TablesTest extends PHPUnit_Framework_TestCase
             ->once()
 
             ->shouldReceive('prepare')
-            ->with("SELECT * FROM wp_wpb2d_processed_dbtables WHERE dbtable = %s", "table_two")
+            ->with("SELECT * FROM wp_wpb2d_processed_dbtables WHERE name = %s", "table_two")
             ->once()
 
             ->shouldReceive('update')
             ->with(
                 "wp_wpb2d_processed_dbtables",
                 array(
-                    'dbtable' => 'table_two',
-                    'dbrow' => 4
+                    'name' => 'table_two',
+                    'count' => -1
                 ),
-                array('dbtable' => 'table_two')
+                array('name' => 'table_two')
             )
             ->once()
 
@@ -113,11 +113,12 @@ class WPB2D_Processed_TablesTest extends PHPUnit_Framework_TestCase
 
         $p = new WPB2D_Processed_DBTables();
 
-        $this->assertTrue($p->is_processed('table_two'));
+        $this->assertFalse($p->is_complete('table_two'));
+        $this->assertEquals(4, $p->get_table('table_two')->count);
 
-        $p->update_table('table_two', 4);
+        $p->update_table('table_two', -1);
 
-        $this->assertTrue($p->is_processed('table_two'));
-        $this->assertEquals(4, $p->get_table('table_two')->dbrow);
+        $this->assertTrue($p->is_complete('table_two'));
+        $this->assertEquals(-1, $p->get_table('table_two')->count);
     }
 }

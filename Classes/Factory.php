@@ -24,8 +24,6 @@ class WPB2D_Factory
         $objectCache = array(),
         $aliases = array(
             'dropbox' => 'DropboxFacade',
-            'db-core' => 'Database_Core',
-            'db-plugins' => 'Database_Plugins',
         );
 
     private static function getClassName($name)

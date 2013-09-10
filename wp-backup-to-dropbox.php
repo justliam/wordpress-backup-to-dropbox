@@ -292,9 +292,9 @@ function wpb2d_install()
 
     $table_name = $wpdb->prefix . 'wpb2d_processed_dbtables';
     dbDelta("CREATE TABLE $table_name (
-        dbtable varchar(255) NOT NULL,
-        dbrow int NOT NULL DEFAULT 0,
-        UNIQUE KEY dbtable (dbtable)
+        name varchar(255) NOT NULL,
+        count int NOT NULL DEFAULT 0,
+        UNIQUE KEY name (name)
     );");
 
     $table_name = $wpdb->prefix . 'wpb2d_excluded_files';

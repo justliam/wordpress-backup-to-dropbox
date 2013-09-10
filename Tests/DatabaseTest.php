@@ -18,18 +18,8 @@
  */
 require_once 'MockWordPressFunctions.php';
 
-class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
+class WPB2D_DatabaseBackupTest extends PHPUnit_Framework_TestCase
 {
-    private function assertOutput($actual, $expected)
-    {
-        $actual = explode("\n", file_get_contents($actual));
-        $expected = explode("\n", $expected);
-
-        for ($i = 0; $i < count($actual); $i++) {
-            $this->assertEquals($expected[$i], $actual[$i]);
-        }
-    }
-
     public function tearDown()
     {
         Mockery::close();
@@ -43,6 +33,11 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
         set_current_time('2012-03-12 00:00:00');
 
         @mkdir(__DIR__ . '/BackupTest/');
+
+        $files = glob(__DIR__ . '/BackupTest/*');
+        foreach ($files as $file) {
+            unlink($file);
+        }
 
         WPB2D_Factory::set('config', Mockery::mock('Config')
             ->shouldReceive('get_backup_dir')
@@ -67,18 +62,28 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
         return $tableData;
     }
 
-    public function testExecuteCore()
+    public function testExecute()
     {
         $db = Mockery::mock('wpdb')
 
             ->shouldReceive('query')
+            ->twice()
+
+            ->shouldReceive('tables')
+            ->andReturn(
+                array(
+                    1 => 'table1',
+                    2 => 'table2',
+                )
+            )
             ->once()
 
             ->shouldReceive('tables')
             ->andReturn(
                 array(
                     1 => 'table1',
-                    2 => 'table2'
+                    2 => 'table2',
+                    3 => 'table3',
                 )
             )
             ->once()
@@ -93,6 +98,11 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
             ->andReturn(array(1, $this->getCreateTable('table2')))
             ->once()
 
+            ->shouldReceive('get_row')
+            ->with('SHOW CREATE TABLE table3', ARRAY_N)
+            ->andReturn(array(1, $this->getCreateTable('table3')))
+            ->once()
+
             ->shouldReceive('get_var')
             ->with('SELECT COUNT(*) FROM table1')
             ->andReturn(0)
@@ -101,7 +111,7 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
             ->shouldReceive('get_var')
             ->with('SELECT COUNT(*) FROM table2')
             ->andReturn(20)
-            ->once()
+            ->twice()
 
             ->shouldReceive('get_results')
             ->with('SELECT * FROM table2 LIMIT 10 OFFSET 0', ARRAY_A)
@@ -111,65 +121,11 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
             ->shouldReceive('get_results')
             ->with('SELECT * FROM table2 LIMIT 10 OFFSET 10', ARRAY_A)
             ->andReturn($this->getTableData())
-            ->once()
-
-            ->mock();
-
-        $db->prefix = 'wp_';
-
-        WPB2D_Factory::set('db', $db);
-
-        $processed = Mockery::mock('Processed_DBTables')
-            ->shouldReceive('update_table')
-            ->mock()
-            ;
-
-        $backup = new WPB2D_Database_Core($processed);
-        $this->assertTrue($backup->execute());
-
-        $out = $backup->get_file();
-
-        $this->assertOutput($out, $this->getExpectedCoreDBDump());
-
-        unlink($out);
-    }
-
-    public function testExecutePlugins()
-    {
-        $db = Mockery::mock('wpdb')
-
-            ->shouldReceive('query')
-            ->once()
-
-            ->shouldReceive('tables')
-            ->andReturn(
-                array(
-                    1 => 'table1',
-                    2 => 'table2'
-                )
-            )
-            ->once()
-
-            ->shouldReceive('get_results')
-            ->with('SHOW TABLES', ARRAY_N)
-            ->andReturn(
-                array(
-                    array('table1'),
-                    array('table2'),
-                    array('table3'),
-                    array('table4'),
-                )
-            )
-            ->once()
-
-            ->shouldReceive('get_row')
-            ->with('SHOW CREATE TABLE table3', ARRAY_N)
-            ->andReturn(array(1, $this->getCreateTable('table3')))
-            ->once()
+            ->twice()
 
             ->shouldReceive('get_var')
             ->with('SELECT COUNT(*) FROM table3')
-            ->andReturn(5)
+            ->andReturn(10)
             ->once()
 
             ->shouldReceive('get_results')
@@ -177,41 +133,93 @@ class WPB2D_Database_Test extends PHPUnit_Framework_TestCase
             ->andReturn($this->getTableData())
             ->once()
 
-            ->shouldReceive('get_row')
-            ->with('SHOW CREATE TABLE table4', ARRAY_N)
-            ->andReturn(array(1, $this->getCreateTable('table4')))
-            ->once()
-
-            ->shouldReceive('get_var')
-            ->with('SELECT COUNT(*) FROM table4')
-            ->andReturn(5)
-            ->once()
-
-            ->shouldReceive('get_results')
-            ->with('SELECT * FROM table4 LIMIT 10 OFFSET 0', ARRAY_A)
-            ->andReturn($this->getTableData())
-            ->once()
-
             ->mock();
 
         $db->prefix = 'wp_';
 
         WPB2D_Factory::set('db', $db);
 
+        $table = new stdClass;
+        $table->count = 0;
+
+        $tableOne = new stdClass;
+        $tableOne->count = 1;
+
         $processed = Mockery::mock('Processed_DBTables')
             ->shouldReceive('update_table')
+
+            ->shouldReceive('get_table')
+            ->andReturn($table)
+
+            ->shouldReceive('is_complete')
+            ->andReturn(false)
+
             ->mock()
             ;
 
-        $backup = new WPB2D_Database_Plugins($processed);
-        $this->assertTrue($backup->execute());
+        $backup = new WPB2D_DatabaseBackup($processed);
+        $backup->execute();
 
-        $out = $backup->get_file();
+        $files = $backup->get_files();
 
-        $this->assertOutput($out, $this->getExpectedPluginDBDump());
+        $this->assertEquals(5, count($files));
 
-        unlink($out);
+        $i = 0;
+        foreach ($files as $file) {
+            $this->assertEquals($this->getExpectedOutput($i++), file_get_contents($file));
+        }
+
+        $processed = Mockery::mock('Processed_DBTables')
+            ->shouldReceive('update_table')
+
+            ->shouldReceive('is_complete')
+            ->with('header')
+            ->andReturn(true)
+            ->once()
+
+            ->shouldReceive('is_complete')
+            ->with('table1')
+            ->andReturn(true)
+            ->once()
+
+            ->shouldReceive('is_complete')
+            ->with('table2')
+            ->andReturn(false)
+            ->once()
+
+            ->shouldReceive('is_complete')
+            ->with('table3')
+            ->andReturn(false)
+            ->once()
+
+            ->shouldReceive('get_table')
+            ->with('table2')
+            ->andReturn($tableOne)
+            ->once()
+
+            ->shouldReceive('get_table')
+            ->with('table3')
+            ->andReturn($table)
+            ->once()
+
+            ->mock()
+            ;
+
+        $backup = new WPB2D_DatabaseBackup($processed);
+        $backup->execute();
+
+        $files = $backup->get_files();
+
+        $this->assertEquals(8, count($files));
+
+        $i = 0;
+        foreach ($files as $file) {
+            $this->assertEquals($this->getExpectedOutput($i++), file_get_contents($file));
+        }
+
+        $backup->remove_files();
     }
+
 
     private function getCreateTable($table)
     {
@@ -226,8 +234,11 @@ return "CREATE TABLE `$table` (\n" . <<<EOS
 EOS;
     }
 
-    private function getExpectedCoreDBDump()
+    private function getExpectedOutput($count)
     {
+        switch($count)
+        {
+            case 0:
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
 -- Version 99
@@ -248,6 +259,9 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 CREATE DATABASE IF NOT EXISTS TestDB;
 USE TestDB;
 
+EOS;
+            case 1:
+return <<<EOS
 --
 -- Table structure for table `table1`
 --
@@ -265,6 +279,9 @@ CREATE TABLE `table1` (
 -- Table `table1` is empty
 --
 
+EOS;
+            case 2:
+return <<<EOS
 --
 -- Table structure for table `table2`
 --
@@ -282,6 +299,9 @@ CREATE TABLE `table2` (
 -- Dumping data for table `table2`
 --
 
+EOS;
+            case 3:
+return <<<EOS
 INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5'),
@@ -293,45 +313,42 @@ INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5');
-
-INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
-
 
 EOS;
-    }
-
-        private function getExpectedPluginDBDump()
-    {
+            case 4:
 return <<<EOS
--- WordPress Backup to Dropbox SQL Dump
--- Version 99
--- http://wpb2d.com
--- Generation Time: March 12, 2012 at 00:00
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5');
 
-SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+EOS;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+            case 5:
+return <<<EOS
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5');
 
---
--- Create and use the backed up database
---
+EOS;
 
-CREATE DATABASE IF NOT EXISTS TestDB;
-USE TestDB;
-
+            case 6:
+return <<<EOS
 --
 -- Table structure for table `table3`
 --
@@ -349,6 +366,9 @@ CREATE TABLE `table3` (
 -- Dumping data for table `table3`
 --
 
+EOS;
+            case 7:
+return <<<EOS
 INSERT INTO `table3` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5'),
@@ -361,36 +381,7 @@ INSERT INTO `table3` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5');
 
---
--- Table structure for table `table4`
---
-
-CREATE TABLE `table4` (
-  `field1` varchar(255) default NULL,
-  `field2` varchar(255) default NULL,
-  `field3` varchar(255) default NULL,
-  `field4` varchar(255) default NULL,
-  `field5` varchar(255) default NULL,
-  PRIMARY KEY  (`field1`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `table4`
---
-
-INSERT INTO `table4` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
-
-
 EOS;
+        }
     }
 }

@@ -60,8 +60,7 @@ class WPB2D_BackupControllerTest extends PHPUnit_Framework_TestCase
         );
 
         WPB2D_Factory::set('dropbox', Mockery::mock('Dropbox'));
-        WPB2D_Factory::set('db-core', Mockery::mock('DB_Core'));
-        WPB2D_Factory::set('db-plugins', Mockery::mock('DB_Plugins'));
+        WPB2D_Factory::set('databaseBackup', Mockery::mock('DatabaseBackup'));
 
         $db = Mockery::mock('DB')
             ->shouldReceive('get_results')
@@ -316,14 +315,8 @@ class WPB2D_BackupControllerTest extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Factory::set('db-core', Mockery::mock('DB_Core')
-            ->shouldReceive('remove_file')
-            ->once()
-            ->mock()
-        );
-
-        WPB2D_Factory::set('db-plugins', Mockery::mock('DB_Plugins')
-            ->shouldReceive('remove_file')
+        WPB2D_Factory::set('databaseBackup', Mockery::mock('DatabaseBackupre')
+            ->shouldReceive('remove_files')
             ->once()
             ->mock()
         );

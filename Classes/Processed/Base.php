@@ -29,44 +29,36 @@ abstract class WPB2D_Processed_Base
     {
         $this->db = WPB2D_Factory::db();
 
-        $ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getType()}");
+        $ret = $this->db->get_results("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getTableName()}");
         if (is_array($ret)) {
             $this->processed = $ret;
         }
     }
 
-    protected function getType()
-    {
-        $bits = explode('_', get_class($this));
+    abstract protected function getTableName();
 
-        return strtolower(array_pop($bits));
-    }
-
-    protected function getId()
-    {
-        return rtrim($this->getType(), 's');
-    }
+    abstract protected function getId();
 
     protected function getVar($val)
     {
         return $this->db->get_var(
-            $this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getType()} WHERE {$this->getId()} = %s", $val)
+            $this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getTableName()} WHERE {$this->getId()} = %s", $val)
         );
     }
 
     protected function upsert($data)
     {
         $exists = $this->db->get_var(
-            $this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getType()} WHERE {$this->getId()} = %s", $data[$this->getId()])
+            $this->db->prepare("SELECT * FROM {$this->db->prefix}wpb2d_processed_{$this->getTableName()} WHERE {$this->getId()} = %s", $data[$this->getId()])
         );
 
         if (is_null($exists)) {
-            $this->db->insert("{$this->db->prefix}wpb2d_processed_{$this->getType()}", $data);
+            $this->db->insert("{$this->db->prefix}wpb2d_processed_{$this->getTableName()}", $data);
 
             $this->processed[] = (object)$data;
         } else {
             $this->db->update(
-                "{$this->db->prefix}wpb2d_processed_{$this->getType()}",
+                "{$this->db->prefix}wpb2d_processed_{$this->getTableName()}",
                 $data,
                 array($this->getId() => $data[$this->getId()])
             );
@@ -86,6 +78,6 @@ abstract class WPB2D_Processed_Base
 
     public function truncate()
     {
-        $this->db->query("TRUNCATE {$this->db->prefix}wpb2d_processed_{$this->getType()}");
+        $this->db->query("TRUNCATE {$this->db->prefix}wpb2d_processed_{$this->getTableName()}");
     }
 }

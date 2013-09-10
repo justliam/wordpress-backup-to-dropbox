@@ -46,6 +46,12 @@ $schedule = array();
 
 function wpb2d_autoload($className)
 {
+    global $wpb2d_dir;
+
+    if (!$wpb2d_dir) {
+        $wpb2d_dir = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR;
+    }
+
     $fileName = str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 
     if (preg_match('/^WPB2D/', $fileName)) {
@@ -56,7 +62,7 @@ function wpb2d_autoload($className)
         return false;
     }
 
-    $path = dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $fileName;
+    $path = $wpb2d_dir . DIRECTORY_SEPARATOR . $fileName;
 
     if (file_exists($path)) {
         require_once $path;
