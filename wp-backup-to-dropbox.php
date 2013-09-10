@@ -34,14 +34,11 @@ if (function_exists('spl_autoload_register')) {
     require_once 'Dropbox/Dropbox/OAuth/Consumer/ConsumerAbstract.php';
     require_once 'Dropbox/Dropbox/OAuth/Consumer/Curl.php';
 
-    require_once 'Classes/Database/Base.php';
-    require_once 'Classes/Database/Core.php';
-    require_once 'Classes/Database/Plugins.php';
-
     require_once 'Classes/Extension/Base.php';
     require_once 'Classes/Extension/Manager.php';
     require_once 'Classes/Extension/DefaultOutput.php';
 
+    require_once 'Classes/DatabaseBackup.php';
     require_once 'Classes/FileList.php';
     require_once 'Classes/DropboxFacade.php';
     require_once 'Classes/Config.php';
@@ -113,10 +110,11 @@ function backup_to_dropbox_admin_menu_contents()
 
     $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
-    if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0)
+    if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
         include 'Views/wpb2d-options.php';
-    else
+    } else {
         include 'Views/wpb2d-deprecated.php';
+    }
 }
 
 /**
