@@ -160,14 +160,7 @@ class WPB2D_DatabaseBackupTest extends PHPUnit_Framework_TestCase
         $backup = new WPB2D_DatabaseBackup($processed);
         $backup->execute();
 
-        $files = $backup->get_files();
-
-        $this->assertEquals(5, count($files));
-
-        $i = 0;
-        foreach ($files as $file) {
-            $this->assertEquals($this->getExpectedOutput($i++), file_get_contents($file));
-        }
+        $this->assertEquals($this->getExpectedOutputOne(), file_get_contents($backup->get_file()));
 
         $processed = Mockery::mock('Processed_DBTables')
             ->shouldReceive('update_table')
@@ -208,16 +201,9 @@ class WPB2D_DatabaseBackupTest extends PHPUnit_Framework_TestCase
         $backup = new WPB2D_DatabaseBackup($processed);
         $backup->execute();
 
-        $files = $backup->get_files();
+        $this->assertEquals($this->getExpectedOutputOne() . $this->getExpectedOutputTwo(), file_get_contents($backup->get_file()));
 
-        $this->assertEquals(8, count($files));
-
-        $i = 0;
-        foreach ($files as $file) {
-            $this->assertEquals($this->getExpectedOutput($i++), file_get_contents($file));
-        }
-
-        $backup->remove_files();
+        $backup->clean_up();
     }
 
 
@@ -234,11 +220,8 @@ return "CREATE TABLE `$table` (\n" . <<<EOS
 EOS;
     }
 
-    private function getExpectedOutput($count)
+    private function getExpectedOutputOne()
     {
-        switch($count)
-        {
-            case 0:
 return <<<EOS
 -- WordPress Backup to Dropbox SQL Dump
 -- Version 99
@@ -259,9 +242,6 @@ SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 CREATE DATABASE IF NOT EXISTS TestDB;
 USE TestDB;
 
-EOS;
-            case 1:
-return <<<EOS
 --
 -- Table structure for table `table1`
 --
@@ -279,9 +259,6 @@ CREATE TABLE `table1` (
 -- Table `table1` is empty
 --
 
-EOS;
-            case 2:
-return <<<EOS
 --
 -- Table structure for table `table2`
 --
@@ -299,8 +276,36 @@ CREATE TABLE `table2` (
 -- Dumping data for table `table2`
 --
 
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5');
+
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5'),
+('value1', 'value2', 'value3', 'value4', 'value5');
+
+
 EOS;
-            case 3:
+    }
+
+    private function getExpectedOutputTwo()
+    {
 return <<<EOS
 INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
@@ -314,41 +319,6 @@ INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5');
 
-EOS;
-            case 4:
-return <<<EOS
-INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
-
-EOS;
-
-            case 5:
-return <<<EOS
-INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
-
-EOS;
-
-            case 6:
-return <<<EOS
 --
 -- Table structure for table `table3`
 --
@@ -366,9 +336,6 @@ CREATE TABLE `table3` (
 -- Dumping data for table `table3`
 --
 
-EOS;
-            case 7:
-return <<<EOS
 INSERT INTO `table3` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5'),
@@ -381,7 +348,7 @@ INSERT INTO `table3` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
 ('value1', 'value2', 'value3', 'value4', 'value5'),
 ('value1', 'value2', 'value3', 'value4', 'value5');
 
+
 EOS;
-        }
     }
 }

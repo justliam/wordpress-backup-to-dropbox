@@ -27,8 +27,7 @@ class WPB2D_DatabaseBackup
     const IN_PROGRESS = 2;
 
     private
-        $handle,
-        $count,
+        $temp,
         $database,
         $config
         ;
@@ -38,8 +37,6 @@ class WPB2D_DatabaseBackup
         $this->database = WPB2D_Factory::db();
         $this->config = WPB2D_Factory::get('config');
         $this->processed = $processed ? $processed : new WPB2D_Processed_DBTables();
-        $this->count = count($this->get_files());
-
         $this->set_wait_timeout();
     }
 
@@ -69,37 +66,26 @@ class WPB2D_DatabaseBackup
         }
     }
 
-    public function remove_files()
+    public function clean_up()
     {
-        foreach ($this->get_files() as $file) {
-            unlink($file);
-        }
+        unlink($this->get_file());
     }
 
-    public function get_files()
+    public function get_file()
     {
-        $files = glob($this->config->get_backup_dir() . '*wpb2d-secret-sql');
+        $file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup.sql";
 
-        if (is_array($files)) {
-            return $files;
+        $files = glob($file . '*');
+        if (isset($files[0])) {
+            return $files[0];
         }
 
-        return array();
+        return $file . '.' . WPB2D_Factory::secret(DB_NAME);
     }
 
     private function set_wait_timeout()
     {
         $this->database->query("SET SESSION wait_timeout=" . self::WAIT_TIMEOUT);
-    }
-
-    private function get_file()
-    {
-        $file = rtrim($this->config->get_backup_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . DB_NAME . "-backup-{$this->count}-" . WPB2D_Factory::secret(DB_NAME) . '-sql';
-
-        $this->handle = fopen($file, 'w');
-        if (!$this->handle) {
-            throw new Exception(__('Error creating sql dump file.', 'wpbtd'));
-        }
     }
 
     private function write_db_dump_header()
@@ -115,23 +101,23 @@ class WPB2D_DatabaseBackup
 
         $blog_time = strtotime(current_time('mysql'));
 
-        $this->write_to_file("-- WordPress Backup to Dropbox SQL Dump\n");
-        $this->write_to_file("-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n");
-        $this->write_to_file("-- http://wpb2d.com\n");
-        $this->write_to_file("-- Generation Time: " . date("F j, Y", $blog_time) . " at " . date("H:i", $blog_time) . "\n\n");
-        $this->write_to_file('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n");
+        $this->write_to_temp("-- WordPress Backup to Dropbox SQL Dump\n");
+        $this->write_to_temp("-- Version " . BACKUP_TO_DROPBOX_VERSION . "\n");
+        $this->write_to_temp("-- http://wpb2d.com\n");
+        $this->write_to_temp("-- Generation Time: " . date("F j, Y", $blog_time) . " at " . date("H:i", $blog_time) . "\n\n");
+        $this->write_to_temp('SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";' . "\n\n");
 
         //I got this out of the phpMyAdmin database dump to make sure charset is correct
-        $this->write_to_file("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n");
-        $this->write_to_file("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n");
-        $this->write_to_file("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n");
-        $this->write_to_file("/*!40101 SET NAMES utf8 */;\n\n");
+        $this->write_to_temp("/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;\n");
+        $this->write_to_temp("/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;\n");
+        $this->write_to_temp("/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;\n");
+        $this->write_to_temp("/*!40101 SET NAMES utf8 */;\n\n");
 
-        $this->write_to_file("--\n-- Create and use the backed up database\n--\n\n");
-        $this->write_to_file("CREATE DATABASE IF NOT EXISTS " . DB_NAME . ";\n");
-        $this->write_to_file("USE " . DB_NAME . ";\n");
+        $this->write_to_temp("--\n-- Create and use the backed up database\n--\n\n");
+        $this->write_to_temp("CREATE DATABASE IF NOT EXISTS " . DB_NAME . ";\n");
+        $this->write_to_temp("USE " . DB_NAME . ";\n\n");
 
-        $this->close_file();
+        $this->persist();
 
         $this->processed->update_table('header', -1);
     }
@@ -141,31 +127,27 @@ class WPB2D_DatabaseBackup
         $db_error = __('Error while accessing database.', 'wpbtd');
 
         if ($offset == 0) {
-            $this->get_file();
-
-            $this->write_to_file("--\n-- Table structure for table `$table`\n--\n\n");
+            $this->write_to_temp("--\n-- Table structure for table `$table`\n--\n\n");
 
             $table_create = $this->database->get_row("SHOW CREATE TABLE $table", ARRAY_N);
             if ($table_create === false) {
                 throw new Exception($db_error . ' (ERROR_3)');
             }
-            $this->write_to_file($table_create[1] . ";\n\n");
+            $this->write_to_temp($table_create[1] . ";\n\n");
         }
 
         $row_count = 0;
         $table_count = $this->database->get_var("SELECT COUNT(*) FROM $table");
         if ($table_count == 0) {
-            $this->write_to_file("--\n-- Table `$table` is empty\n--\n");
-            $this->close_file();
+            $this->write_to_temp("--\n-- Table `$table` is empty\n--\n\n");
+            $this->persist();
         } else {
             if ($offset == 0) {
-                $this->write_to_file("--\n-- Dumping data for table `$table`\n--\n");
-                $this->close_file();
+                $this->write_to_temp("--\n-- Dumping data for table `$table`\n--\n\n");
+                $this->persist();
             }
 
             for ($i = $offset; $i < $table_count; $i = $i + self::SELECT_QUERY_LIMIT) {
-
-                $this->get_file();
 
                 $table_data = $this->database->get_results("SELECT * FROM $table LIMIT " . self::SELECT_QUERY_LIMIT . " OFFSET $i", ARRAY_A);
                 if ($table_data === false) {
@@ -173,7 +155,7 @@ class WPB2D_DatabaseBackup
                 }
 
                 $fields = '`' . implode('`, `', array_keys($table_data[0])) . '`';
-                $this->write_to_file("INSERT INTO `$table` ($fields) VALUES\n");
+                $this->write_to_temp("INSERT INTO `$table` ($fields) VALUES\n");
 
                 $out = '';
                 foreach ($table_data as $data) {
@@ -187,7 +169,7 @@ class WPB2D_DatabaseBackup
                     $out .= rtrim($data_out, ' ,') . "),\n";
                     $row_count++;
                 }
-                $this->write_to_file(rtrim($out, ",\n") . ";\n");
+                $this->write_to_temp(rtrim($out, ",\n") . ";\n\n");
 
                 if ($row_count >= $table_count) {
                     $this->processed->update_table($table, -1); //Done
@@ -195,31 +177,38 @@ class WPB2D_DatabaseBackup
                     $this->processed->update_table($table, $row_count);
                 }
 
-                $this->close_file();
+                $this->persist();
             }
         }
     }
 
-    private function write_to_file($out)
+    private function write_to_temp($out)
     {
-        if (!$this->handle) {
-            $this->get_file();
+        if (!$this->temp) {
+            $this->temp = fopen('php://temp', 'rw');
         }
 
-        if (fwrite($this->handle, $out) === false) {
-            throw new Exception(__('Error writing to sql dump file.', 'wpbtd'));
+        if (fwrite($this->temp, $out) === false) {
+            throw new Exception(__('Error writing to php://temp.', 'wpbtd'));
         }
     }
 
-    private function close_file()
+    private function persist()
     {
-        if (!fclose($this->handle)) {
+        $fh = fopen($this->get_file(), 'a');
+
+        fseek($this->temp, 0);
+
+        fwrite($fh, stream_get_contents($this->temp));
+
+        if (!fclose($fh)) {
             throw new Exception(__('Error closing sql dump file.', 'wpbtd'));
         }
 
-        $this->handle = null;
-        $this->count++;
+        if (!fclose($this->temp)) {
+            throw new Exception(__('Error closing php://temp.', 'wpbtd'));
+        }
 
-        return true;
+        $this->temp = null;
     }
 }
