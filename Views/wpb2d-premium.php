@@ -63,7 +63,10 @@ function wpb2d_products($manager, $type)
             <div class="product-box--<?php echo $extension['type'] ?> product-box--<?php echo $extension['type'] . "--$i" ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
                 <div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
                 <div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
-                <div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
+
+                <?php if (!is_int($extension['expiry'])): ?>
+                    <div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
+                <?php endif; ?>
 
                 <?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || in_array($extension['type'], array('multi', 'bundle')))): ?>
                     <span class="product-box__tick">&#10004;</span>
