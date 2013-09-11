@@ -25,7 +25,7 @@ if (isset($_REQUEST['error'])) {
 }
 
 if (isset($_REQUEST['title'])) {
-    add_settings_error('general', 'wpb2d_purchase_success', sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>"), 'updated');
+    add_settings_error('general', 'wpb2d_premium_success', sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>"), 'updated');
 }
 
 if (isset($_POST['name'])) {
@@ -33,6 +33,8 @@ if (isset($_POST['name'])) {
         $ext = $manager->install($_POST['name']);
         $slug = $manager->get_menu_slug($ext);
         $title = $ext->get_menu();
+
+        add_settings_error('general', 'wpb2d_premium_success', __("Installation successful. Please configure the extension from it's menu item.", 'wpbtd'), 'updated');
 
         ?><script type='text/javascript'>
             jQuery(document).ready(function ($) {
@@ -44,57 +46,58 @@ if (isset($_POST['name'])) {
     }
 }
 
-function wpb2d_products($manager, $type)
+try {
+    $extensions = $manager->get_extensions();
+} catch (Exception $e) {
+    add_settings_error('error', 'wpb2d_premium_error', $e->getMessage(), 'error');
+}
+
+function wpb2d_products($manager, $type, $extensions)
 {
-    try {
-        $extensions = $manager->get_extensions();
-        $installUrl = $manager->get_install_url();
-        $buyUrl = $manager->get_buy_url();
+    $installUrl = $manager->get_install_url();
+    $buyUrl = $manager->get_buy_url();
 
-        if (!is_array($extensions)) {
-            return;
+    if (!is_array($extensions)) {
+        return;
+    }
+
+    $i = 0;
+    foreach ($extensions as $extension) {
+        if (!in_array($extension['type'], $type)) {
+            continue;
         }
+        ?>
+        <div class="product-box--<?php echo $extension['type'] ?> product-box--<?php echo $extension['type'] . "--$i" ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
+            <div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
+            <div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
 
-        $i = 0;
-        foreach ($extensions as $extension) {
-            if (!in_array($extension['type'], $type)) {
-                continue;
-            }
-            ?>
-            <div class="product-box--<?php echo $extension['type'] ?> product-box--<?php echo $extension['type'] . "--$i" ?> <?php if ($i++ == 0) echo 'product-box--no-margin' ?>">
-                <div class="product-box__title wp-menu-name"><?php echo esc_attr($extension['name']) ?></div>
-                <div class="product-box__subtitle"><?php echo esc_attr($extension['description']) ?></div>
+            <?php if (!is_int($extension['expiry'])): ?>
+                <div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
+            <?php endif; ?>
 
-                <?php if (!is_int($extension['expiry'])): ?>
-                    <div class="product-box__price">$<?php echo esc_attr($extension['price']) ?> USD</div>
+            <?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || in_array($extension['type'], array('multi', 'bundle')))): ?>
+                <span class="product-box__tick">&#10004;</span>
+                <?php if ($type == 'single'): ?>
+                    <span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd') ?></span>
                 <?php endif; ?>
+            <?php else: ?>
+                <div class="product-box__button">
+                    <form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
+                        <input type="hidden" value="<?php echo WPB2D_Extension_Manager::API_KEY ?>" name="apikey" />
+                        <input type="hidden" value="<?php echo esc_attr($extension['name']) ?>" name="name" />
+                        <input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
+                        <input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now') ?>" class="submitBtn" />
+                    </form>
+                </div>
+            <?php endif; ?>
 
-                <?php if (is_int($extension['expiry']) && ($manager->is_installed($extension['name']) || in_array($extension['type'], array('multi', 'bundle')))): ?>
-                    <span class="product-box__tick">&#10004;</span>
-                    <?php if ($type == 'single'): ?>
-                        <span class="product-box__message"><?php _e('Installed and up-to-date', 'wpbtd') ?></span>
-                    <?php endif; ?>
-                <?php else: ?>
-                    <div class="product-box__button">
-                        <form action="<?php echo is_int($extension['expiry']) ? $installUrl : $buyUrl ?>" method="post" id="extension-<?php echo esc_attr($extension['name']) ?>">
-                            <input type="hidden" value="<?php echo WPB2D_Extension_Manager::API_KEY ?>" name="apikey" />
-                            <input type="hidden" value="<?php echo esc_attr($extension['name']) ?>" name="name" />
-                            <input type="hidden" value="<?php echo get_site_url() ?>" name="site" />
-                            <input class="button-primary" type="submit" value="<?php echo is_int($extension['expiry']) ? __('Install Now') : __('Buy Now') ?>" class="submitBtn" />
-                        </form>
-                    </div>
-                <?php endif; ?>
-
-                <?php if ($extension['expiry'] == 'expired' && $extension['type'] == 'single'): ?>
-                    <div class="product-box__alert"><?php _e('Your annual updates have expired. Please make a new purchase to renew.') ?></div>
-                <?php elseif (is_int($extension['expiry'])): ?>
-                    <div class="product-box__alert"><?php echo __('Expires on', 'wpbtd') . ' ' . date_i18n(get_option('date_format'), $extension['expiry']) ?></div>
-                <?php endif; ?>
-            </div>
-            <?php
-        }
-    } catch (Exception $e) {
-        echo '<p class="error">' . $e->getMessage() . '</p>';
+            <?php if ($extension['expiry'] == 'expired' && $extension['type'] == 'single'): ?>
+                <div class="product-box__alert"><?php _e('Your annual updates have expired. Please make a new purchase to renew.') ?></div>
+            <?php elseif (is_int($extension['expiry'])): ?>
+                <div class="product-box__alert"><?php echo __('Expires on', 'wpbtd') . ' ' . date_i18n(get_option('date_format'), $extension['expiry']) ?></div>
+            <?php endif; ?>
+        </div>
+        <?php
     }
 }
 ?>
@@ -131,13 +134,15 @@ function wpb2d_products($manager, $type)
         <img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
     </div>
 
+    <p></p>
+
     <div id="tabs">
         <ul>
             <li><a href="#single-site-tab">Singe site</a></li>
             <li><a href="#multi-site-tab">Multiple sites</a></li>
         </ul>
         <div id="single-site-tab">
-            <?php wpb2d_products($manager, array('single', 'bundle')); ?>
+            <?php wpb2d_products($manager, array('single', 'bundle'), $extensions); ?>
             <p class="note_paragraph">
                 <strong><?php _e('Please Note:') ?></strong>&nbsp;
                 <?php echo sprintf(__('Each payment includes updates and support on a single website for one year.', 'wpbtd')) ?>
@@ -152,7 +157,7 @@ function wpb2d_products($manager, $type)
                     Each plan includes updates and support for one year and you can update your limit at any time.
                 ', 'wpbtd')); ?>
             </p>
-            <?php wpb2d_products($manager, array('multi')); ?>
+            <?php wpb2d_products($manager, array('multi'), $extensions); ?>
         </div>
     </div>
 </div>
