@@ -119,10 +119,10 @@ class WPB2D_Extension_Manager
         $download_file = download_url("{$this->get_url(true)}/download?" . http_build_query($params));
 
         if (is_wp_error($download_file)) {
-            $errorMsg = $download_file->get_error_message();
+            $errorMsg = strtolower($download_file->get_error_message());
             if ($errorMsg == 'Forbidden') {
                 $errorMsg = __('access is deined, this could be because your payment has expired.', 'wpbtd');
-            } else {
+            } elseif (!$errorMsg) {
                 $errorMsg = __('you have exceeded your download limit for this extension on this site.', 'wpbtd');
             }
 

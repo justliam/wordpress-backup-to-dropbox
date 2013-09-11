@@ -20,12 +20,13 @@
  */
 $manager = WPB2D_Factory::get('extension-manager');
 
-$error = $title = null;
-if (isset($_REQUEST['error']))
-    $error = sprintf(__('There was an error with your payment, please contact %s to resolve.', 'wpbtd'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>');
+if (isset($_REQUEST['error'])) {
+    add_settings_error('error', 'wpb2d_premium_error', sprintf(__('There was an error with your payment, please contact %s to resolve.', 'wpbtd'), '<a href="mailto:michael.dewildt@gmail.com">Mikey</a>'), 'error');
+}
 
-if (isset($_REQUEST['title']))
-    $success = sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>");
+if (isset($_REQUEST['title'])) {
+    add_settings_error('general', 'wpb2d_purchase_success', sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>"), 'updated');
+}
 
 if (isset($_POST['name'])) {
     try {
@@ -39,7 +40,7 @@ if (isset($_POST['name'])) {
             });
         </script><?php
     } catch (Exception $e) {
-        $error = $e->getMessage();
+        add_settings_error('error', 'wpb2d_premium_error', $e->getMessage(), 'error');
     }
 }
 
@@ -108,6 +109,9 @@ function wpb2d_products($manager, $type)
                                  alt="WordPress Backup to Dropbox Logo"></div>
     <h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
     <p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
+
+    <?php settings_errors(); ?>
+
     <h3><?php _e('Premium Extensions', 'wpbtd'); ?> <small class="heading--inline"><?php echo sprintf(__('powered by %s', 'wpbtd'), '<a href="http://extendy.com">Extendy</a>'); ?></small></h3>
     <div>
         <p>
@@ -125,18 +129,6 @@ function wpb2d_products($manager, $type)
         </a>
 
         <img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
-    </div>
-
-    <div class="errors">
-        <?php if ($error): ?>
-            <p class="error">
-                <?php echo esc_attr($error) ?>
-            </p>
-        <?php elseif (isset($success)): ?>
-            <p class="success">
-                <?php echo $success ?>
-            </p>
-        <?php endif; ?>
     </div>
 
     <div id="tabs">
