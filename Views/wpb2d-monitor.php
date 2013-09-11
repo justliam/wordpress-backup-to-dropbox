@@ -24,10 +24,15 @@ $backup = new WPB2D_BackupController();
 if (array_key_exists('stop_backup', $_POST)) {
     check_admin_referer('backup_to_dropbox_monitor_stop');
     $backup->stop();
+
+    add_settings_error('wpb2d_monitor', 'backup_stopped', __('Backup stopped.', 'wpbtd'), 'updated');
+
 } elseif (array_key_exists('start_backup', $_POST)) {
     check_admin_referer('backup_to_dropbox_monitor_stop');
     $backup->backup_now();
     $started = true;
+
+    add_settings_error('wpb2d_monitor', 'backup_started', __('Backup started.', 'wpbtd'), 'updated');
 }
 
 ?>
@@ -66,7 +71,10 @@ if (array_key_exists('stop_backup', $_POST)) {
                                  alt="WordPress Backup to Dropbox Logo"></div>
     <h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
     <p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
-    <h3><?php _e('Backup Log', 'wpbtd'); ?></h3>
+
+    <?php settings_errors(); ?>
+
+    <h3><?php _e('Backup Monitor', 'wpbtd'); ?></h3>
     <div id="progress">
         <div id="circleG">
             <div id="circleG_1" class="circleG"></div>
