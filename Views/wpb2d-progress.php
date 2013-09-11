@@ -37,7 +37,7 @@ if (empty($log)): ?>
                 echo esc_attr($log_item);
             ?>
             <?php if (!empty($files)): ?>
-                <a class="view-files" href="#"><?php _e('View uploaded files', 'wpbtd') ?>&raquo;</a>
+                <a class="view-files" href="#"><?php _e('View uploaded', 'wpbtd') ?> &raquo;</a>
                 <ul class="files">
                     <?php foreach ($files as $file): ?>
                         <li title="<?php echo sprintf(__('Last modified: %s', 'wpbtd'), date('F j, Y, H:i:s', $file['mtime'])) ?>"><?php echo esc_attr($file['file']) ?></li>

@@ -53,14 +53,11 @@ class WPB2D_BackupController
         $next_check = time() + 5;
         $total_files = $this->config->get_option('total_file_count');
 
-        if ($total_files < 1800) {
-            //I doub't very much a wp installation can get smaller then this
-            $total_files = 1800;
-        }
-
         $processed_files = WPB2D_Factory::get('processed-files');
 
         $processed_file_count = $processed_files->get_file_count();
+
+        $last_percent = 0;
 
         if (file_exists($path)) {
             $source = realpath($path);
@@ -71,18 +68,32 @@ class WPB2D_BackupController
                 if (time() > $next_check) {
                     $this->config->die_if_stopped();
 
-                    $percent_done = round(($processed_file_count / $total_files) * 100, 0);
-                    if ($percent_done > 99) {
-                        $percent_done = 99;
-                    }
-
-                    if ($percent_done < 1) {
-                        $percent_done = 1;
-                    }
-
                     $processed_files->add_files($current_processed_files);
+                    $msg = null;
 
-                    WPB2D_Factory::get('logger')->log(sprintf(__('Approximately %s%% complete.', 'wpbtd'),	$percent_done), $uploaded_files);
+                    if ($processed_file_count > 1) {
+                        $msg = sprintf(__('Processed %s files.', 'wpbtd'), $processed_file_count);
+                    } elseif ($processed_file_count > 0) {
+                        $msg = sprintf(__('Processed 1 file.', 'wpbtd'), $processed_file_count);
+                    }
+
+                    if ($total_files > 0) {
+                        $percent_done = round(($processed_file_count / $total_files) * 100, 0);
+                        if ($percent_done < 100) {
+                            if ($percent_done < 1) {
+                                $percent_done = 1;
+                            }
+
+                            if ($percent_done > $last_percent) {
+                                $msg .= ' ' . sprintf(__('Approximately %s%% complete.', 'wpbtd'), $percent_done);
+                                $last_percent = $percent_done;
+                            }
+                        }
+                    }
+
+                    if ($msg) {
+                        WPB2D_Factory::get('logger')->log($msg, $uploaded_files);
+                    }
 
                     $next_check = time() + 5;
                     $uploaded_files = $current_processed_files = array();
