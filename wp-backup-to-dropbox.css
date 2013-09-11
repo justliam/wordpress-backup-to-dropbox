@@ -40,14 +40,6 @@
 	display: none;
 }
 
-.error {
-	color: red;
-}
-
-.success {
-	color: green;
-}
-
 #progress {
 	max-height: 400px;
 	overflow-y: scroll;
@@ -234,7 +226,6 @@ ul {
 .product-box--single {
 	margin: 10px 0 10px 10px;
 	float: left;
-	min-height: 182px;
 }
 
 .product-box--bundle {

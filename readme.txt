@@ -146,6 +146,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Updated the Email Extension to use wp_mail so it will use setting set by other plugins like WP SMTP
 * Added a time stamp to Zips generated with the Zip Extension
 * Improved logging and estimation of percent complete
+* Add 'Settings saved' message and use default WP errors
 
 = 1.6.1 =
 * Added [Extendy](http://extendy.com) and improved extension installation user interface that fixes a few bugs and adds the ability to renew and buy bundles.

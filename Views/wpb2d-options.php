@@ -40,7 +40,8 @@ try {
         check_admin_referer('backup_to_dropbox_options_save');
 
         if (preg_match('/[^A-Za-z0-9-_.\/]/', $_POST['dropbox_location'])) {
-            $error_msg = __('The sub directory must only contain alphanumeric characters.', 'wpbtd');
+            add_settings_error('subfolder', 'invalid_subfolder', __('The sub directory must only contain alphanumeric characters.', 'wpbtd'), 'error');
+
             $dropbox_location = $_POST['dropbox_location'];
             $store_in_subfolder = true;
         } else {
@@ -48,6 +49,8 @@ try {
                 ->set_schedule($_POST['day'], $_POST['time'], $_POST['frequency'])
                 ->set_option('store_in_subfolder', $_POST['store_in_subfolder'] == "on")
                 ->set_option('dropbox_location', $_POST['dropbox_location']);
+
+            add_settings_error('general', 'settings_updated', __('Settings saved.'), 'updated');
         }
     } elseif (array_key_exists('unlink', $_POST)) {
         check_admin_referer('backup_to_dropbox_options_save');
@@ -63,7 +66,7 @@ try {
         $frequency = 'weekly';
     }
 
-    if (!isset($error_msg)) {
+    if (!get_settings_errors()) {
         $dropbox_location = $config->get_option('dropbox_location');
         $store_in_subfolder = $config->get_option('store_in_subfolder');
     }
@@ -141,6 +144,9 @@ try {
                              alt="Wordpress Backup to Dropbox Logo"></div>
 <h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
 <p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
+
+    <?php settings_errors(); ?>
+
     <?php if ($dropbox->is_authorized()) {
         $account_info = $dropbox->get_account_info();
         $used = round(($account_info->quota_info->quota - ($account_info->quota_info->normal + $account_info->quota_info->shared)) / 1073741824, 1);
@@ -207,10 +213,6 @@ try {
                 <span class="dropbox_location <?php if (!$store_in_subfolder) echo 'hide' ?>">
                     <input name="dropbox_location" type="text" id="dropbox_location"
                            value="<?php echo $dropbox_location; ?>" class="regular-text code">
-                    <?php if (isset($error_msg)) { ?>
-                    <br/><span class="description"
-                               style="color: red"><?php echo $error_msg ?></span>
-                    <?php } ?>
                 </span>
             </td>
         </tr>
