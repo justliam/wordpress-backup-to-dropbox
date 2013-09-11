@@ -191,12 +191,12 @@ class WPB2D_Extension_Manager
 
     public function get_menu_slug($obj)
     {
-        return 'backup-to-dropbox-' . str_replace('_', '-', strtolower(get_class($obj)));
+        return str_replace('_', '-', strtolower(get_class($obj)));
     }
 
     public function get_menu_func($obj)
     {
-        return 'backup_to_dropbox_' . strtolower(get_class($obj));
+        return strtolower(get_class($obj));
     }
 
     private function call($func)
