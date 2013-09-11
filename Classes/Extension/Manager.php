@@ -38,7 +38,7 @@ class WPB2D_Extension_Manager
 
         if (is_array($extensions)) {
             foreach ($extensions as $name => $file) {
-                if (file_exists($file)) {
+                if (file_exists(EXTENSIONS_DIR . $file)) {
 
                     //Support for pre PHP 5.3
                     if (!function_exists('spl_autoload_register')) {
