@@ -75,7 +75,9 @@ class WPB2D_DatabaseBackup
 
     public function clean_up()
     {
-        unlink($this->get_file());
+        if (file_exists($this->get_file())) {
+            unlink($this->get_file());
+        }
     }
 
     public function get_file()
