@@ -38,14 +38,17 @@ if (function_exists('spl_autoload_register')) {
     require_once 'Classes/Extension/Manager.php';
     require_once 'Classes/Extension/DefaultOutput.php';
 
+    require_once 'Classes/Processed/Base.php';
+    require_once 'Classes/Processed/Files.php';
+    require_once 'Classes/Processed/DBTables.php';
+
     require_once 'Classes/DatabaseBackup.php';
     require_once 'Classes/FileList.php';
     require_once 'Classes/DropboxFacade.php';
     require_once 'Classes/Config.php';
     require_once 'Classes/BackupController.php';
     require_once 'Classes/Logger.php';
-    require_once 'Classes/ProcessedFiles.php';
-    require_once 'Classes/Registry.php';
+    require_once 'Classes/Factory.php';
     require_once 'Classes/UploadTracker.php';
 }
 
