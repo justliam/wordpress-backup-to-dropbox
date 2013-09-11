@@ -44,11 +44,17 @@ class WPB2D_DatabaseBackup
     {
         if ($this->processed->count_complete() == 0) {
             return self::NOT_STARTED;
-        } elseif ($this->processed->count_complete() == count(array_values($this->database->tables()))) {
-            return self::IN_PROGRESS;
-        } else {
-            return self::COMPLETE;
         }
+
+        $count = $this->database->get_var(
+            $this->database->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = %s", DB_NAME)
+        );
+
+        if ($this->processed->count_complete() < $count) {
+            return self::IN_PROGRESS;
+        }
+
+        return self::COMPLETE;
     }
 
     public function execute()
