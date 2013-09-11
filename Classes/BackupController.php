@@ -197,8 +197,8 @@ class WPB2D_BackupController
 
             //Process the log file using the default backup output
             $root = false;
-            if (get_class($this->output) != 'WPB2D_Output') {
-                $this->output = new WPB2D_Output();
+            if (get_class($this->output) != 'WPB2D_Extension_DefaultOutput') {
+                $this->output = new WPB2D_Extension_DefaultOutput();
                 $root = true;
             }
 
