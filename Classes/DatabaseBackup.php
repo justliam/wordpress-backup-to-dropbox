@@ -63,9 +63,10 @@ class WPB2D_DatabaseBackup
             $this->write_db_dump_header();
         }
 
-        $tables = array_values($this->database->tables());
+        $tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
 
-        foreach ($tables as $table) {
+        foreach ($tables as $t) {
+            $table = $t[0];
             if (!$this->processed->is_complete($table)) {
                 $this->backup_database_table($table, $this->processed->get_table($table)->count * self::SELECT_QUERY_LIMIT);
             }
