@@ -20,9 +20,12 @@
  */
 class WPB2D_BackupController
 {
-    private $dropbox;
-    private $config;
-    private $output;
+    private
+        $dropbox,
+        $config,
+        $output,
+        $processed_file_count
+        ;
 
     public static function construct()
     {
@@ -55,7 +58,7 @@ class WPB2D_BackupController
 
         $processed_files = WPB2D_Factory::get('processed-files');
 
-        $processed_file_count = $processed_files->get_file_count();
+        $this->processed_file_count = $processed_files->get_file_count();
 
         $last_percent = 0;
 
@@ -71,14 +74,12 @@ class WPB2D_BackupController
                     $processed_files->add_files($current_processed_files);
                     $msg = null;
 
-                    if ($processed_file_count > 1) {
-                        $msg = sprintf(__('Processed %s files.', 'wpbtd'), $processed_file_count);
-                    } elseif ($processed_file_count > 0) {
-                        $msg = sprintf(__('Processed 1 file.', 'wpbtd'), $processed_file_count);
+                    if ($this->processed_file_count > 0) {
+                        $msg = _n(__('Processed 1 file.', 'wpbtd'), sprintf(__('Processed %s files.', 'wpbtd'), $this->processed_file_count), $this->processed_file_count, 'wpbtd');
                     }
 
                     if ($total_files > 0) {
-                        $percent_done = round(($processed_file_count / $total_files) * 100, 0);
+                        $percent_done = round(($this->processed_file_count / $total_files) * 100, 0);
                         if ($percent_done < 100) {
                             if ($percent_done < 1) {
                                 $percent_done = 1;
@@ -129,11 +130,9 @@ class WPB2D_BackupController
                     }
 
                     $current_processed_files[] = $file;
-                    $processed_file_count++;
+                    $this->processed_file_count++;
                 }
             }
-
-            return $processed_file_count;
         }
     }
 
@@ -171,23 +170,23 @@ class WPB2D_BackupController
             if ($this->output->start()) {
 
                 //Backup the content dir first
-                $processed_files = $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), $dbBackup->get_file());
+                $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), $dbBackup->get_file());
 
                 //Now backup the blog root
-                $processed_files += $this->backup_path(get_sanitized_home_path());
+                $this->backup_path(get_sanitized_home_path());
 
                 //End any output extensions
                 $this->output->end();
 
                 //Record the number of files processed to make the progress meter more accurate
-                $this->config->set_option('total_file_count', $processed_files);
+                $this->config->set_option('total_file_count', $this->processed_file_count);
             }
 
             $manager->complete();
 
             //Update log file with stats
             $logger->log(__('Backup complete.', 'wpbtd'));
-            $logger->log(sprintf(__('A total of %s files were processed.', 'wpbtd'), $processed_files));
+            $logger->log(sprintf(__('A total of %s files were processed.', 'wpbtd'), $this->processed_file_count));
             $logger->log(sprintf(
                 __('A total of %dMB of memory was used to complete this backup.', 'wpbtd'),
                 (memory_get_usage(true) / 1048576)
