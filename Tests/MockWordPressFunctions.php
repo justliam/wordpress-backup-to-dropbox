@@ -196,9 +196,18 @@ function wp_get_schedule($key)
     return array_key_exists($key, $schedule) ? $schedule[$key][1] : false;
 }
 
-function __($str)
+function __($str, $domain)
 {
     return $str;
+}
+
+function _n($singular, $plural, $count, $domain)
+{
+    if ($count > 1) {
+        return $plural;
+    }
+
+    return $singular;
 }
 
 function set_current_time($time)

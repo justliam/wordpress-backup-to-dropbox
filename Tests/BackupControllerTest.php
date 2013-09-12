@@ -315,8 +315,8 @@ class WPB2D_BackupControllerTest extends PHPUnit_Framework_TestCase
             ->mock()
         );
 
-        WPB2D_Factory::set('databaseBackup', Mockery::mock('DatabaseBackupre')
-            ->shouldReceive('remove_files')
+        WPB2D_Factory::set('databaseBackup', Mockery::mock('DatabaseBackup')
+            ->shouldReceive('clean_up')
             ->once()
             ->mock()
         );
