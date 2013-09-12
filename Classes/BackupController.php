@@ -192,8 +192,6 @@ class WPB2D_BackupController
                 (memory_get_usage(true) / 1048576)
             ));
 
-            $this->output->clean_up();
-
             //Process the log file using the default backup output
             $root = false;
             if (get_class($this->output) != 'WPB2D_Extension_DefaultOutput') {
@@ -208,6 +206,8 @@ class WPB2D_BackupController
                 ->log_finished_time()
                 ;
 
+            $this->clean_up();
+
         } catch (Exception $e) {
             if ($e->getMessage() == 'Unauthorized') {
                 $logger->log(__('The plugin is no longer authorized with Dropbox.', 'wpbtd'));
@@ -218,8 +218,6 @@ class WPB2D_BackupController
             $manager->failure();
             $this->stop();
         }
-
-        $this->clean_up();
     }
 
     public function backup_now()
@@ -240,6 +238,7 @@ class WPB2D_BackupController
     private function clean_up()
     {
         WPB2D_Factory::get('databaseBackup')->clean_up();
+        WPB2D_Extension_Manager::construct()->get_output()->clean_up();
     }
 
     private static function create_silence_file()
