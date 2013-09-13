@@ -34,7 +34,7 @@ if (isset($_POST['name'])) {
         $slug = $manager->get_menu_slug($ext);
         $title = $ext->get_menu();
 
-        add_settings_error('general', 'wpb2d_premium_success', __("Installation successful. Please configure the extension from it's menu item.", 'wpbtd'), 'updated');
+        add_settings_error('general', 'wpb2d_premium_success', __('Installation successful. Please configure the extension from its menu item.', 'wpbtd'), 'updated');
 
         ?><script type='text/javascript'>
             jQuery(document).ready(function ($) {
