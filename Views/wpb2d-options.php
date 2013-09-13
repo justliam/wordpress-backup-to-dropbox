@@ -40,7 +40,7 @@ try {
         check_admin_referer('backup_to_dropbox_options_save');
 
         if (preg_match('/[^A-Za-z0-9-_.\/]/', $_POST['dropbox_location'])) {
-            add_settings_error('subfolder', 'invalid_subfolder', __('The sub directory must only contain alphanumeric characters.', 'wpbtd'), 'error');
+            add_settings_error('wpb2d_options', 'invalid_subfolder', __('The sub directory must only contain alphanumeric characters.', 'wpbtd'), 'error');
 
             $dropbox_location = $_POST['dropbox_location'];
             $store_in_subfolder = true;
@@ -66,7 +66,7 @@ try {
         $frequency = 'weekly';
     }
 
-    if (!get_settings_errors()) {
+    if (!get_settings_errors('wpb2d_options')) {
         $dropbox_location = $config->get_option('dropbox_location');
         $store_in_subfolder = $config->get_option('store_in_subfolder');
     }
