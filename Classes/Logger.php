@@ -25,6 +25,8 @@ class WPB2D_Logger
     public function log($msg, $files = null)
     {
         $fh = fopen($this->get_log_file(), 'a');
+
+        $msg = iconv('UTF-8', 'UTF-8//IGNORE', $msg);
         $log = sprintf("%s: %s", date('H:i:s', strtotime(current_time('mysql'))), $msg) . "\n";
 
         if (!empty($files)) {
