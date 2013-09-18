@@ -69,6 +69,8 @@ abstract class WPB2D_Extension_Base
         }
     }
 
+    protected function validate_option($key, $value) {}
+
     abstract public function start();
     abstract public function complete();
     abstract public function failure();
@@ -78,6 +80,4 @@ abstract class WPB2D_Extension_Base
     abstract public function get_type();
 
     abstract public function is_enabled();
-
-    abstract protected function validate_option($key, $value);
 }
