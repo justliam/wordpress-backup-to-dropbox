@@ -58,12 +58,6 @@ abstract class WPB2D_Extension_Base
         );
 
         foreach ($data as $key => $value) {
-            if ($value == 'on') {
-                $value = true;
-            } elseif ($value == 'off') {
-                $value = false;
-            }
-
             if (in_array($key, $exclude)) {
                 continue;
             }

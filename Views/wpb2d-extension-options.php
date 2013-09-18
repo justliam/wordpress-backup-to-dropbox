@@ -50,6 +50,9 @@ settings_errors();
                     <th scope="row">
                         <label for="<?php echo $form_item['name'] ?>"><?php echo $form_item['label'] ?></label></th>
                     <td>
+                        <?php if ($form_item['type'] == 'checkbox'): ?>
+                            <input type="hidden" value="0" name="<?php echo $form_item['name'] ?>">
+                        <?php endif; ?>
                         <input
                             name="<?php echo $form_item['name'] ?>"
                             type="<?php echo $form_item['type'] ?>"
@@ -62,9 +65,14 @@ settings_errors();
                                     }
                                 }
 
-                                if (isset($form_item['checked'])) {
-                                    echo 'checked="checked"';
+                                if ($form_item['type'] == 'checkbox') {
+                                    echo 'value="1"';
+
+                                    if ($form_item['checked']) {
+                                        echo 'checked="checked"';
+                                    }
                                 }
+
                             ?>
                         >
                     </td>
