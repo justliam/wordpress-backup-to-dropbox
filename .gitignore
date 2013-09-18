@@ -10,3 +10,4 @@ composer.phar
 
 Classes/Extension/EmailNotifications.php
 Classes/Extension/ZipBackup.php
+Classes/Extension/CronGuard.php

@@ -51,6 +51,10 @@ class WPB2D_Extension_Manager
         }
     }
 
+    public function get_instances() {
+        return $this->objectCache;
+    }
+
     public function get_url($api = false)
     {
         if (defined('WPB2D_URL')) {
@@ -168,15 +172,17 @@ class WPB2D_Extension_Manager
         return $this->get_instance('DefaultOutput');
     }
 
-    public function add_menu_items()
+    public function add_menu_item()
     {
-        foreach ($this->objectCache as $obj) {
-            $title = $obj->get_menu();
-            $slug = $this->get_menu_slug($obj);
-            $func = $this->get_menu_func($obj);
-
-            add_submenu_page('backup-to-dropbox', $title, $title, 'activate_plugins', $slug, $func);
+        if (count($this->objectCache)) {
+            $title = __('Extension Settings', 'wpbtd');
+            add_submenu_page('backup-to-dropbox', $title, $title, 'activate_plugins', 'wpb2d-extension-options', 'backup_to_dropbox_extension_options');
         }
+    }
+
+    public function start()
+    {
+        $this->call('start');
     }
 
     public function complete()

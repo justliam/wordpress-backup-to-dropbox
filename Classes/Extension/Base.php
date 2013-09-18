@@ -50,12 +50,40 @@ abstract class WPB2D_Extension_Base
         return CHUNKED_UPLOAD_THREASHOLD;
     }
 
+    public function update($data) {
+        $exclude = array(
+            'wpb2d_save_changes',
+            '_wpnonce',
+            '_wp_http_referer',
+        );
+
+        foreach ($data as $key => $value) {
+            if ($value == 'on') {
+                $value = true;
+            } elseif ($value == 'off') {
+                $value = false;
+            }
+
+            if (in_array($key, $exclude)) {
+                continue;
+            }
+
+            //Validate option will throw an exception if the value is invalid
+            $this->validate_option($key, $value);
+
+            $this->config->set_option($key, $value);
+        }
+    }
+
+    abstract public function start();
     abstract public function complete();
     abstract public function failure();
 
-    abstract public function get_menu();
+    abstract public function get_form_items();
+    abstract public function get_menu_title();
     abstract public function get_type();
 
     abstract public function is_enabled();
-    abstract public function set_enabled($bool);
+
+    abstract protected function validate_option($key, $value);
 }

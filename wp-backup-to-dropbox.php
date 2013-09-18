@@ -96,7 +96,7 @@ function backup_to_dropbox_admin_menu()
         $text = __('Backup Monitor', 'wpbtd');
         add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-monitor', 'backup_to_dropbox_monitor');
 
-        WPB2D_Extension_Manager::construct()->add_menu_items();
+        WPB2D_Extension_Manager::construct()->add_menu_item();
 
         $text = __('Premium Extensions', 'wpbtd');
         add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox-premium', 'backup_to_dropbox_premium');
@@ -142,6 +142,16 @@ function backup_to_dropbox_premium()
     wp_enqueue_script('jquery-ui-tabs');
 
     $view = 'premium';
+    include 'Views/wpb2d-template.php';
+}
+
+/**
+ * A wrapper function that includes the backup to Dropbox extension option page
+ * @return void
+ */
+function backup_to_dropbox_extension_options()
+{
+    $view = 'extension-options';
     include 'Views/wpb2d-template.php';
 }
 
