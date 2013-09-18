@@ -78,14 +78,13 @@ class WPB2D_Extension_DefaultOutput extends WPB2D_Extension_Base
         return true;
     }
 
-    public function end() {}
     public function complete() {}
     public function failure() {}
 
-    public function get_menu() {}
+    public function get_form_items() {}
+    public function get_menu_title() {}
     public function get_type() {}
 
     public function is_enabled() {}
-    public function set_enabled($bool) {}
     public function clean_up() {}
 }
