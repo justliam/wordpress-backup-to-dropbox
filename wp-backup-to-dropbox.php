@@ -109,15 +109,13 @@ function backup_to_dropbox_admin_menu()
  */
 function backup_to_dropbox_admin_menu_contents()
 {
-    wpb2d_style();
-
-    $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
-
     if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
-        include 'Views/wpb2d-options.php';
+        $view = 'options';
     } else {
-        include 'Views/wpb2d-deprecated.php';
+        $view = 'deprecated';
     }
+
+    include 'Views/wpb2d-template.php';
 }
 
 /**
@@ -126,13 +124,11 @@ function backup_to_dropbox_admin_menu_contents()
  */
 function backup_to_dropbox_monitor()
 {
-    wpb2d_style();
-
     if (!WPB2D_Factory::get('dropbox')->is_authorized()) {
         backup_to_dropbox_admin_menu_contents();
     } else {
-        $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
-        include 'Views/wpb2d-monitor.php';
+        $view = 'monitor';
+        include 'Views/wpb2d-template.php';
     }
 }
 
@@ -142,12 +138,11 @@ function backup_to_dropbox_monitor()
  */
 function backup_to_dropbox_premium()
 {
-    wpb2d_style();
     wp_enqueue_script('jquery-ui-core');
     wp_enqueue_script('jquery-ui-tabs');
 
-    $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
-    include 'Views/wpb2d-premium.php';
+    $view = 'premium';
+    include 'Views/wpb2d-template.php';
 }
 
 /**

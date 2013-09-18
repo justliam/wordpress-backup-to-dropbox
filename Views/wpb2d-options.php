@@ -73,7 +73,9 @@ try {
 
     $time = date('H:i', $unixtime);
     $day = date('D', $unixtime);
-    ?>
+
+    settings_errors();
+?>
 <link rel="stylesheet" type="text/css" href="<?php echo $uri ?>/JQueryFileTree/jqueryFileTree.css"/>
 <script src="<?php echo $uri ?>/JQueryFileTree/jqueryFileTree.js" type="text/javascript" language="javascript"></script>
 <script src="<?php echo $uri ?>/wp-backup-to-dropbox.js" type="text/javascript" language="javascript"></script>
@@ -138,14 +140,6 @@ try {
         document.getElementById('authorize').style.visibility = 'hidden';
     }
 </script>
-    <div class="wrap">
-    <div class="icon32"><img width="36px" height="36px"
-                             src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
-                             alt="Wordpress Backup to Dropbox Logo"></div>
-<h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
-<p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
-
-    <?php settings_errors(); ?>
 
     <?php if ($dropbox->is_authorized()) {
         $account_info = $dropbox->get_account_info();
@@ -383,4 +377,3 @@ try {
         $dropbox->unlink_account();
 }
 ?>
-</div>

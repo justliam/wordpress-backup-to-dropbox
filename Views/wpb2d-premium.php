@@ -100,64 +100,58 @@ function wpb2d_products($manager, $type, $extensions)
         <?php
     }
 }
+
+settings_errors();
+
 ?>
 <script type='text/javascript'>
     jQuery(document).ready(function ($) {
         $("#tabs").tabs();
     });
 </script>
-<div class="wrap premium">
-    <div class="icon32"><img width="36px" height="36px"
-                                 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
-                                 alt="WordPress Backup to Dropbox Logo"></div>
-    <h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
-    <p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
 
-    <?php settings_errors(); ?>
+<h3><?php _e('Premium Extensions', 'wpbtd'); ?> <small class="heading--inline"><?php echo sprintf(__('powered by %s', 'wpbtd'), '<a href="http://extendy.com">Extendy</a>'); ?></small></h3>
+<div>
+    <p>
+        <?php _e('Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd'); ?>
+        <?php _e('Installing a premium extensions is easy:', 'wpbtd'); ?>
+    </p>
+    <ol class="instructions">
+        <li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
+        <li><?php _e('Click Install Now to download and install the extension', 'wpbtd'); ?></li>
+        <li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
+        <li><?php _e('If you manage many websites, consider the multipe site options'); ?></li>
+    </ol>
+    <a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
+        <img  src="https://www.paypalobjects.com/en_AU/i/bnr/horizontal_solution_PP.gif" border="0" alt="Solution Graphics">
+    </a>
 
-    <h3><?php _e('Premium Extensions', 'wpbtd'); ?> <small class="heading--inline"><?php echo sprintf(__('powered by %s', 'wpbtd'), '<a href="http://extendy.com">Extendy</a>'); ?></small></h3>
-    <div>
-        <p>
-            <?php _e('Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd'); ?>
-            <?php _e('Installing a premium extensions is easy:', 'wpbtd'); ?>
+    <img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
+</div>
+
+<p></p>
+
+<div id="tabs">
+    <ul>
+        <li><a href="#single-site-tab">Singe site</a></li>
+        <li><a href="#multi-site-tab">Multiple sites</a></li>
+    </ul>
+    <div id="single-site-tab">
+        <?php wpb2d_products($manager, array('single', 'bundle'), $extensions); ?>
+        <p class="note_paragraph">
+            <strong><?php _e('Please Note:') ?></strong>&nbsp;
+            <?php echo sprintf(__('Each payment includes updates and support on a single website for one year.', 'wpbtd')) ?>
         </p>
-        <ol class="instructions">
-            <li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
-            <li><?php _e('Click Install Now to download and install the extension', 'wpbtd'); ?></li>
-            <li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
-            <li><?php _e('If you manage many websites, consider the multipe site options'); ?></li>
-        </ol>
-        <a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
-            <img  src="https://www.paypalobjects.com/en_AU/i/bnr/horizontal_solution_PP.gif" border="0" alt="Solution Graphics">
-        </a>
-
-        <img src="<?php echo $uri ?>/Images/guarantee.gif" alt="<?php _e('100% money back guarantee') ?>"/>
     </div>
 
-    <p></p>
-
-    <div id="tabs">
-        <ul>
-            <li><a href="#single-site-tab">Singe site</a></li>
-            <li><a href="#multi-site-tab">Multiple sites</a></li>
-        </ul>
-        <div id="single-site-tab">
-            <?php wpb2d_products($manager, array('single', 'bundle'), $extensions); ?>
-            <p class="note_paragraph">
-                <strong><?php _e('Please Note:') ?></strong>&nbsp;
-                <?php echo sprintf(__('Each payment includes updates and support on a single website for one year.', 'wpbtd')) ?>
-            </p>
-        </div>
-
-        <div id="multi-site-tab">
-            <p class="paragraph-block">
-                <?php echo sprintf(__('
-                    These plans are perfect for web developers and people who manage multiple websites
-                    because they allow you to install all extensions on the sites that you register.
-                    Each plan includes updates and support for one year and you can update your limit at any time.
-                ', 'wpbtd')); ?>
-            </p>
-            <?php wpb2d_products($manager, array('multi'), $extensions); ?>
-        </div>
+    <div id="multi-site-tab">
+        <p class="paragraph-block">
+            <?php echo sprintf(__('
+                These plans are perfect for web developers and people who manage multiple websites
+                because they allow you to install all extensions on the sites that you register.
+                Each plan includes updates and support for one year and you can update your limit at any time.
+            ', 'wpbtd')); ?>
+        </p>
+        <?php wpb2d_products($manager, array('multi'), $extensions); ?>
     </div>
 </div>

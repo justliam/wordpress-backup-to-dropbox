@@ -35,6 +35,8 @@ if (array_key_exists('stop_backup', $_POST)) {
     add_settings_error('wpb2d_monitor', 'backup_started', __('Backup started.', 'wpbtd'), 'updated');
 }
 
+settings_errors();
+
 ?>
 <script type="text/javascript" language="javascript">
     function reload() {
@@ -65,31 +67,21 @@ if (array_key_exists('stop_backup', $_POST)) {
         reload();
     });
 </script>
-<div class="wrap">
-    <div class="icon32"><img width="36px" height="36px"
-                                 src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
-                                 alt="WordPress Backup to Dropbox Logo"></div>
-    <h2><?php _e('WordPress Backup to Dropbox', 'wpbtd'); ?></h2>
-    <p class="description"><?php printf(__('Version %s', 'wpbtd'), BACKUP_TO_DROPBOX_VERSION) ?></p>
-
-    <?php settings_errors(); ?>
-
-    <h3><?php _e('Backup Monitor', 'wpbtd'); ?></h3>
-    <div id="progress">
-        <div id="circleG">
-            <div id="circleG_1" class="circleG"></div>
-            <div id="circleG_2" class="circleG"></div>
-            <div id="circleG_3" class="circleG"></div>
-        </div>
-        <div class="loading"><?php _e('Loading...') ?></div>
+<h3><?php _e('Backup Monitor', 'wpbtd'); ?></h3>
+<div id="progress">
+    <div id="circleG">
+        <div id="circleG_1" class="circleG"></div>
+        <div id="circleG_2" class="circleG"></div>
+        <div id="circleG_3" class="circleG"></div>
     </div>
-    <form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
-        <?php if ($config->get_option('in_progress') || isset($started)): ?>
-            <input type="submit" id="stop_backup" name="stop_backup" class="button-primary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
-        <?php else: ?>
-            <input type="submit" id="start_backup" name="start_backup" class="button-primary" value="<?php _e('Start Backup', 'wpbtd'); ?>">
-        <?php endif; ?>
-
-        <?php wp_nonce_field('backup_to_dropbox_monitor_stop'); ?>
-    </form>
+    <div class="loading"><?php _e('Loading...') ?></div>
 </div>
+<form id="backup_to_dropbox_options" name="backup_to_dropbox_options" action="admin.php?page=backup-to-dropbox-monitor" method="post">
+    <?php if ($config->get_option('in_progress') || isset($started)): ?>
+        <input type="submit" id="stop_backup" name="stop_backup" class="button-primary" value="<?php _e('Stop Backup', 'wpbtd'); ?>">
+    <?php else: ?>
+        <input type="submit" id="start_backup" name="start_backup" class="button-primary" value="<?php _e('Start Backup', 'wpbtd'); ?>">
+    <?php endif; ?>
+
+    <?php wp_nonce_field('backup_to_dropbox_monitor_stop'); ?>
+</form>
