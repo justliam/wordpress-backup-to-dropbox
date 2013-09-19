@@ -80,4 +80,5 @@ abstract class WPB2D_Extension_Base
     abstract public function get_type();
 
     abstract public function is_enabled();
+    abstract public function clean_up();
 }

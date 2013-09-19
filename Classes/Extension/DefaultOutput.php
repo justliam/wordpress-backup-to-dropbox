@@ -73,6 +73,8 @@ class WPB2D_Extension_DefaultOutput extends WPB2D_Extension_Base
         }
     }
 
+    public function is_complete() {}
+
     public function start()
     {
         return true;

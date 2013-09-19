@@ -167,7 +167,7 @@ class WPB2D_BackupController
                 $logger->log(__('SQL backup complete. Starting file backup.', 'wpbtd'));
             }
 
-            if ($this->output->start()) {
+            if (!$this->output->is_complete()) {
 
                 //Backup the content dir first
                 $this->backup_path(WP_CONTENT_DIR, dirname(WP_CONTENT_DIR), $dbBackup->get_file());
@@ -238,7 +238,10 @@ class WPB2D_BackupController
     private function clean_up()
     {
         WPB2D_Factory::get('databaseBackup')->clean_up();
-        WPB2D_Extension_Manager::construct()->get_output()->clean_up();
+
+        $manager = WPB2D_Extension_Manager::construct();
+        $manager->get_output()->clean_up();
+        $manager->complete();
     }
 
     private static function create_silence_file()

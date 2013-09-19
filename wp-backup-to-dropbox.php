@@ -196,6 +196,7 @@ function execute_drobox_backup()
     }
 
     WPB2D_Factory::get('config')->set_option('in_progress', true);
+    WPB2D_Extension_Manager::construct()->start();
 
     if (defined('WPB2D_TEST_MODE')) {
         run_dropbox_backup();
