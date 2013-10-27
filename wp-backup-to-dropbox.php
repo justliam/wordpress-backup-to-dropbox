@@ -109,8 +109,6 @@ function backup_to_dropbox_admin_menu()
  */
 function backup_to_dropbox_admin_menu_contents()
 {
-    wpb2d_style();
-
     $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
 
     if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
@@ -126,8 +124,6 @@ function backup_to_dropbox_admin_menu_contents()
  */
 function backup_to_dropbox_monitor()
 {
-    wpb2d_style();
-
     if (!WPB2D_Factory::get('dropbox')->is_authorized()) {
         backup_to_dropbox_admin_menu_contents();
     } else {
@@ -142,7 +138,6 @@ function backup_to_dropbox_monitor()
  */
 function backup_to_dropbox_premium()
 {
-    wpb2d_style();
     wp_enqueue_script('jquery-ui-core');
     wp_enqueue_script('jquery-ui-tabs');
 
@@ -369,6 +364,7 @@ add_action('execute_instant_drobox_backup', 'execute_drobox_backup');
 register_activation_hook(__FILE__, 'wpb2d_install');
 
 add_action('admin_init', 'wpb2d_init');
+add_action('admin_enqueue_scripts', 'wpb2d_style');
 
 //i18n language text domain
 load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
