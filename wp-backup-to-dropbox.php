@@ -367,7 +367,7 @@ add_action('admin_init', 'wpb2d_init');
 add_action('admin_enqueue_scripts', 'wpb2d_style');
 
 //i18n language text domain
-load_plugin_textdomain('wpbtd', true, 'wordpress-backup-to-dropbox/Languages/');
+load_plugin_textdomain('wpbtd', false, 'wordpress-backup-to-dropbox/Languages/');
 
 if (is_admin()) {
     //WordPress filters and actions
