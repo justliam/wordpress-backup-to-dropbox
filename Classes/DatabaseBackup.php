@@ -202,11 +202,11 @@ class WPB2D_DatabaseBackup
     private function write_to_temp($out)
     {
         if (!$this->temp) {
-            $this->temp = fopen('php://temp', 'rw');
+            $this->temp = fopen('php://memory', 'rw');
         }
 
         if (fwrite($this->temp, $out) === false) {
-            throw new Exception(__('Error writing to php://temp.', 'wpbtd'));
+            throw new Exception(__('Error writing to php://memory.', 'wpbtd'));
         }
     }
 
@@ -223,7 +223,7 @@ class WPB2D_DatabaseBackup
         }
 
         if (!fclose($this->temp)) {
-            throw new Exception(__('Error closing php://temp.', 'wpbtd'));
+            throw new Exception(__('Error closing php://memory.', 'wpbtd'));
         }
 
         $this->temp = null;
