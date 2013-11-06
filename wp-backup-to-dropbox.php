@@ -87,7 +87,7 @@ function backup_to_dropbox_admin_menu()
     $imgUrl = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
 
     $text = __('WPB2D', 'wpbtd');
-    add_utility_page($text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl);
+    add_menu_page($text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl, '80.0564');
 
     $text = __('Backup Settings', 'wpbtd');
     add_submenu_page('backup-to-dropbox', $text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents');
@@ -375,21 +375,6 @@ if (is_admin()) {
     add_action('wp_ajax_progress', 'backup_to_dropbox_progress');
 
     if (defined('MULTISITE') && MULTISITE) {
-        function custom_menu_order($menu_ord)
-        {
-            if (!is_array($menu_ord))
-                return true;
-
-            if (in_array('backup-to-dropbox', $menu_ord)) {
-                $menu_ord[] = array_shift($menu_ord);
-            }
-
-            return $menu_ord;
-        }
-
-        add_filter('custom_menu_order', 'custom_menu_order');
-        add_filter('menu_order', 'custom_menu_order');
-
         add_action('network_admin_menu', 'backup_to_dropbox_admin_menu');
     } else {
         add_action('admin_menu', 'backup_to_dropbox_admin_menu');
