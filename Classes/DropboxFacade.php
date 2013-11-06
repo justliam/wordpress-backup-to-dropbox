@@ -164,7 +164,7 @@ class WPB2D_DropboxFacade
 
     public function chunk_upload_file($path, $file, $processed_file)
     {
-        $offest = $offest_id = null;
+        $offest = $upload_id = null;
         if ($processed_file) {
             $offest = $processed_file->offset;
             $upload_id = $processed_file->uploadid;
