@@ -106,7 +106,7 @@ function wpb2d_products($manager, $type, $extensions)
         $("#tabs").tabs();
     });
 </script>
-<div class="wrap premium">
+<div class="wrap premium" id="wpb2d">
     <div class="icon32"><img width="36px" height="36px"
                                  src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
                                  alt="WordPress Backup to Dropbox Logo"></div>
