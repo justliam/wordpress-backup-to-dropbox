@@ -68,7 +68,12 @@ class WPB2D_DatabaseBackup
         foreach ($tables as $t) {
             $table = $t[0];
             if (!$this->processed->is_complete($table)) {
-                $count = $this->processed->get_table($table)->count * self::SELECT_QUERY_LIMIT;
+                $table = $this->processed->get_table($table);
+
+                $count = 0
+                if ($table) {
+                    $count = $table->count * self::SELECT_QUERY_LIMIT;
+                }
 
                 if ($count > 0) {
                     WPB2D_Factory::get('logger')->log(sprintf(__("Resuming table '%s' at row %s.", 'wpbtd'), $table, $count));
