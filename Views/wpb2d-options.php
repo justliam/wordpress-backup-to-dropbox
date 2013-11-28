@@ -138,7 +138,7 @@ try {
         document.getElementById('authorize').style.visibility = 'hidden';
     }
 </script>
-    <div class="wrap">
+    <div class="wrap" id="wpb2d">
     <div class="icon32"><img width="36px" height="36px"
                              src="<?php echo $uri ?>/Images/WordPressBackupToDropbox_64.png"
                              alt="Wordpress Backup to Dropbox Logo"></div>
