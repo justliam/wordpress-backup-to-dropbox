@@ -115,9 +115,7 @@ In short, this is a feature! :-)
 
 = Where are my database backup files located? =
 
-The database is backed up into two files named '[database name]-backup-core.sql' and '[database name]-backup-plugins.sql'. These files will be will be found at the path 'wp-content/backups' within the App folder of your Dropbox.
-
-The first file contains all the core WordPress tables and data and the second contains tables and data related to your plugins. Sometimes your second file will not have any data in it because most plugins will store their data in the wp_options table.
+The database is backed up into a file named '[database name]-backup.sql' and can be found at the path 'wp-content/backups' within the App folder of your Dropbox.
 
 = Wow! My second backup was heaps faster. Why is that? =
 
