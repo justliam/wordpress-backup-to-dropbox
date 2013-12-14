@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.7
+Tested up to: 3.8
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -113,6 +113,10 @@ However, the plugin has been designed to get around these limitations by using a
 
 In short, this is a feature! :-)
 
+= Does the plugin backup the WordPress databse? =
+
+It sure does. Your database tables will be dumped to a SQL file that can be used to import into a database when you need to restore or move your website.
+
 = Where are my database backup files located? =
 
 The database is backed up into a file named '[database name]-backup.sql' and can be found at the path 'wp-content/backups' within the App folder of your Dropbox.
@@ -134,6 +138,14 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
+
+= 1.8 =
+* Compatable with WP 3.8
+* Fixed menu ordering to better avoid clashes with other plugins
+* Fixed PHP notice in Dropbox Facade
+* Updated FAQ
+* Namespace CSS so it's less likely to clash with other plugins
+* Fix a potential issue where some tables cand be missed in backup on resume
 
 = 1.7 =
 * Code is now conforms to most of the PSR standards that are much better then the WP ones
