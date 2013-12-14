@@ -69,7 +69,7 @@ class WPB2D_Processed_DBTables extends WPB2D_Processed_Base
     {
         $this->upsert(array(
             'name' => $table,
-            'count' => $count,
+            'count' => (int)$count,
         ));
     }
 }
