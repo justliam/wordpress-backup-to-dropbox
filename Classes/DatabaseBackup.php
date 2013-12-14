@@ -70,7 +70,7 @@ class WPB2D_DatabaseBackup
             if (!$this->processed->is_complete($table)) {
                 $table = $this->processed->get_table($table);
 
-                $count = 0
+                $count = 0;
                 if ($table) {
                     $count = $table->count * self::SELECT_QUERY_LIMIT;
                 }
