@@ -23,6 +23,7 @@
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	overflow-y: scroll;
+  background-color: white;
 }
 
 #wpb2d #togglers {
@@ -225,6 +226,7 @@
 	border: 1px solid #cfcfcf;
 	border-radius: 5px;
 	margin-left: 10px;
+  background-color: white;
 }
 
 #wpb2d .product-box--single {
@@ -449,7 +451,6 @@
 #wpb2d .ui-widget-content .ui-state-default,
 #wpb2d .ui-widget-header .ui-state-default {
 	border: 1px solid #d3d3d3;
-	background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
 	font-weight: normal;
 	color: #555555;
 }
@@ -468,7 +469,6 @@
 #wpb2d .ui-widget-content .ui-state-focus,
 #wpb2d .ui-widget-header .ui-state-focus {
 	border: 1px solid #999999;
-	background: #dadada url(images/ui-bg_glass_75_dadada_1x400.png) 50% 50% repeat-x;
 	font-weight: normal;
 	color: #212121;
 }
@@ -485,7 +485,6 @@
 #wpb2d .ui-widget-content .ui-state-active,
 #wpb2d .ui-widget-header .ui-state-active {
 	border: 1px solid #aaaaaa;
-	background: #ffffff url(images/ui-bg_glass_65_ffffff_1x400.png) 50% 50% repeat-x;
 	font-weight: normal;
 	color: #212121;
 }
