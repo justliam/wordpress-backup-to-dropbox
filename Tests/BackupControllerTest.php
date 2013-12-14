@@ -2,7 +2,7 @@
 /**
  * A test for the WPB2D_BackupController class
  *
- * @copyright Copyright (C) 2011-2013 Michael De Wildt. All rights reserved.
+ * @copyright Copyright (C) 2011-2014 Awesoft Pty. Ltd. All rights reserved.
  * @author Michael De Wildt (http://www.mikeyd.com.au/)
  * @license This program is free software; you can redistribute it and/or modify
  *          it under the terms of the GNU General Public License as published by

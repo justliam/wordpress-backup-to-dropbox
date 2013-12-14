@@ -6,7 +6,7 @@ Description: Keep your valuable WordPress website, its media and database backed
 Version: 1.8
 Author: Michael De Wildt
 Author URI: http://www.mikeyd.com.au
-License: Copyright 2011-2013  Michael De Wildt  (email : michael.dewildt@gmail.com)
+License: Copyright 2011-2014 Awesoft Pty. Ltd. (email : michael.dewildt@gmail.com)
 
         This program is free software; you can redistribute it and/or modify
         it under the terms of the GNU General Public License, version 2, as
