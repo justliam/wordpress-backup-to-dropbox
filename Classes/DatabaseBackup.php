@@ -66,9 +66,9 @@ class WPB2D_DatabaseBackup
         $tables = $this->database->get_results('SHOW TABLES', ARRAY_N);
 
         foreach ($tables as $t) {
-            $table = $t[0];
-            if (!$this->processed->is_complete($table)) {
-                $table = $this->processed->get_table($table);
+            $tableName = $t[0];
+            if (!$this->processed->is_complete($tableName)) {
+                $table = $this->processed->get_table($tableName);
 
                 $count = 0;
                 if ($table) {
@@ -76,12 +76,12 @@ class WPB2D_DatabaseBackup
                 }
 
                 if ($count > 0) {
-                    WPB2D_Factory::get('logger')->log(sprintf(__("Resuming table '%s' at row %s.", 'wpbtd'), $table, $count));
+                    WPB2D_Factory::get('logger')->log(sprintf(__("Resuming table '%s' at row %s.", 'wpbtd'), $tableName, $count));
                 }
 
-                $this->backup_database_table($table, $count);
+                $this->backup_database_table($tableName, $count);
 
-                WPB2D_Factory::get('logger')->log(sprintf(__("Processed table '%s'.", 'wpbtd'), $table));
+                WPB2D_Factory::get('logger')->log(sprintf(__("Processed table '%s'.", 'wpbtd'), $tableName));
             }
         }
     }
