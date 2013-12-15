@@ -140,12 +140,12 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 == Changelog ==
 
 = 1.8 =
-* Compatable with WP 3.8
+* Compatible with WP 3.8
 * Fixed menu ordering to better avoid clashes with other plugins
 * Fixed PHP notice in Dropbox Facade
 * Updated FAQ
 * Namespace CSS so it's less likely to clash with other plugins
-* Fix a potential issue where some tables cand be missed in backup on resume
+* Fix a potential issue where some tables and be missed in backup on resume
 
 = 1.7 =
 * Code is now conforms to most of the PSR standards that are much better then the WP ones
