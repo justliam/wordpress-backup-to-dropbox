@@ -119,13 +119,13 @@ function wpb2d_products($manager, $type, $extensions)
     <div>
         <p>
             <?php _e('Welcome to Premium Extensions. Please choose an extension below to enhance WordPress Backup to Dropbox.', 'wpbtd'); ?>
-            <?php _e('Installing a premium extensions is easy:', 'wpbtd'); ?>
+            <?php _e('Installing a premium extension is easy:', 'wpbtd'); ?>
         </p>
         <ol class="instructions">
-            <li><?php _e('Click Buy Now and pay using PayPal', 'wpbtd'); ?></li>
-            <li><?php _e('Click Install Now to download and install the extension', 'wpbtd'); ?></li>
-            <li><?php _e('Thats it, options for your extension will be available in the menu on the left', 'wpbtd'); ?></li>
-            <li><?php _e('If you manage many websites, consider the multipe site options'); ?></li>
+            <li><?php _e('Click Buy Now and pay using PayPal.', 'wpbtd'); ?></li>
+            <li><?php _e('Click Install Now to download and install the extension.', 'wpbtd'); ?></li>
+            <li><?php _e("That's it, options for your extension will be available in the menu on the left.", 'wpbtd'); ?></li>
+            <li><?php _e('If you manage many websites, consider the multiple site options.'); ?></li>
         </ol>
         <a class="paypal" href="#" onclick="javascript:window.open('https://www.paypal.com/au/cgi-bin/webscr?cmd=xpt/Marketing/popup/OLCWhatIsPayPal-outside','olcwhatispaypal','toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=yes, resizable=yes, width=400, height=350');">
             <img  src="https://www.paypalobjects.com/en_AU/i/bnr/horizontal_solution_PP.gif" border="0" alt="Solution Graphics">
@@ -138,7 +138,7 @@ function wpb2d_products($manager, $type, $extensions)
 
     <div id="tabs">
         <ul>
-            <li><a href="#single-site-tab">Singe site</a></li>
+            <li><a href="#single-site-tab">Single site</a></li>
             <li><a href="#multi-site-tab">Multiple sites</a></li>
         </ul>
         <div id="single-site-tab">
