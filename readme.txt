@@ -139,6 +139,10 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.8.1 =
+* Fix some spelling mistakes
+* Fix bug where chunked upload temp memory cant be read that leads to a zero byte upload
+
 = 1.8 =
 * Compatible with WP 3.8
 * Fixed menu ordering to better avoid clashes with other plugins
