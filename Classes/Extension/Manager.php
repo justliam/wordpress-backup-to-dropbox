@@ -56,7 +56,7 @@ class WPB2D_Extension_Manager
         if (defined('WPB2D_URL')) {
             $url =  WPB2D_URL;
         } else {
-            $url = 'http://extendy.com';
+            $url = 'http://wpb2d.com';
         }
 
         if ($api) {
