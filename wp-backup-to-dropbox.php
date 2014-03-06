@@ -26,6 +26,7 @@ define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '2');
 define('EXTENSIONS_DIR', str_replace('/', DIRECTORY_SEPARATOR, WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Classes/Extension/'));
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
 define('MINUMUM_PHP_VERSION', '5.2.16');
+define('NO_ACTIVITY_WAIT_TIME', 300); //5 mins to allow for socket timeouts and long uploads
 
 if (function_exists('spl_autoload_register')) {
     spl_autoload_register('wpb2d_autoload');
@@ -203,8 +204,7 @@ function monitor_dropbox_backup()
     $config = WPB2D_Factory::get('config');
     $mtime = filemtime(WPB2D_Factory::get('logger')->get_log_file());
 
-    //5 mins to allow for socket timeouts and long uploads
-    if ($config->get_option('in_progress') && ($mtime < time() - 300)) {
+    if ($config->get_option('in_progress') && ($mtime < time() - NO_ACTIVITY_WAIT_TIME)) {
         WPB2D_Factory::get('logger')->log(sprintf(__('There has been no backup activity for a long time. Attempting to resume the backup.' , 'wpbtd'), 5));
         $config->set_option('is_running', false);
 
