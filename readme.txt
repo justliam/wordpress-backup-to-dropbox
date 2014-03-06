@@ -139,6 +139,11 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 1.8.2 =
+* Add Danish Translations
+* Swap extension URL to http://wpb2d.com
+* Add constant to configure the restart time
+
 = 1.8.1 =
 * Fix some spelling mistakes
 * Fix bug where chunked upload temp memory cant be read that leads to a zero byte upload
