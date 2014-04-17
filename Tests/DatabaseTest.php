@@ -54,8 +54,9 @@ class WPB2D_DatabaseBackupTest extends PHPUnit_Framework_TestCase
                 'field1' => 'value1',
                 'field2' => 'value2',
                 'field3' => 'value3',
-                'field4' => 'value4',
-                'field5' => 'value5',
+                'field4' => 0,
+                'field5' => null,
+                'field6' => '',
             );
         }
 
@@ -69,24 +70,23 @@ class WPB2D_DatabaseBackupTest extends PHPUnit_Framework_TestCase
             ->shouldReceive('query')
             ->twice()
 
-            ->shouldReceive('tables')
-            ->andReturn(
-                array(
-                    1 => 'table1',
-                    2 => 'table2',
-                )
-            )
+            ->shouldReceive('get_results')
+            ->with('SHOW TABLES', ARRAY_N)
+            ->andReturn(array(
+                array('table1'),
+                array('table2'),
+            ))
             ->once()
 
-            ->shouldReceive('tables')
-            ->andReturn(
-                array(
-                    1 => 'table1',
-                    2 => 'table2',
-                    3 => 'table3',
-                )
-            )
+            ->shouldReceive('get_results')
+            ->with('SHOW TABLES', ARRAY_N)
+            ->andReturn(array(
+                array('table1'),
+                array('table2'),
+                array('table3'),
+            ))
             ->once()
+
 
             ->shouldReceive('get_row')
             ->with('SHOW CREATE TABLE table1', ARRAY_N)
@@ -213,8 +213,9 @@ return "CREATE TABLE `$table` (\n" . <<<EOS
   `field1` varchar(255) default NULL,
   `field2` varchar(255) default NULL,
   `field3` varchar(255) default NULL,
-  `field4` varchar(255) default NULL,
+  `field4` int default 0,
   `field5` varchar(255) default NULL,
+  `field6` varchar(255) default NULL
   PRIMARY KEY  (`field1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1
 EOS;
@@ -250,8 +251,9 @@ CREATE TABLE `table1` (
   `field1` varchar(255) default NULL,
   `field2` varchar(255) default NULL,
   `field3` varchar(255) default NULL,
-  `field4` varchar(255) default NULL,
+  `field4` int default 0,
   `field5` varchar(255) default NULL,
+  `field6` varchar(255) default NULL
   PRIMARY KEY  (`field1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -267,8 +269,9 @@ CREATE TABLE `table2` (
   `field1` varchar(255) default NULL,
   `field2` varchar(255) default NULL,
   `field3` varchar(255) default NULL,
-  `field4` varchar(255) default NULL,
+  `field4` int default 0,
   `field5` varchar(255) default NULL,
+  `field6` varchar(255) default NULL
   PRIMARY KEY  (`field1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -276,29 +279,29 @@ CREATE TABLE `table2` (
 -- Dumping data for table `table2`
 --
 
-INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`, `field6`) VALUES
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL);
 
-INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`, `field6`) VALUES
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL);
 
 
 EOS;
@@ -307,17 +310,17 @@ EOS;
     private function getExpectedOutputTwo()
     {
 return <<<EOS
-INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
+INSERT INTO `table2` (`field1`, `field2`, `field3`, `field4`, `field5`, `field6`) VALUES
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL);
 
 --
 -- Table structure for table `table3`
@@ -327,8 +330,9 @@ CREATE TABLE `table3` (
   `field1` varchar(255) default NULL,
   `field2` varchar(255) default NULL,
   `field3` varchar(255) default NULL,
-  `field4` varchar(255) default NULL,
+  `field4` int default 0,
   `field5` varchar(255) default NULL,
+  `field6` varchar(255) default NULL
   PRIMARY KEY  (`field1`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
@@ -336,17 +340,17 @@ CREATE TABLE `table3` (
 -- Dumping data for table `table3`
 --
 
-INSERT INTO `table3` (`field1`, `field2`, `field3`, `field4`, `field5`) VALUES
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5'),
-('value1', 'value2', 'value3', 'value4', 'value5');
+INSERT INTO `table3` (`field1`, `field2`, `field3`, `field4`, `field5`, `field6`) VALUES
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL),
+('value1', 'value2', 'value3', 0, NULL, NULL);
 
 
 EOS;

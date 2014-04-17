@@ -3,7 +3,7 @@ Contributors: michael.dewildt
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 3.8
+Tested up to: 3.9
 Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
@@ -139,10 +139,11 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
-= 1.8.2 =
-* Add Danish Translations
-* Swap extension URL to http://wpb2d.com
-* Add constant to configure the restart time
+= 1.9 =
+* Tested to work with WordPress 3.9.
+* Fixed bug in SQL dump where NULL was outputting as '' and 0 as '0'; thanks for the heads up Tervor!
+* Add Danish Translations; thanks Henrik!
+* Add constant to configure the restart time; NO_ACTIVITY_WAIT_TIME defaults to 5 mins.
 
 = 1.8.1 =
 * Fix some spelling mistakes

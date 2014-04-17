@@ -183,10 +183,16 @@ class WPB2D_DatabaseBackup
                 foreach ($table_data as $data) {
                     $data_out = '(';
                     foreach ($data as $value) {
-                        $value = addslashes($value);
-                        $value = str_replace("\n", "\\n", $value);
-                        $value = str_replace("\r", "\\r", $value);
-                        $data_out .= "'$value', ";
+                        if (is_int($value)) {
+                            $data_out .= "$value, ";
+                        } elseif ($value) {
+                            $value = addslashes($value);
+                            $value = str_replace("\n", "\\n", $value);
+                            $value = str_replace("\r", "\\r", $value);
+                            $data_out .= "'$value', ";
+                        } else {
+                            $data_out .= "NULL, ";
+                        }
                     }
                     $out .= rtrim($data_out, ' ,') . "),\n";
                     $row_count++;
