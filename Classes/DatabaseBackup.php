@@ -183,15 +183,13 @@ class WPB2D_DatabaseBackup
                 foreach ($table_data as $data) {
                     $data_out = '(';
                     foreach ($data as $value) {
-                        if (is_int($value)) {
+                        if (is_numeric($value)) {
                             $data_out .= "$value, ";
-                        } elseif ($value) {
+                        } else {
                             $value = addslashes($value);
                             $value = str_replace("\n", "\\n", $value);
                             $value = str_replace("\r", "\\r", $value);
                             $data_out .= "'$value', ";
-                        } else {
-                            $data_out .= "NULL, ";
                         }
                     }
                     $out .= rtrim($data_out, ' ,') . "),\n";
