@@ -145,7 +145,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Fixed bug in SQL dump where NULL was outputting as '' and 0 as '0'; thanks for the heads up Tervor!
 * Add Danish Translations; thanks Henrik!
 * Add constant to configure the restart time; NO_ACTIVITY_WAIT_TIME defaults to 5 mins.
-* Add Danish translation
+* Add Danish translation thanks Michael!
 
 = 1.8.1 =
 * Fix some spelling mistakes
