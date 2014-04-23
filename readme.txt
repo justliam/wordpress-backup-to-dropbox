@@ -86,6 +86,7 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 * Russian (ru_RU)
 * Sweedish (sv_SE)
 * Finland (fi_FI)
+* Danish (da_DK)
 
 == Installation ==
 
@@ -144,6 +145,7 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 * Fixed bug in SQL dump where NULL was outputting as '' and 0 as '0'; thanks for the heads up Tervor!
 * Add Danish Translations; thanks Henrik!
 * Add constant to configure the restart time; NO_ACTIVITY_WAIT_TIME defaults to 5 mins.
+* Add Danish translation
 
 = 1.8.1 =
 * Fix some spelling mistakes
