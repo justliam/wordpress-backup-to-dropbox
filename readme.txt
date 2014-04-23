@@ -96,6 +96,12 @@ For news and updates please visit my blog - http://www.mikeyd.com.au/category/wo
 
 == Frequently Asked Questions ==
 
+= I am getting this error: "Error message: Error Processing Request: error:0D0890A1:asn1 encoding routines:ASN1_verify:unknown message digest algorithm" =
+
+This is due to the recent Heartbleed vulnerability](http://heartbleed.com/) and indicates that your server has an outdated version of OpenSSL that is no longer compatable with Dropbox and must be updated in order to continue using the plugin.
+
+Please contact your host to get it updated.
+
 = Why won’t my backup start? =
 
 To diagnose issues with your plugin please refer to this [sticky topic](http://wordpress.org/support/topic/why-won%E2%80%99t-my-backup-start).
