@@ -6,7 +6,7 @@ Requires at least: 3.0
 Tested up to: 3.9
 Stable tag: trunk
 
-Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin.
+Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin. Need help? Please email support@wpb2d.com
 
 == Description ==
 
