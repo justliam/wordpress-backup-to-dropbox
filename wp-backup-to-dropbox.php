@@ -3,7 +3,7 @@
 Plugin Name: WordPress Backup to Dropbox
 Plugin URI: http://wpb2d.com
 Description: Keep your valuable WordPress website, its media and database backed up in Dropbox! Need help? Please email support@wpb2d.com
-Version: 1.9
+Version: 4.0
 Author: Michael De Wildt
 Author URI: http://www.mikeyd.com.au
 License: Copyright 2011-2014 Awesoft Pty. Ltd. (email : michael.dewildt@gmail.com)
