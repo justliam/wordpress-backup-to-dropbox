@@ -21,7 +21,7 @@ License: Copyright 2011-2014 Awesoft Pty. Ltd. (email : michael.dewildt@gmail.co
         along with this program; if not, write to the Free Software
         Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
-define('BACKUP_TO_DROPBOX_VERSION', '1.9');
+define('BACKUP_TO_DROPBOX_VERSION', '4.0');
 define('BACKUP_TO_DROPBOX_DATABASE_VERSION', '2');
 define('EXTENSIONS_DIR', str_replace('/', DIRECTORY_SEPARATOR, WP_CONTENT_DIR . '/plugins/wordpress-backup-to-dropbox/Classes/Extension/'));
 define('CHUNKED_UPLOAD_THREASHOLD', 10485760); //10 MB
