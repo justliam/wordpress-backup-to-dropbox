@@ -85,7 +85,7 @@ function wpb2d_style()
  */
 function backup_to_dropbox_admin_menu()
 {
-    $imgUrl = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox/Images/WordPressBackupToDropbox_16.png';
+    $imgUrl = plugin_dir_url(__FILE__) . 'Images/WordPressBackupToDropbox_16.png';
 
     $text = __('WPB2D', 'wpbtd');
     add_menu_page($text, $text, 'activate_plugins', 'backup-to-dropbox', 'backup_to_dropbox_admin_menu_contents', $imgUrl, '80.0564');
@@ -110,7 +110,7 @@ function backup_to_dropbox_admin_menu()
  */
 function backup_to_dropbox_admin_menu_contents()
 {
-    $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
+    $uri = plugin_dir_url(__FILE__);
 
     if(version_compare(PHP_VERSION, MINUMUM_PHP_VERSION) >= 0) {
         include 'Views/wpb2d-options.php';
@@ -128,7 +128,8 @@ function backup_to_dropbox_monitor()
     if (!WPB2D_Factory::get('dropbox')->is_authorized()) {
         backup_to_dropbox_admin_menu_contents();
     } else {
-        $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
+        $uri = plugin_dir_url(__FILE__);
+
         include 'Views/wpb2d-monitor.php';
     }
 }
@@ -142,7 +143,8 @@ function backup_to_dropbox_premium()
     wp_enqueue_script('jquery-ui-core');
     wp_enqueue_script('jquery-ui-tabs');
 
-    $uri = rtrim(WP_PLUGIN_URL, '/') . '/wordpress-backup-to-dropbox';
+    $uri = plugin_dir_url(__FILE__);
+
     include 'Views/wpb2d-premium.php';
 }
 
