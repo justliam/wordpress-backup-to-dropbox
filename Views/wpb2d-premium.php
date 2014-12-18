@@ -25,7 +25,7 @@ if (isset($_REQUEST['error'])) {
 }
 
 if (isset($_REQUEST['title'])) {
-    add_settings_error('general', 'wpb2d_premium_success', sprintf(__('You have succesfully purchased %s.', 'wpbtd'), "<strong>{$_REQUEST['title']}</strong>"), 'updated');
+    add_settings_error('general', 'wpb2d_premium_success', sprintf(__('You have succesfully purchased %s.', 'wpbtd'), '<strong>' . esc_attr($_REQUEST['title']) . '</strong>'), 'updated');
 }
 
 if (isset($_POST['name'])) {
