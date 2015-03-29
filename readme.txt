@@ -1,6 +1,6 @@
 === WordPress Backup to Dropbox ===
 Contributors: michael.dewildt
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38SEXDYP28CFA
+Donate link: https://influx.com
 Tags: backup, dropbox
 Requires at least: 3.0
 Tested up to: 4.1
