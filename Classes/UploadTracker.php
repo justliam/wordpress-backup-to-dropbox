@@ -29,6 +29,8 @@ class WPB2D_UploadTracker
 
     public function track_upload($file, $upload_id, $offset)
     {
+        $offset = is_null($offset) ? 0 : $offset;
+
         WPB2D_Factory::get('config')->die_if_stopped();
 
         $this->processed_files->update_file($file, $upload_id, $offset);

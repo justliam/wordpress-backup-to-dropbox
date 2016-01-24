@@ -146,6 +146,9 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+== 4.4.1 ==
+Fix database error: Column 'offset' cannot be null
+
 = 4.1 =
 * Make use of plugin_dir_url func instead of WP_PLUGIN_URL
 * Fixed reflected XSS issue, thanks Kacper Szurek for identifying :)
