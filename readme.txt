@@ -62,10 +62,6 @@ Premium extensions are downloadable snippets of code that add extra functionalit
 
 Premium extensions can be purchased securely using [PayPal](http://www.paypal.com) and installed with the click of a button. For more information pelase visit http://wpb2d.com/premium.
 
-= More Information =
-
-For news and updates please visit my blog - http://www.mikeyd.com.au/category/wordpress-backup-to-dropbox/
-
 = Available in these languages =
 
 * Arabic (ar)
