@@ -69,7 +69,7 @@ class WPB2D_Processed_Files extends WPB2D_Processed_Base
             $this->upsert(array(
                 'file' => $file,
                 'uploadid' => null,
-                'offset' => null,
+                'offset' => 0,
             ));
         }
 
