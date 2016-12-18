@@ -142,6 +142,9 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 
 == Changelog ==
 
+= 4.7 =
+Tested to work with WordPress 4.7
+
 = 4.5.3 =
 Fix database error: Column 'offset' cannot be null - Take two!
 
