@@ -3,8 +3,8 @@ Contributors: michael.dewildt
 Donate link: https://influx.com
 Tags: backup, dropbox
 Requires at least: 3.0
-Tested up to: 4.7
-Stable tag: 4.7
+Tested up to: 4.5
+Stable tag: trunk
 
 Keep your valuable WordPress website, its media and database backed up to Dropbox in minutes with this sleek, easy to use plugin. Need help? Please email support@wpb2d.com
 
@@ -141,9 +141,6 @@ You can also install the zip [premium extension](http://wpb2d.com/premium) that 
 3. Premium Extensions: Add extra functionality with ease and a 60 day money back guarantee.
 
 == Changelog ==
-
-= 4.7 =
-Tested to work with WordPress 4.7
 
 = 4.7 =
 Tested to work with WordPress 4.7
